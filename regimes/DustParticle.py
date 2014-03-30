@@ -2,6 +2,7 @@
 Non-relativistic simplifications of density, energy density and pressure calculations
 """
 import numpy
+import IntermediateParticle
 
 
 def density(particle):
@@ -20,9 +21,5 @@ def pressure(particle):
     return density(particle) * particle.temperature
 
 
-def energy_density_rate(particle):
-    return density(particle) * (
-        15./4. * particle.temperature
-        + 3. * particle.mass
-        + particle.mass**2 / particle.temperature
-    )
+numerator = IntermediateParticle.numerator
+denominator = IntermediateParticle.denominator

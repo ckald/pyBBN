@@ -11,21 +11,22 @@ photon = Particle(name='Photon',
                   statistics=STATISTICS.BOSON)
 Particles.append(photon)
 
-neutron = Particle(name='Neutron',
-                   statistics=STATISTICS.FERMION,
-                   mass=0.939 * nu.GeV,
-                   decoupling_temperature=1.3 * nu.MeV)
-Particles.append(neutron)
+# neutron = Particle(name='Neutron',
+#                    statistics=STATISTICS.FERMION,
+#                    mass=0.939 * nu.GeV,
+#                    decoupling_temperature=1.3 * nu.MeV)
+# Particles.append(neutron)
 
-proton = Particle(name='Proton',
-                  statistics=STATISTICS.FERMION,
-                  mass=0.938 * nu.GeV,
-                  )
-Particles.append(proton)
+# proton = Particle(name='Proton',
+#                   statistics=STATISTICS.FERMION,
+#                   mass=0.938 * nu.GeV,
+#                   )
+# Particles.append(proton)
 
 neutrino = Particle(name='Neutrino',
                     statistics=STATISTICS.FERMION,
                     dof=4,
+                    decoupling_temperature=2 * nu.MeV
                     )
 Particles.append(neutrino)
 
@@ -35,18 +36,17 @@ electron = Particle(name='Electron',
                     dof=4)
 Particles.append(electron)
 
-neutron_decay = Interaction(
-    in_particles=[neutron],
-    out_particles=[proton, neutrino, electron],
+neutrino_scattering = Interaction(
+    in_particles=[neutrino, neutrino],
+    out_particles=[neutrino, neutrino],
     decoupling_temperature=0 * nu.MeV,
-
-    K1=64 * CONST.G_F**2,
+    K1=192 * CONST.G_F**2,
     K2=0
 )
-Interactions.append(neutron_decay)
+Interactions.append(neutrino_scattering)
 
 universe = Universe(Particles, Interactions)
-universe.graphics.monitor(particles=[neutron])
+universe.graphics.monitor(particles=[neutrino])
 universe.evolve()
 
 for particle in Particles:

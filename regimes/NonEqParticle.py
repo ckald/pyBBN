@@ -2,15 +2,15 @@
 General non-equilibrium particles
 """
 import numpy
-from common import lambda_integrate
+from common import lambda_integrate, PARAMS, momentum_to_index
 
 
 @lambda_integrate
 def density(particle):
     return numpy.vectorize(lambda p: (
         particle.distribution(p) * p ** 2
-        * particle.dof / 2. / numpy.pi**2
-    ))
+        * particle.dof / 2. / numpy.pi**2 / PARAMS.a**3
+    ), otypes=[numpy.float_])
 
 
 @lambda_integrate
@@ -18,8 +18,8 @@ def energy_density(particle):
     return numpy.vectorize(lambda p: (
         particle.distribution(p) * p ** 2
         * particle.energy(p)
-        * particle.dof / 2. / numpy.pi**2
-    ))
+        * particle.dof / 2. / numpy.pi**2 / PARAMS.a**4
+    ), otypes=[numpy.float_])
 
 
 @lambda_integrate
@@ -27,57 +27,18 @@ def pressure(particle):
     return numpy.vectorize(lambda p: (
         particle.distribution(p) * p ** 4
         / particle.energy(p)
-        * particle.dof / 6. / numpy.pi**2
-    ))
+        * particle.dof / 6. / numpy.pi**2 / PARAMS.a**4
+    ), otypes=[numpy.float_])
 
 
 @lambda_integrate
-def energy_density_rate(particle):
-    return numpy.vectorize(lambda p: 0.)
-    # return lambda p: (
-    #     particle.dof / 2. / numpy.pi**2 / particle.temperature
-    #     * p**2 * particle.energy(p)
-    #     * numpy.exp(particle.energy(p) / particle.temperature)
-    #     / (
-    #         numpy.exp(particle.energy(p) / particle.temperature)
-    #         + particle.eta
-    #     )**2
-    # )
-
-# @lambda_integrate
-# def density(particle):
-#     return lambda i: (
-#         particle.distribution(i, by_index=True) * index_to_momentum(i) ** 2
-#         * particle.dof / 2. / numpy.pi**2
-#     )
+def numerator(particle):
+    return numpy.vectorize(lambda y: (
+        -1. * particle.dof / 2. / numpy.pi**2
+        * y**2 * particle.energy_normalized(y)
+        * particle.collision_integral[momentum_to_index(y)]
+    ), otypes=[numpy.float_])
 
 
-# @lambda_integrate
-# def energy_density(particle):
-#     return lambda i: (
-#         particle.distribution(i, by_index=True) * index_to_momentum(i) ** 2
-#         * particle.energy(index_to_momentum(i))
-#         * particle.dof / 2 / numpy.pi**2
-#     )
-
-
-# @lambda_integrate
-# def pressure(particle):
-#     return lambda i: (
-#         particle.distribution(i, by_index=True) * index_to_momentum(i) ** 4
-#         / particle.energy(index_to_momentum(i))
-#         * particle.dof / 6 / numpy.pi**2
-#     )
-
-
-# @lambda_integrate
-# def energy_density_rate(particle):
-#     return lambda i: (
-#         particle.dof / 2. / numpy.pi**2 / particle.temperature
-#         * index_to_momentum(i)**2 * particle.energy(index_to_momentum(i))
-#         * numpy.exp(particle.energy(index_to_momentum(i)) / particle.temperature)
-#         / (
-#             numpy.exp(particle.energy(index_to_momentum(i)) / particle.temperature)
-#             + particle.eta
-#         )**2
-#     )
+def denominator(particle):
+    return 0.

@@ -4,7 +4,7 @@ from particle import Particle
 from common import PARAMS, CONST, UNITS, STATISTICS, benchmark
 import numericalunits as nu
 
-PARAMS.T = 1e2 * nu.MeV
+PARAMS.T = 2. * 1e2 * nu.MeV
 
 Particles = []
 photon = Particle(name='Photon',
@@ -47,15 +47,15 @@ plots[0][1].set_xlabel("time, s")
 plots[0][1].set_ylabel("a, 1")
 
 
-def evolve(t_f=PARAMS.t_f, t_i=PARAMS.t_i, dt=PARAMS.dt):
-    time_steps = int((t_f - t_i) / dt)
+def evolve(t_f=PARAMS.t_f, dt=PARAMS.dt):
+    time_steps = int((t_f - PARAMS.t) / dt)
 
     Ts = numpy.zeros(time_steps)
     Ts[0] = PARAMS.T
     As = numpy.zeros(time_steps)
     As[0] = PARAMS.a
     ts = numpy.zeros(time_steps)
-    ts[0] = t_i
+    ts[0] = PARAMS.t
     rhos = numpy.zeros(time_steps)
     rhos[0] = 0
     for particle in Particles:
@@ -91,7 +91,7 @@ def evolve(t_f=PARAMS.t_f, t_i=PARAMS.t_i, dt=PARAMS.dt):
         for particle in Particles:
             particle.update()
             if not particle.in_equilibrium:
-                particle._distribution *= (1. - dt * 3 * H)
+                particle._distribution *= (1. - dt * 3. * H)
 
         As[t+1] = As[t] * (2. - Ts[t+1] / Ts[t])
         PARAMS.a = As[t + 1]
@@ -101,11 +101,13 @@ def evolve(t_f=PARAMS.t_f, t_i=PARAMS.t_i, dt=PARAMS.dt):
         if t % (time_steps/100) == 0:
             print ts[t+1] / UNITS.s, "\t", Ts[t+1] / nu.MeV, "\t", As[t+1]
 
+    PARAMS.t = t_f
+
     return ts, Ts, As, rhos
 
-ts, Ts, As, rhos = evolve(t_i=0 * UNITS.s, t_f=1e-2 * UNITS.s, dt=1e-6 * UNITS.s)
-ts1, Ts1, As1, rhos1 = evolve(t_i=1e-2 * UNITS.s, t_f=10 * UNITS.s, dt=1e-4 * UNITS.s)
-ts2, Ts2, As2, rhos2 = evolve(t_i=10 * UNITS.s, t_f=30 * UNITS.s, dt=1e-3 * UNITS.s)
+ts, Ts, As, rhos = evolve(t_f=1e-1 * UNITS.s, dt=1e-6 * UNITS.s)
+ts1, Ts1, As1, rhos1 = evolve(t_f=10 * UNITS.s, dt=1e-4 * UNITS.s)
+ts2, Ts2, As2, rhos2 = evolve(t_f=100 * UNITS.s, dt=1e-3 * UNITS.s)
 
 ts = numpy.append(ts, ts1)
 Ts = numpy.append(Ts, Ts1)
