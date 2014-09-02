@@ -1,0 +1,5 @@
+{
+    "project_name": "pyBBN v0.1.0",
+    "skip_files": [".+\\.pyc", "__pycache__", "\\.git", "\\.DS_Store", "docs"],
+    "copy_files": []
+}
