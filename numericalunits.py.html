@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>pyBBN v0.1.0: numericalunits.py</title>
+  <link rel="stylesheet" href="./pyccoon.css">
+  <script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+  });
+  </script>
+  <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</head>
+<body>
+<div id='container'>
+  <a id="top"></a>
+  <div id="background"></div>
+  <div id="footer">
+    <a class="btn" id="project-name" href="./index.html">pyBBN v0.1.0</a>
+    <a class="btn" class="source source-1" href="#top">Back to top</a>
+    <div class="generation-time">
+        Generated at
+        <a target="_blank" href="http://ckald.github.io/pyccoon/" title="Pyccoon: side-to-side documentation generator">
+            <img id="pyccoon-icon" src="./pyccoon_icon.svg" alt="Pyccoon: side-to-side documentation generator" /></a>
+        <code>2014-09-03 20:47:23.805502</code>/
+        by a diligent
+        <a target="_blank" href="http://ckald.github.io/pyccoon/" title="Pyccoon: side-to-side documentation generator">pyccoon</a>
+    </div>
+  </div>
+  <div class='section'>
+    <div class='docs'>
+      <h1 id="breadcrumbs">/ <a href="numericalunits.py.html/../index.html">.</a> / <a href="numericalunits.py.html">numericalunits.py</a> </h1>
+      <ul id="children"></ul>
+    </div>
+  </div>
+  <div class='clearall'>
+  <div class='section'>
+    <a id="section-0" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-0'>#</a>
+          </div>
+          <p>-<em>- coding: utf-8 -</em>-</p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+  </div>
+  <div class='section'>
+    <a id="section-1" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-1'>#</a>
+          </div>
+          <p>For information and usage see README,
+or <a href="http://pypi.python.org/pypi/numericalunits">http://pypi.python.org/pypi/numericalunits</a></p>
+<p>Copyright (C) 2012 Steven Byrnes</p>
+<p>Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights to
+use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
+of the Software, and to permit persons to whom the Software is furnished to do
+so, subject to the following conditions:</p>
+<p>The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.</p>
+<p>THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+IN THE SOFTWARE.</p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre><span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">pi</span>
+<span class="kn">import</span> <span class="nn">random</span>
+
+<span class="n">__version__</span> <span class="o">=</span> <span class="mf">1.13</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+  </div>
+  <div class='section'>
+    <a id="section-2" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-2'>#</a>
+          </div>
+          <p>Set all units to new, self-consistent, floating-point values. See package
+documentation for detailed explanation and examples:
+<a href="http://pypi.python.org/pypi/numericalunits">http://pypi.python.org/pypi/numericalunits</a></p>
+<p>reset_units() --&gt; units are randomized. This is the suggested use. Run this
+before your calculation, display the final answer, then re-run this, then
+re-disply the final answer. If you get the same answers both times, then
+your calculations are almost guaranteed to be free of
+dimensional-analysis-violating errors. reset_units() is run automatically
+the first time this module is imported.</p>
+<p>reset_units('SI') --&gt; Set units so that all values are given in standard SI
+units (meters-kilograms-seconds) by default. In this mode, there is no way
+to test for dimensional-analysis-violating errors.</p>
+<p>reset_units(x) --&gt; If you pass any other argument x, it's used as the seed
+for the random number generator.</p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre><span class="k">def</span> <span class="nf">reset_units</span><span class="p">(</span><span class="n">seed</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">random_range</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]):</span>
+
+    <span class="k">global</span> <span class="n">m</span><span class="p">,</span> <span class="n">kg</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">K</span>
+
+    <span class="k">if</span> <span class="n">seed</span> <span class="o">==</span> <span class="s">&#39;SI&#39;</span><span class="p">:</span>
+        <span class="n">m</span> <span class="o">=</span> <span class="mf">1.</span>
+        <span class="n">kg</span> <span class="o">=</span> <span class="mf">1.</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="mf">1.</span>
+        <span class="n">C</span> <span class="o">=</span> <span class="mf">1.</span>
+        <span class="n">K</span> <span class="o">=</span> <span class="mf">1.</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">prior_random_state</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">getstate</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">seed</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="n">seed</span><span class="p">)</span>
+
+        <span class="n">m</span> <span class="o">=</span> <span class="mf">10.</span> <span class="o">**</span> <span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="o">*</span><span class="n">random_range</span><span class="p">)</span>  <span class="c"># meter</span>
+        <span class="n">kg</span> <span class="o">=</span> <span class="mf">10.</span> <span class="o">**</span> <span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="o">*</span><span class="n">random_range</span><span class="p">)</span>  <span class="c"># kilogram</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="mf">10.</span> <span class="o">**</span> <span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="o">*</span><span class="n">random_range</span><span class="p">)</span>  <span class="c"># second</span>
+        <span class="n">C</span> <span class="o">=</span> <span class="mf">10.</span> <span class="o">**</span> <span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="o">*</span><span class="n">random_range</span><span class="p">)</span>  <span class="c"># coulombs</span>
+        <span class="n">K</span> <span class="o">=</span> <span class="mf">10.</span> <span class="o">**</span> <span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="o">*</span><span class="n">random_range</span><span class="p">)</span>  <span class="c"># kelvins</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+  </div>
+  <div class='section'>
+    <a id="section-3" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-3'>#</a>
+          </div>
+          <p>Leave the random generator like I found it, in case something else is
+using it.</p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>        <span class="n">random</span><span class="o">.</span><span class="n">setstate</span><span class="p">(</span><span class="n">prior_random_state</span><span class="p">)</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+  </div>
+  <div class='section'>
+    <a id="section-4" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-4'>#</a>
+          </div>
+          
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>    <span class="n">set_derived_units_and_constants</span><span class="p">()</span>
+    <span class="k">return</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+  </div>
+  <div class='section'>
+    <a id="section-5" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-5'>#</a>
+          </div>
+          <p>Assuming that the base units (m, kg, s, C, K) have already been set as
+floating-point values, this function sets all other units and constants
+to the appropriate, self-consistent values.</p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre><span class="k">def</span> <span class="nf">set_derived_units_and_constants</span><span class="p">():</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+  </div>
+  <div class='section'>
+    <a id="section-6" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-6'>#</a>
+          </div>
+          <p>Length</p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>    <span class="k">global</span> <span class="n">cm</span><span class="p">,</span> <span class="n">mm</span><span class="p">,</span> <span class="n">um</span><span class="p">,</span> <span class="n">nm</span><span class="p">,</span> <span class="n">pm</span><span class="p">,</span> <span class="n">fm</span><span class="p">,</span> <span class="n">km</span><span class="p">,</span> <span class="n">angstrom</span><span class="p">,</span> <span class="n">lightyear</span><span class="p">,</span> \
+        <span class="n">astro_unit</span><span class="p">,</span> <span class="n">pc</span><span class="p">,</span> <span class="n">kpc</span><span class="p">,</span> <span class="n">Mpc</span><span class="p">,</span> <span class="n">Gpc</span><span class="p">,</span> <span class="n">inch</span><span class="p">,</span> <span class="n">foot</span><span class="p">,</span> <span class="n">mile</span><span class="p">,</span> <span class="n">thou</span>
+    <span class="n">cm</span> <span class="o">=</span> <span class="mf">1e-2</span> <span class="o">*</span> <span class="n">m</span>
+    <span class="n">mm</span> <span class="o">=</span> <span class="mf">1e-3</span> <span class="o">*</span> <span class="n">m</span>
+    <span class="n">um</span> <span class="o">=</span> <span class="mf">1e-6</span> <span class="o">*</span> <span class="n">m</span>
+    <span class="n">nm</span> <span class="o">=</span> <span class="mf">1e-9</span> <span class="o">*</span> <span class="n">m</span>
+    <span class="n">pm</span> <span class="o">=</span> <span class="mf">1e-12</span> <span class="o">*</span> <span class="n">m</span>
+    <span class="n">fm</span> <span class="o">=</span> <span class="mf">1e-15</span> <span class="o">*</span> <span class="n">m</span>
+    <span class="n">km</span> <span class="o">=</span> <span class="mf">1e3</span> <span class="o">*</span> <span class="n">m</span>
+    <span class="n">angstrom</span> <span class="o">=</span> <span class="mf">1e-10</span> <span class="o">*</span> <span class="n">m</span>
+    <span class="n">lightyear</span> <span class="o">=</span> <span class="mf">9460730472580800.</span> <span class="o">*</span> <span class="n">m</span>
+    <span class="n">astro_unit</span> <span class="o">=</span> <span class="mf">149597870700.</span> <span class="o">*</span> <span class="n">m</span>  <span class="c"># astronomical unit</span>
+    <span class="n">pc</span> <span class="o">=</span> <span class="p">(</span><span class="mf">648000.</span><span class="o">/</span><span class="n">pi</span><span class="p">)</span> <span class="o">*</span> <span class="n">astro_unit</span>  <span class="c"># parsec</span>
+    <span class="n">kpc</span> <span class="o">=</span> <span class="mf">1e3</span> <span class="o">*</span> <span class="n">pc</span>
+    <span class="n">Mpc</span> <span class="o">=</span> <span class="mf">1e6</span> <span class="o">*</span> <span class="n">pc</span>
+    <span class="n">Gpc</span> <span class="o">=</span> <span class="mf">1e9</span> <span class="o">*</span> <span class="n">pc</span>
+    <span class="n">inch</span> <span class="o">=</span> <span class="mf">2.54</span> <span class="o">*</span> <span class="n">cm</span>
+    <span class="n">foot</span> <span class="o">=</span> <span class="mf">12.</span> <span class="o">*</span> <span class="n">inch</span>
+    <span class="n">mile</span> <span class="o">=</span> <span class="mf">5280.</span> <span class="o">*</span> <span class="n">foot</span>
+    <span class="n">thou</span> <span class="o">=</span> <span class="mf">1e-3</span> <span class="o">*</span> <span class="n">inch</span>  <span class="c"># thousandth of an inch; also called mil</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+  </div>
+  <div class='section'>
+    <a id="section-7" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-7'>#</a>
+          </div>
+          <p>Volume</p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>    <span class="k">global</span> <span class="n">L</span><span class="p">,</span> <span class="n">mL</span><span class="p">,</span> <span class="n">uL</span><span class="p">,</span> <span class="n">nL</span><span class="p">,</span> <span class="n">pL</span><span class="p">,</span> <span class="n">fL</span><span class="p">,</span> <span class="n">aL</span><span class="p">,</span> <span class="n">kL</span><span class="p">,</span> <span class="n">ML</span><span class="p">,</span> <span class="n">GL</span>
+    <span class="n">L</span> <span class="o">=</span> <span class="mf">1e-3</span> <span class="o">*</span> <span class="n">m</span><span class="o">**</span><span class="mi">3</span>  <span class="c"># liter</span>
+    <span class="n">mL</span> <span class="o">=</span> <span class="mf">1e-3</span> <span class="o">*</span> <span class="n">L</span>
+    <span class="n">uL</span> <span class="o">=</span> <span class="mf">1e-6</span> <span class="o">*</span> <span class="n">L</span>
+    <span class="n">nL</span> <span class="o">=</span> <span class="mf">1e-9</span> <span class="o">*</span> <span class="n">L</span>
+    <span class="n">pL</span> <span class="o">=</span> <span class="mf">1e-12</span> <span class="o">*</span> <span class="n">L</span>
+    <span class="n">fL</span> <span class="o">=</span> <span class="mf">1e-15</span> <span class="o">*</span> <span class="n">L</span>
+    <span class="n">aL</span> <span class="o">=</span> <span class="mf">1e-18</span> <span class="o">*</span> <span class="n">L</span>
+    <span class="n">kL</span> <span class="o">=</span> <span class="mf">1e3</span> <span class="o">*</span> <span class="n">L</span>
+    <span class="n">ML</span> <span class="o">=</span> <span class="mf">1e6</span> <span class="o">*</span> <span class="n">L</span>
+    <span class="n">GL</span> <span class="o">=</span> <span class="mf">1e9</span> <span class="o">*</span> <span class="n">L</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+  </div>
+  <div class='section'>
+    <a id="section-8" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-8'>#</a>
+          </div>
+          <p>Time</p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>    <span class="k">global</span> <span class="n">ms</span><span class="p">,</span> <span class="n">us</span><span class="p">,</span> <span class="n">ns</span><span class="p">,</span> <span class="n">ps</span><span class="p">,</span> <span class="n">fs</span><span class="p">,</span> <span class="n">minute</span><span class="p">,</span> <span class="n">hour</span><span class="p">,</span> <span class="n">day</span><span class="p">,</span> <span class="n">week</span><span class="p">,</span> <span class="n">year</span>
+    <span class="n">ms</span> <span class="o">=</span> <span class="mf">1e-3</span> <span class="o">*</span> <span class="n">s</span>
+    <span class="n">us</span> <span class="o">=</span> <span class="mf">1e-6</span> <span class="o">*</span> <span class="n">s</span>
+    <span class="n">ns</span> <span class="o">=</span> <span class="mf">1e-9</span> <span class="o">*</span> <span class="n">s</span>
+    <span class="n">ps</span> <span class="o">=</span> <span class="mf">1e-12</span> <span class="o">*</span> <span class="n">s</span>
+    <span class="n">fs</span> <span class="o">=</span> <span class="mf">1e-15</span> <span class="o">*</span> <span class="n">s</span>
+    <span class="n">minute</span> <span class="o">=</span> <span class="mf">60.</span> <span class="o">*</span> <span class="n">s</span>
+    <span class="n">hour</span> <span class="o">=</span> <span class="mf">60.</span> <span class="o">*</span> <span class="n">minute</span>
+    <span class="n">day</span> <span class="o">=</span> <span class="mf">24.</span> <span class="o">*</span> <span class="n">hour</span>  <span class="c"># solar day</span>
+    <span class="n">week</span> <span class="o">=</span> <span class="mf">7.</span> <span class="o">*</span> <span class="n">day</span>
+    <span class="n">year</span> <span class="o">=</span> <span class="mf">365.256363004</span> <span class="o">*</span> <span class="n">day</span>  <span class="c"># sidereal year</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+  </div>
+  <div class='section'>
+    <a id="section-9" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-9'>#</a>
+          </div>
+          <p>Frequency</p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>    <span class="k">global</span> <span class="n">Hz</span><span class="p">,</span> <span class="n">mHz</span><span class="p">,</span> <span class="n">kHz</span><span class="p">,</span> <span class="n">MHz</span><span class="p">,</span> <span class="n">GHz</span><span class="p">,</span> <span class="n">THz</span><span class="p">,</span> <span class="n">PHz</span>
+    <span class="n">Hz</span> <span class="o">=</span> <span class="mf">1.</span><span class="o">/</span><span class="n">s</span>
+    <span class="n">mHz</span> <span class="o">=</span> <span class="mf">1e-3</span> <span class="o">*</span> <span class="n">Hz</span>
+    <span class="n">kHz</span> <span class="o">=</span> <span class="mf">1e3</span> <span class="o">*</span> <span class="n">Hz</span>
+    <span class="n">MHz</span> <span class="o">=</span> <span class="mf">1e6</span> <span class="o">*</span> <span class="n">Hz</span>
+    <span class="n">GHz</span> <span class="o">=</span> <span class="mf">1e9</span> <span class="o">*</span> <span class="n">Hz</span>
+    <span class="n">THz</span> <span class="o">=</span> <span class="mf">1e12</span> <span class="o">*</span> <span class="n">Hz</span>
+    <span class="n">PHz</span> <span class="o">=</span> <span class="mf">1e15</span> <span class="o">*</span> <span class="n">Hz</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+  </div>
+  <div class='section'>
+    <a id="section-10" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-10'>#</a>
+          </div>
+          <p>Mass</p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>    <span class="k">global</span> <span class="n">g</span><span class="p">,</span> <span class="n">mg</span><span class="p">,</span> <span class="n">ug</span><span class="p">,</span> <span class="n">ng</span><span class="p">,</span> <span class="n">pg</span><span class="p">,</span> <span class="n">fg</span><span class="p">,</span> <span class="n">tonne</span><span class="p">,</span> <span class="n">amu</span><span class="p">,</span> <span class="n">Da</span><span class="p">,</span> <span class="n">kDa</span><span class="p">,</span> <span class="n">lbm</span>
+    <span class="n">g</span> <span class="o">=</span> <span class="mf">1e-3</span> <span class="o">*</span> <span class="n">kg</span>
+    <span class="n">mg</span> <span class="o">=</span> <span class="mf">1e-3</span> <span class="o">*</span> <span class="n">g</span>
+    <span class="n">ug</span> <span class="o">=</span> <span class="mf">1e-6</span> <span class="o">*</span> <span class="n">g</span>
+    <span class="n">ng</span> <span class="o">=</span> <span class="mf">1e-9</span> <span class="o">*</span> <span class="n">g</span>
+    <span class="n">pg</span> <span class="o">=</span> <span class="mf">1e-12</span> <span class="o">*</span> <span class="n">g</span>
+    <span class="n">fg</span> <span class="o">=</span> <span class="mf">1e-15</span> <span class="o">*</span> <span class="n">g</span>
+    <span class="n">tonne</span> <span class="o">=</span> <span class="mf">1e3</span> <span class="o">*</span> <span class="n">kg</span>
+    <span class="n">amu</span> <span class="o">=</span> <span class="mf">1.660538921e-27</span> <span class="o">*</span> <span class="n">kg</span>  <span class="c"># atomic mass unit</span>
+    <span class="n">Da</span> <span class="o">=</span> <span class="n">amu</span>  <span class="c"># Dalton</span>
+    <span class="n">kDa</span> <span class="o">=</span> <span class="mf">1e3</span> <span class="o">*</span> <span class="n">Da</span>
+    <span class="n">lbm</span> <span class="o">=</span> <span class="mf">0.45359237</span> <span class="o">*</span> <span class="n">kg</span>  <span class="c"># pound mass (international avoirdupois pound)</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+  </div>
+  <div class='section'>
+    <a id="section-11" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-11'>#</a>
+          </div>
+          <p>Energy</p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>    <span class="k">global</span> <span class="n">J</span><span class="p">,</span> <span class="n">mJ</span><span class="p">,</span> <span class="n">uJ</span><span class="p">,</span> <span class="n">nJ</span><span class="p">,</span> <span class="n">pJ</span><span class="p">,</span> <span class="n">fJ</span><span class="p">,</span> <span class="n">kJ</span><span class="p">,</span> <span class="n">MJ</span><span class="p">,</span> <span class="n">GJ</span><span class="p">,</span> <span class="n">erg</span><span class="p">,</span> <span class="n">eV</span><span class="p">,</span> <span class="n">meV</span><span class="p">,</span> <span class="n">keV</span><span class="p">,</span> <span class="n">MeV</span><span class="p">,</span> <span class="n">GeV</span><span class="p">,</span> \
+        <span class="n">TeV</span><span class="p">,</span> <span class="n">btu</span><span class="p">,</span> <span class="n">smallcal</span><span class="p">,</span> <span class="n">kcal</span><span class="p">,</span> <span class="n">Wh</span><span class="p">,</span> <span class="n">kWh</span>
+    <span class="n">J</span> <span class="o">=</span> <span class="p">(</span><span class="n">kg</span> <span class="o">*</span> <span class="n">m</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">/</span><span class="n">s</span><span class="o">**</span><span class="mi">2</span>
+    <span class="n">mJ</span> <span class="o">=</span> <span class="mf">1e-3</span> <span class="o">*</span> <span class="n">J</span>
+    <span class="n">uJ</span> <span class="o">=</span> <span class="mf">1e-6</span> <span class="o">*</span> <span class="n">J</span>
+    <span class="n">nJ</span> <span class="o">=</span> <span class="mf">1e-9</span> <span class="o">*</span> <span class="n">J</span>
+    <span class="n">pJ</span> <span class="o">=</span> <span class="mf">1e-12</span> <span class="o">*</span> <span class="n">J</span>
+    <span class="n">fJ</span> <span class="o">=</span> <span class="mf">1e-15</span> <span class="o">*</span> <span class="n">J</span>
+    <span class="n">kJ</span> <span class="o">=</span> <span class="mf">1e3</span> <span class="o">*</span> <span class="n">J</span>
+    <span class="n">MJ</span> <span class="o">=</span> <span class="mf">1e6</span> <span class="o">*</span> <span class="n">J</span>
+    <span class="n">GJ</span> <span class="o">=</span> <span class="mf">1e9</span> <span class="o">*</span> <span class="n">J</span>
+    <span class="n">erg</span> <span class="o">=</span> <span class="mf">1e-7</span> <span class="o">*</span> <span class="n">J</span>
+    <span class="n">eV</span> <span class="o">=</span> <span class="mf">1.602176565e-19</span> <span class="o">*</span> <span class="n">J</span>
+    <span class="n">meV</span> <span class="o">=</span> <span class="mf">1e-3</span> <span class="o">*</span> <span class="n">eV</span>
+    <span class="n">keV</span> <span class="o">=</span> <span class="mf">1e3</span> <span class="o">*</span> <span class="n">eV</span>
+    <span class="n">MeV</span> <span class="o">=</span> <span class="mf">1e6</span> <span class="o">*</span> <span class="n">eV</span>
+    <span class="n">GeV</span> <span class="o">=</span> <span class="mf">1e9</span> <span class="o">*</span> <span class="n">eV</span>
+    <span class="n">TeV</span> <span class="o">=</span> <span class="mf">1e12</span> <span class="o">*</span> <span class="n">eV</span>
+    <span class="n">btu</span> <span class="o">=</span> <span class="mf">1055.056</span> <span class="o">*</span> <span class="n">J</span>  <span class="c"># British thermal unit</span>
+    <span class="n">smallcal</span> <span class="o">=</span> <span class="mf">4.184</span> <span class="o">*</span> <span class="n">J</span>  <span class="c"># small calorie (&quot;gram calorie&quot;)</span>
+    <span class="n">kcal</span> <span class="o">=</span> <span class="mf">4184.</span> <span class="o">*</span> <span class="n">J</span>  <span class="c"># kilocalorie (&quot;large Calorie&quot;, &quot;dietary Calorie&quot;)</span>
+    <span class="n">Wh</span> <span class="o">=</span> <span class="mf">3600.</span> <span class="o">*</span> <span class="n">J</span>  <span class="c"># watt-hour</span>
+    <span class="n">kWh</span> <span class="o">=</span> <span class="mf">1e3</span> <span class="o">*</span> <span class="n">Wh</span>  <span class="c"># kilowatt-hour</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+  </div>
+  <div class='section'>
+    <a id="section-12" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-12'>#</a>
+          </div>
+          <p>Moles, concentration / molarity</p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>    <span class="k">global</span> <span class="n">NA</span><span class="p">,</span> <span class="n">mol</span><span class="p">,</span> <span class="n">mmol</span><span class="p">,</span> <span class="n">umol</span><span class="p">,</span> <span class="n">nmol</span><span class="p">,</span> <span class="n">pmol</span><span class="p">,</span> <span class="n">fmol</span><span class="p">,</span> <span class="n">M</span><span class="p">,</span> <span class="n">mM</span><span class="p">,</span> <span class="n">uM</span><span class="p">,</span> <span class="n">nM</span><span class="p">,</span> <span class="n">pM</span><span class="p">,</span> <span class="n">fM</span>
+    <span class="n">NA</span> <span class="o">=</span> <span class="mf">6.02214129e23</span>  <span class="c"># Avogadro&#39;s number</span>
+    <span class="n">mol</span> <span class="o">=</span> <span class="n">NA</span>  <span class="c"># 1 mole (see README)</span>
+    <span class="n">mmol</span> <span class="o">=</span> <span class="mf">1e-3</span> <span class="o">*</span> <span class="n">mol</span>
+    <span class="n">umol</span> <span class="o">=</span> <span class="mf">1e-6</span> <span class="o">*</span> <span class="n">mol</span>
+    <span class="n">nmol</span> <span class="o">=</span> <span class="mf">1e-9</span> <span class="o">*</span> <span class="n">mol</span>
+    <span class="n">pmol</span> <span class="o">=</span> <span class="mf">1e-12</span> <span class="o">*</span> <span class="n">mol</span>
+    <span class="n">fmol</span> <span class="o">=</span> <span class="mf">1e-15</span> <span class="o">*</span> <span class="n">mol</span>
+    <span class="n">M</span> <span class="o">=</span> <span class="n">mol</span><span class="o">/</span><span class="n">L</span>  <span class="c"># molar</span>
+    <span class="n">mM</span> <span class="o">=</span> <span class="mf">1e-3</span> <span class="o">*</span> <span class="n">M</span>
+    <span class="n">uM</span> <span class="o">=</span> <span class="mf">1e-6</span> <span class="o">*</span> <span class="n">M</span>
+    <span class="n">nM</span> <span class="o">=</span> <span class="mf">1e-9</span> <span class="o">*</span> <span class="n">M</span>
+    <span class="n">pM</span> <span class="o">=</span> <span class="mf">1e-12</span> <span class="o">*</span> <span class="n">M</span>
+    <span class="n">fM</span> <span class="o">=</span> <span class="mf">1e-15</span> <span class="o">*</span> <span class="n">M</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+  </div>
+  <div class='section'>
+    <a id="section-13" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-13'>#</a>
+          </div>
+          <p>Force</p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>    <span class="k">global</span> <span class="n">N</span><span class="p">,</span> <span class="n">dyn</span><span class="p">,</span> <span class="n">lbf</span>
+    <span class="n">N</span> <span class="o">=</span> <span class="p">(</span><span class="n">kg</span> <span class="o">*</span> <span class="n">m</span><span class="p">)</span><span class="o">/</span><span class="n">s</span><span class="o">**</span><span class="mi">2</span>  <span class="c"># newton</span>
+    <span class="n">dyn</span> <span class="o">=</span> <span class="mf">1e-5</span> <span class="o">*</span> <span class="n">N</span>  <span class="c"># dyne</span>
+    <span class="n">lbf</span> <span class="o">=</span> <span class="mf">4.4482216152605</span> <span class="o">*</span> <span class="n">N</span>  <span class="c"># pound-force (international avoirdupois pound)</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+  </div>
+  <div class='section'>
+    <a id="section-14" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-14'>#</a>
+          </div>
+          <p>Pressure</p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>    <span class="k">global</span> <span class="n">Pa</span><span class="p">,</span> <span class="n">hPa</span><span class="p">,</span> <span class="n">kPa</span><span class="p">,</span> <span class="n">MPa</span><span class="p">,</span> <span class="n">GPa</span><span class="p">,</span> <span class="n">bar</span><span class="p">,</span> <span class="n">mbar</span><span class="p">,</span> <span class="n">cbar</span><span class="p">,</span> <span class="n">dbar</span><span class="p">,</span> <span class="n">kbar</span><span class="p">,</span> <span class="n">Mbar</span><span class="p">,</span> <span class="n">atm</span><span class="p">,</span> \
+        <span class="n">torr</span><span class="p">,</span> <span class="n">mtorr</span><span class="p">,</span> <span class="n">psi</span>
+    <span class="n">Pa</span> <span class="o">=</span> <span class="n">N</span><span class="o">/</span><span class="n">m</span><span class="o">**</span><span class="mi">2</span>  <span class="c"># pascal</span>
+    <span class="n">hPa</span> <span class="o">=</span> <span class="mf">1e2</span> <span class="o">*</span> <span class="n">Pa</span>  <span class="c"># hectopascal</span>
+    <span class="n">kPa</span> <span class="o">=</span> <span class="mf">1e3</span> <span class="o">*</span> <span class="n">Pa</span>
+    <span class="n">MPa</span> <span class="o">=</span> <span class="mf">1e6</span> <span class="o">*</span> <span class="n">Pa</span>
+    <span class="n">GPa</span> <span class="o">=</span> <span class="mf">1e9</span> <span class="o">*</span> <span class="n">Pa</span>
+    <span class="n">bar</span> <span class="o">=</span> <span class="mf">1e5</span> <span class="o">*</span> <span class="n">Pa</span>
+    <span class="n">mbar</span> <span class="o">=</span> <span class="mf">1e-3</span> <span class="o">*</span> <span class="n">bar</span>
+    <span class="n">cbar</span> <span class="o">=</span> <span class="mf">1e-2</span> <span class="o">*</span> <span class="n">bar</span>  <span class="c"># centibar</span>
+    <span class="n">dbar</span> <span class="o">=</span> <span class="mf">0.1</span> <span class="o">*</span> <span class="n">bar</span>  <span class="c"># decibar</span>
+    <span class="n">kbar</span> <span class="o">=</span> <span class="mf">1e3</span> <span class="o">*</span> <span class="n">bar</span>
+    <span class="n">Mbar</span> <span class="o">=</span> <span class="mf">1e6</span> <span class="o">*</span> <span class="n">bar</span>
+    <span class="n">atm</span> <span class="o">=</span> <span class="mf">101325.</span> <span class="o">*</span> <span class="n">Pa</span>
+    <span class="n">torr</span> <span class="o">=</span> <span class="p">(</span><span class="mf">1.</span><span class="o">/</span><span class="mf">760.</span><span class="p">)</span> <span class="o">*</span> <span class="n">atm</span>
+    <span class="n">mtorr</span> <span class="o">=</span> <span class="mf">1e-3</span> <span class="o">*</span> <span class="n">torr</span>
+    <span class="n">psi</span> <span class="o">=</span> <span class="n">lbf</span> <span class="o">/</span> <span class="n">inch</span><span class="o">**</span><span class="mi">2</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+  </div>
+  <div class='section'>
+    <a id="section-15" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-15'>#</a>
+          </div>
+          <p>Power</p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>    <span class="k">global</span> <span class="n">W</span><span class="p">,</span> <span class="n">mW</span><span class="p">,</span> <span class="n">uW</span><span class="p">,</span> <span class="n">nW</span><span class="p">,</span> <span class="n">pW</span><span class="p">,</span> <span class="n">kW</span><span class="p">,</span> <span class="n">MW</span><span class="p">,</span> <span class="n">GW</span><span class="p">,</span> <span class="n">TW</span>
+    <span class="n">W</span> <span class="o">=</span> <span class="n">J</span><span class="o">/</span><span class="n">s</span>
+    <span class="n">mW</span> <span class="o">=</span> <span class="mf">1e-3</span> <span class="o">*</span> <span class="n">W</span>
+    <span class="n">uW</span> <span class="o">=</span> <span class="mf">1e-6</span> <span class="o">*</span> <span class="n">W</span>
+    <span class="n">nW</span> <span class="o">=</span> <span class="mf">1e-9</span> <span class="o">*</span> <span class="n">W</span>
+    <span class="n">pW</span> <span class="o">=</span> <span class="mf">1e-12</span> <span class="o">*</span> <span class="n">W</span>
+    <span class="n">kW</span> <span class="o">=</span> <span class="mf">1e3</span> <span class="o">*</span> <span class="n">W</span>
+    <span class="n">MW</span> <span class="o">=</span> <span class="mf">1e6</span> <span class="o">*</span> <span class="n">W</span>
+    <span class="n">GW</span> <span class="o">=</span> <span class="mf">1e9</span> <span class="o">*</span> <span class="n">W</span>
+    <span class="n">TW</span> <span class="o">=</span> <span class="mf">1e12</span> <span class="o">*</span> <span class="n">W</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+  </div>
+  <div class='section'>
+    <a id="section-16" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-16'>#</a>
+          </div>
+          <p>Temperature</p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>    <span class="k">global</span> <span class="n">degFinterval</span><span class="p">,</span> <span class="n">degCinterval</span>
+    <span class="n">degFinterval</span> <span class="o">=</span> <span class="p">(</span><span class="mf">5.</span><span class="o">/</span><span class="mf">9.</span><span class="p">)</span> <span class="o">*</span> <span class="n">K</span>  <span class="c"># A temperature difference in degrees Fahrenheit</span>
+    <span class="n">degCinterval</span> <span class="o">=</span> <span class="n">K</span>  <span class="c"># A temperature difference in degrees Celsius</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+  </div>
+  <div class='section'>
+    <a id="section-17" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-17'>#</a>
+          </div>
+          <p>Charge</p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>    <span class="k">global</span> <span class="n">mC</span><span class="p">,</span> <span class="n">uC</span><span class="p">,</span> <span class="n">nC</span><span class="p">,</span> <span class="n">Ah</span><span class="p">,</span> <span class="n">mAh</span>
+    <span class="n">mC</span> <span class="o">=</span> <span class="mf">1e-3</span> <span class="o">*</span> <span class="n">C</span>
+    <span class="n">uC</span> <span class="o">=</span> <span class="mf">1e-6</span> <span class="o">*</span> <span class="n">C</span>
+    <span class="n">nC</span> <span class="o">=</span> <span class="mf">1e-9</span> <span class="o">*</span> <span class="n">C</span>
+    <span class="n">Ah</span> <span class="o">=</span> <span class="mf">3600.</span> <span class="o">*</span> <span class="n">C</span>  <span class="c"># amp-hour</span>
+    <span class="n">mAh</span> <span class="o">=</span> <span class="mf">1e-3</span> <span class="o">*</span> <span class="n">Ah</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+  </div>
+  <div class='section'>
+    <a id="section-18" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-18'>#</a>
+          </div>
+          <p>Current</p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>    <span class="k">global</span> <span class="n">A</span><span class="p">,</span> <span class="n">mA</span><span class="p">,</span> <span class="n">uA</span><span class="p">,</span> <span class="n">nA</span><span class="p">,</span> <span class="n">pA</span><span class="p">,</span> <span class="n">fA</span>
+    <span class="n">A</span> <span class="o">=</span> <span class="n">C</span><span class="o">/</span><span class="n">s</span>
+    <span class="n">mA</span> <span class="o">=</span> <span class="mf">1e-3</span> <span class="o">*</span> <span class="n">A</span>
+    <span class="n">uA</span> <span class="o">=</span> <span class="mf">1e-6</span> <span class="o">*</span> <span class="n">A</span>
+    <span class="n">nA</span> <span class="o">=</span> <span class="mf">1e-9</span> <span class="o">*</span> <span class="n">A</span>
+    <span class="n">pA</span> <span class="o">=</span> <span class="mf">1e-12</span> <span class="o">*</span> <span class="n">A</span>
+    <span class="n">fA</span> <span class="o">=</span> <span class="mf">1e-15</span> <span class="o">*</span> <span class="n">A</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+  </div>
+  <div class='section'>
+    <a id="section-19" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-19'>#</a>
+          </div>
+          <p>Voltage</p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>    <span class="k">global</span> <span class="n">V</span><span class="p">,</span> <span class="n">mV</span><span class="p">,</span> <span class="n">uV</span><span class="p">,</span> <span class="n">nV</span><span class="p">,</span> <span class="n">kV</span><span class="p">,</span> <span class="n">MV</span><span class="p">,</span> <span class="n">GV</span><span class="p">,</span> <span class="n">TV</span>
+    <span class="n">V</span> <span class="o">=</span> <span class="n">J</span><span class="o">/</span><span class="n">C</span>
+    <span class="n">mV</span> <span class="o">=</span> <span class="mf">1e-3</span> <span class="o">*</span> <span class="n">V</span>
+    <span class="n">uV</span> <span class="o">=</span> <span class="mf">1e-6</span> <span class="o">*</span> <span class="n">V</span>
+    <span class="n">nV</span> <span class="o">=</span> <span class="mf">1e-9</span> <span class="o">*</span> <span class="n">V</span>
+    <span class="n">kV</span> <span class="o">=</span> <span class="mf">1e3</span> <span class="o">*</span> <span class="n">V</span>
+    <span class="n">MV</span> <span class="o">=</span> <span class="mf">1e6</span> <span class="o">*</span> <span class="n">V</span>
+    <span class="n">GV</span> <span class="o">=</span> <span class="mf">1e9</span> <span class="o">*</span> <span class="n">V</span>
+    <span class="n">TV</span> <span class="o">=</span> <span class="mf">1e12</span> <span class="o">*</span> <span class="n">V</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+  </div>
+  <div class='section'>
+    <a id="section-20" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-20'>#</a>
+          </div>
+          <p>Resistance and conductivity</p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>    <span class="k">global</span> <span class="n">ohm</span><span class="p">,</span> <span class="n">mohm</span><span class="p">,</span> <span class="n">kohm</span><span class="p">,</span> <span class="n">Mohm</span><span class="p">,</span> <span class="n">Gohm</span><span class="p">,</span> <span class="n">S</span><span class="p">,</span> <span class="n">mS</span><span class="p">,</span> <span class="n">uS</span><span class="p">,</span> <span class="n">nS</span>
+    <span class="n">ohm</span> <span class="o">=</span> <span class="n">V</span> <span class="o">/</span> <span class="n">A</span>
+    <span class="n">mohm</span> <span class="o">=</span> <span class="mf">1e-3</span> <span class="o">*</span> <span class="n">ohm</span>
+    <span class="n">kohm</span> <span class="o">=</span> <span class="mf">1e3</span> <span class="o">*</span> <span class="n">ohm</span>
+    <span class="n">Mohm</span> <span class="o">=</span> <span class="mf">1e6</span> <span class="o">*</span> <span class="n">ohm</span>
+    <span class="n">Gohm</span> <span class="o">=</span> <span class="mf">1e9</span> <span class="o">*</span> <span class="n">ohm</span>
+    <span class="n">S</span> <span class="o">=</span> <span class="mf">1.</span><span class="o">/</span><span class="n">ohm</span>  <span class="c"># siemens</span>
+    <span class="n">mS</span> <span class="o">=</span> <span class="mf">1e-3</span> <span class="o">*</span> <span class="n">S</span>
+    <span class="n">uS</span> <span class="o">=</span> <span class="mf">1e-6</span> <span class="o">*</span> <span class="n">S</span>
+    <span class="n">nS</span> <span class="o">=</span> <span class="mf">1e-9</span> <span class="o">*</span> <span class="n">S</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+  </div>
+  <div class='section'>
+    <a id="section-21" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-21'>#</a>
+          </div>
+          <p>Magnetic fields and fluxes</p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>    <span class="k">global</span> <span class="n">T</span><span class="p">,</span> <span class="n">mT</span><span class="p">,</span> <span class="n">uT</span><span class="p">,</span> <span class="n">nT</span><span class="p">,</span> <span class="n">G</span><span class="p">,</span> <span class="n">mG</span><span class="p">,</span> <span class="n">uG</span><span class="p">,</span> <span class="n">kG</span><span class="p">,</span> <span class="n">Oe</span><span class="p">,</span> <span class="n">Wb</span>
+    <span class="n">T</span> <span class="o">=</span> <span class="p">(</span><span class="n">V</span> <span class="o">*</span> <span class="n">s</span><span class="p">)</span> <span class="o">/</span> <span class="n">m</span><span class="o">**</span><span class="mi">2</span>  <span class="c"># tesla</span>
+    <span class="n">mT</span> <span class="o">=</span> <span class="mf">1e-3</span> <span class="o">*</span> <span class="n">T</span>
+    <span class="n">uT</span> <span class="o">=</span> <span class="mf">1e-6</span> <span class="o">*</span> <span class="n">T</span>
+    <span class="n">nT</span> <span class="o">=</span> <span class="mf">1e-9</span> <span class="o">*</span> <span class="n">T</span>
+    <span class="n">G</span> <span class="o">=</span> <span class="mf">1e-4</span> <span class="o">*</span> <span class="n">T</span>  <span class="c"># gauss</span>
+    <span class="n">mG</span> <span class="o">=</span> <span class="mf">1e-3</span> <span class="o">*</span> <span class="n">G</span>
+    <span class="n">uG</span> <span class="o">=</span> <span class="mf">1e-6</span> <span class="o">*</span> <span class="n">G</span>
+    <span class="n">kG</span> <span class="o">=</span> <span class="mf">1e3</span> <span class="o">*</span> <span class="n">G</span>
+    <span class="n">Oe</span> <span class="o">=</span> <span class="p">(</span><span class="mf">1000.</span><span class="o">/</span><span class="p">(</span><span class="mf">4.</span><span class="o">*</span><span class="n">pi</span><span class="p">))</span> <span class="o">*</span> <span class="n">A</span><span class="o">/</span><span class="n">m</span>  <span class="c"># oersted</span>
+    <span class="n">Wb</span> <span class="o">=</span> <span class="n">J</span><span class="o">/</span><span class="n">A</span>  <span class="c"># weber</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+  </div>
+  <div class='section'>
+    <a id="section-22" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-22'>#</a>
+          </div>
+          <p>Capacitance and inductance</p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>    <span class="k">global</span> <span class="n">F</span><span class="p">,</span> <span class="n">uF</span><span class="p">,</span> <span class="n">nF</span><span class="p">,</span> <span class="n">pF</span><span class="p">,</span> <span class="n">fF</span><span class="p">,</span> <span class="n">aF</span><span class="p">,</span> <span class="n">H</span><span class="p">,</span> <span class="n">mH</span><span class="p">,</span> <span class="n">uH</span><span class="p">,</span> <span class="n">nH</span>
+    <span class="n">F</span> <span class="o">=</span> <span class="n">C</span> <span class="o">/</span> <span class="n">V</span>  <span class="c"># farad</span>
+    <span class="n">uF</span> <span class="o">=</span> <span class="mf">1e-6</span> <span class="o">*</span> <span class="n">F</span>
+    <span class="n">nF</span> <span class="o">=</span> <span class="mf">1e-9</span> <span class="o">*</span> <span class="n">F</span>
+    <span class="n">pF</span> <span class="o">=</span> <span class="mf">1e-12</span> <span class="o">*</span> <span class="n">F</span>
+    <span class="n">fF</span> <span class="o">=</span> <span class="mf">1e-15</span> <span class="o">*</span> <span class="n">F</span>
+    <span class="n">aF</span> <span class="o">=</span> <span class="mf">1e-18</span> <span class="o">*</span> <span class="n">F</span>
+    <span class="n">H</span> <span class="o">=</span> <span class="n">m</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="n">kg</span> <span class="o">/</span> <span class="n">C</span><span class="o">**</span><span class="mi">2</span>  <span class="c"># henry</span>
+    <span class="n">mH</span> <span class="o">=</span> <span class="mf">1e-3</span> <span class="o">*</span> <span class="n">H</span>
+    <span class="n">uH</span> <span class="o">=</span> <span class="mf">1e-6</span> <span class="o">*</span> <span class="n">H</span>
+    <span class="n">nH</span> <span class="o">=</span> <span class="mf">1e-9</span> <span class="o">*</span> <span class="n">H</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+  </div>
+  <div class='section'>
+    <a id="section-23" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-23'>#</a>
+          </div>
+          <p>Constants--general</p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>    <span class="k">global</span> <span class="n">c0</span><span class="p">,</span> <span class="n">mu0</span><span class="p">,</span> <span class="n">eps0</span><span class="p">,</span> <span class="n">Z0</span><span class="p">,</span> <span class="n">hPlanck</span><span class="p">,</span> <span class="n">hbar</span><span class="p">,</span> <span class="n">kB</span><span class="p">,</span> <span class="n">GNewton</span><span class="p">,</span> <span class="n">sigmaSB</span><span class="p">,</span> <span class="n">alphaFS</span>
+    <span class="n">c0</span> <span class="o">=</span> <span class="mf">299792458.</span> <span class="o">*</span> <span class="n">m</span><span class="o">/</span><span class="n">s</span>  <span class="c"># speed of light in vacuum</span>
+    <span class="n">mu0</span> <span class="o">=</span> <span class="mf">4.</span> <span class="o">*</span> <span class="n">pi</span> <span class="o">*</span> <span class="mf">1e-7</span> <span class="o">*</span> <span class="n">N</span><span class="o">/</span><span class="n">A</span><span class="o">**</span><span class="mi">2</span>  <span class="c"># magnetic constant, permeability of vacuum</span>
+    <span class="n">eps0</span> <span class="o">=</span> <span class="mf">1.</span><span class="o">/</span><span class="p">(</span><span class="n">mu0</span> <span class="o">*</span> <span class="n">c0</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>  <span class="c"># electric constant, permittivity of vacuum</span>
+    <span class="n">Z0</span> <span class="o">=</span> <span class="n">mu0</span> <span class="o">*</span> <span class="n">c0</span>  <span class="c"># vacuum impedance, 377 ohms</span>
+    <span class="n">hPlanck</span> <span class="o">=</span> <span class="mf">6.62606957e-34</span> <span class="o">*</span> <span class="n">J</span><span class="o">*</span><span class="n">s</span>  <span class="c"># planck constant</span>
+    <span class="n">hbar</span> <span class="o">=</span> <span class="n">hPlanck</span> <span class="o">/</span> <span class="p">(</span><span class="mf">2.</span><span class="o">*</span><span class="n">pi</span><span class="p">)</span>  <span class="c"># reduced planck constant</span>
+    <span class="n">kB</span> <span class="o">=</span> <span class="mf">1.3806488e-23</span> <span class="o">*</span> <span class="n">J</span><span class="o">/</span><span class="n">K</span>  <span class="c"># Boltzmann constant</span>
+    <span class="n">GNewton</span> <span class="o">=</span> <span class="mf">6.67384e-11</span> <span class="o">*</span> <span class="n">m</span><span class="o">**</span><span class="mi">3</span> <span class="o">/</span> <span class="p">(</span><span class="n">kg</span> <span class="o">*</span> <span class="n">s</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>  <span class="c"># Gravitational constant</span>
+    <span class="n">sigmaSB</span> <span class="o">=</span> <span class="mf">5.670373e-8</span> <span class="o">*</span> <span class="n">W</span> <span class="o">/</span> <span class="p">(</span><span class="n">m</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="n">K</span><span class="o">**</span><span class="mi">4</span><span class="p">)</span>  <span class="c"># Stefan-Boltzmann constant</span>
+    <span class="n">alphaFS</span> <span class="o">=</span> <span class="mf">7.2973525698e-3</span>  <span class="c"># fine-structure constant</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+  </div>
+  <div class='section'>
+    <a id="section-24" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-24'>#</a>
+          </div>
+          <p>Constants--chemistry, atomic physics, electrons</p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>    <span class="k">global</span> <span class="n">Rgas</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span> <span class="n">uBohr</span><span class="p">,</span> <span class="n">uNuc</span><span class="p">,</span> <span class="n">aBohr</span><span class="p">,</span> <span class="n">me</span><span class="p">,</span> <span class="n">mp</span><span class="p">,</span> <span class="n">mn</span><span class="p">,</span> <span class="n">Rinf</span><span class="p">,</span> <span class="n">Ry</span><span class="p">,</span> \
+        <span class="n">ARichardson</span><span class="p">,</span> <span class="n">Phi0</span><span class="p">,</span> <span class="n">KJos</span><span class="p">,</span> <span class="n">RKlitz</span>
+    <span class="n">Rgas</span> <span class="o">=</span> <span class="n">kB</span>  <span class="c"># ideal gas constant (see README)</span>
+    <span class="n">e</span> <span class="o">=</span> <span class="mf">1.602176565e-19</span> <span class="o">*</span> <span class="n">C</span>  <span class="c"># charge of proton</span>
+    <span class="n">uBohr</span> <span class="o">=</span> <span class="mf">9.27400968e-24</span> <span class="o">*</span> <span class="n">J</span><span class="o">/</span><span class="n">T</span>  <span class="c"># Bohr magneton</span>
+    <span class="n">uNuc</span> <span class="o">=</span> <span class="mf">5.05078353e-27</span> <span class="o">*</span> <span class="n">J</span><span class="o">/</span><span class="n">T</span>  <span class="c"># nuclear magneton</span>
+    <span class="n">aBohr</span> <span class="o">=</span> <span class="mf">0.52917721092e-10</span> <span class="o">*</span> <span class="n">m</span>  <span class="c"># Bohr radius</span>
+    <span class="n">me</span> <span class="o">=</span> <span class="mf">9.10938291e-31</span> <span class="o">*</span> <span class="n">kg</span>  <span class="c"># electron mass</span>
+    <span class="n">mp</span> <span class="o">=</span> <span class="mf">1.672621777e-27</span> <span class="o">*</span> <span class="n">kg</span>  <span class="c"># proton mass</span>
+    <span class="n">mn</span> <span class="o">=</span> <span class="mf">1.674927351e-27</span> <span class="o">*</span> <span class="n">kg</span>  <span class="c"># neutron mass</span>
+    <span class="n">Rinf</span> <span class="o">=</span> <span class="mf">10973731.568539</span> <span class="o">/</span> <span class="n">m</span>  <span class="c"># Rydberg constant</span>
+    <span class="n">Ry</span> <span class="o">=</span> <span class="mf">2.179872171e-18</span> <span class="o">*</span> <span class="n">J</span>  <span class="c"># Rydberg energy, approximately 13.6 eV</span>
+    <span class="n">ARichardson</span> <span class="o">=</span> <span class="p">(</span><span class="mf">4.</span><span class="o">*</span><span class="n">pi</span><span class="o">*</span><span class="n">e</span><span class="o">*</span><span class="n">me</span><span class="o">*</span><span class="n">kB</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="n">hPlanck</span><span class="o">**</span><span class="mi">3</span>  <span class="c"># Richardson constant</span>
+    <span class="n">Phi0</span> <span class="o">=</span> <span class="mf">2.067833758e-15</span> <span class="o">*</span> <span class="n">Wb</span>  <span class="c"># magnetic flux quantum</span>
+    <span class="n">KJos</span> <span class="o">=</span> <span class="mf">4.83597870e14</span> <span class="o">*</span> <span class="n">Hz</span> <span class="o">/</span> <span class="n">V</span>  <span class="c"># Josephson constant</span>
+    <span class="n">RKlitz</span> <span class="o">=</span> <span class="mf">2.58128074434e4</span> <span class="o">*</span> <span class="n">ohm</span>  <span class="c"># von Klitzing constant</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+  </div>
+  <div class='section'>
+    <a id="section-25" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-25'>#</a>
+          </div>
+          <p>Constants--astronomical and properties of earth</p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>    <span class="k">global</span> <span class="n">REarth</span><span class="p">,</span> <span class="n">g0</span><span class="p">,</span> <span class="n">Msolar</span><span class="p">,</span> <span class="n">MEarth</span>
+    <span class="n">REarth</span> <span class="o">=</span> <span class="mf">6371.</span> <span class="o">*</span> <span class="n">km</span>  <span class="c"># radius of earth</span>
+    <span class="n">g0</span> <span class="o">=</span> <span class="mf">9.80665</span> <span class="o">*</span> <span class="n">m</span> <span class="o">/</span> <span class="n">s</span><span class="o">**</span><span class="mi">2</span>  <span class="c"># standard earth gravitational acceleration</span>
+    <span class="n">Msolar</span> <span class="o">=</span> <span class="mf">1.98892e30</span> <span class="o">*</span> <span class="n">kg</span>  <span class="c"># mass of the sun</span>
+    <span class="n">MEarth</span> <span class="o">=</span> <span class="mf">5.9736e24</span> <span class="o">*</span> <span class="n">kg</span>  <span class="c"># mass of earth</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+  </div>
+  <div class='section'>
+    <a id="section-26" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-26'>#</a>
+          </div>
+          <p>Set units randomly when this module is initialized. (Don't worry: If the
+module is imported many times from many places, this command will only
+execute during the first import.)</p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre><span class="n">reset_units</span><span class="p">()</span>
+
+<span class="k">if</span> <span class="bp">False</span><span class="p">:</span>  <span class="c"># workaround so that Spyder IDE recognizes these variables as globals</span>
+    <span class="n">m</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">kg</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">K</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">C</span> <span class="o">=</span> <span class="mi">1</span>
+
+</pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+  </div>
+</div>
+</body>

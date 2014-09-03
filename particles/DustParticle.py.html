@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>pyBBN v0.1.0: particles/DustParticle.py</title>
+  <link rel="stylesheet" href="../pyccoon.css">
+  <script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+  });
+  </script>
+  <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</head>
+<body>
+<div id='container'>
+  <a id="top"></a>
+  <div id="background"></div>
+  <div id="footer">
+    <a class="btn" id="project-name" href="../index.html">pyBBN v0.1.0</a>
+    <a class="btn" class="source source-1" href="#top">Back to top</a>
+    <div class="generation-time">
+        Generated at
+        <a target="_blank" href="http://ckald.github.io/pyccoon/" title="Pyccoon: side-to-side documentation generator">
+            <img id="pyccoon-icon" src="../pyccoon_icon.svg" alt="Pyccoon: side-to-side documentation generator" /></a>
+        <code>2014-09-03 20:47:23.815460</code>/
+        by a diligent
+        <a target="_blank" href="http://ckald.github.io/pyccoon/" title="Pyccoon: side-to-side documentation generator">pyccoon</a>
+    </div>
+  </div>
+  <div class='section'>
+    <div class='docs'>
+      <h1 id="breadcrumbs">/ <a href="DustParticle.py.html/../../index.html">.</a> / <a href="DustParticle.py.html/../index.html">particles</a> / <a href="DustParticle.py.html">DustParticle.py</a> </h1>
+      <ul id="children"></ul>
+    </div>
+  </div>
+  <div class='clearall'>
+  <div class='section'>
+    <a id="section-0" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-0'>#</a>
+          </div>
+          <p>Non-relativistic simplifications of density, energy density and pressure calculations</p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre><span class="kn">import</span> <span class="nn">numpy</span>
+<span class="kn">import</span> <span class="nn">IntermediateParticle</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+  </div>
+  <div class='section'>
+    <a id="section-1" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-1'>#</a>
+          </div>
+          
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre><span class="k">def</span> <span class="nf">density</span><span class="p">(</span><span class="n">particle</span><span class="p">):</span>
+    <span class="k">return</span> <span class="p">(</span>
+        <span class="n">particle</span><span class="o">.</span><span class="n">dof</span>
+        <span class="o">*</span> <span class="n">numpy</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">particle</span><span class="o">.</span><span class="n">mass</span> <span class="o">*</span> <span class="n">particle</span><span class="o">.</span><span class="n">temperature</span> <span class="o">/</span> <span class="mf">2.</span> <span class="o">/</span> <span class="n">numpy</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span><span class="o">**</span><span class="mi">3</span>
+        <span class="o">*</span> <span class="n">numpy</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span> <span class="n">particle</span><span class="o">.</span><span class="n">mass</span> <span class="o">/</span> <span class="n">particle</span><span class="o">.</span><span class="n">temperature</span><span class="p">)</span>
+    <span class="p">)</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+  </div>
+  <div class='section'>
+    <a id="section-2" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-2'>#</a>
+          </div>
+          
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre><span class="k">def</span> <span class="nf">energy_density</span><span class="p">(</span><span class="n">particle</span><span class="p">):</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">particle</span><span class="o">.</span><span class="n">mass</span> <span class="o">+</span> <span class="mf">3.</span><span class="o">/</span><span class="mf">2.</span> <span class="o">*</span> <span class="n">particle</span><span class="o">.</span><span class="n">temperature</span><span class="p">)</span> <span class="o">*</span> <span class="n">density</span><span class="p">(</span><span class="n">particle</span><span class="p">)</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+  </div>
+  <div class='section'>
+    <a id="section-3" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-3'>#</a>
+          </div>
+          
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre><span class="k">def</span> <span class="nf">pressure</span><span class="p">(</span><span class="n">particle</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">density</span><span class="p">(</span><span class="n">particle</span><span class="p">)</span> <span class="o">*</span> <span class="n">particle</span><span class="o">.</span><span class="n">temperature</span>
+
+
+<span class="n">numerator</span> <span class="o">=</span> <span class="n">IntermediateParticle</span><span class="o">.</span><span class="n">numerator</span>
+<span class="n">denominator</span> <span class="o">=</span> <span class="n">IntermediateParticle</span><span class="o">.</span><span class="n">denominator</span>
+
+</pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+  </div>
+</div>
+</body>

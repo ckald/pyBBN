@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>pyBBN v0.1.0: evolution.py</title>
+  <link rel="stylesheet" href="./pyccoon.css">
+  <script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+  });
+  </script>
+  <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</head>
+<body>
+<div id='container'>
+  <a id="top"></a>
+  <div id="background"></div>
+  <div id="footer">
+    <a class="btn" id="project-name" href="./index.html">pyBBN v0.1.0</a>
+    <a class="btn" class="source source-1" href="#top">Back to top</a>
+    <div id="jump_to" class="btn">
+    Contents
+    <div id="jump_wrapper">
+      <div id="jump_page">
+          <a class="source source-2" href="#section-3"> Main computing routine </a>
+      </div>
+    </div>
+    </div>
+    <div class="generation-time">
+        Generated at
+        <a target="_blank" href="http://ckald.github.io/pyccoon/" title="Pyccoon: side-to-side documentation generator">
+            <img id="pyccoon-icon" src="./pyccoon_icon.svg" alt="Pyccoon: side-to-side documentation generator" /></a>
+        <code>2014-09-03 20:47:23.447234</code>/
+        by a diligent
+        <a target="_blank" href="http://ckald.github.io/pyccoon/" title="Pyccoon: side-to-side documentation generator">pyccoon</a>
+    </div>
+  </div>
+  <div class='section'>
+    <div class='docs'>
+      <h1 id="breadcrumbs">/ <a href="evolution.py.html/../index.html">.</a> / <a href="evolution.py.html">evolution.py</a> </h1>
+      <ul id="children"></ul>
+    </div>
+  </div>
+  <div class='clearall'>
+  <div class='section'>
+    <a id="section-0" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-0'>#</a>
+          </div>
+          <p>-<em>- coding: utf-8 -</em>-</p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre><span class="kn">import</span> <span class="nn">numpy</span>
+<span class="kn">import</span> <span class="nn">numericalunits</span> <span class="kn">as</span> <span class="nn">nu</span>
+<span class="kn">import</span> <span class="nn">array</span>
+
+<span class="kn">from</span> <span class="nn">common</span> <span class="kn">import</span> <span class="n">UNITS</span><span class="p">,</span> <span class="n">PARAMS</span><span class="p">,</span> <span class="n">CONST</span><span class="p">,</span> <span class="n">parmap</span>
+<span class="kn">from</span> <span class="nn">plotting</span> <span class="kn">import</span> <span class="n">Plotting</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+  </div>
+  <div class='section'>
+    <a id="section-1" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-1'>#</a>
+          </div>
+          <p>The master object that governs the calculation. </p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre><span class="k">class</span> <span class="nc">Universe</span><span class="p">:</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+  </div>
+  <div class='section'>
+    <a id="section-2" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-2'>#</a>
+          </div>
+          <p><span class="pydoc pydoc-param"><span>param</span> <code>particles</code></span> List of <code>particle.Particle</code> objects - set of particles to model
+<span class="pydoc pydoc-param"><span>param</span> <code>interactions</code></span> List of <code>interaction.Interaction</code> objects - quantum interactions between particle species</p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">particles</span><span class="o">=</span><span class="p">[],</span> <span class="n">interactions</span><span class="o">=</span><span class="p">[]):</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">particles</span> <span class="o">=</span> <span class="n">particles</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">interactions</span> <span class="o">=</span> <span class="n">interactions</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">graphics</span> <span class="o">=</span> <span class="n">Plotting</span><span class="p">()</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+  </div>
+  <div class='section'>
+    <a id="section-3" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-3'>#</a>
+          </div>
+          <h2><span class="header" href="main-computing-routine"> Main computing routine </span><a id="main-computing-routine" class="header-anchor"></a></h2>
+<p>Modeling is carried in steps of scale factor, starting from the initial conditions defined by a single parameter: the initial temperature.</p>
+<p>Initial temperature (e.g. 10 MeV) corresponds to a point in the history of the Universe long before BBN when most particle species are in the thermodynamical equilibrium</p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">evolve</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">T_final</span><span class="o">=</span><span class="n">PARAMS</span><span class="o">.</span><span class="n">T_final</span><span class="p">,</span> <span class="n">dx</span><span class="o">=</span><span class="n">PARAMS</span><span class="o">.</span><span class="n">dx</span><span class="p">):</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">step</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s">&#39;aT&#39;</span><span class="p">:</span> <span class="n">array</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s">&#39;f&#39;</span><span class="p">,</span> <span class="p">[</span><span class="n">PARAMS</span><span class="o">.</span><span class="n">aT</span><span class="p">]),</span>
+            <span class="s">&#39;T&#39;</span><span class="p">:</span> <span class="n">array</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s">&#39;f&#39;</span><span class="p">,</span> <span class="p">[</span><span class="n">PARAMS</span><span class="o">.</span><span class="n">T</span><span class="p">]),</span>
+            <span class="s">&#39;a&#39;</span><span class="p">:</span> <span class="n">array</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s">&#39;f&#39;</span><span class="p">,</span> <span class="p">[</span><span class="n">PARAMS</span><span class="o">.</span><span class="n">a</span><span class="p">]),</span>
+            <span class="s">&#39;t&#39;</span><span class="p">:</span> <span class="n">array</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s">&#39;f&#39;</span><span class="p">,</span> <span class="p">[</span><span class="n">PARAMS</span><span class="o">.</span><span class="n">t</span><span class="p">]),</span>
+            <span class="s">&#39;rho&#39;</span><span class="p">:</span> <span class="n">array</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s">&#39;f&#39;</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="p">}</span>
+        <span class="k">for</span> <span class="n">particle</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">particles</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s">&#39;rho&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">+=</span> <span class="n">particle</span><span class="o">.</span><span class="n">energy_density</span><span class="p">()</span>
+
+        <span class="k">while</span> <span class="n">PARAMS</span><span class="o">.</span><span class="n">T</span> <span class="o">&gt;</span> <span class="n">T_final</span><span class="p">:</span>
+
+            <span class="n">rho</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c"># total energy density</span>
+            <span class="n">numerator</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">denominator</span> <span class="o">=</span> <span class="mi">0</span>
+
+            <span class="k">for</span> <span class="n">particle</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">particles</span><span class="p">:</span>
+                <span class="n">rho</span> <span class="o">+=</span> <span class="n">particle</span><span class="o">.</span><span class="n">energy_density</span><span class="p">()</span>
+                <span class="n">numerator</span> <span class="o">+=</span> <span class="n">particle</span><span class="o">.</span><span class="n">numerator</span><span class="p">()</span>
+                <span class="n">denominator</span> <span class="o">+=</span> <span class="n">particle</span><span class="o">.</span><span class="n">denominator</span><span class="p">()</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+  </div>
+  <div class='section'>
+    <a id="section-4" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-4'>#</a>
+          </div>
+          <p>Conformal scale factor $x = a m$ step size is fixed: expansion of the Universe is the main factor that controls the thermodynamical state of the system </p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>            <span class="n">PARAMS</span><span class="o">.</span><span class="n">x</span> <span class="o">+=</span> <span class="n">dx</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+  </div>
+  <div class='section'>
+    <a id="section-5" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-5'>#</a>
+          </div>
+          <p><span class=todo><strong>TODO</strong>: Sanity check: $a T$ remains constant if the entropy of the system is conserved.</span></p>
+<p>A bump in the $a T$ can be seen if the number of relativistic degrees of freedom changes as a result of effective disappearance of the particle species from the system. For example, electron-positron pairs annihilate at temperatures close to the electron mass $\sim 511 keV$. Basically, this result in a cosmic photon and neutrino backgrounds temperature ratio around $\frac{T_\nu}{T_\gamma} \sim 1.401$</p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>            <span class="n">PARAMS</span><span class="o">.</span><span class="n">aT</span> <span class="o">+=</span> <span class="n">numerator</span> <span class="o">/</span> <span class="n">denominator</span> <span class="o">*</span> <span class="n">dx</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+  </div>
+  <div class='section'>
+    <a id="section-6" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-6'>#</a>
+          </div>
+          <p>Physical scale factor and temperature for convenience </p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>            <span class="n">PARAMS</span><span class="o">.</span><span class="n">a</span> <span class="o">=</span> <span class="n">PARAMS</span><span class="o">.</span><span class="n">x</span> <span class="o">/</span> <span class="n">PARAMS</span><span class="o">.</span><span class="n">m</span>
+            <span class="n">PARAMS</span><span class="o">.</span><span class="n">T</span> <span class="o">=</span> <span class="n">PARAMS</span><span class="o">.</span><span class="n">aT</span> <span class="o">/</span> <span class="n">PARAMS</span><span class="o">.</span><span class="n">a</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+  </div>
+  <div class='section'>
+    <a id="section-7" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-7'>#</a>
+          </div>
+          <p>Hubble expansion parameter defined by a Friedmann equation:</p>
+<p>\begin{equation}
+       H = \sqrt{\frac{8 \pi}{3} G \rho}
+   \end{equation}</p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>            <span class="n">PARAMS</span><span class="o">.</span><span class="n">H</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mf">8.</span><span class="o">/</span><span class="mf">3.</span><span class="o">*</span><span class="n">numpy</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">CONST</span><span class="o">.</span><span class="n">G</span> <span class="o">*</span> <span class="n">rho</span><span class="p">)</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+  </div>
+  <div class='section'>
+    <a id="section-8" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-8'>#</a>
+          </div>
+          <p>Time step size is inferred from the approximation of the scale factor <code>a</code> derivative and a definition of the Hubble parameter <code>H</code>:</p>
+<p>\begin{equation}
+       H = \frac{\dot{a}}{a} = \frac{1}{a_{i-1}} \frac{a_i - a_{i-1}}{\Delta t} = \frac{1}{\Delta t}(\frac{a_i}{a_{i-1}} -1)
+   \end{equation}</p>
+<p>\begin{equation}
+       \Delta t = \frac{1}{H} (\frac{a_i}{a_{i-1}} - 1)
+   \end{equation}</p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>            <span class="n">dt</span> <span class="o">=</span> <span class="p">(</span><span class="n">PARAMS</span><span class="o">.</span><span class="n">a</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s">&#39;a&#39;</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="n">PARAMS</span><span class="o">.</span><span class="n">H</span>
+            <span class="n">PARAMS</span><span class="o">.</span><span class="n">t</span> <span class="o">+=</span> <span class="n">dt</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">rho</span><span class="p">)</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+  </div>
+  <div class='section'>
+    <a id="section-9" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-9'>#</a>
+          </div>
+          <p>Non equilibrium interactions of different particle species are treated by a numerical integration of the Boltzman equation for distribution functions in the expanding spacetime.</p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>            <span class="k">for</span> <span class="n">interaction</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">interactions</span><span class="p">:</span>
+                <span class="n">interaction</span><span class="o">.</span><span class="n">calculate</span><span class="p">()</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+  </div>
+  <div class='section'>
+    <a id="section-10" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-10'>#</a>
+          </div>
+          <p>Update particle species distribution functions, check for regime switching, update precalculated variables like energy density and pressure. </p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>            <span class="k">for</span> <span class="n">particle</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">particles</span><span class="p">:</span>
+                <span class="n">particle</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">rho</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">step</span> <span class="o">+=</span> <span class="mi">1</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+  </div>
+  <div class='section'>
+    <a id="section-11" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-11'>#</a>
+          </div>
+          
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+  </div>
+  <div class='section'>
+    <a id="section-12" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-12'>#</a>
+          </div>
+          <p>Save current Universe parameters into the data arrays or output files </p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rho</span><span class="p">):</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s">&#39;aT&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">PARAMS</span><span class="o">.</span><span class="n">aT</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s">&#39;T&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">PARAMS</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s">&#39;a&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">PARAMS</span><span class="o">.</span><span class="n">a</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s">&#39;rho&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">rho</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s">&#39;t&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">PARAMS</span><span class="o">.</span><span class="n">t</span><span class="p">)</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+  </div>
+  <div class='section'>
+    <a id="section-13" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-13'>#</a>
+          </div>
+          <p>Runtime log output </p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">log</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rho</span><span class="p">):</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+  </div>
+  <div class='section'>
+    <a id="section-14" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-14'>#</a>
+          </div>
+          <p>Print parameters each 100 steps</p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">step</span> <span class="o">%</span> <span class="mi">100</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">print</span> <span class="s">&#39;t =&#39;</span><span class="p">,</span> <span class="n">PARAMS</span><span class="o">.</span><span class="n">t</span> <span class="o">/</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">s</span><span class="p">,</span> \
+                <span class="s">&quot;</span><span class="se">\t</span><span class="s">T =&quot;</span><span class="p">,</span> <span class="n">PARAMS</span><span class="o">.</span><span class="n">T</span> <span class="o">/</span> <span class="n">nu</span><span class="o">.</span><span class="n">MeV</span><span class="p">,</span> \
+                <span class="s">&quot;</span><span class="se">\t</span><span class="s">a =&quot;</span><span class="p">,</span> <span class="n">PARAMS</span><span class="o">.</span><span class="n">a</span><span class="p">,</span> \
+                <span class="s">&quot;</span><span class="se">\t</span><span class="s">ρ =&quot;</span><span class="p">,</span> <span class="n">rho</span> <span class="o">/</span> <span class="n">nu</span><span class="o">.</span><span class="n">MeV</span><span class="o">**</span><span class="mi">4</span><span class="p">,</span> \
+                <span class="s">&quot;</span><span class="se">\t</span><span class="s">H =&quot;</span><span class="p">,</span> <span class="n">PARAMS</span><span class="o">.</span><span class="n">H</span> <span class="o">/</span> <span class="n">nu</span><span class="o">.</span><span class="n">GeV</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">graphics</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">)</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+  </div>
+  <div class='section'>
+    <a id="section-15" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-15'>#</a>
+          </div>
+          <p>Clean up the data array to free the memory
+if self.step % 1000 == 0:
+    for k in self.data.keys():
+        self.data[k] = self.data[k][-1000:]
+    self.graphics.plot(self.data, full=True)</p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+  </div>
+  <div class='section'>
+    <a id="section-16" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-16'>#</a>
+          </div>
+          <p>Parallel realization of the Friedmann equation parameters computation.</p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">totals</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="n">particle_totals</span> <span class="o">=</span> <span class="n">parmap</span><span class="p">(</span><span class="k">lambda</span> <span class="n">particle</span><span class="p">:</span> <span class="p">(</span>
+            <span class="n">particle</span><span class="o">.</span><span class="n">energy_density</span><span class="p">(),</span>
+            <span class="n">particle</span><span class="o">.</span><span class="n">numerator</span><span class="p">(),</span>
+            <span class="n">particle</span><span class="o">.</span><span class="n">denominator</span><span class="p">()</span>
+        <span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">particles</span><span class="p">)</span>
+
+        <span class="n">rho</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">numerator</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">denominator</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="k">for</span> <span class="n">particle</span> <span class="ow">in</span> <span class="n">particle_totals</span><span class="p">:</span>
+            <span class="n">rho</span> <span class="o">+=</span> <span class="n">particle</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">numerator</span> <span class="o">+=</span> <span class="n">particle</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">denominator</span> <span class="o">+=</span> <span class="n">particle</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="n">rho</span><span class="p">,</span> <span class="n">numerator</span><span class="p">,</span> <span class="n">denominator</span>
+
+</pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+  </div>
+</div>
+</body>

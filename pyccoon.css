@@ -1,0 +1,325 @@
+/*--------------------- Layout and Typography ----------------------------*/
+body {
+  font-family: 'Palatino Linotype', 'Book Antiqua', Palatino, FreeSerif, serif;
+  font-size: 14px;
+  line-height: 20px;
+  color: #252519;
+  margin: 0; padding: 0;
+  background: #f5f5ff;
+}
+a {
+  color: #261a3b;
+}
+  a:visited {
+    color: #261a3b;
+  }
+p {
+  margin: 0 0 15px 0;
+}
+
+#breadcrumbs {
+  white-space: nowrap;
+}
+
+#children {
+  list-style-type: none;
+}
+
+#children .directory {
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.todo, .fixme {
+  background: #FBD;
+  padding: 5px;
+  border: 1px solid #c00;
+  display: inline-block;
+  clear: right;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 40px 0 15px 0;
+}
+h2, h3, h4, h5, h6 {
+    margin-top: 0;
+  }
+#container {
+  background: white;
+  padding-top: 50px;
+ }
+#container, div.section {
+  position: relative;
+}
+.section-anchor, .header-anchor {
+  position: relative;
+  top: -40px;
+  visibility: hidden;
+  display: block;
+}
+.section:hover {
+  background: rgba(0,0,100,0.05);
+}
+#background {
+  position: absolute;
+  top: 0; left: 40%; right: 0; bottom: 0;
+  background: #f5f5ff;
+  border-left: 1px solid #e5e5ee;
+  z-index: 0;
+}
+#footer {
+  position: fixed;
+  top: 0;
+  background: rgba(255, 255, 255, 0.75);
+  width: 100%;
+  padding: 3px;
+  /*border-bottom: 1px solid #CCC;*/
+  z-index: 100;
+}
+    #footer .generation-time {
+        float:right;
+        margin-right: 10px;
+        font-size: 12px;
+        padding-top: 2px;
+    }
+    #footer code {
+        background: #F8F8FF;
+        border: 1px solid #DEDEDE;
+        font-size: 10px;
+        padding: 0 0.2em;
+    }
+    #footer img {
+        height: 25px;
+        margin-bottom: -7px;
+    }
+
+    #footer .btn {
+        cursor: pointer;
+        float: left;
+        padding: 5px 10px;
+        text-decoration: underline;
+    }
+
+    #footer #project-name {
+        text-decoration: none;
+        font-size: 25px;
+        padding-left: 10px;
+        margin-right: -10px;
+        width: 40%;
+    }
+
+#jump_to {
+
+}
+#jump_page {
+  background: white;
+  -webkit-box-shadow: 0 0 10px #777; -moz-box-shadow: 0 0 10px #777;
+  -webkit-border-bottom-left-radius: 5px; -moz-border-radius-bottomleft: 5px;
+  -webkit-border-bottom-right-radius: 5px; -moz-border-radius-bottomright: 5px;
+  cursor: pointer;
+  z-index: 100;
+}
+#jump_wrapper {
+  position: fixed;
+  top: 0;
+  padding: 5px 10px;
+}
+  #jump_wrapper {
+    padding: 0;
+    display: none;
+  }
+    #jump_to:hover #jump_wrapper {
+      display: block;
+    }
+    #jump_page {
+      padding: 0px 0 3px;
+      margin: 30px 0 25px 0px;
+    }
+      #jump_page .source {
+        display: block;
+        padding: 5px 20px 5px 10px;
+        text-decoration: none;
+        border-top: 1px solid #eee;
+      }
+        #jump_page .source-1 {
+          font-weight: bold;
+        }
+        #jump_page .source-2 {
+          padding-left: 20px;
+        }
+        #jump_page .source-3 {
+          padding-left: 30px;
+        }
+        #jump_page .source-4 {
+          padding-left: 40px;
+        }
+        #jump_page .source-5 {
+          padding-left: 50px;
+        }
+        #jump_page .source-6 {
+          padding-left: 60px;
+        }
+        #jump_page .source:hover {
+          background: #f5f5ff;
+        }
+        #jump_page .source:first-child {
+        }
+div.docs {
+  float: left;
+  width: 35%;
+  min-height: 5px;
+  padding: 10px 25px 1px 50px;
+  vertical-align: top;
+  text-align: left;
+}
+  .docs p, .docs pre {
+    white-space: pre-wrap;
+  }
+  .docs pre {
+    margin: 15px 0 15px;
+    padding-left: 15px;
+  }
+  .docs pre code {
+    display: block;
+  }
+  .docs p tt, .docs p code, .docs dl code, .docs li code {
+    background: #f8f8ff;
+    border: 1px solid #dedede;
+    font-size: 12px;
+    padding: 0 0.2em;
+  }
+  .octowrap {
+    position: relative;
+  }
+    .octothorpe {
+      font: 12px Arial;
+      text-decoration: none;
+      color: #454545;
+      position: absolute;
+      top: 3px; left: -20px;
+      padding: 1px 2px;
+      opacity: 0;
+      -webkit-transition: opacity 0.2s linear;
+    }
+      div.docs:hover .octothorpe {
+        opacity: 1;
+      }
+div.code {
+  margin-left: 40%;
+  padding: 5px 15px 7px 13px;
+  vertical-align: top;
+}
+  .code pre, .docs p code {
+    font-size: 12px;
+  }
+  .docs .codehilite {
+    font-size: 12px;
+    opacity: 0.7;
+    overflow: auto;
+  }
+  .docs .codehilite pre {
+    white-space: pre;
+  }
+  .docs:hover .codehilite {
+    opacity: 1;
+  }
+    pre, tt, code {
+      line-height: 18px;
+      font-family: Monaco, Consolas, "Lucida Console", monospace;
+      margin: 0; padding: 0;
+    }
+div.clearall {
+    clear: both;
+}
+
+.pydoc {
+    padding: 2px;
+    line-height: 16px;
+    display: inline-block;
+}
+.pydoc span {
+    padding: 0 2px;
+    font-size: 12px;
+    font-family:  Monaco, Consolas, "Lucida Console", monospace;
+    border-radius: 3px;
+    background: #fff;
+    border: 1px solid #ccc;
+}
+.pydoc-return span, .pydoc-returns span {
+    border: 1px solid #4CAE4C;
+    color: #4CAE4C;
+}
+.pydoc-param span, .pydoc-var span {
+    border: 1px solid #EEA236;
+    color: #EEA236;
+}
+
+.pydoc-raises span, .pydoc-throws span {
+    border: 1px solid #c00;
+    color: #c00;
+}
+
+/*---------------------- Syntax Highlighting -----------------------------*/
+td.linenos { background-color: #f0f0f0; padding-right: 10px; }
+span.lineno { background-color: #f0f0f0; padding: 0 5px 0 5px; }
+.highlight .hll , .codehilite .hll { background-color: #ffffcc }
+.highlight .c   , .codehilite .c   { color: #408080; font-style: italic }  /* Comment */
+.highlight .err , .codehilite .err { border: 1px solid #FF0000 }         /* Error */
+.highlight .k   , .codehilite .k   { color: #954121 }                      /* Keyword */
+.highlight .o   , .codehilite .o   { color: #666666 }                      /* Operator */
+.highlight .cm  , .codehilite .cm  { color: #408080; font-style: italic } /* Comment.Multiline */
+.highlight .cp  , .codehilite .cp  { color: #BC7A00 }                     /* Comment.Preproc */
+.highlight .c1  , .codehilite .c1  { color: #408080; font-style: italic } /* Comment.Single */
+.highlight .cs  , .codehilite .cs  { color: #408080; font-style: italic } /* Comment.Special */
+.highlight .gd  , .codehilite .gd  { color: #A00000 }                     /* Generic.Deleted */
+.highlight .ge  , .codehilite .ge  { font-style: italic }                 /* Generic.Emph */
+.highlight .gr  , .codehilite .gr  { color: #FF0000 }                     /* Generic.Error */
+.highlight .gh  , .codehilite .gh  { color: #000080; font-weight: bold }  /* Generic.Heading */
+.highlight .gi  , .codehilite .gi  { color: #00A000 }                     /* Generic.Inserted */
+.highlight .go  , .codehilite .go  { color: #808080 }                     /* Generic.Output */
+.highlight .gp  , .codehilite .gp  { color: #000080; font-weight: bold }  /* Generic.Prompt */
+.highlight .gs  , .codehilite .gs  { font-weight: bold }                  /* Generic.Strong */
+.highlight .gu  , .codehilite .gu  { color: #800080; font-weight: bold }  /* Generic.Subheading */
+.highlight .gt  , .codehilite .gt  { color: #0040D0 }                     /* Generic.Traceback */
+.highlight .kc  , .codehilite .kc  { color: #954121 }                     /* Keyword.Constant */
+.highlight .kd  , .codehilite .kd  { color: #954121; font-weight: bold }  /* Keyword.Declaration */
+.highlight .kn  , .codehilite .kn  { color: #954121; font-weight: bold }  /* Keyword.Namespace */
+.highlight .kp  , .codehilite .kp  { color: #954121 }                     /* Keyword.Pseudo */
+.highlight .kr  , .codehilite .kr  { color: #954121; font-weight: bold }  /* Keyword.Reserved */
+.highlight .kt  , .codehilite .kt  { color: #B00040 }                     /* Keyword.Type */
+.highlight .m   , .codehilite .m   { color: #666666 }                      /* Literal.Number */
+.highlight .s   , .codehilite .s   { color: #219161 }                      /* Literal.String */
+.highlight .na  , .codehilite .na  { color: #7D9029 }                     /* Name.Attribute */
+.highlight .nb  , .codehilite .nb  { color: #954121 }                     /* Name.Builtin */
+.highlight .nc  , .codehilite .nc  { color: #0000FF; font-weight: bold }  /* Name.Class */
+.highlight .no  , .codehilite .no  { color: #880000 }                     /* Name.Constant */
+.highlight .nd  , .codehilite .nd  { color: #AA22FF }                     /* Name.Decorator */
+.highlight .ni  , .codehilite .ni  { color: #999999; font-weight: bold }  /* Name.Entity */
+.highlight .ne  , .codehilite .ne  { color: #D2413A; font-weight: bold }  /* Name.Exception */
+.highlight .nf  , .codehilite .nf  { color: #0000FF }                     /* Name.Function */
+.highlight .nl  , .codehilite .nl  { color: #A0A000 }                     /* Name.Label */
+.highlight .nn  , .codehilite .nn  { color: #0000FF; font-weight: bold }  /* Name.Namespace */
+.highlight .nt  , .codehilite .nt  { color: #954121; font-weight: bold }  /* Name.Tag */
+.highlight .nv  , .codehilite .nv  { color: #19469D }                     /* Name.Variable */
+.highlight .ow  , .codehilite .ow  { color: #AA22FF; font-weight: bold }  /* Operator.Word */
+.highlight .w   , .codehilite .w   { color: #bbbbbb }                      /* Text.Whitespace */
+.highlight .mf  , .codehilite .mf  { color: #666666 }                     /* Literal.Number.Float */
+.highlight .mh  , .codehilite .mh  { color: #666666 }                     /* Literal.Number.Hex */
+.highlight .mi  , .codehilite .mi  { color: #666666 }                     /* Literal.Number.Integer */
+.highlight .mo  , .codehilite .mo  { color: #666666 }                     /* Literal.Number.Oct */
+.highlight .sb  , .codehilite .sb  { color: #219161 }                     /* Literal.String.Backtick */
+.highlight .sc  , .codehilite .sc  { color: #219161 }                     /* Literal.String.Char */
+.highlight .sd  , .codehilite .sd  { color: #219161; font-style: italic } /* Literal.String.Doc */
+.highlight .s2  , .codehilite .s2  { color: #219161 }                     /* Literal.String.Double */
+.highlight .se  , .codehilite .se  { color: #BB6622; font-weight: bold }  /* Literal.String.Escape */
+.highlight .sh  , .codehilite .sh  { color: #219161 }                     /* Literal.String.Heredoc */
+.highlight .si  , .codehilite .si  { color: #BB6688; font-weight: bold }  /* Literal.String.Interpol */
+.highlight .sx  , .codehilite .sx  { color: #954121 }                     /* Literal.String.Other */
+.highlight .sr  , .codehilite .sr  { color: #BB6688 }                     /* Literal.String.Regex */
+.highlight .s1  , .codehilite .s1  { color: #219161 }                     /* Literal.String.Single */
+.highlight .ss  , .codehilite .ss  { color: #19469D }                     /* Literal.String.Symbol */
+.highlight .bp  , .codehilite .bp  { color: #954121 }                     /* Name.Builtin.Pseudo */
+.highlight .vc  , .codehilite .vc  { color: #19469D }                     /* Name.Variable.Class */
+.highlight .vg  , .codehilite .vg  { color: #19469D }                     /* Name.Variable.Global */
+.highlight .vi  , .codehilite .vi  { color: #19469D }                     /* Name.Variable.Instance */
+.highlight .il  , .codehilite .il  { color: #666666 }                     /* Literal.Number.Integer.Long */

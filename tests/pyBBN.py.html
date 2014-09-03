@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>pyBBN v0.1.0: tests/pyBBN.py</title>
+  <link rel="stylesheet" href="../pyccoon.css">
+  <script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+  });
+  </script>
+  <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</head>
+<body>
+<div id='container'>
+  <a id="top"></a>
+  <div id="background"></div>
+  <div id="footer">
+    <a class="btn" id="project-name" href="../index.html">pyBBN v0.1.0</a>
+    <a class="btn" class="source source-1" href="#top">Back to top</a>
+    <div class="generation-time">
+        Generated at
+        <a target="_blank" href="http://ckald.github.io/pyccoon/" title="Pyccoon: side-to-side documentation generator">
+            <img id="pyccoon-icon" src="../pyccoon_icon.svg" alt="Pyccoon: side-to-side documentation generator" /></a>
+        <code>2014-09-03 20:47:23.959938</code>/
+        by a diligent
+        <a target="_blank" href="http://ckald.github.io/pyccoon/" title="Pyccoon: side-to-side documentation generator">pyccoon</a>
+    </div>
+  </div>
+  <div class='section'>
+    <div class='docs'>
+      <h1 id="breadcrumbs">/ <a href="pyBBN.py.html/../../index.html">.</a> / <a href="pyBBN.py.html/../index.html">tests</a> / <a href="pyBBN.py.html">pyBBN.py</a> </h1>
+      <ul id="children"></ul>
+    </div>
+  </div>
+  <div class='clearall'>
+  <div class='section'>
+    <a id="section-0" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-0'>#</a>
+          </div>
+          
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">numpy</span>
+<span class="kn">from</span> <span class="nn">particle</span> <span class="kn">import</span> <span class="n">Particle</span>
+<span class="kn">from</span> <span class="nn">common</span> <span class="kn">import</span> <span class="n">PARAMS</span><span class="p">,</span> <span class="n">CONST</span><span class="p">,</span> <span class="n">UNITS</span><span class="p">,</span> <span class="n">STATISTICS</span><span class="p">,</span> <span class="n">benchmark</span>
+<span class="kn">import</span> <span class="nn">numericalunits</span> <span class="kn">as</span> <span class="nn">nu</span>
+
+<span class="n">PARAMS</span><span class="o">.</span><span class="n">T</span> <span class="o">=</span> <span class="mf">2.</span> <span class="o">*</span> <span class="mf">1e2</span> <span class="o">*</span> <span class="n">nu</span><span class="o">.</span><span class="n">MeV</span>
+
+<span class="n">Particles</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">photon</span> <span class="o">=</span> <span class="n">Particle</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s">&#39;Photon&#39;</span><span class="p">,</span>
+                  <span class="n">statistics</span><span class="o">=</span><span class="n">STATISTICS</span><span class="o">.</span><span class="n">BOSON</span><span class="p">)</span>
+<span class="n">Particles</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">photon</span><span class="p">)</span>
+
+<span class="n">neutron</span> <span class="o">=</span> <span class="n">Particle</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s">&#39;Neutron&#39;</span><span class="p">,</span>
+                   <span class="n">statistics</span><span class="o">=</span><span class="n">STATISTICS</span><span class="o">.</span><span class="n">FERMION</span><span class="p">,</span>
+                   <span class="n">mass</span><span class="o">=</span><span class="mf">0.939</span> <span class="o">*</span> <span class="n">nu</span><span class="o">.</span><span class="n">GeV</span><span class="p">)</span>
+<span class="n">Particles</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">neutron</span><span class="p">)</span>
+
+<span class="n">proton</span> <span class="o">=</span> <span class="n">Particle</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s">&#39;Proton&#39;</span><span class="p">,</span>
+                  <span class="n">statistics</span><span class="o">=</span><span class="n">STATISTICS</span><span class="o">.</span><span class="n">FERMION</span><span class="p">,</span>
+                  <span class="n">mass</span><span class="o">=</span><span class="mf">0.938</span> <span class="o">*</span> <span class="n">nu</span><span class="o">.</span><span class="n">GeV</span><span class="p">)</span>
+<span class="n">Particles</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">proton</span><span class="p">)</span>
+
+<span class="n">neutrino</span> <span class="o">=</span> <span class="n">Particle</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s">&#39;Neutrino&#39;</span><span class="p">,</span>
+                    <span class="n">statistics</span><span class="o">=</span><span class="n">STATISTICS</span><span class="o">.</span><span class="n">FERMION</span><span class="p">,</span>
+                    <span class="n">dof</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+  </div>
+  <div class='section'>
+    <a id="section-1" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-1'>#</a>
+          </div>
+          <p>decoupling_temperature=2</p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>                    <span class="p">)</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+  </div>
+  <div class='section'>
+    <a id="section-2" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-2'>#</a>
+          </div>
+          
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre><span class="n">Particles</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">neutrino</span><span class="p">)</span>
+
+<span class="n">electron</span> <span class="o">=</span> <span class="n">Particle</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s">&#39;Electron&#39;</span><span class="p">,</span>
+                    <span class="n">mass</span><span class="o">=</span><span class="mf">0.511</span> <span class="o">*</span> <span class="n">nu</span><span class="o">.</span><span class="n">MeV</span><span class="p">,</span>
+                    <span class="n">statistics</span><span class="o">=</span><span class="n">STATISTICS</span><span class="o">.</span><span class="n">FERMION</span><span class="p">,</span>
+                    <span class="n">dof</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+<span class="n">Particles</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">electron</span><span class="p">)</span>
+
+
+<span class="n">figure</span><span class="p">,</span> <span class="n">plots</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="n">figure</span><span class="o">.</span><span class="n">subplots_adjust</span><span class="p">(</span><span class="n">hspace</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">wspace</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ion</span><span class="p">()</span>
+
+<span class="n">plots</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s">&quot;Temperature&quot;</span><span class="p">)</span>
+<span class="n">plots</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s">&quot;time, s&quot;</span><span class="p">)</span>
+<span class="n">plots</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s">&quot;T, MeV&quot;</span><span class="p">)</span>
+<span class="n">plots</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s">&quot;Scale factor&quot;</span><span class="p">)</span>
+<span class="n">plots</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s">&quot;time, s&quot;</span><span class="p">)</span>
+<span class="n">plots</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s">&quot;a, 1&quot;</span><span class="p">)</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+  </div>
+  <div class='section'>
+    <a id="section-3" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-3'>#</a>
+          </div>
+          
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre><span class="k">def</span> <span class="nf">evolve</span><span class="p">(</span><span class="n">t_f</span><span class="o">=</span><span class="n">PARAMS</span><span class="o">.</span><span class="n">t_f</span><span class="p">,</span> <span class="n">dt</span><span class="o">=</span><span class="n">PARAMS</span><span class="o">.</span><span class="n">dt</span><span class="p">):</span>
+    <span class="n">time_steps</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">t_f</span> <span class="o">-</span> <span class="n">PARAMS</span><span class="o">.</span><span class="n">t</span><span class="p">)</span> <span class="o">/</span> <span class="n">dt</span><span class="p">)</span>
+
+    <span class="n">Ts</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">time_steps</span><span class="p">)</span>
+    <span class="n">Ts</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">PARAMS</span><span class="o">.</span><span class="n">T</span>
+    <span class="n">As</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">time_steps</span><span class="p">)</span>
+    <span class="n">As</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">PARAMS</span><span class="o">.</span><span class="n">a</span>
+    <span class="n">ts</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">time_steps</span><span class="p">)</span>
+    <span class="n">ts</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">PARAMS</span><span class="o">.</span><span class="n">t</span>
+    <span class="n">rhos</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">time_steps</span><span class="p">)</span>
+    <span class="n">rhos</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">particle</span> <span class="ow">in</span> <span class="n">Particles</span><span class="p">:</span>
+        <span class="n">rhos</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+=</span> <span class="n">particle</span><span class="o">.</span><span class="n">energy_density</span><span class="p">()</span>
+
+    <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="n">time_steps</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="n">ts</span><span class="p">[</span><span class="n">t</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">ts</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="o">+</span> <span class="n">dt</span>
+
+        <span class="n">rho</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c"># total energy density</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="mi">0</span>    <span class="c"># total pressure</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+  </div>
+  <div class='section'>
+    <a id="section-4" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-4'>#</a>
+          </div>
+          <p>equilibrium energy density derivative divided by  1/T * dT/dt</p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>        <span class="n">energy_density_rate_eq</span> <span class="o">=</span> <span class="mi">0</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+  </div>
+  <div class='section'>
+    <a id="section-5" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-5'>#</a>
+          </div>
+          <p>nonequilibrium energy density derivative including collision integrals</p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>        <span class="n">energy_density_rate_neq</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="k">for</span> <span class="n">particle</span> <span class="ow">in</span> <span class="n">Particles</span><span class="p">:</span>
+                <span class="n">rho</span> <span class="o">+=</span> <span class="n">particle</span><span class="o">.</span><span class="n">energy_density</span><span class="p">()</span>
+                <span class="n">p</span> <span class="o">+=</span> <span class="n">particle</span><span class="o">.</span><span class="n">pressure</span><span class="p">()</span>
+
+                <span class="k">if</span> <span class="n">particle</span><span class="o">.</span><span class="n">in_equilibrium</span><span class="p">:</span>
+                    <span class="n">energy_density_rate_eq</span> <span class="o">+=</span> <span class="n">particle</span><span class="o">.</span><span class="n">energy_density_rate</span><span class="p">()</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">energy_density_rate_neq</span> <span class="o">+=</span> <span class="n">particle</span><span class="o">.</span><span class="n">energy_density_rate</span><span class="p">()</span>
+
+        <span class="n">H</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mf">8.</span><span class="o">/</span><span class="mf">3.</span><span class="o">*</span><span class="n">numpy</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">CONST</span><span class="o">.</span><span class="n">G</span> <span class="o">*</span> <span class="n">rho</span><span class="p">)</span>
+
+        <span class="n">A</span> <span class="o">=</span> <span class="p">(</span><span class="mf">3.</span> <span class="o">*</span> <span class="n">H</span> <span class="o">*</span> <span class="p">(</span><span class="n">rho</span> <span class="o">+</span> <span class="n">p</span><span class="p">)</span> <span class="o">+</span> <span class="n">energy_density_rate_neq</span><span class="p">)</span> <span class="o">/</span> <span class="n">energy_density_rate_eq</span>
+
+        <span class="n">Ts</span><span class="p">[</span><span class="n">t</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">Ts</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">A</span> <span class="o">*</span> <span class="n">dt</span><span class="p">)</span>
+        <span class="n">PARAMS</span><span class="o">.</span><span class="n">T</span> <span class="o">=</span> <span class="n">Ts</span><span class="p">[</span><span class="n">t</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
+
+        <span class="k">for</span> <span class="n">particle</span> <span class="ow">in</span> <span class="n">Particles</span><span class="p">:</span>
+            <span class="n">particle</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">particle</span><span class="o">.</span><span class="n">in_equilibrium</span><span class="p">:</span>
+                <span class="n">particle</span><span class="o">.</span><span class="n">_distribution</span> <span class="o">*=</span> <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">dt</span> <span class="o">*</span> <span class="mf">3.</span> <span class="o">*</span> <span class="n">H</span><span class="p">)</span>
+
+        <span class="n">As</span><span class="p">[</span><span class="n">t</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">As</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="mf">2.</span> <span class="o">-</span> <span class="n">Ts</span><span class="p">[</span><span class="n">t</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="n">Ts</span><span class="p">[</span><span class="n">t</span><span class="p">])</span>
+        <span class="n">PARAMS</span><span class="o">.</span><span class="n">a</span> <span class="o">=</span> <span class="n">As</span><span class="p">[</span><span class="n">t</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
+
+        <span class="n">rhos</span><span class="p">[</span><span class="n">t</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">rho</span>
+
+        <span class="k">if</span> <span class="n">t</span> <span class="o">%</span> <span class="p">(</span><span class="n">time_steps</span><span class="o">/</span><span class="mi">100</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">print</span> <span class="n">ts</span><span class="p">[</span><span class="n">t</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">s</span><span class="p">,</span> <span class="s">&quot;</span><span class="se">\t</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">Ts</span><span class="p">[</span><span class="n">t</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="n">nu</span><span class="o">.</span><span class="n">MeV</span><span class="p">,</span> <span class="s">&quot;</span><span class="se">\t</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">As</span><span class="p">[</span><span class="n">t</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+  </div>
+  <div class='section'>
+    <a id="section-6" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-6'>#</a>
+          </div>
+          
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>    <span class="n">PARAMS</span><span class="o">.</span><span class="n">t</span> <span class="o">=</span> <span class="n">t_f</span>
+
+    <span class="k">return</span> <span class="n">ts</span><span class="p">,</span> <span class="n">Ts</span><span class="p">,</span> <span class="n">As</span><span class="p">,</span> <span class="n">rhos</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+  </div>
+  <div class='section'>
+    <a id="section-7" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-7'>#</a>
+          </div>
+          
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre><span class="n">ts</span><span class="p">,</span> <span class="n">Ts</span><span class="p">,</span> <span class="n">As</span><span class="p">,</span> <span class="n">rhos</span> <span class="o">=</span> <span class="n">evolve</span><span class="p">(</span><span class="n">t_f</span><span class="o">=</span><span class="mf">1e-1</span> <span class="o">*</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">s</span><span class="p">,</span> <span class="n">dt</span><span class="o">=</span><span class="mf">1e-6</span> <span class="o">*</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">s</span><span class="p">)</span>
+<span class="n">ts1</span><span class="p">,</span> <span class="n">Ts1</span><span class="p">,</span> <span class="n">As1</span><span class="p">,</span> <span class="n">rhos1</span> <span class="o">=</span> <span class="n">evolve</span><span class="p">(</span><span class="n">t_f</span><span class="o">=</span><span class="mi">10</span> <span class="o">*</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">s</span><span class="p">,</span> <span class="n">dt</span><span class="o">=</span><span class="mf">1e-4</span> <span class="o">*</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">s</span><span class="p">)</span>
+<span class="n">ts2</span><span class="p">,</span> <span class="n">Ts2</span><span class="p">,</span> <span class="n">As2</span><span class="p">,</span> <span class="n">rhos2</span> <span class="o">=</span> <span class="n">evolve</span><span class="p">(</span><span class="n">t_f</span><span class="o">=</span><span class="mi">100</span> <span class="o">*</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">s</span><span class="p">,</span> <span class="n">dt</span><span class="o">=</span><span class="mf">1e-3</span> <span class="o">*</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">s</span><span class="p">)</span>
+
+<span class="n">ts</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span> <span class="n">ts1</span><span class="p">)</span>
+<span class="n">Ts</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Ts</span><span class="p">,</span> <span class="n">Ts1</span><span class="p">)</span>
+<span class="n">As</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">As</span><span class="p">,</span> <span class="n">As1</span><span class="p">)</span>
+<span class="n">rhos</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">rhos</span><span class="p">,</span> <span class="n">rhos1</span><span class="p">)</span>
+
+<span class="n">ts</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span> <span class="n">ts2</span><span class="p">)</span>
+<span class="n">Ts</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Ts</span><span class="p">,</span> <span class="n">Ts2</span><span class="p">)</span>
+<span class="n">As</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">As</span><span class="p">,</span> <span class="n">As2</span><span class="p">)</span>
+<span class="n">rhos</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">rhos</span><span class="p">,</span> <span class="n">rhos2</span><span class="p">)</span>
+
+<span class="n">plots</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ts</span> <span class="o">/</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">s</span><span class="p">,</span> <span class="n">Ts</span> <span class="o">/</span> <span class="n">nu</span><span class="o">.</span><span class="n">MeV</span><span class="p">)</span>
+<span class="n">plots</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_yscale</span><span class="p">(</span><span class="s">&quot;log&quot;</span><span class="p">)</span>
+
+<span class="n">plots</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ts</span> <span class="o">/</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">s</span><span class="p">,</span> <span class="n">As</span><span class="p">)</span>
+
+<span class="n">plots</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ts</span> <span class="o">/</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">s</span><span class="p">,</span> <span class="n">Ts</span> <span class="o">/</span> <span class="n">Ts</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">As</span> <span class="o">/</span> <span class="n">As</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="n">plots</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s">&quot;T * a&quot;</span><span class="p">)</span>
+<span class="n">plots</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s">&quot;time ,s&quot;</span><span class="p">)</span>
+<span class="n">plots</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s">&quot;T * a, 1&quot;</span><span class="p">)</span>
+
+<span class="n">plots</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ts</span> <span class="o">/</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">s</span><span class="p">,</span> <span class="n">rhos</span> <span class="o">/</span> <span class="n">nu</span><span class="o">.</span><span class="n">eV</span><span class="o">**</span><span class="mi">4</span><span class="p">)</span>
+<span class="n">plots</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s">&quot;Total energy density&quot;</span><span class="p">)</span>
+<span class="n">plots</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_yscale</span><span class="p">(</span><span class="s">&quot;log&quot;</span><span class="p">)</span>
+<span class="n">plots</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s">&quot;time, s&quot;</span><span class="p">)</span>
+<span class="n">plots</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s">&quot;rho, eV**4&quot;</span><span class="p">)</span>
+<span class="n">figure</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+<span class="k">for</span> <span class="n">particle</span> <span class="ow">in</span> <span class="n">Particles</span><span class="p">:</span>
+    <span class="k">print</span> <span class="n">particle</span>
+
+<span class="nb">raw_input</span><span class="p">(</span><span class="s">&quot;...&quot;</span><span class="p">)</span>
+
+</pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+  </div>
+</div>
+</body>
