@@ -30,7 +30,7 @@ import random
 __version__ = 1.13
 
 
-def reset_units(seed=None, random_range=[0.1, 1]):
+def reset_units(seed=None, random_range=[1, 2]):
     """
     Set all units to new, self-consistent, floating-point values. See package
     documentation for detailed explanation and examples:
