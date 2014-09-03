@@ -1,3 +1,10 @@
+# -*- coding: utf-8 -*-
+
+"""
+= Common =
+
+This file contains constants and utilities shared by all other modules in the project.
+"""
 import time
 import numpy
 from scipy import integrate
@@ -6,7 +13,16 @@ import numericalunits as nu
 import cPickle
 
 
+# Numpy error handling behavior. Uncomment to see a notice each time you get an overflow.
+# numpy.seterr(all='print')
+
+
 class UNITS:
+
+    """ == Units ==
+        As we use natural units in the project, all units from `numericalunits` except energy units\
+        are useless. Here some useful units are defined in terms of `GeV`s. """
+
     s = 1. / 6.58 * 1e25 / nu.GeV
     kg = 1e27 / 1.8 * nu.GeV
     m = 1e15 / 0.197 / nu.GeV
@@ -14,55 +30,67 @@ class UNITS:
 
 
 class PARAMS:
+
+    """ == Parameters ==
+        Master object carrying the cosmological state of the system and initial conditions """
+
+    # Initial scale factor - arbitrary
     a_initial = 1.
 
+    # Temperature bounds define the simulations boundaries of the system
     T_initial = 2.1 * nu.MeV
-    T_final = 1e-3 * nu.MeV
+    T_final = 1 * nu.keV
 
+    # Arbitrary normalization of the conformal scale factor
     m = 1. * nu.MeV
+    # Conformal scale factor step size during computations
     dx = 1e-2 * nu.MeV
-
+    # Initial time
     t = 0. * UNITS.s
-
+    # Hubble rate
     H = 0.
 
-    regime_factor = 1e1
-
-PARAMS.a = PARAMS.a_initial
-PARAMS.x = PARAMS.a * PARAMS.m
-PARAMS.T = PARAMS.T_initial
-PARAMS.aT = PARAMS.a * PARAMS.T
+    # Compute present-state parameters that can be inferred from the base ones
+    a = a_initial
+    x = a * m
+    T = T_initial
+    aT = a * T
 
 
 class GRID:
-    MAX_MOMENTUM = (1e8 + 1e-1) * nu.eV
+
+    """ === Distribution functions grid ===
+
+        TODO: try a log-spaced grid instead of equally-spaced
+
+        To capture non-equilibrium effects in the Early Universe, we work with particle species \
+        distribution functions $f(\vec{p}, \vec{r}, t)$. Assuming that the Universe is homogeneous\
+        and isotropic, we can forget dependency on the position and the momentum direction: \
+        $f(p, t)$.
+
+        Resulting functions are sampled across a wide range of momenta. However, momentum range\
+        cannot include both 0 momenta and very large momenta (either leads to numerical overflows\
+        and errors).
+        """
+
+    # Momentum range `(MIN_MOMENTUM, MAX_MOMENTUM)` must be divisible by `MOMENTUM_STEP`
     MIN_MOMENTUM = 1e-1 * nu.eV
+    MAX_MOMENTUM = MIN_MOMENTUM + 1e8 * nu.eV
     MOMENTUM_STEP = 0.5 * 1e7 * nu.eV
     MOMENTUM_SAMPLES = int(numpy.round_((MAX_MOMENTUM - MIN_MOMENTUM) / MOMENTUM_STEP))
 
-GRID.TEMPLATE = numpy.linspace(GRID.MIN_MOMENTUM, GRID.MAX_MOMENTUM,
-                               num=GRID.MOMENTUM_SAMPLES, endpoint=True)
+    # Grid template can be copied when defining a new distribution function
+    TEMPLATE = numpy.linspace(MIN_MOMENTUM, MAX_MOMENTUM, num=MOMENTUM_SAMPLES, endpoint=True)
 
 
 class CONST:
+    """ === Physical constants === """
+
     G = 6.67 * 1e-11 * (UNITS.N / UNITS.kg**2 * UNITS.m**2)
     G_F = 1.166 * 1e-5 / nu.GeV**2
     sin_theta_w_2 = 0.23
-
-CONST.g_R = CONST.sin_theta_w_2
-CONST.g_L = CONST.sin_theta_w_2 - 0.5
-
-
-class STATISTICS:
-    BOSON = "Boson"
-    FERMION = "Fermion"
-
-
-class REGIMES:
-    RADIATION = 'radiation'
-    DUST = 'dust'
-    INTERMEDIATE = 'intermediate'
-    NONEQ = 'non-equilibrium'
+    g_R = sin_theta_w_2
+    g_L = sin_theta_w_2 - 0.5
 
 
 def memodict(f):
@@ -75,6 +103,7 @@ def memodict(f):
 
 
 class benchmark(object):
+    """ Simple benchmarking context manager """
     def __init__(self, name):
         self.name = name
 
@@ -87,8 +116,12 @@ class benchmark(object):
         return False
 
 
+# == Grid utilities ==
+
+
 @memodict
 def momentum_to_index(p):
+    """ A map between values of momenta and distribution function grid points """
     index = (
         (GRID.MOMENTUM_SAMPLES * numpy.abs(p) - GRID.MIN_MOMENTUM)
         / (GRID.MAX_MOMENTUM - GRID.MIN_MOMENTUM)
@@ -103,26 +136,22 @@ def momentum_to_index(p):
 
 @memodict
 def index_to_momentum(i):
+    """ Inverse map: grid point index converts to momenta value """
     return GRID.MIN_MOMENTUM + (GRID.MAX_MOMENTUM - GRID.MIN_MOMENTUM) * i / GRID.MOMENTUM_SAMPLES
 
 
-class Distributions:
-    @staticmethod
-    def Fermi(e):
-        return 1. / (numpy.exp(e) + 1.)
-
-    @staticmethod
-    def Bose(e):
-        return 1. / (numpy.exp(e) - 1.)
-
-
-Distributions.FermiV = numpy.vectorize(Distributions.Fermi, otypes=[numpy.float_])
-Distributions.BoseV = numpy.vectorize(Distributions.Bose, otypes=[numpy.float_])
-
-# numpy.seterr(all='print')
+def theta(f):
+    """ Theta $\theta$ function """
+    if f > 0:
+        return 1.
+    if f == 0:
+        return 0.5
+    return 0.
 
 
 def lambda_integrate(func):
+    """ Scipy Simpson integration over the momentum space of the lambda function applied to the \
+        grid template """
     @wraps(func)
     def wrapper(*args, **kw):
         fpp = func(*args, **kw)(GRID.TEMPLATE)
@@ -137,20 +166,6 @@ def echo(func):
         print val
         return val
     return wrapper
-
-
-def theta(f):
-    if f > 0:
-        return 1.
-    if f == 0:
-        return 0.5
-    return 0.
-
-
-# import memcache
-# mc = memcache.Client(['127.0.0.1:11211'], debug=0)
-# import json
-# import hashlib
 
 
 class MemoizeMutable:

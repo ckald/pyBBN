@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import numpy
-from common import momentum_to_index, GRID, STATISTICS, PARAMS, theta, benchmark
+from common import GRID, PARAMS, theta
 from ds import D
 from scipy import integrate
 import numericalunits as nu
@@ -11,6 +11,16 @@ class INTERACTIONS:
 
 
 class Interaction:
+
+    """
+        \begin{multline}
+            I_{coll}(t,p_i) = \frac{1}{2 E_i} \sum_{reactions} \int \cdots \int
+                \prod_{j} \frac{d^3 p_{in,j}}{(2 \pi)^3 2 E_{in,j}}
+                \prod_{k} \frac{d^3 p_{out,k}}{(2 \pi)^3 2 E_{out,k}} \\
+                S |\mathcal{M}|^2 \mathcal{F}(\{f_\alpha\}) (2 \pi)^4 \\
+                \delta^4(\sum_{m} p_{in,m}^\mu - \sum_{n} p_{out,n}^\mu)
+        \end{multline}
+    """
 
     particles = []
     in_particles = []
