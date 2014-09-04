@@ -18,11 +18,19 @@
   <div id="footer">
     <a class="btn" id="project-name" href="../index.html">pyBBN v0.1.0</a>
     <a class="btn" class="source source-1" href="#top">Back to top</a>
+    <div id="jump_to" class="btn">
+    Contents
+    <div id="jump_wrapper">
+      <div id="jump_page">
+          <a class="source source-2" href="#section-2"> Energy density </a>
+      </div>
+    </div>
+    </div>
     <div class="generation-time">
         Generated at
         <a target="_blank" href="http://ckald.github.io/pyccoon/" title="Pyccoon: side-to-side documentation generator">
             <img id="pyccoon-icon" src="../pyccoon_icon.svg" alt="Pyccoon: side-to-side documentation generator" /></a>
-        <code>2014-09-03 20:52:08.910340</code>/
+        <code>2014-09-04 20:35:58.099764</code>/
         by a diligent
         <a target="_blank" href="http://ckald.github.io/pyccoon/" title="Pyccoon: side-to-side documentation generator">pyccoon</a>
     </div>
@@ -45,7 +53,14 @@
         </div>
         <div class='code'>
           <div class="highlight"><pre><span class="kn">import</span> <span class="nn">numpy</span>
-<span class="kn">from</span> <span class="nn">common</span> <span class="kn">import</span> <span class="n">STATISTICS</span><span class="p">,</span> <span class="n">PARAMS</span></pre></div>
+<span class="kn">from</span> <span class="nn">common</span> <span class="kn">import</span> <span class="n">PARAMS</span>
+<span class="kn">import</span> <span class="nn">particles</span> <span class="kn">as</span> <span class="nn">ps</span>
+
+
+<span class="n">__path__</span> <span class="o">=</span> <span class="s">&quot;../..&quot;</span>
+
+
+<span class="n">name</span> <span class="o">=</span> <span class="s">&#39;radiation&#39;</span></pre></div>
         </div>
         <div class='clearall'></div>
     </section>
@@ -62,7 +77,7 @@
         <div class='code'>
           <div class="highlight"><pre><span class="k">def</span> <span class="nf">density</span><span class="p">(</span><span class="n">particle</span><span class="p">):</span>
     <span class="n">density</span> <span class="o">=</span> <span class="n">PARAMS</span><span class="o">.</span><span class="n">aT</span><span class="o">**</span><span class="mi">3</span> <span class="o">*</span> <span class="n">particle</span><span class="o">.</span><span class="n">dof</span> <span class="o">/</span> <span class="mf">2.</span> <span class="o">/</span> <span class="n">numpy</span><span class="o">.</span><span class="n">pi</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="mf">2.</span> <span class="o">*</span> <span class="mf">1.2</span>
-    <span class="k">if</span> <span class="n">particle</span><span class="o">.</span><span class="n">statistics</span> <span class="o">==</span> <span class="n">STATISTICS</span><span class="o">.</span><span class="n">FERMION</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">particle</span><span class="o">.</span><span class="n">statistics</span> <span class="o">==</span> <span class="n">ps</span><span class="o">.</span><span class="n">STATISTICS</span><span class="o">.</span><span class="n">FERMION</span><span class="p">:</span>
         <span class="n">density</span> <span class="o">*=</span> <span class="mf">3.</span><span class="o">/</span><span class="mf">4.</span>
     <span class="k">return</span> <span class="n">density</span></pre></div>
         </div>
@@ -76,12 +91,16 @@
           <div class='octowrap'>
             <a class='octothorpe' href='#section-2'>#</a>
           </div>
-          
+          <h2><span class="header" href="energy-density"> Energy density </span><a id="energy-density" class="header-anchor"></a></h2>
+<p>\begin{equation}
+       \rho = \frac{\pi^2}{30} g T^4
+   \end{equation}</p>
         </div>
         <div class='code'>
           <div class="highlight"><pre><span class="k">def</span> <span class="nf">energy_density</span><span class="p">(</span><span class="n">particle</span><span class="p">):</span>
+
     <span class="n">density</span> <span class="o">=</span> <span class="n">PARAMS</span><span class="o">.</span><span class="n">T</span><span class="o">**</span><span class="mi">4</span> <span class="o">*</span> <span class="n">particle</span><span class="o">.</span><span class="n">dof</span> <span class="o">*</span> <span class="n">numpy</span><span class="o">.</span><span class="n">pi</span><span class="o">**</span><span class="mi">2</span> <span class="o">/</span> <span class="mf">30.</span>
-    <span class="k">if</span> <span class="n">particle</span><span class="o">.</span><span class="n">statistics</span> <span class="o">==</span> <span class="n">STATISTICS</span><span class="o">.</span><span class="n">FERMION</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">particle</span><span class="o">.</span><span class="n">statistics</span> <span class="o">==</span> <span class="n">ps</span><span class="o">.</span><span class="n">STATISTICS</span><span class="o">.</span><span class="n">FERMION</span><span class="p">:</span>
         <span class="n">density</span> <span class="o">*=</span> <span class="mf">7.</span><span class="o">/</span><span class="mf">8.</span>
     <span class="k">return</span> <span class="n">density</span></pre></div>
         </div>

@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta http-equiv="content-type" content="text/html;charset=utf-8">
-  <title>pyBBN v0.1.0: tests/neutron_decay.py</title>
+  <title>pyBBN v0.1.0: tests/cosmic_neutrino_temperature.py</title>
   <link rel="stylesheet" href="../pyccoon.css">
   <script type="text/x-mathjax-config">
   MathJax.Hub.Config({
@@ -18,18 +18,26 @@
   <div id="footer">
     <a class="btn" id="project-name" href="../index.html">pyBBN v0.1.0</a>
     <a class="btn" class="source source-1" href="#top">Back to top</a>
+    <div id="jump_to" class="btn">
+    Contents
+    <div id="jump_wrapper">
+      <div id="jump_page">
+          <a class="source source-2" href="#section-0"> C$\nu$B temperature test </a>
+      </div>
+    </div>
+    </div>
     <div class="generation-time">
         Generated at
         <a target="_blank" href="http://ckald.github.io/pyccoon/" title="Pyccoon: side-to-side documentation generator">
             <img id="pyccoon-icon" src="../pyccoon_icon.svg" alt="Pyccoon: side-to-side documentation generator" /></a>
-        <code>2014-09-04 20:35:58.059241</code>/
+        <code>2014-09-04 20:35:58.195278</code>/
         by a diligent
         <a target="_blank" href="http://ckald.github.io/pyccoon/" title="Pyccoon: side-to-side documentation generator">pyccoon</a>
     </div>
   </div>
   <div class='section'>
     <div class='docs'>
-      <h1 id="breadcrumbs">/ <a href="neutron_decay.py.html/../../index.html">.</a> / <a href="neutron_decay.py.html/../index.html">tests</a> / <a href="neutron_decay.py.html">neutron_decay.py</a> </h1>
+      <h1 id="breadcrumbs">/ <a href="cosmic_neutrino_temperature.py.html/../../index.html">.</a> / <a href="cosmic_neutrino_temperature.py.html/../index.html">tests</a> / <a href="cosmic_neutrino_temperature.py.html">cosmic_neutrino_temperature.py</a> </h1>
       <ul id="children"></ul>
     </div>
   </div>
@@ -41,37 +49,47 @@
           <div class='octowrap'>
             <a class='octothorpe' href='#section-0'>#</a>
           </div>
-          
+          <h2><span class="header" href="c$\nu$b-temperature-test"> C$\nu$B temperature test </span><a id="c$\nu$b-temperature-test" class="header-anchor"></a></h2>
+<p><img src="cosmic_neutrino_temperature.py.png" width=100% /></p>
+<p>This test checks that in the universe filled with photons, neutrons, protons, neutrinos and electrons:</p>
+<ul>
+<li>$a * T$ value increases 1.401 times</li>
+</ul>
+<p>At temperatures $\sim 1 MeV$ electron-positron pairs annihilate, effectively disappearing from the plasma. This leads to increasing of the entropy and plasma temperature approximately 1.401 times.</p>
+<p><a href="cosmic_neutrino_temperature.txt">Log file</a></p>
         </div>
         <div class='code'>
-          <div class="highlight"><pre><span class="kn">from</span> <span class="nn">interaction</span> <span class="kn">import</span> <span class="n">Interaction</span>
-<span class="kn">from</span> <span class="nn">particle</span> <span class="kn">import</span> <span class="n">Particle</span>
+          <div class="highlight"><pre><span class="kn">from</span> <span class="nn">particles</span> <span class="kn">import</span> <span class="n">Particle</span><span class="p">,</span> <span class="n">STATISTICS</span>
 <span class="kn">from</span> <span class="nn">evolution</span> <span class="kn">import</span> <span class="n">Universe</span>
-<span class="kn">from</span> <span class="nn">common</span> <span class="kn">import</span> <span class="n">STATISTICS</span><span class="p">,</span> <span class="n">CONST</span><span class="p">,</span> <span class="n">UNITS</span>
+<span class="kn">from</span> <span class="nn">common</span> <span class="kn">import</span> <span class="n">PARAMS</span><span class="p">,</span> <span class="n">UNITS</span>
+
+
+<span class="n">PARAMS</span><span class="o">.</span><span class="n">T_initial</span> <span class="o">=</span> <span class="mi">100</span> <span class="o">*</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">MeV</span>
+<span class="n">PARAMS</span><span class="o">.</span><span class="n">dx</span> <span class="o">=</span> <span class="mf">1e-2</span> <span class="o">*</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">MeV</span>
+<span class="n">PARAMS</span><span class="o">.</span><span class="n">infer</span><span class="p">()</span>
 
 
 <span class="n">Particles</span> <span class="o">=</span> <span class="p">[]</span>
-<span class="n">Interactions</span> <span class="o">=</span> <span class="p">[]</span>
 <span class="n">photon</span> <span class="o">=</span> <span class="n">Particle</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s">&#39;Photon&#39;</span><span class="p">,</span>
-                  <span class="n">statistics</span><span class="o">=</span><span class="n">STATISTICS</span><span class="o">.</span><span class="n">BOSON</span><span class="p">)</span>
+                  <span class="n">statistics</span><span class="o">=</span><span class="n">STATISTICS</span><span class="o">.</span><span class="n">BOSON</span><span class="p">,</span>
+                  <span class="n">dof</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
 <span class="n">Particles</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">photon</span><span class="p">)</span>
 
 <span class="n">neutron</span> <span class="o">=</span> <span class="n">Particle</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s">&#39;Neutron&#39;</span><span class="p">,</span>
                    <span class="n">statistics</span><span class="o">=</span><span class="n">STATISTICS</span><span class="o">.</span><span class="n">FERMION</span><span class="p">,</span>
                    <span class="n">mass</span><span class="o">=</span><span class="mf">0.939</span> <span class="o">*</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">GeV</span><span class="p">,</span>
-                   <span class="n">decoupling_temperature</span><span class="o">=</span><span class="mf">1.3</span> <span class="o">*</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">MeV</span><span class="p">)</span>
+                   <span class="n">dof</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
 <span class="n">Particles</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">neutron</span><span class="p">)</span>
 
 <span class="n">proton</span> <span class="o">=</span> <span class="n">Particle</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s">&#39;Proton&#39;</span><span class="p">,</span>
                   <span class="n">statistics</span><span class="o">=</span><span class="n">STATISTICS</span><span class="o">.</span><span class="n">FERMION</span><span class="p">,</span>
                   <span class="n">mass</span><span class="o">=</span><span class="mf">0.938</span> <span class="o">*</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">GeV</span><span class="p">,</span>
-                  <span class="p">)</span>
+                  <span class="n">dof</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
 <span class="n">Particles</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">proton</span><span class="p">)</span>
 
 <span class="n">neutrino</span> <span class="o">=</span> <span class="n">Particle</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s">&#39;Neutrino&#39;</span><span class="p">,</span>
                     <span class="n">statistics</span><span class="o">=</span><span class="n">STATISTICS</span><span class="o">.</span><span class="n">FERMION</span><span class="p">,</span>
-                    <span class="n">dof</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
-                    <span class="p">)</span>
+                    <span class="n">dof</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
 <span class="n">Particles</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">neutrino</span><span class="p">)</span>
 
 <span class="n">electron</span> <span class="o">=</span> <span class="n">Particle</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s">&#39;Electron&#39;</span><span class="p">,</span>
@@ -80,22 +98,15 @@
                     <span class="n">dof</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
 <span class="n">Particles</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">electron</span><span class="p">)</span>
 
-<span class="n">neutron_decay</span> <span class="o">=</span> <span class="n">Interaction</span><span class="p">(</span>
-    <span class="n">in_particles</span><span class="o">=</span><span class="p">[</span><span class="n">neutron</span><span class="p">],</span>
-    <span class="n">out_particles</span><span class="o">=</span><span class="p">[</span><span class="n">proton</span><span class="p">,</span> <span class="n">neutrino</span><span class="p">,</span> <span class="n">electron</span><span class="p">],</span>
-    <span class="n">decoupling_temperature</span><span class="o">=</span><span class="mi">0</span> <span class="o">*</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">MeV</span><span class="p">,</span>
+<span class="n">universe</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="n">Particles</span><span class="p">,</span> <span class="n">logfile</span><span class="o">=</span><span class="s">&#39;tests/cosmic_neutrino_temperature.txt&#39;</span><span class="p">)</span>
+<span class="n">universe</span><span class="o">.</span><span class="n">evolve</span><span class="p">(</span><span class="n">dx</span><span class="o">=</span><span class="n">PARAMS</span><span class="o">.</span><span class="n">dx</span><span class="p">)</span>
 
-    <span class="n">K1</span><span class="o">=</span><span class="mi">64</span> <span class="o">*</span> <span class="n">CONST</span><span class="o">.</span><span class="n">G_F</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span>
-    <span class="n">K2</span><span class="o">=</span><span class="mi">0</span>
-<span class="p">)</span>
-<span class="n">Interactions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">neutron_decay</span><span class="p">)</span>
+<span class="k">print</span> <span class="s">&quot;&quot;&quot;</span>
+<span class="s">    Cosmic photon background temperature is {:.3f} times bigger than cosmic neutrinos temperature.</span>
+<span class="s">    Relative error is {:.3f} %</span>
+<span class="s">    &quot;&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">PARAMS</span><span class="o">.</span><span class="n">aT</span> <span class="o">/</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">MeV</span><span class="p">,</span> <span class="p">(</span><span class="n">PARAMS</span><span class="o">.</span><span class="n">aT</span> <span class="o">/</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">MeV</span> <span class="o">-</span> <span class="mf">1.401</span><span class="p">)</span> <span class="o">/</span> <span class="mf">1.401</span> <span class="o">*</span> <span class="mi">100</span><span class="p">)</span>
 
-<span class="n">universe</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="n">Particles</span><span class="p">,</span> <span class="n">Interactions</span><span class="p">)</span>
-<span class="n">universe</span><span class="o">.</span><span class="n">graphics</span><span class="o">.</span><span class="n">monitor</span><span class="p">(</span><span class="n">particles</span><span class="o">=</span><span class="p">[</span><span class="n">neutron</span><span class="p">])</span>
-<span class="n">universe</span><span class="o">.</span><span class="n">evolve</span><span class="p">()</span>
-
-<span class="k">for</span> <span class="n">particle</span> <span class="ow">in</span> <span class="n">Particles</span><span class="p">:</span>
-    <span class="k">print</span> <span class="n">particle</span>
+<span class="n">universe</span><span class="o">.</span><span class="n">graphics</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">__file__</span> <span class="o">+</span> <span class="s">&#39;.png&#39;</span><span class="p">)</span>
 
 <span class="nb">raw_input</span><span class="p">(</span><span class="s">&quot;...&quot;</span><span class="p">)</span>
 

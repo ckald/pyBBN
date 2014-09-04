@@ -30,7 +30,7 @@
         Generated at
         <a target="_blank" href="http://ckald.github.io/pyccoon/" title="Pyccoon: side-to-side documentation generator">
             <img id="pyccoon-icon" src="./pyccoon_icon.svg" alt="Pyccoon: side-to-side documentation generator" /></a>
-        <code>2014-09-03 20:52:08.949224</code>/
+        <code>2014-09-04 20:35:58.144708</code>/
         by a diligent
         <a target="_blank" href="http://ckald.github.io/pyccoon/" title="Pyccoon: side-to-side documentation generator">pyccoon</a>
     </div>
@@ -53,10 +53,9 @@
         </div>
         <div class='code'>
           <div class="highlight"><pre><span class="kn">import</span> <span class="nn">numpy</span>
-<span class="kn">from</span> <span class="nn">common</span> <span class="kn">import</span> <span class="n">GRID</span><span class="p">,</span> <span class="n">PARAMS</span><span class="p">,</span> <span class="n">theta</span>
+<span class="kn">from</span> <span class="nn">common</span> <span class="kn">import</span> <span class="n">GRID</span><span class="p">,</span> <span class="n">PARAMS</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">UNITS</span>
 <span class="kn">from</span> <span class="nn">ds</span> <span class="kn">import</span> <span class="n">D</span>
-<span class="kn">from</span> <span class="nn">scipy</span> <span class="kn">import</span> <span class="n">integrate</span>
-<span class="kn">import</span> <span class="nn">numericalunits</span> <span class="kn">as</span> <span class="nn">nu</span></pre></div>
+<span class="kn">from</span> <span class="nn">scipy</span> <span class="kn">import</span> <span class="n">integrate</span></pre></div>
         </div>
         <div class='clearall'></div>
     </section>
@@ -190,12 +189,7 @@
             <span class="n">GRID</span><span class="o">.</span><span class="n">MIN_MOMENTUM</span><span class="p">,</span> <span class="n">GRID</span><span class="o">.</span><span class="n">MAX_MOMENTUM</span><span class="p">,</span>
             <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">GRID</span><span class="o">.</span><span class="n">MIN_MOMENTUM</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">GRID</span><span class="o">.</span><span class="n">MAX_MOMENTUM</span>
         <span class="p">)</span>
-        <span class="n">tmp</span> <span class="o">*=</span> <span class="n">integral</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">PARAMS</span><span class="o">.</span><span class="n">m</span><span class="o">**</span><span class="mi">5</span> <span class="o">/</span> <span class="n">PARAMS</span><span class="o">.</span><span class="n">x</span><span class="o">**</span><span class="mi">6</span> <span class="o">/</span> <span class="n">PARAMS</span><span class="o">.</span><span class="n">H</span>
-        <span class="k">print</span> <span class="n">p0</span> <span class="o">/</span> <span class="n">nu</span><span class="o">.</span><span class="n">MeV</span><span class="p">,</span> <span class="s">&#39;</span><span class="se">\t</span><span class="s">&#39;</span><span class="p">,</span> \
-            <span class="n">tmp</span> <span class="o">*</span> <span class="n">PARAMS</span><span class="o">.</span><span class="n">dx</span><span class="p">,</span> <span class="s">&#39;</span><span class="se">\t</span><span class="s">&#39;</span><span class="p">,</span>\
-            <span class="n">integral</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="n">integral</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-
-        <span class="k">return</span> <span class="n">tmp</span></pre></div>
+        <span class="n">tmp</span> <span class="o">*=</span> <span class="n">integral</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">PARAMS</span><span class="o">.</span><span class="n">m</span><span class="o">**</span><span class="mi">5</span> <span class="o">/</span> <span class="n">PARAMS</span><span class="o">.</span><span class="n">x</span><span class="o">**</span><span class="mi">6</span> <span class="o">/</span> <span class="n">PARAMS</span><span class="o">.</span><span class="n">H</span></pre></div>
         </div>
         <div class='clearall'></div>
     </section>
@@ -206,6 +200,21 @@
         <div class='docs'>
           <div class='octowrap'>
             <a class='octothorpe' href='#section-7'>#</a>
+          </div>
+          <p>print p0 / UNITS.MeV, '\t', tmp * PARAMS.dx, '\t', integral[1] / integral[0]</p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>        <span class="k">return</span> <span class="n">tmp</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+  </div>
+  <div class='section'>
+    <a id="section-8" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-8'>#</a>
           </div>
           
         </div>
@@ -224,11 +233,11 @@
     </section>
   </div>
   <div class='section'>
-    <a id="section-8" class="section-anchor"></a>
+    <a id="section-9" class="section-anchor"></a>
     <section>
         <div class='docs'>
           <div class='octowrap'>
-            <a class='octothorpe' href='#section-8'>#</a>
+            <a class='octothorpe' href='#section-9'>#</a>
           </div>
           
         </div>
@@ -249,11 +258,11 @@
     </section>
   </div>
   <div class='section'>
-    <a id="section-9" class="section-anchor"></a>
+    <a id="section-10" class="section-anchor"></a>
     <section>
         <div class='docs'>
           <div class='octowrap'>
-            <a class='octothorpe' href='#section-9'>#</a>
+            <a class='octothorpe' href='#section-10'>#</a>
           </div>
           
         </div>
@@ -271,11 +280,11 @@
     </section>
   </div>
   <div class='section'>
-    <a id="section-10" class="section-anchor"></a>
+    <a id="section-11" class="section-anchor"></a>
     <section>
         <div class='docs'>
           <div class='octowrap'>
-            <a class='octothorpe' href='#section-10'>#</a>
+            <a class='octothorpe' href='#section-11'>#</a>
           </div>
           
         </div>
@@ -290,11 +299,11 @@
     </section>
   </div>
   <div class='section'>
-    <a id="section-11" class="section-anchor"></a>
+    <a id="section-12" class="section-anchor"></a>
     <section>
         <div class='docs'>
           <div class='octowrap'>
-            <a class='octothorpe' href='#section-11'>#</a>
+            <a class='octothorpe' href='#section-12'>#</a>
           </div>
           <p>def F(self, in_p=[], out_p=[]):</p>
         </div>
@@ -305,11 +314,11 @@
     </section>
   </div>
   <div class='section'>
-    <a id="section-12" class="section-anchor"></a>
+    <a id="section-13" class="section-anchor"></a>
     <section>
         <div class='docs'>
           <div class='octowrap'>
-            <a class='octothorpe' href='#section-12'>#</a>
+            <a class='octothorpe' href='#section-13'>#</a>
           </div>
           <p>def mult_them(out_particles, in_particles, out_p, in_p):
     temp = 1.
@@ -325,28 +334,13 @@
     </section>
   </div>
   <div class='section'>
-    <a id="section-13" class="section-anchor"></a>
-    <section>
-        <div class='docs'>
-          <div class='octowrap'>
-            <a class='octothorpe' href='#section-13'>#</a>
-          </div>
-          <p>return temp</p>
-        </div>
-        <div class='code'>
-          <div class="highlight"><pre></pre></div>
-        </div>
-        <div class='clearall'></div>
-    </section>
-  </div>
-  <div class='section'>
     <a id="section-14" class="section-anchor"></a>
     <section>
         <div class='docs'>
           <div class='octowrap'>
             <a class='octothorpe' href='#section-14'>#</a>
           </div>
-          <p>f = mult_them(self.out_particles, self.in_particles, out_p, in_p) - mult_them(self.in_particles, self.out_particles, in_p, out_p)</p>
+          <p>return temp</p>
         </div>
         <div class='code'>
           <div class="highlight"><pre></pre></div>
@@ -361,7 +355,7 @@
           <div class='octowrap'>
             <a class='octothorpe' href='#section-15'>#</a>
           </div>
-          <p>return f</p>
+          <p>f = mult_them(self.out_particles, self.in_particles, out_p, in_p) - mult_them(self.in_particles, self.out_particles, in_p, out_p)</p>
         </div>
         <div class='code'>
           <div class="highlight"><pre></pre></div>
@@ -375,6 +369,21 @@
         <div class='docs'>
           <div class='octowrap'>
             <a class='octothorpe' href='#section-16'>#</a>
+          </div>
+          <p>return f</p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+  </div>
+  <div class='section'>
+    <a id="section-17" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-17'>#</a>
           </div>
           <p>F == f (±A - B) + A</p>
         </div>
@@ -392,11 +401,11 @@
     </section>
   </div>
   <div class='section'>
-    <a id="section-17" class="section-anchor"></a>
+    <a id="section-18" class="section-anchor"></a>
     <section>
         <div class='docs'>
           <div class='octowrap'>
-            <a class='octothorpe' href='#section-17'>#</a>
+            <a class='octothorpe' href='#section-18'>#</a>
           </div>
           
         </div>

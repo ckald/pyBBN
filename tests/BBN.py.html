@@ -22,7 +22,7 @@
         Generated at
         <a target="_blank" href="http://ckald.github.io/pyccoon/" title="Pyccoon: side-to-side documentation generator">
             <img id="pyccoon-icon" src="../pyccoon_icon.svg" alt="Pyccoon: side-to-side documentation generator" /></a>
-        <code>2014-09-03 20:52:08.974335</code>/
+        <code>2014-09-04 02:04:03.027919</code>/
         by a diligent
         <a target="_blank" href="http://ckald.github.io/pyccoon/" title="Pyccoon: side-to-side documentation generator">pyccoon</a>
     </div>
@@ -44,90 +44,39 @@
           
         </div>
         <div class='code'>
-          <div class="highlight"><pre><span class="kn">from</span> <span class="nn">particle</span> <span class="kn">import</span> <span class="n">Particle</span>
+          <div class="highlight"><pre><span class="kn">from</span> <span class="nn">particles</span> <span class="kn">import</span> <span class="n">Particle</span><span class="p">,</span> <span class="n">STATISTICS</span>
 <span class="kn">from</span> <span class="nn">evolution</span> <span class="kn">import</span> <span class="n">Universe</span>
-<span class="kn">from</span> <span class="nn">common</span> <span class="kn">import</span> <span class="n">STATISTICS</span>
 <span class="kn">import</span> <span class="nn">numericalunits</span> <span class="kn">as</span> <span class="nn">nu</span>
 
 
 <span class="n">Particles</span> <span class="o">=</span> <span class="p">[]</span>
 <span class="n">photon</span> <span class="o">=</span> <span class="n">Particle</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s">&#39;Photon&#39;</span><span class="p">,</span>
                   <span class="n">statistics</span><span class="o">=</span><span class="n">STATISTICS</span><span class="o">.</span><span class="n">BOSON</span><span class="p">)</span>
-<span class="n">Particles</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">photon</span><span class="p">)</span></pre></div>
-        </div>
-        <div class='clearall'></div>
-    </section>
-  </div>
-  <div class='section'>
-    <a id="section-1" class="section-anchor"></a>
-    <section>
-        <div class='docs'>
-          <div class='octowrap'>
-            <a class='octothorpe' href='#section-1'>#</a>
-          </div>
-          <p>neutron = Particle(name='Neutron',
-                   statistics=STATISTICS.FERMION,
-                   mass=0.939 * nu.GeV)
-Particles.append(neutron)</p>
-        </div>
-        <div class='code'>
-          <div class="highlight"><pre></pre></div>
-        </div>
-        <div class='clearall'></div>
-    </section>
-  </div>
-  <div class='section'>
-    <a id="section-2" class="section-anchor"></a>
-    <section>
-        <div class='docs'>
-          <div class='octowrap'>
-            <a class='octothorpe' href='#section-2'>#</a>
-          </div>
-          <p>proton = Particle(name='Proton',
-                  statistics=STATISTICS.FERMION,
-                  mass=0.938 * nu.GeV)
-Particles.append(proton)</p>
-        </div>
-        <div class='code'>
-          <div class="highlight"><pre></pre></div>
-        </div>
-        <div class='clearall'></div>
-    </section>
-  </div>
-  <div class='section'>
-    <a id="section-3" class="section-anchor"></a>
-    <section>
-        <div class='docs'>
-          <div class='octowrap'>
-            <a class='octothorpe' href='#section-3'>#</a>
-          </div>
-          <p>neutrino = Particle(name='Neutrino',
-                    statistics=STATISTICS.FERMION,
-                    dof=4,
-                    )
-Particles.append(neutrino)</p>
-        </div>
-        <div class='code'>
-          <div class="highlight"><pre></pre></div>
-        </div>
-        <div class='clearall'></div>
-    </section>
-  </div>
-  <div class='section'>
-    <a id="section-4" class="section-anchor"></a>
-    <section>
-        <div class='docs'>
-          <div class='octowrap'>
-            <a class='octothorpe' href='#section-4'>#</a>
-          </div>
-          <p>electron = Particle(name='Electron',
-                    mass=0.511 * nu.MeV,
-                    statistics=STATISTICS.FERMION,
-                    dof=4)
-Particles.append(electron)</p>
-        </div>
-        <div class='code'>
-          <div class="highlight"><pre><span class="n">universe</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="n">Particles</span><span class="p">)</span>
+<span class="n">Particles</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">photon</span><span class="p">)</span>
+
+<span class="n">neutron</span> <span class="o">=</span> <span class="n">Particle</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s">&#39;Neutron&#39;</span><span class="p">,</span>
+                   <span class="n">statistics</span><span class="o">=</span><span class="n">STATISTICS</span><span class="o">.</span><span class="n">FERMION</span><span class="p">,</span>
+                   <span class="n">mass</span><span class="o">=</span><span class="mf">0.939</span> <span class="o">*</span> <span class="n">nu</span><span class="o">.</span><span class="n">GeV</span><span class="p">)</span>
+<span class="n">Particles</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">neutron</span><span class="p">)</span>
+
+<span class="n">proton</span> <span class="o">=</span> <span class="n">Particle</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s">&#39;Proton&#39;</span><span class="p">,</span>
+                  <span class="n">statistics</span><span class="o">=</span><span class="n">STATISTICS</span><span class="o">.</span><span class="n">FERMION</span><span class="p">,</span>
+                  <span class="n">mass</span><span class="o">=</span><span class="mf">0.938</span> <span class="o">*</span> <span class="n">nu</span><span class="o">.</span><span class="n">GeV</span><span class="p">)</span>
+<span class="n">Particles</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">proton</span><span class="p">)</span>
+
+<span class="n">neutrino</span> <span class="o">=</span> <span class="n">Particle</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s">&#39;Neutrino&#39;</span><span class="p">,</span>
+                    <span class="n">statistics</span><span class="o">=</span><span class="n">STATISTICS</span><span class="o">.</span><span class="n">FERMION</span><span class="p">,</span>
+                    <span class="n">dof</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
+                    <span class="p">)</span>
+<span class="n">Particles</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">neutrino</span><span class="p">)</span>
+
+<span class="n">electron</span> <span class="o">=</span> <span class="n">Particle</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s">&#39;Electron&#39;</span><span class="p">,</span>
+                    <span class="n">mass</span><span class="o">=</span><span class="mf">0.511</span> <span class="o">*</span> <span class="n">nu</span><span class="o">.</span><span class="n">MeV</span><span class="p">,</span>
+                    <span class="n">statistics</span><span class="o">=</span><span class="n">STATISTICS</span><span class="o">.</span><span class="n">FERMION</span><span class="p">,</span>
+                    <span class="n">dof</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+<span class="n">Particles</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">electron</span><span class="p">)</span>
+
+<span class="n">universe</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="n">Particles</span><span class="p">)</span>
 <span class="n">universe</span><span class="o">.</span><span class="n">evolve</span><span class="p">()</span>
 
 <span class="k">for</span> <span class="n">particle</span> <span class="ow">in</span> <span class="n">Particles</span><span class="p">:</span>

@@ -28,7 +28,7 @@
           <a class="source source-2" href="#section-6"> Particle </a>
           <a class="source source-2" href="#section-11"> Collision integral constants </a>
           <a class="source source-2" href="#section-21"> Particle collisions integration </a>
-          <a class="source source-3" href="#section-22"> Regime-switching ratio </a>
+          <a class="source source-3" href="#section-23"> Regime-switching ratio </a>
       </div>
     </div>
     </div>
@@ -36,7 +36,7 @@
         Generated at
         <a target="_blank" href="http://ckald.github.io/pyccoon/" title="Pyccoon: side-to-side documentation generator">
             <img id="pyccoon-icon" src="../pyccoon_icon.svg" alt="Pyccoon: side-to-side documentation generator" /></a>
-        <code>2014-09-03 20:52:08.653380</code>/
+        <code>2014-09-04 20:35:57.596788</code>/
         by a diligent
         <a target="_blank" href="http://ckald.github.io/pyccoon/" title="Pyccoon: side-to-side documentation generator">pyccoon</a>
     </div>
@@ -60,12 +60,11 @@
         </div>
         <div class='code'>
           <div class="highlight"><pre><span class="kn">import</span> <span class="nn">numpy</span>
-<span class="kn">import</span> <span class="nn">numericalunits</span> <span class="kn">as</span> <span class="nn">nu</span>
 <span class="kn">from</span> <span class="nn">scipy</span> <span class="kn">import</span> <span class="n">interpolate</span><span class="p">,</span> <span class="n">integrate</span>
 
-<span class="kn">from</span> <span class="nn">..common</span> <span class="kn">import</span> <span class="n">momentum_to_index</span><span class="p">,</span> <span class="n">index_to_momentum</span><span class="p">,</span> <span class="n">GRID</span><span class="p">,</span> <span class="n">PARAMS</span>
+<span class="kn">from</span> <span class="nn">common</span> <span class="kn">import</span> <span class="n">index_to_momentum</span><span class="p">,</span> <span class="n">GRID</span><span class="p">,</span> <span class="n">PARAMS</span><span class="p">,</span> <span class="n">UNITS</span>
 
-<span class="kn">from</span> <span class="nn">regimes</span> <span class="kn">import</span> <span class="n">DustParticle</span><span class="p">,</span> <span class="n">RadiationParticle</span><span class="p">,</span> <span class="n">IntermediateParticle</span><span class="p">,</span> <span class="n">NonEqParticle</span></pre></div>
+<span class="kn">from</span> <span class="nn">particles</span> <span class="kn">import</span> <span class="n">DustParticle</span><span class="p">,</span> <span class="n">RadiationParticle</span><span class="p">,</span> <span class="n">IntermediateParticle</span><span class="p">,</span> <span class="n">NonEqParticle</span></pre></div>
         </div>
         <div class='clearall'></div>
     </section>
@@ -224,8 +223,8 @@
         </div>
         <div class='code'>
           <div class="highlight"><pre>        <span class="bp">self</span><span class="o">.</span><span class="n">temperature</span> <span class="o">=</span> <span class="n">PARAMS</span><span class="o">.</span><span class="n">T</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">mass</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;mass&#39;</span><span class="p">,</span> <span class="mi">0</span> <span class="o">*</span> <span class="n">nu</span><span class="o">.</span><span class="n">eV</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">decoupling_temperature</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;decoupling_temperature&#39;</span><span class="p">,</span> <span class="mi">0</span> <span class="o">*</span> <span class="n">nu</span><span class="o">.</span><span class="n">eV</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mass</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;mass&#39;</span><span class="p">,</span> <span class="mi">0</span> <span class="o">*</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">eV</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">decoupling_temperature</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;decoupling_temperature&#39;</span><span class="p">,</span> <span class="mi">0</span> <span class="o">*</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">eV</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;name&#39;</span><span class="p">,</span> <span class="s">&#39;Particle&#39;</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">dof</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;dof&#39;</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>  <span class="c"># particle species degeneracy (e.g., spin-degeneracy)</span>
@@ -273,7 +272,7 @@
         <div class='code'>
           <div class="highlight"><pre>        <span class="bp">self</span><span class="o">.</span><span class="n">collision_integral</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">GRID</span><span class="o">.</span><span class="n">MOMENTUM_SAMPLES</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">float_</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">force_print</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">init_distribution</span><span class="p">()</span></pre></div>
         </div>
         <div class='clearall'></div>
@@ -320,9 +319,9 @@
         <span class="k">return</span> <span class="s">&quot;</span><span class="si">%s</span><span class="s"> (</span><span class="si">%s</span><span class="s">, </span><span class="si">%s</span><span class="s">)</span><span class="se">\n</span><span class="s">n = </span><span class="si">%s</span><span class="s">, rho = </span><span class="si">%s</span><span class="se">\n</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
             <span class="s">&quot;eq&quot;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">in_equilibrium</span> <span class="k">else</span> <span class="s">&quot;non-eq&quot;</span><span class="p">,</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">regime</span><span class="p">,</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">density</span><span class="p">()</span> <span class="o">/</span> <span class="n">nu</span><span class="o">.</span><span class="n">eV</span><span class="o">**</span><span class="mi">3</span><span class="p">,</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">energy_density</span><span class="p">()</span> <span class="o">/</span> <span class="n">nu</span><span class="o">.</span><span class="n">eV</span><span class="o">**</span><span class="mi">4</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">regime</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">density</span><span class="p">()</span> <span class="o">/</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">eV</span><span class="o">**</span><span class="mi">3</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">energy_density</span><span class="p">()</span> <span class="o">/</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">eV</span><span class="o">**</span><span class="mi">4</span>
         <span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="s">&quot;-&quot;</span> <span class="o">*</span> <span class="mi">80</span><span class="p">)</span></pre></div>
         </div>
         <div class='clearall'></div>
@@ -476,6 +475,9 @@
         <div class='code'>
           <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">integrate_collisions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p0</span><span class="p">):</span>
 
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">F_1</span> <span class="ow">or</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">F_f</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">0</span>
+
         <span class="n">tmp</span> <span class="o">=</span> <span class="mf">1.</span><span class="o">/</span><span class="mf">64.</span> <span class="o">/</span> <span class="n">numpy</span><span class="o">.</span><span class="n">pi</span><span class="o">**</span><span class="mi">3</span> <span class="o">/</span> <span class="n">p0</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">energy_normalized</span><span class="p">(</span><span class="n">p0</span><span class="p">)</span>
 
         <span class="n">integral</span> <span class="o">=</span> <span class="n">integrate</span><span class="o">.</span><span class="n">dblquad</span><span class="p">(</span>
@@ -486,12 +488,7 @@
             <span class="n">GRID</span><span class="o">.</span><span class="n">MIN_MOMENTUM</span><span class="p">,</span> <span class="n">GRID</span><span class="o">.</span><span class="n">MAX_MOMENTUM</span><span class="p">,</span>
             <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">GRID</span><span class="o">.</span><span class="n">MIN_MOMENTUM</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">GRID</span><span class="o">.</span><span class="n">MAX_MOMENTUM</span>
         <span class="p">)</span>
-        <span class="n">tmp</span> <span class="o">*=</span> <span class="n">integral</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">PARAMS</span><span class="o">.</span><span class="n">m</span><span class="o">**</span><span class="mi">5</span> <span class="o">/</span> <span class="n">PARAMS</span><span class="o">.</span><span class="n">x</span><span class="o">**</span><span class="mi">6</span> <span class="o">/</span> <span class="n">PARAMS</span><span class="o">.</span><span class="n">H</span>
-        <span class="k">print</span> <span class="n">p0</span> <span class="o">/</span> <span class="n">nu</span><span class="o">.</span><span class="n">MeV</span><span class="p">,</span> <span class="s">&#39;</span><span class="se">\t</span><span class="s">&#39;</span><span class="p">,</span> \
-            <span class="n">tmp</span> <span class="o">*</span> <span class="n">PARAMS</span><span class="o">.</span><span class="n">dx</span><span class="p">,</span> <span class="s">&#39;</span><span class="se">\t</span><span class="s">&#39;</span><span class="p">,</span>\
-            <span class="n">integral</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="n">integral</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="n">integral</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">else</span> <span class="mi">0</span>
-
-        <span class="k">return</span> <span class="n">tmp</span></pre></div>
+        <span class="n">tmp</span> <span class="o">*=</span> <span class="n">integral</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">PARAMS</span><span class="o">.</span><span class="n">m</span><span class="o">**</span><span class="mi">5</span> <span class="o">/</span> <span class="n">PARAMS</span><span class="o">.</span><span class="n">x</span><span class="o">**</span><span class="mi">6</span> <span class="o">/</span> <span class="n">PARAMS</span><span class="o">.</span><span class="n">H</span></pre></div>
         </div>
         <div class='clearall'></div>
     </section>
@@ -503,6 +500,21 @@
           <div class='octowrap'>
             <a class='octothorpe' href='#section-22'>#</a>
           </div>
+          <p>print p0 / UNITS.MeV, '\t', tmp * PARAMS.dx, '\t', integral[1] / integral[0] if integral[0] else 0</p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>        <span class="k">return</span> <span class="n">tmp</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+  </div>
+  <div class='section'>
+    <a id="section-23" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-23'>#</a>
+          </div>
           <h3><span class="header" href="regime-switching-ratio"> Regime-switching ratio </span><a id="regime-switching-ratio" class="header-anchor"></a></h3>
 <p>For ultra-relativistic particles the mass is effectively <code>0</code>. This implies that all computed numerically values can be as well obtained analytically: energy density, pressure, etc.</p>
 <p>Let particle mass be equal $M$ and regime factor equal $\gamma$. As soon as the temperature of the system $T$ drops to the value about $ M \gamma $, particle should be switched to the computation regime where its mass is also considered: <code>REGIMES.INTERMEDIATE</code>. When $T$ drops down even further to the value $ M / \gamma $, particle species can be treated as <code>REGIMES.DUST</code> with a Boltzman distribution function.</p>
@@ -511,7 +523,7 @@
           <div class="highlight"><pre>    <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">regime</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 
-        <span class="n">regime_factor</span> <span class="o">=</span> <span class="mf">1e1</span>
+        <span class="n">regime_factor</span> <span class="o">=</span> <span class="mf">1e3</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">in_equilibrium</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">REGIMES</span><span class="o">.</span><span class="n">NONEQ</span>
@@ -529,11 +541,11 @@
     </section>
   </div>
   <div class='section'>
-    <a id="section-23" class="section-anchor"></a>
+    <a id="section-24" class="section-anchor"></a>
     <section>
         <div class='docs'>
           <div class='octowrap'>
-            <a class='octothorpe' href='#section-23'>#</a>
+            <a class='octothorpe' href='#section-24'>#</a>
           </div>
           <p><span class=todo><strong>TODO</strong>: probably just remove these and always use <code>particle.regime.something()</code>?</span></p>
         </div>
@@ -544,11 +556,11 @@
     </section>
   </div>
   <div class='section'>
-    <a id="section-24" class="section-anchor"></a>
+    <a id="section-25" class="section-anchor"></a>
     <section>
         <div class='docs'>
           <div class='octowrap'>
-            <a class='octothorpe' href='#section-24'>#</a>
+            <a class='octothorpe' href='#section-25'>#</a>
           </div>
           <p>Number density of particle species. See particles/*.py for implementations</p>
         </div>
@@ -561,11 +573,11 @@
     </section>
   </div>
   <div class='section'>
-    <a id="section-25" class="section-anchor"></a>
+    <a id="section-26" class="section-anchor"></a>
     <section>
         <div class='docs'>
           <div class='octowrap'>
-            <a class='octothorpe' href='#section-25'>#</a>
+            <a class='octothorpe' href='#section-26'>#</a>
           </div>
           <p>Energy density of particle species. See particles/*.py for implementations</p>
         </div>
@@ -578,11 +590,11 @@
     </section>
   </div>
   <div class='section'>
-    <a id="section-26" class="section-anchor"></a>
+    <a id="section-27" class="section-anchor"></a>
     <section>
         <div class='docs'>
           <div class='octowrap'>
-            <a class='octothorpe' href='#section-26'>#</a>
+            <a class='octothorpe' href='#section-27'>#</a>
           </div>
           <p>Pressure of particle species. See particles/*.py for implementations</p>
         </div>
@@ -595,11 +607,11 @@
     </section>
   </div>
   <div class='section'>
-    <a id="section-27" class="section-anchor"></a>
+    <a id="section-28" class="section-anchor"></a>
     <section>
         <div class='docs'>
           <div class='octowrap'>
-            <a class='octothorpe' href='#section-27'>#</a>
+            <a class='octothorpe' href='#section-28'>#</a>
           </div>
           <p>Numerator term of particle species in equation for the temperature.
 See particles/*.py for implementations</p>
@@ -613,11 +625,11 @@ See particles/*.py for implementations</p>
     </section>
   </div>
   <div class='section'>
-    <a id="section-28" class="section-anchor"></a>
+    <a id="section-29" class="section-anchor"></a>
     <section>
         <div class='docs'>
           <div class='octowrap'>
-            <a class='octothorpe' href='#section-28'>#</a>
+            <a class='octothorpe' href='#section-29'>#</a>
           </div>
           <p>Denominator term of particle species in equation for the temperature.
 See particles/*.py for implementations</p>
@@ -631,11 +643,11 @@ See particles/*.py for implementations</p>
     </section>
   </div>
   <div class='section'>
-    <a id="section-29" class="section-anchor"></a>
+    <a id="section-30" class="section-anchor"></a>
     <section>
         <div class='docs'>
           <div class='octowrap'>
-            <a class='octothorpe' href='#section-29'>#</a>
+            <a class='octothorpe' href='#section-30'>#</a>
           </div>
           <p>Returns interpolated value of distribution function by momentum or grid element index.</p>
 <p>Checks boundaries, neglects <code>p &gt; GRID.MAX_MOMENTUM</code> and sets <code>p &lt; GRID.MIN_MOMENTUM</code> to <code>GRID.MIN_MOMENTUM</code></p>
@@ -669,11 +681,11 @@ See particles/*.py for implementations</p>
     </section>
   </div>
   <div class='section'>
-    <a id="section-30" class="section-anchor"></a>
+    <a id="section-31" class="section-anchor"></a>
     <section>
         <div class='docs'>
           <div class='octowrap'>
-            <a class='octothorpe' href='#section-30'>#</a>
+            <a class='octothorpe' href='#section-31'>#</a>
           </div>
           
         </div>
@@ -687,11 +699,11 @@ See particles/*.py for implementations</p>
     </section>
   </div>
   <div class='section'>
-    <a id="section-31" class="section-anchor"></a>
+    <a id="section-32" class="section-anchor"></a>
     <section>
         <div class='docs'>
           <div class='octowrap'>
-            <a class='octothorpe' href='#section-31'>#</a>
+            <a class='octothorpe' href='#section-32'>#</a>
           </div>
           <p>Simple check for equilibrium </p>
         </div>
@@ -705,11 +717,11 @@ See particles/*.py for implementations</p>
     </section>
   </div>
   <div class='section'>
-    <a id="section-32" class="section-anchor"></a>
+    <a id="section-33" class="section-anchor"></a>
     <section>
         <div class='docs'>
           <div class='octowrap'>
-            <a class='octothorpe' href='#section-32'>#</a>
+            <a class='octothorpe' href='#section-33'>#</a>
           </div>
           <p>Physical energy of the particle </p>
         </div>
@@ -725,11 +737,11 @@ See particles/*.py for implementations</p>
     </section>
   </div>
   <div class='section'>
-    <a id="section-33" class="section-anchor"></a>
+    <a id="section-34" class="section-anchor"></a>
     <section>
         <div class='docs'>
           <div class='octowrap'>
-            <a class='octothorpe' href='#section-33'>#</a>
+            <a class='octothorpe' href='#section-34'>#</a>
           </div>
           <p>Normalized energy of the particle in comoving coordinates with evolving mass term </p>
         </div>
@@ -745,11 +757,11 @@ See particles/*.py for implementations</p>
     </section>
   </div>
   <div class='section'>
-    <a id="section-34" class="section-anchor"></a>
+    <a id="section-35" class="section-anchor"></a>
     <section>
         <div class='docs'>
           <div class='octowrap'>
-            <a class='octothorpe' href='#section-34'>#</a>
+            <a class='octothorpe' href='#section-35'>#</a>
           </div>
           
         </div>

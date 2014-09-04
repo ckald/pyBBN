@@ -22,7 +22,7 @@
         Generated at
         <a target="_blank" href="http://ckald.github.io/pyccoon/" title="Pyccoon: side-to-side documentation generator">
             <img id="pyccoon-icon" src="../pyccoon_icon.svg" alt="Pyccoon: side-to-side documentation generator" /></a>
-        <code>2014-09-03 20:52:08.899707</code>/
+        <code>2014-09-04 20:35:58.046896</code>/
         by a diligent
         <a target="_blank" href="http://ckald.github.io/pyccoon/" title="Pyccoon: side-to-side documentation generator">pyccoon</a>
     </div>
@@ -46,8 +46,7 @@
         <div class='code'>
           <div class="highlight"><pre><span class="kn">from</span> <span class="nn">particle</span> <span class="kn">import</span> <span class="n">Particle</span>
 <span class="kn">from</span> <span class="nn">evolution</span> <span class="kn">import</span> <span class="n">Universe</span>
-<span class="kn">from</span> <span class="nn">common</span> <span class="kn">import</span> <span class="n">STATISTICS</span>
-<span class="kn">import</span> <span class="nn">numericalunits</span> <span class="kn">as</span> <span class="nn">nu</span>
+<span class="kn">from</span> <span class="nn">common</span> <span class="kn">import</span> <span class="n">STATISTICS</span><span class="p">,</span> <span class="n">UNITS</span>
 
 
 <span class="n">Particles</span> <span class="o">=</span> <span class="p">[]</span>
@@ -57,23 +56,23 @@
 
 <span class="n">neutron</span> <span class="o">=</span> <span class="n">Particle</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s">&#39;Neutron&#39;</span><span class="p">,</span>
                    <span class="n">statistics</span><span class="o">=</span><span class="n">STATISTICS</span><span class="o">.</span><span class="n">FERMION</span><span class="p">,</span>
-                   <span class="n">mass</span><span class="o">=</span><span class="mf">0.939</span> <span class="o">*</span> <span class="n">nu</span><span class="o">.</span><span class="n">GeV</span><span class="p">)</span>
+                   <span class="n">mass</span><span class="o">=</span><span class="mf">0.939</span> <span class="o">*</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">GeV</span><span class="p">)</span>
 <span class="n">Particles</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">neutron</span><span class="p">)</span>
 
 <span class="n">proton</span> <span class="o">=</span> <span class="n">Particle</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s">&#39;Proton&#39;</span><span class="p">,</span>
                   <span class="n">statistics</span><span class="o">=</span><span class="n">STATISTICS</span><span class="o">.</span><span class="n">FERMION</span><span class="p">,</span>
-                  <span class="n">mass</span><span class="o">=</span><span class="mf">0.938</span> <span class="o">*</span> <span class="n">nu</span><span class="o">.</span><span class="n">GeV</span><span class="p">)</span>
+                  <span class="n">mass</span><span class="o">=</span><span class="mf">0.938</span> <span class="o">*</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">GeV</span><span class="p">)</span>
 <span class="n">Particles</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">proton</span><span class="p">)</span>
 
 <span class="n">neutrino</span> <span class="o">=</span> <span class="n">Particle</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s">&#39;Neutrino&#39;</span><span class="p">,</span>
                     <span class="n">statistics</span><span class="o">=</span><span class="n">STATISTICS</span><span class="o">.</span><span class="n">FERMION</span><span class="p">,</span>
                     <span class="n">dof</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
-                    <span class="n">decoupling_temperature</span><span class="o">=</span><span class="mi">2</span> <span class="o">*</span> <span class="n">nu</span><span class="o">.</span><span class="n">MeV</span>
+                    <span class="n">decoupling_temperature</span><span class="o">=</span><span class="mi">2</span> <span class="o">*</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">MeV</span>
                     <span class="p">)</span>
 <span class="n">Particles</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">neutrino</span><span class="p">)</span>
 
 <span class="n">electron</span> <span class="o">=</span> <span class="n">Particle</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s">&#39;Electron&#39;</span><span class="p">,</span>
-                    <span class="n">mass</span><span class="o">=</span><span class="mf">0.511</span> <span class="o">*</span> <span class="n">nu</span><span class="o">.</span><span class="n">MeV</span><span class="p">,</span>
+                    <span class="n">mass</span><span class="o">=</span><span class="mf">0.511</span> <span class="o">*</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">MeV</span><span class="p">,</span>
                     <span class="n">statistics</span><span class="o">=</span><span class="n">STATISTICS</span><span class="o">.</span><span class="n">FERMION</span><span class="p">,</span>
                     <span class="n">dof</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
 <span class="n">Particles</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">electron</span><span class="p">)</span>
