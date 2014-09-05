@@ -1,26 +1,26 @@
 # -*- coding: utf-8 -*-
 """
-For information and usage see README,
+For information and usage see README,\
 or http://pypi.python.org/pypi/numericalunits
 
 Copyright (C) 2012 Steven Byrnes
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights to
-use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
-of the Software, and to permit persons to whom the Software is furnished to do
+Permission is hereby granted, free of charge, to any person obtaining a copy\
+of this software and associated documentation files (the "Software"), to deal \
+in the Software without restriction, including without limitation the rights to\
+use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies\
+of the Software, and to permit persons to whom the Software is furnished to do\
 so, subject to the following conditions:
 
-The above copyright notice and this permission notice shall be included in all
+The above copyright notice and this permission notice shall be included in all\
 copies or substantial portions of the Software.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING\
+FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS\
 IN THE SOFTWARE.
 """
 
@@ -30,24 +30,24 @@ import random
 __version__ = 1.13
 
 
-def reset_units(seed=None, random_range=[1, 2]):
+def reset_units(seed=None, random_range=[-1, 1]):
     """
-    Set all units to new, self-consistent, floating-point values. See package
-    documentation for detailed explanation and examples:
+    Set all units to new, self-consistent, floating-point values. See package\
+    documentation for detailed explanation and examples:\
     http://pypi.python.org/pypi/numericalunits
 
-    reset_units() --> units are randomized. This is the suggested use. Run this
-    before your calculation, display the final answer, then re-run this, then
-    re-disply the final answer. If you get the same answers both times, then
-    your calculations are almost guaranteed to be free of
-    dimensional-analysis-violating errors. reset_units() is run automatically
+    reset_units() --> units are randomized. This is the suggested use. Run this\
+    before your calculation, display the final answer, then re-run this, then\
+    re-disply the final answer. If you get the same answers both times, then\
+    your calculations are almost guaranteed to be free of\
+    dimensional-analysis-violating errors. reset_units() is run automatically\
     the first time this module is imported.
 
-    reset_units('SI') --> Set units so that all values are given in standard SI
-    units (meters-kilograms-seconds) by default. In this mode, there is no way
+    reset_units('SI') --> Set units so that all values are given in standard SI\
+    units (meters-kilograms-seconds) by default. In this mode, there is no way\
     to test for dimensional-analysis-violating errors.
 
-    reset_units(x) --> If you pass any other argument x, it's used as the seed
+    reset_units(x) --> If you pass any other argument x, it's used as the seed\
     for the random number generator.
     """
     global m, kg, s, C, K
@@ -82,8 +82,8 @@ def reset_units(seed=None, random_range=[1, 2]):
 
 def set_derived_units_and_constants():
     """
-    Assuming that the base units (m, kg, s, C, K) have already been set as
-    floating-point values, this function sets all other units and constants
+    Assuming that the base units (m, kg, s, C, K) have already been set as\
+    floating-point values, this function sets all other units and constants\
     to the appropriate, self-consistent values.
     """
 
@@ -346,10 +346,11 @@ def set_derived_units_and_constants():
     Msolar = 1.98892e30 * kg  # mass of the sun
     MEarth = 5.9736e24 * kg  # mass of earth
 
-# Set units randomly when this module is initialized. (Don't worry: If the
-# module is imported many times from many places, this command will only
-# execute during the first import.)
+# Set units randomly when this module is initialized.
+# (Don't worry: If the module is imported many times from many places, this \
+# command will only execute during the first import.)
 reset_units()
+
 
 if False:  # workaround so that Spyder IDE recognizes these variables as globals
     m = 1
