@@ -1,9 +1,35 @@
-import numpy
+import os
 import itertools
 import matplotlib.pyplot as plt
-import numericalunits as nu
+from collections import deque
 
 from common import UNITS, GRID
+
+
+class ring_deque(deque):
+    max = 0
+    min = 0
+
+    def __init__(self, data, length):
+        self.length = length
+        super(ring_deque, self).__init__(data)
+
+    def append_more(self, data):
+
+        if len(self) > self.length:
+            self.popleft()
+
+        self.max = max(data, self.max)
+        self.min = min(data, self.min)
+        super(ring_deque, self).append(data)
+
+    def append(self, data):
+        self.max = data
+        self.min = data
+
+        self.append = self.append_more
+
+        super(ring_deque, self).append(data)
 
 
 class Plotting:
@@ -47,6 +73,14 @@ class Plotting:
             self.plots_data.append(ring_deque([], 1000))
 
         self.params_figure.show()
+
+    def save(self, filename):
+        folder = os.path.split(filename)[0]
+        plt.figure(1)
+        plt.savefig(os.path.join(folder, 'plots.png'))
+        if self.particles:
+            plt.figure(2)
+            plt.savefig(os.path.join(folder, 'particles.png'))
 
     def monitor(self, particles=[]):
         self.particles = particles
@@ -96,7 +130,7 @@ class Plotting:
                     self.particles_plots[i*2].plot(GRID.TEMPLATE / UNITS.MeV, particle._distribution)
                     feq = particle.distribution_function_vectorized(
                         particle.energy_normalized_vectorized(GRID.TEMPLATE)
-                        / particle.temperature
+                        / particle.T
                     )
                     self.particles_plots[i*2 + 1].plot(
                         GRID.TEMPLATE / UNITS.MeV,
