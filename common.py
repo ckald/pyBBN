@@ -5,8 +5,10 @@
 
 This file contains constants and utilities shared by all other modules in the project.
 """
+import sys
 import time
 import numpy
+import codecs
 from scipy import integrate
 from functools import wraps
 import numericalunits as nu
@@ -228,3 +230,15 @@ def parmap(f, X):
             outputList.append(proc.recv())
         processNum = endProcessNum
     return outputList
+
+
+class Logger(object):
+    def __init__(self, filename):
+        self.terminal = sys.stdout
+        self.log = codecs.open(filename, "w", encoding="utf8")
+
+    def write(self, message, terminal=True, log=True):
+        if terminal:
+            self.terminal.write(message)
+        if log:
+            self.log.write(message.decode('utf8'))

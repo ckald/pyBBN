@@ -1,10 +1,12 @@
 # -*- coding: utf-8 -*-
 
+import sys
 import numpy
 import numericalunits as nu
 import array
+from datetime import datetime
 
-from common import UNITS, PARAMS, CONST, parmap
+from common import UNITS, PARAMS, CONST, parmap, Logger
 from plotting import Plotting
 
 
@@ -12,15 +14,25 @@ class Universe:
 
     """ The master object that governs the calculation. """
 
-    def __init__(self, particles=[], interactions=[]):
+    log_freq = 10
+
+    def __init__(self, particles=[], interactions=[],
+                 logfile='logs/' + str(datetime.now()) + '.txt'):
         """
         :param particles: List of `particle.Particle` objects - set of particles to model
         :param interactions: List of `interaction.Interaction` objects - quantum interactions \
                              between particle species
         """
         self.particles = particles
+
         self.interactions = interactions
         self.graphics = Plotting()
+
+        sys.stdout = Logger(logfile)
+        self.logger = sys.stdout
+
+        for particle in self.particles:
+            print particle
 
     def evolve(self, T_final=PARAMS.T_final, dx=PARAMS.dx):
         """
@@ -34,6 +46,8 @@ class Universe:
 
         """
 
+        print "dx =", PARAMS.dx
+
         self.step = 0
 
         self.data = {
@@ -46,7 +60,8 @@ class Universe:
         for particle in self.particles:
             self.data['rho'][0] += particle.energy_density()
 
-        while PARAMS.T > T_final:
+        print '# Time, s\taT, MeV\tTemperature, MeV\tscale factor\tρ energy density, eV^4\tH, GeV'
+        self.log()
 
             rho = 0  # total energy density
             numerator = 0
@@ -95,8 +110,9 @@ class Universe:
             """
             dt = (PARAMS.a / self.data['a'][-1] - 1) / PARAMS.H
             PARAMS.t += dt
+            PARAMS.rho = rho
 
-            self.save(rho)
+            self.save()
 
             """ Non equilibrium interactions of different particle species are treated by a\
                 numerical integration of the Boltzman equation for distribution functions in\
@@ -110,37 +126,37 @@ class Universe:
             for particle in self.particles:
                 particle.update()
 
-            self.log(rho)
+            self.log()
             self.step += 1
 
+        self.log()
+        for particle in self.particles:
+            print particle
+
+        print "Data saved to file {}".format(self.logger.log.name)
         return self.data
 
-    def save(self, rho):
+    def save(self):
         """ Save current Universe parameters into the data arrays or output files """
         self.data['aT'].append(PARAMS.aT)
         self.data['T'].append(PARAMS.T)
         self.data['a'].append(PARAMS.a)
-        self.data['rho'].append(rho)
+        self.data['rho'].append(PARAMS.rho)
         self.data['t'].append(PARAMS.t)
 
-    def log(self, rho):
+    def log(self):
         """ Runtime log output """
 
         # Print parameters each 100 steps
-        if self.step % 100 == 0:
+        if self.step % self.log_freq == 0:
             print 't =', PARAMS.t / UNITS.s, \
                 '\taT =', PARAMS.aT / UNITS.MeV, \
                 "\tT =", PARAMS.T / UNITS.MeV, \
                 "\ta =", PARAMS.a, \
                 "\tρ =", PARAMS.rho / UNITS.eV**4, \
                 "\tH =", PARAMS.H / nu.GeV
-            self.graphics.plot(self.data)
 
-        # Clean up the data array to free the memory
-        # if self.step % 1000 == 0:
-        #     for k in self.data.keys():
-        #         self.data[k] = self.data[k][-1000:]
-        #     self.graphics.plot(self.data, full=True)
+            self.graphics.plot(self.data)
 
     def totals(self):
         """
