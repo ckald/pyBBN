@@ -32,10 +32,20 @@ electron = Particle(name='Electron',
 Particles.append(electron)
 
 universe = Universe(Particles)
-# universe.graphics.monitor([neutrino])
+universe.graphics.monitor([neutrino])
 universe.evolve()
 
-for particle in Particles:
-    print particle
+initial_aT = universe.data['aT'][0]
+print "a * T is conserved: {}".format(all([initial_aT == value for value in universe.data['aT']]))
+initial_a = universe.data['a'][len(universe.data['a'])/2]
+initial_t = universe.data['t'][len(universe.data['a'])/2] / UNITS.s
+last_a = universe.data['a'][-1]
+last_t = universe.data['t'][-1] / UNITS.s
+
+print "a scaling discrepancy is: {:.2f}%"\
+    .format(100 * (last_a / initial_a - (last_t / initial_t) ** (2./3.))
+            / (last_t / initial_t) ** (2./3.))
+
+universe.graphics.save(__file__)
 
 raw_input("...")
