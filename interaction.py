@@ -9,29 +9,52 @@ class INTERACTIONS:
     DECAY = 'decay'
 
 
+"""
+== Boltzmann collision integral ==
+
+\begin{multline}
+    I_{coll}(t,p_i) = \frac{1}{2 E_i} \sum_{reactions} \int \cdots \int
+        \prod_{j} \frac{d^3 p_{in,j}}{(2 \pi)^3 2 E_{in,j}}
+        \prod_{k} \frac{d^3 p_{out,k}}{(2 \pi)^3 2 E_{out,k}} \\
+        S |\mathcal{M}|^2 \mathcal{F}(\{f_\alpha\}) (2 \pi)^4 \\
+        \delta^4(\sum_{m} p_{in,m}^\mu - \sum_{n} p_{out,n}^\mu)
+\end{multline}
+"""
+
+
 class Interaction:
 
-    """
-        \begin{multline}
-            I_{coll}(t,p_i) = \frac{1}{2 E_i} \sum_{reactions} \int \cdots \int
-                \prod_{j} \frac{d^3 p_{in,j}}{(2 \pi)^3 2 E_{in,j}}
-                \prod_{k} \frac{d^3 p_{out,k}}{(2 \pi)^3 2 E_{out,k}} \\
-                S |\mathcal{M}|^2 \mathcal{F}(\{f_\alpha\}) (2 \pi)^4 \\
-                \delta^4(\sum_{m} p_{in,m}^\mu - \sum_{n} p_{out,n}^\mu)
-        \end{multline}
-    """
+    """ Main class used for calculation of the non-equilibrium dynamics of the particles """
 
-    particles = []
+    # Incoming particles
     in_particles = []
+    # Outgoing particles
     out_particles = []
+    # All particles involved
+    particles = []
+    # Temperature when the typical interaction time exceeds the Hubble expansion time
     decoupling_temperature = 0.
+    # Interaction symmetry factor
     symmetry_factor = 1.
+    # Constant shared by all 4-particle interactions
     constant = 1./64. / numpy.pi**3
+
+    """
+    Four-particle interactions of the interest can all be rewritten in a form
+
+    \begin{equation}
+        |\mathcal{M}|^2 = \sum_{\{i,j,k,l\}} K_1 (p_i \dot p_j) + K_2 m_i m_j (p_k \dot p_l)
+    \end{equation}
+    """
     K1 = 0
     K2 = 0
     s = 1
 
     def __init__(self, *args, **kwargs):
+        """
+            :param in_particles: Incoming particles of the interaction
+            :param out_particles: Outgoing particles of the interaction
+        """
         for key in kwargs:
             setattr(self, key, kwargs[key])
 
@@ -107,23 +130,7 @@ class Interaction:
 
         return integrand
 
-    # def F(self, in_p=[], out_p=[]):
-
-    #     def mult_them(out_particles, in_particles, out_p, in_p):
-    #         temp = 1.
-    #         for i, particle in enumerate(out_particles):
-    #             temp *= particle.distribution(out_p[i])
-    #         for i, particle in enumerate(in_particles):
-    #             temp *= 1. - particle.eta * particle.distribution(in_p[i])
-
-    #         return temp
-
-    #     f = mult_them(self.out_particles, self.in_particles, out_p, in_p)\
-    #         - mult_them(self.in_particles, self.out_particles, in_p, out_p)
-
-    #     return f
-
-    # F == f (±A - B) + A
+    # $\mathcal{F}(f) = f (±A - B) + A$
     def F_A(self, in_p=[], out_p=[], index=0):
         temp = 1.
         for i, particle in enumerate(self.out_particles):
