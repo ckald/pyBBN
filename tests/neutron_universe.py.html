@@ -30,7 +30,7 @@
         Generated at
         <a target="_blank" href="http://ckald.github.io/pyccoon/" title="Pyccoon: side-to-side documentation generator">
             <img id="pyccoon-icon" src="../pyccoon_icon.svg" alt="Pyccoon: side-to-side documentation generator" /></a>
-        <code>2014-09-05 16:52:29.651696</code>/
+        <code>2014-09-05 17:37:44.291432</code>/
         by a diligent
         <a target="_blank" href="http://ckald.github.io/pyccoon/" title="Pyccoon: side-to-side documentation generator">pyccoon</a>
     </div>
@@ -56,8 +56,9 @@
 <li>$a \propto t^{2/3}$</li>
 </ul>
 <p><a href="neutron_universe.txt">Log file</a></p>
-<p><span class=todo><strong>TODO</strong>: why is there a discrepancy $\sim 15%$?</span>
-<span class=todo><strong>TODO</strong>: why is <code>aT</code> not conserved? Does it mean that fewer particles are moving faster?</span></p>
+<p><span class=todo><strong>TODO</strong>: why is there a discrepancy $\sim 15 \%$?</span>
+<span class=todo><strong>TODO</strong>: why is <code>aT</code> not conserved?</span>
+<span class=todo><strong>TODO</strong>: why scale factor law changes over time?</span></p>
         </div>
         <div class='code'>
           <div class="highlight"><pre><span class="kn">from</span> <span class="nn">particles</span> <span class="kn">import</span> <span class="n">Particle</span><span class="p">,</span> <span class="n">STATISTICS</span>
@@ -65,8 +66,8 @@
 <span class="kn">from</span> <span class="nn">common</span> <span class="kn">import</span> <span class="n">PARAMS</span><span class="p">,</span> <span class="n">UNITS</span>
 
 
-<span class="n">PARAMS</span><span class="o">.</span><span class="n">T_initial</span> <span class="o">=</span> <span class="mi">100</span> <span class="o">*</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">MeV</span>
-<span class="n">PARAMS</span><span class="o">.</span><span class="n">T_final</span> <span class="o">=</span> <span class="mf">0.1</span> <span class="o">*</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">MeV</span>
+<span class="n">PARAMS</span><span class="o">.</span><span class="n">T_initial</span> <span class="o">=</span> <span class="mi">1000</span> <span class="o">*</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">MeV</span>
+<span class="n">PARAMS</span><span class="o">.</span><span class="n">T_final</span> <span class="o">=</span> <span class="mi">100</span> <span class="o">*</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">MeV</span>
 <span class="n">PARAMS</span><span class="o">.</span><span class="n">dx</span> <span class="o">=</span> <span class="mf">1e-4</span> <span class="o">*</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">MeV</span>
 <span class="n">PARAMS</span><span class="o">.</span><span class="n">infer</span><span class="p">()</span>
 
