@@ -2,8 +2,8 @@
 <html>
 <head>
   <meta http-equiv="content-type" content="text/html;charset=utf-8">
-  <title>pyBBN v0.1.0: tests/cosmic_neutrino_temperature.py</title>
-  <link rel="stylesheet" href="../pyccoon.css">
+  <title>pyBBN v0.1.0: tests/cosmic_neutrino_temperature/__init__.py</title>
+  <link rel="stylesheet" href="../../pyccoon.css">
   <script type="text/x-mathjax-config">
   MathJax.Hub.Config({
     tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
@@ -16,7 +16,7 @@
   <a id="top"></a>
   <div id="background"></div>
   <div id="footer">
-    <a class="btn" id="project-name" href="../index.html">pyBBN v0.1.0</a>
+    <a class="btn" id="project-name" href="../../index.html">pyBBN v0.1.0</a>
     <a class="btn" class="source source-1" href="#top">Back to top</a>
     <div id="jump_to" class="btn">
     Contents
@@ -29,16 +29,16 @@
     <div class="generation-time">
         Generated at
         <a target="_blank" href="http://ckald.github.io/pyccoon/" title="Pyccoon: side-to-side documentation generator">
-            <img id="pyccoon-icon" src="../pyccoon_icon.svg" alt="Pyccoon: side-to-side documentation generator" /></a>
-        <code>2014-09-05 17:39:56.482962</code>/
+            <img id="pyccoon-icon" src="../../pyccoon_icon.svg" alt="Pyccoon: side-to-side documentation generator" /></a>
+        <code>2014-09-05 18:15:53.043660</code>/
         by a diligent
         <a target="_blank" href="http://ckald.github.io/pyccoon/" title="Pyccoon: side-to-side documentation generator">pyccoon</a>
     </div>
   </div>
   <div class='section'>
     <div class='docs'>
-      <h1 id="breadcrumbs">/ <a href="cosmic_neutrino_temperature.py.html/../../index.html">.</a> / <a href="cosmic_neutrino_temperature.py.html/../index.html">tests</a> / <a href="cosmic_neutrino_temperature.py.html">cosmic_neutrino_temperature.py</a> </h1>
-      <ul id="children"></ul>
+      <h1 id="breadcrumbs">/ <a href="index.html/../../../index.html">.</a> / <a href="index.html/../../index.html">tests</a> / <a href="index.html/../index.html">cosmic_neutrino_temperature</a> / <a href="index.html">__init__.py</a> </h1>
+      <ul id="children"><li><a href="index.html">__init__.py</a></li><li><a href="log.txt.html">log.txt</a></li><li><a href="plots.png.html">plots.png</a></li></ul>
     </div>
   </div>
   <div class='clearall'>
@@ -50,13 +50,13 @@
             <a class='octothorpe' href='#section-0'>#</a>
           </div>
           <h2><span class="header" href="c$\nu$b-temperature-test"> C$\nu$B temperature test </span><a id="c$\nu$b-temperature-test" class="header-anchor"></a></h2>
-<p><img src="cosmic_neutrino_temperature.py.png" width=100% /></p>
+<p><img src="plots.png" width=100% /></p>
 <p>This test checks that in the universe filled with photons, neutrons, protons, electrons and neutrinos (which decouple at temperatures around $\sim 3 MeV$:</p>
 <ul>
 <li>$a * T$ is not conserved by a factor around <code>1.401</code> in presence of additional species</li>
 </ul>
 <p>At temperatures $\sim 1 MeV$ electron-positron pairs annihilate, effectively disappearing from the plasma. This leads to increasing of the entropy and plasma temperature approximately <code>1.401</code> times.</p>
-<p><a href="cosmic_neutrino_temperature.txt">Log file</a></p>
+<p><a href="log.txt">Log file</a></p>
         </div>
         <div class='code'>
           <div class="highlight"><pre><span class="kn">from</span> <span class="nn">particles</span> <span class="kn">import</span> <span class="n">Particle</span><span class="p">,</span> <span class="n">STATISTICS</span>
@@ -100,7 +100,7 @@
                     <span class="n">dof</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
 <span class="n">Particles</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">electron</span><span class="p">)</span>
 
-<span class="n">universe</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="n">Particles</span><span class="p">,</span> <span class="n">logfile</span><span class="o">=</span><span class="s">&#39;tests/cosmic_neutrino_temperature.txt&#39;</span><span class="p">)</span>
+<span class="n">universe</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="n">Particles</span><span class="p">,</span> <span class="n">logfile</span><span class="o">=</span><span class="s">&#39;tests/cosmic_neutrino_temperature/log.txt&#39;</span><span class="p">)</span>
 <span class="n">universe</span><span class="o">.</span><span class="n">evolve</span><span class="p">(</span><span class="n">dx</span><span class="o">=</span><span class="n">PARAMS</span><span class="o">.</span><span class="n">dx</span><span class="p">,</span> <span class="n">T_final</span><span class="o">=</span><span class="n">PARAMS</span><span class="o">.</span><span class="n">T_final</span><span class="p">)</span>
 
 <span class="k">print</span> <span class="s">&quot;&quot;&quot;</span>
@@ -108,7 +108,7 @@
 <span class="s">    Relative error is {:.3f} %</span>
 <span class="s">    &quot;&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">PARAMS</span><span class="o">.</span><span class="n">aT</span> <span class="o">/</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">MeV</span><span class="p">,</span> <span class="p">(</span><span class="n">PARAMS</span><span class="o">.</span><span class="n">aT</span> <span class="o">/</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">MeV</span> <span class="o">-</span> <span class="mf">1.401</span><span class="p">)</span> <span class="o">/</span> <span class="mf">1.401</span> <span class="o">*</span> <span class="mi">100</span><span class="p">)</span>
 
-<span class="n">universe</span><span class="o">.</span><span class="n">graphics</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">__file__</span> <span class="o">+</span> <span class="s">&#39;.png&#39;</span><span class="p">)</span>
+<span class="n">universe</span><span class="o">.</span><span class="n">graphics</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">__file__</span><span class="p">)</span>
 
 <span class="nb">raw_input</span><span class="p">(</span><span class="s">&quot;...&quot;</span><span class="p">)</span>
 

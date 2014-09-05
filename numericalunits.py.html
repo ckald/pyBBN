@@ -22,7 +22,7 @@
         Generated at
         <a target="_blank" href="http://ckald.github.io/pyccoon/" title="Pyccoon: side-to-side documentation generator">
             <img id="pyccoon-icon" src="./pyccoon_icon.svg" alt="Pyccoon: side-to-side documentation generator" /></a>
-        <code>2014-09-05 17:37:43.980343</code>/
+        <code>2014-09-05 18:15:53.177716</code>/
         by a diligent
         <a target="_blank" href="http://ckald.github.io/pyccoon/" title="Pyccoon: side-to-side documentation generator">pyccoon</a>
     </div>
@@ -56,24 +56,11 @@
           <div class='octowrap'>
             <a class='octothorpe' href='#section-1'>#</a>
           </div>
-          <p>For information and usage see README,
-or <a href="http://pypi.python.org/pypi/numericalunits">http://pypi.python.org/pypi/numericalunits</a></p>
+          <p>For information and usage see README, or <a href="http://pypi.python.org/pypi/numericalunits">http://pypi.python.org/pypi/numericalunits</a></p>
 <p>Copyright (C) 2012 Steven Byrnes</p>
-<p>Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights to
-use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
-of the Software, and to permit persons to whom the Software is furnished to do
-so, subject to the following conditions:</p>
-<p>The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.</p>
-<p>THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
-IN THE SOFTWARE.</p>
+<p>Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:</p>
+<p>The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.</p>
+<p>THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.</p>
         </div>
         <div class='code'>
           <div class="highlight"><pre><span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">pi</span>
@@ -91,20 +78,10 @@ IN THE SOFTWARE.</p>
           <div class='octowrap'>
             <a class='octothorpe' href='#section-2'>#</a>
           </div>
-          <p>Set all units to new, self-consistent, floating-point values. See package
-documentation for detailed explanation and examples:
-<a href="http://pypi.python.org/pypi/numericalunits">http://pypi.python.org/pypi/numericalunits</a></p>
-<p>reset_units() --&gt; units are randomized. This is the suggested use. Run this
-before your calculation, display the final answer, then re-run this, then
-re-disply the final answer. If you get the same answers both times, then
-your calculations are almost guaranteed to be free of
-dimensional-analysis-violating errors. reset_units() is run automatically
-the first time this module is imported.</p>
-<p>reset_units('SI') --&gt; Set units so that all values are given in standard SI
-units (meters-kilograms-seconds) by default. In this mode, there is no way
-to test for dimensional-analysis-violating errors.</p>
-<p>reset_units(x) --&gt; If you pass any other argument x, it's used as the seed
-for the random number generator.</p>
+          <p>Set all units to new, self-consistent, floating-point values. See package documentation for detailed explanation and examples: <a href="http://pypi.python.org/pypi/numericalunits">http://pypi.python.org/pypi/numericalunits</a></p>
+<p>reset_units() --&gt; units are randomized. This is the suggested use. Run this before your calculation, display the final answer, then re-run this, then re-disply the final answer. If you get the same answers both times, then your calculations are almost guaranteed to be free of dimensional-analysis-violating errors. reset_units() is run automatically the first time this module is imported.</p>
+<p>reset_units('SI') --&gt; Set units so that all values are given in standard SI units (meters-kilograms-seconds) by default. In this mode, there is no way to test for dimensional-analysis-violating errors.</p>
+<p>reset_units(x) --&gt; If you pass any other argument x, it's used as the seed for the random number generator.</p>
         </div>
         <div class='code'>
           <div class="highlight"><pre><span class="k">def</span> <span class="nf">reset_units</span><span class="p">(</span><span class="n">seed</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">random_range</span><span class="o">=</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]):</span>
@@ -173,9 +150,7 @@ using it.</p>
           <div class='octowrap'>
             <a class='octothorpe' href='#section-5'>#</a>
           </div>
-          <p>Assuming that the base units (m, kg, s, C, K) have already been set as
-floating-point values, this function sets all other units and constants
-to the appropriate, self-consistent values.</p>
+          <p>Assuming that the base units (m, kg, s, C, K) have already been set as floating-point values, this function sets all other units and constants to the appropriate, self-consistent values.</p>
         </div>
         <div class='code'>
           <div class="highlight"><pre><span class="k">def</span> <span class="nf">set_derived_units_and_constants</span><span class="p">():</span></pre></div>
@@ -689,9 +664,8 @@ to the appropriate, self-consistent values.</p>
           <div class='octowrap'>
             <a class='octothorpe' href='#section-26'>#</a>
           </div>
-          <p>Set units randomly when this module is initialized. (Don't worry: If the
-module is imported many times from many places, this command will only
-execute during the first import.)</p>
+          <p>Set units randomly when this module is initialized.
+(Don't worry: If the module is imported many times from many places, this command will only execute during the first import.)</p>
         </div>
         <div class='code'>
           <div class="highlight"><pre><span class="n">reset_units</span><span class="p">()</span>

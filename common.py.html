@@ -34,7 +34,7 @@
         Generated at
         <a target="_blank" href="http://ckald.github.io/pyccoon/" title="Pyccoon: side-to-side documentation generator">
             <img id="pyccoon-icon" src="./pyccoon_icon.svg" alt="Pyccoon: side-to-side documentation generator" /></a>
-        <code>2014-09-05 17:37:43.696101</code>/
+        <code>2014-09-05 18:15:52.953839</code>/
         by a diligent
         <a target="_blank" href="http://ckald.github.io/pyccoon/" title="Pyccoon: side-to-side documentation generator">pyccoon</a>
     </div>
@@ -775,20 +775,20 @@ numpy.seterr(all='print')</p>
             <a class='octothorpe' href='#section-40'>#</a>
           </div>
           <p>Forward Euler integration method is a most basic way to solve an ODE of the kind:</p>
-<div class="codehilite"><pre><span class="err">\</span><span class="n">begin</span><span class="p">{</span><span class="n">equation</span><span class="p">}</span>
-    <span class="err">\</span><span class="n">frac</span><span class="p">{</span><span class="n">d</span> <span class="n">y</span><span class="p">(</span><span class="n">t</span><span class="p">)}{</span><span class="n">dt</span><span class="p">}</span> <span class="o">=</span> <span class="n">f</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">y</span><span class="p">(</span><span class="n">t</span><span class="p">))</span>
-<span class="err">\</span><span class="n">end</span><span class="p">{</span><span class="n">equation</span><span class="p">}</span>
-</pre></div>
-
-
-<p>Derivation:
-    \begin{equation}
-        \frac{d y(t)}{dt} \approx \frac{y(t) - y(t-1)}{h}
-    \end{equation}
-    \begin{equation}
-        y_{n+1} = y_n + h f(t_n, y_n)
-    \end{equation}</p>
-<p>Local Truncation Error (LTE): $y(t_0+h) - y_1 = \frac{h^2}{2} y''(t_0) + O(h^3)</p>
+<p>\begin{equation}
+    \frac{d y(t)}{dt} = f(t, y(t))
+\end{equation}</p>
+<p>Derivation:</p>
+<p>\begin{equation}
+    \frac{d y(t)}{dt} \approx \frac{y(t) - y(t-1)}{h}
+\end{equation}
+\begin{equation}
+    y_{n+1} = y_n + h f(t_n, y_n)
+\end{equation}</p>
+<dl>
+<dt>Local Truncation Error (LTE)</dt>
+<dd>$y(t_0+h) - y_1 = \frac{h^2}{2} y''(t_0) + O(h^3) $</dd>
+</dl>
         </div>
         <div class='code'>
           <div class="highlight"><pre><span class="k">def</span> <span class="nf">forward_euler_integrator</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">h</span><span class="p">):</span>
