@@ -5,21 +5,41 @@ import numpy
 import IntermediateParticle
 
 
+name = 'dust'
+
+
 def density(particle):
+    """ == Density ==
+        \begin{equation}
+            n = g \left(\frac{M T}{2 \pi}\right)^{3/2} e^{-\frac{M}{T}}
+        \end{equation}
+    """
     return (
         particle.dof
-        * numpy.sqrt(particle.mass * particle.temperature / 2. / numpy.pi)**3
-        * numpy.exp(- particle.mass / particle.temperature)
+        * numpy.sqrt(particle.mass * particle.T / 2. / numpy.pi)**3
+        * numpy.exp(- particle.mass / particle.T)
     )
 
 
 def energy_density(particle):
-    return (particle.mass + 3./2. * particle.temperature) * density(particle)
+    """ == Energy density ==
+        \begin{equation}
+            \rho = n \left(M + \frac32 T\right)
+        \end{equation}
+    """
+    return (particle.mass + 3./2. * particle.T) * density(particle)
 
 
 def pressure(particle):
-    return density(particle) * particle.temperature
+    """ == Pressure ==
+        \begin{equation}
+            p = n T
+        \end{equation}
+    """
+    return density(particle) * particle.T
 
 
+# == Master equation terms ==
+# Dust regime do not differ from intermediate regime here.
 numerator = IntermediateParticle.numerator
 denominator = IntermediateParticle.denominator

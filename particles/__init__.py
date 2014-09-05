@@ -6,13 +6,11 @@ regimes
 """
 
 import numpy
-import numericalunits as nu
 from scipy import interpolate, integrate
 
-from ..common import momentum_to_index, index_to_momentum, GRID, PARAMS
 from common import index_to_momentum, GRID, PARAMS, UNITS
 
-from regimes import DustParticle, RadiationParticle, IntermediateParticle, NonEqParticle
+from particles import DustParticle, RadiationParticle, IntermediateParticle, NonEqParticle
 
 
 class STATISTICS:
@@ -108,7 +106,7 @@ class Particle():
         """ Particle collision integral as well is not effective in equilibrium """
         self.collision_integral = numpy.zeros(GRID.MOMENTUM_SAMPLES, dtype=numpy.float_)
 
-        self.update(force_print=True)
+        self.update()
         self.init_distribution()
 
         """
@@ -156,7 +154,7 @@ class Particle():
         oldregime = self.regime
         oldeq = self.in_equilibrium
 
-        self.temperature = PARAMS.T
+        self.T = PARAMS.T
 
         # Clear saved values of density, energy_density and pressure
         self._density = None
@@ -174,7 +172,8 @@ class Particle():
             self._distribution_interpolation = interpolate.interp1d(GRID.TEMPLATE,
                                                                     self._distribution,
                                                                     kind='cubic')
-            # Clear collision integral constants until the next computation step
+            # Clear [collision integral constants](#collision-integral-constants) \
+            # until the next computation step
             self.F_f = []
             self.F_1 = []
 
@@ -183,6 +182,10 @@ class Particle():
 
     def integrate_collisions(self, p0):
         """ == Particle collisions integration == """
+
+        if not self.F_1 or not self.F_f:
+            return 0
+
         tmp = 1./64. / numpy.pi**3 / p0 / self.energy_normalized(p0)
 
         integral = integrate.dblquad(
@@ -214,14 +217,14 @@ class Particle():
         `REGIMES.INTERMEDIATE`. When $T$ drops down even further to the value $ M / \gamma $,\
         particle species can be treated as `REGIMES.DUST` with a Boltzman distribution function.
         """
-        regime_factor = 1e1
+        regime_factor = 1e4
 
         if not self.in_equilibrium:
             return REGIMES.NONEQ
 
-        if self.temperature > self.mass * regime_factor:
+        if self.T > self.mass * regime_factor:
             regime = REGIMES.RADIATION
-        elif self.temperature * regime_factor < self.mass:
+        elif self.T * regime_factor < self.mass:
             regime = REGIMES.DUST
         else:
             regime = REGIMES.INTERMEDIATE
@@ -293,23 +296,33 @@ class Particle():
 
     def init_distribution(self):
         self._distribution = self.distribution_function(
-            self.energy_normalized_vectorized(GRID.TEMPLATE) / self.temperature
+            self.energy_normalized_vectorized(GRID.TEMPLATE) / self.T
         )
 
     @property
     def in_equilibrium(self):
         """ Simple check for equilibrium """
-        return self.temperature > self.decoupling_temperature
+        return self.T > self.decoupling_temperature
 
     def energy(self, p):
-        """ Physical energy of the particle """
+        """ Physical energy of the particle
+
+            \begin{equation}
+                E = \sqrt{p^2 + M^2}
+            \end{equation}
+        """
         if self.mass > 0:
             return numpy.sqrt(p**2 + self.mass**2, dtype=numpy.float_)
         else:
             return abs(p)
 
     def energy_normalized(self, y):
-        """ Normalized energy of the particle in comoving coordinates with evolving mass term """
+        """ Normalized energy of the particle in comoving coordinates with evolving mass term
+
+            \begin{equation}
+                E_n = \sqrt{y^2 + (M a)^2}
+            \end{equation}
+        """
         if self.mass > 0:
             return numpy.sqrt(y**2 + self.mass_normalized**2, dtype=numpy.float_)
         else:

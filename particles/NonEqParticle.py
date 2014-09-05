@@ -5,6 +5,9 @@ import numpy
 from common import lambda_integrate, PARAMS, momentum_to_index
 
 
+name = 'non-equilibrium'
+
+
 @lambda_integrate
 def density(particle):
     return numpy.vectorize(lambda p: (
