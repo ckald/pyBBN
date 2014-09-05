@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta http-equiv="content-type" content="text/html;charset=utf-8">
-  <title>pyBBN v0.1.0: tests/photon_universe.py</title>
+  <title>pyBBN v0.1.0: tests/neutron_universe.py</title>
   <link rel="stylesheet" href="../pyccoon.css">
   <script type="text/x-mathjax-config">
   MathJax.Hub.Config({
@@ -22,7 +22,7 @@
     Contents
     <div id="jump_wrapper">
       <div id="jump_page">
-          <a class="source source-2" href="#section-0"> Photon universe test </a>
+          <a class="source source-2" href="#section-0"> Neutron universe test </a>
       </div>
     </div>
     </div>
@@ -30,14 +30,14 @@
         Generated at
         <a target="_blank" href="http://ckald.github.io/pyccoon/" title="Pyccoon: side-to-side documentation generator">
             <img id="pyccoon-icon" src="../pyccoon_icon.svg" alt="Pyccoon: side-to-side documentation generator" /></a>
-        <code>2014-09-05 16:52:29.404433</code>/
+        <code>2014-09-05 16:52:29.651696</code>/
         by a diligent
         <a target="_blank" href="http://ckald.github.io/pyccoon/" title="Pyccoon: side-to-side documentation generator">pyccoon</a>
     </div>
   </div>
   <div class='section'>
     <div class='docs'>
-      <h1 id="breadcrumbs">/ <a href="photon_universe.py.html/../../index.html">.</a> / <a href="photon_universe.py.html/../index.html">tests</a> / <a href="photon_universe.py.html">photon_universe.py</a> </h1>
+      <h1 id="breadcrumbs">/ <a href="neutron_universe.py.html/../../index.html">.</a> / <a href="neutron_universe.py.html/../index.html">tests</a> / <a href="neutron_universe.py.html">neutron_universe.py</a> </h1>
       <ul id="children"></ul>
     </div>
   </div>
@@ -49,36 +49,37 @@
           <div class='octowrap'>
             <a class='octothorpe' href='#section-0'>#</a>
           </div>
-          <h2><span class="header" href="photon-universe-test"> Photon universe test </span><a id="photon-universe-test" class="header-anchor"></a></h2>
-<p><img src="photon_universe.py.png" width=100% /></p>
+          <h2><span class="header" href="neutron-universe-test"> Neutron universe test </span><a id="neutron-universe-test" class="header-anchor"></a></h2>
+<p><img src="neutron_universe.py.png" width=100% /></p>
 <p>This test checks that in the photon universe:</p>
 <ul>
-<li>$a * T$ is conserved exactly.</li>
-<li>$a \propto t^{1/2}$</li>
+<li>$a \propto t^{2/3}$</li>
 </ul>
-<p><a href="photon_universe.txt">Log file</a></p>
+<p><a href="neutron_universe.txt">Log file</a></p>
+<p><span class=todo><strong>TODO</strong>: why is there a discrepancy $\sim 15%$?</span>
+<span class=todo><strong>TODO</strong>: why is <code>aT</code> not conserved? Does it mean that fewer particles are moving faster?</span></p>
         </div>
         <div class='code'>
-          <div class="highlight"><pre><span class="kn">import</span> <span class="nn">numpy</span>
-
-<span class="kn">from</span> <span class="nn">particles</span> <span class="kn">import</span> <span class="n">Particle</span><span class="p">,</span> <span class="n">STATISTICS</span>
+          <div class="highlight"><pre><span class="kn">from</span> <span class="nn">particles</span> <span class="kn">import</span> <span class="n">Particle</span><span class="p">,</span> <span class="n">STATISTICS</span>
 <span class="kn">from</span> <span class="nn">evolution</span> <span class="kn">import</span> <span class="n">Universe</span>
 <span class="kn">from</span> <span class="nn">common</span> <span class="kn">import</span> <span class="n">PARAMS</span><span class="p">,</span> <span class="n">UNITS</span>
 
 
 <span class="n">PARAMS</span><span class="o">.</span><span class="n">T_initial</span> <span class="o">=</span> <span class="mi">100</span> <span class="o">*</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">MeV</span>
-<span class="n">PARAMS</span><span class="o">.</span><span class="n">dx</span> <span class="o">=</span> <span class="mf">1e-1</span> <span class="o">*</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">MeV</span>
+<span class="n">PARAMS</span><span class="o">.</span><span class="n">T_final</span> <span class="o">=</span> <span class="mf">0.1</span> <span class="o">*</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">MeV</span>
+<span class="n">PARAMS</span><span class="o">.</span><span class="n">dx</span> <span class="o">=</span> <span class="mf">1e-4</span> <span class="o">*</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">MeV</span>
 <span class="n">PARAMS</span><span class="o">.</span><span class="n">infer</span><span class="p">()</span>
 
 
 <span class="n">Particles</span> <span class="o">=</span> <span class="p">[]</span>
-<span class="n">photon</span> <span class="o">=</span> <span class="n">Particle</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s">&#39;Photon&#39;</span><span class="p">,</span>
-                  <span class="n">statistics</span><span class="o">=</span><span class="n">STATISTICS</span><span class="o">.</span><span class="n">BOSON</span><span class="p">,</span>
-                  <span class="n">dof</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
-<span class="n">Particles</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">photon</span><span class="p">)</span>
+<span class="n">neutron</span> <span class="o">=</span> <span class="n">Particle</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s">&#39;Neutron&#39;</span><span class="p">,</span>
+                   <span class="n">statistics</span><span class="o">=</span><span class="n">STATISTICS</span><span class="o">.</span><span class="n">FERMION</span><span class="p">,</span>
+                   <span class="n">mass</span><span class="o">=</span><span class="mf">0.939</span> <span class="o">*</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">GeV</span><span class="p">,</span>
+                   <span class="n">dof</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+<span class="n">Particles</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">neutron</span><span class="p">)</span>
 
-<span class="n">universe</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="n">Particles</span><span class="p">,</span> <span class="n">logfile</span><span class="o">=</span><span class="s">&quot;tests/photon_universe.txt&quot;</span><span class="p">)</span>
-<span class="n">universe</span><span class="o">.</span><span class="n">evolve</span><span class="p">(</span><span class="n">dx</span><span class="o">=</span><span class="n">PARAMS</span><span class="o">.</span><span class="n">dx</span><span class="p">)</span>
+<span class="n">universe</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="n">Particles</span><span class="p">,</span> <span class="n">logfile</span><span class="o">=</span><span class="s">&quot;tests/neutron_universe.txt&quot;</span><span class="p">)</span>
+<span class="n">universe</span><span class="o">.</span><span class="n">evolve</span><span class="p">(</span><span class="n">dx</span><span class="o">=</span><span class="n">PARAMS</span><span class="o">.</span><span class="n">dx</span><span class="p">,</span> <span class="n">T_final</span><span class="o">=</span><span class="n">PARAMS</span><span class="o">.</span><span class="n">T_final</span><span class="p">)</span>
 
 <span class="n">initial_aT</span> <span class="o">=</span> <span class="n">universe</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s">&#39;aT&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
 <span class="k">print</span> <span class="s">&quot;a * T is conserved: {}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">all</span><span class="p">([</span><span class="n">initial_aT</span> <span class="o">==</span> <span class="n">value</span> <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">universe</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s">&#39;aT&#39;</span><span class="p">]]))</span>
@@ -88,8 +89,8 @@
 <span class="n">last_t</span> <span class="o">=</span> <span class="n">universe</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s">&#39;t&#39;</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">s</span>
 
 <span class="k">print</span> <span class="s">&quot;a scaling discrepancy is: {:.2f}%&quot;</span>\
-    <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="mi">100</span> <span class="o">*</span> <span class="p">(</span><span class="n">last_a</span> <span class="o">/</span> <span class="n">initial_a</span> <span class="o">-</span> <span class="n">numpy</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">last_t</span> <span class="o">/</span> <span class="n">initial_t</span><span class="p">))</span>
-            <span class="o">/</span> <span class="n">numpy</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">last_t</span> <span class="o">/</span> <span class="n">initial_t</span><span class="p">))</span>
+    <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="mi">100</span> <span class="o">*</span> <span class="p">(</span><span class="n">last_a</span> <span class="o">/</span> <span class="n">initial_a</span> <span class="o">-</span> <span class="p">(</span><span class="n">last_t</span> <span class="o">/</span> <span class="n">initial_t</span><span class="p">)</span> <span class="o">**</span> <span class="p">(</span><span class="mf">2.</span><span class="o">/</span><span class="mf">3.</span><span class="p">))</span>
+            <span class="o">/</span> <span class="p">(</span><span class="n">last_t</span> <span class="o">/</span> <span class="n">initial_t</span><span class="p">)</span> <span class="o">**</span> <span class="p">(</span><span class="mf">2.</span><span class="o">/</span><span class="mf">3.</span><span class="p">))</span>
 
 <span class="n">universe</span><span class="o">.</span><span class="n">graphics</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">__file__</span> <span class="o">+</span> <span class="s">&#39;.png&#39;</span><span class="p">)</span>
 

@@ -36,7 +36,7 @@
         Generated at
         <a target="_blank" href="http://ckald.github.io/pyccoon/" title="Pyccoon: side-to-side documentation generator">
             <img id="pyccoon-icon" src="../pyccoon_icon.svg" alt="Pyccoon: side-to-side documentation generator" /></a>
-        <code>2014-09-05 13:36:05.465690</code>/
+        <code>2014-09-05 16:52:28.881490</code>/
         by a diligent
         <a target="_blank" href="http://ckald.github.io/pyccoon/" title="Pyccoon: side-to-side documentation generator">pyccoon</a>
     </div>
@@ -222,7 +222,7 @@
           <p>Set internal parameters using arguments or default values </p>
         </div>
         <div class='code'>
-          <div class="highlight"><pre>        <span class="bp">self</span><span class="o">.</span><span class="n">temperature</span> <span class="o">=</span> <span class="n">PARAMS</span><span class="o">.</span><span class="n">T</span>
+          <div class="highlight"><pre>        <span class="bp">self</span><span class="o">.</span><span class="n">T</span> <span class="o">=</span> <span class="n">PARAMS</span><span class="o">.</span><span class="n">T</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">mass</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;mass&#39;</span><span class="p">,</span> <span class="mi">0</span> <span class="o">*</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">eV</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">decoupling_temperature</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;decoupling_temperature&#39;</span><span class="p">,</span> <span class="mi">0</span> <span class="o">*</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">eV</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;name&#39;</span><span class="p">,</span> <span class="s">&#39;Particle&#39;</span><span class="p">)</span>
@@ -358,7 +358,7 @@
         <span class="n">oldregime</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">regime</span>
         <span class="n">oldeq</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">in_equilibrium</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">temperature</span> <span class="o">=</span> <span class="n">PARAMS</span><span class="o">.</span><span class="n">T</span></pre></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">T</span> <span class="o">=</span> <span class="n">PARAMS</span><span class="o">.</span><span class="n">T</span></pre></div>
         </div>
         <div class='clearall'></div>
     </section>
@@ -438,7 +438,7 @@
           <div class='octowrap'>
             <a class='octothorpe' href='#section-19'>#</a>
           </div>
-          <p>Clear collision integral constants until the next computation step</p>
+          <p>Clear <a href="#collision-integral-constants">collision integral constants</a> until the next computation step</p>
         </div>
         <div class='code'>
           <div class="highlight"><pre>            <span class="bp">self</span><span class="o">.</span><span class="n">F_f</span> <span class="o">=</span> <span class="p">[]</span>
@@ -523,14 +523,14 @@
           <div class="highlight"><pre>    <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">regime</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 
-        <span class="n">regime_factor</span> <span class="o">=</span> <span class="mf">1e3</span>
+        <span class="n">regime_factor</span> <span class="o">=</span> <span class="mf">1e4</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">in_equilibrium</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">REGIMES</span><span class="o">.</span><span class="n">NONEQ</span>
 
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">temperature</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">mass</span> <span class="o">*</span> <span class="n">regime_factor</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">T</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">mass</span> <span class="o">*</span> <span class="n">regime_factor</span><span class="p">:</span>
             <span class="n">regime</span> <span class="o">=</span> <span class="n">REGIMES</span><span class="o">.</span><span class="n">RADIATION</span>
-        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">temperature</span> <span class="o">*</span> <span class="n">regime_factor</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">mass</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">T</span> <span class="o">*</span> <span class="n">regime_factor</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">mass</span><span class="p">:</span>
             <span class="n">regime</span> <span class="o">=</span> <span class="n">REGIMES</span><span class="o">.</span><span class="n">DUST</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">regime</span> <span class="o">=</span> <span class="n">REGIMES</span><span class="o">.</span><span class="n">INTERMEDIATE</span>
@@ -692,7 +692,7 @@ See particles/*.py for implementations</p>
         <div class='code'>
           <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">init_distribution</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_distribution</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">distribution_function</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">energy_normalized_vectorized</span><span class="p">(</span><span class="n">GRID</span><span class="o">.</span><span class="n">TEMPLATE</span><span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">temperature</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">energy_normalized_vectorized</span><span class="p">(</span><span class="n">GRID</span><span class="o">.</span><span class="n">TEMPLATE</span><span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">T</span>
         <span class="p">)</span></pre></div>
         </div>
         <div class='clearall'></div>
@@ -711,7 +711,7 @@ See particles/*.py for implementations</p>
           <div class="highlight"><pre>    <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">in_equilibrium</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">temperature</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">decoupling_temperature</span></pre></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">T</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">decoupling_temperature</span></pre></div>
         </div>
         <div class='clearall'></div>
     </section>
@@ -723,7 +723,10 @@ See particles/*.py for implementations</p>
           <div class='octowrap'>
             <a class='octothorpe' href='#section-33'>#</a>
           </div>
-          <p>Physical energy of the particle </p>
+          <p>Physical energy of the particle</p>
+<p>\begin{equation}
+       E = \sqrt{p^2 + M^2}
+   \end{equation}</p>
         </div>
         <div class='code'>
           <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">energy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span>
@@ -743,7 +746,10 @@ See particles/*.py for implementations</p>
           <div class='octowrap'>
             <a class='octothorpe' href='#section-34'>#</a>
           </div>
-          <p>Normalized energy of the particle in comoving coordinates with evolving mass term </p>
+          <p>Normalized energy of the particle in comoving coordinates with evolving mass term</p>
+<p>\begin{equation}
+       E_n = \sqrt{y^2 + (M a)^2}
+   \end{equation}</p>
         </div>
         <div class='code'>
           <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">energy_normalized</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
