@@ -242,3 +242,26 @@ class Logger(object):
             self.terminal.write(message)
         if log:
             self.log.write(message.decode('utf8'))
+
+
+def forward_euler_integrator(y, t, f, h):
+    """
+    Forward Euler integration method is a most basic way to solve an ODE of the kind:
+
+    \begin{equation}
+        \frac{d y(t)}{dt} = f(t, y(t))
+    \end{equation}
+
+    Derivation:
+
+    \begin{equation}
+        \frac{d y(t)}{dt} \approx \frac{y(t) - y(t-1)}{h}
+    \end{equation}
+    \begin{equation}
+        y_{n+1} = y_n + h f(t_n, y_n)
+    \end{equation}
+
+    Local Truncation Error (LTE):  $y(t_0+h) - y_1 = \frac{h^2}{2} y''(t_0) + O(h^3) $
+    """
+
+    return y[-1] + h * f(t[-1], y[-1])

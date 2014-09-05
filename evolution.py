@@ -63,14 +63,22 @@ class Universe:
         print '# Time, s\taT, MeV\tTemperature, MeV\tscale factor\tρ energy density, eV^4\tH, GeV'
         self.log()
 
-            rho = 0  # total energy density
+        def integrand(t, y):
+
             numerator = 0
             denominator = 0
 
             for particle in self.particles:
-                rho += particle.energy_density()
                 numerator += particle.numerator()
                 denominator += particle.denominator()
+
+            return numerator / denominator
+
+        while PARAMS.T > T_final:
+
+            rho = 0
+            for particle in self.particles:
+                rho += particle.energy_density()
 
             """ Conformal scale factor $x = a m$ step size is fixed: expansion of the Universe \
                 is the main factor that controls the thermodynamical state of the system """
@@ -84,7 +92,13 @@ class Universe:
                 close to the electron mass $\sim 511 keV$. Basically, this result in a cosmic \
                 photon and neutrino backgrounds temperature ratio around \
                 $\frac{T_\nu}{T_\gamma} \sim 1.401$"""
-            PARAMS.aT += numerator / denominator * dx
+
+            from common import forward_euler_integrator
+            PARAMS.aT = forward_euler_integrator(y=self.data['aT'],
+                                                 t=self.data['a'],
+                                                 f=integrand,
+                                                 h=dx)
+            # PARAMS.aT = PARAMS.aT + numerator / denominator * dx
             """ Physical scale factor and temperature for convenience """
             PARAMS.a = PARAMS.x / PARAMS.m
             PARAMS.T = PARAMS.aT / PARAMS.a
