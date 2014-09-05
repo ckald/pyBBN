@@ -1,10 +1,10 @@
 import matplotlib.pyplot as plt
 import numpy
-from particle import Particle
-from common import PARAMS, CONST, UNITS, STATISTICS, benchmark
+from particles import Particle, STATISTICS
+from common import PARAMS, CONST, UNITS
 import numericalunits as nu
 
-PARAMS.T = 2. * 1e2 * nu.MeV
+PARAMS.T = 2. * 1e2 * UNITS.MeV
 
 Particles = []
 photon = Particle(name='Photon',
@@ -13,12 +13,12 @@ Particles.append(photon)
 
 neutron = Particle(name='Neutron',
                    statistics=STATISTICS.FERMION,
-                   mass=0.939 * nu.GeV)
+                   mass=0.939 * UNITS.GeV)
 Particles.append(neutron)
 
 proton = Particle(name='Proton',
                   statistics=STATISTICS.FERMION,
-                  mass=0.938 * nu.GeV)
+                  mass=0.938 * UNITS.GeV)
 Particles.append(proton)
 
 neutrino = Particle(name='Neutrino',
@@ -29,7 +29,7 @@ neutrino = Particle(name='Neutrino',
 Particles.append(neutrino)
 
 electron = Particle(name='Electron',
-                    mass=0.511 * nu.MeV,
+                    mass=0.511 * UNITS.MeV,
                     statistics=STATISTICS.FERMION,
                     dof=4)
 Particles.append(electron)
@@ -99,7 +99,7 @@ def evolve(t_f=PARAMS.t_f, dt=PARAMS.dt):
         rhos[t+1] = rho
 
         if t % (time_steps/100) == 0:
-            print ts[t+1] / UNITS.s, "\t", Ts[t+1] / nu.MeV, "\t", As[t+1]
+            print ts[t+1] / UNITS.s, "\t", Ts[t+1] / UNITS.MeV, "\t", As[t+1]
 
     PARAMS.t = t_f
 
@@ -119,7 +119,7 @@ Ts = numpy.append(Ts, Ts2)
 As = numpy.append(As, As2)
 rhos = numpy.append(rhos, rhos2)
 
-plots[0][0].plot(ts / UNITS.s, Ts / nu.MeV)
+plots[0][0].plot(ts / UNITS.s, Ts / UNITS.MeV)
 plots[0][0].set_yscale("log")
 
 plots[0][1].plot(ts / UNITS.s, As)
@@ -129,7 +129,7 @@ plots[1][0].set_title("T * a")
 plots[1][0].set_xlabel("time ,s")
 plots[1][0].set_ylabel("T * a, 1")
 
-plots[1][1].plot(ts / UNITS.s, rhos / nu.eV**4)
+plots[1][1].plot(ts / UNITS.s, rhos / UNITS.eV**4)
 plots[1][1].set_title("Total energy density")
 plots[1][1].set_yscale("log")
 plots[1][1].set_xlabel("time, s")

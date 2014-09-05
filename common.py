@@ -23,10 +23,31 @@ class UNITS:
         As we use natural units in the project, all units from `numericalunits` except energy units\
         are useless. Here some useful units are defined in terms of `GeV`s. """
 
-    s = 1. / 6.58 * 1e25 / nu.GeV
-    kg = 1e27 / 1.8 * nu.GeV
-    m = 1e15 / 0.197 / nu.GeV
-    N = 1e-5 / 8.19 * nu.GeV**2
+    # eV = nu.eV
+    eV = 1.
+
+    @classmethod
+    def reset_units(cls):
+        UNITS.keV = UNITS.eV * 1e3
+        UNITS.MeV = UNITS.keV * 1e3
+        UNITS.GeV = UNITS.MeV * 1e3
+        UNITS.TeV = UNITS.GeV * 1e3
+        UNITS.s = 1. / 6.58 * 1e25 / UNITS.GeV
+        UNITS.kg = 1e27 / 1.8 * UNITS.GeV
+        UNITS.m = 1e15 / 0.197 / UNITS.GeV
+        UNITS.N = 1e-5 / 8.19 * UNITS.GeV**2
+
+UNITS.reset_units()
+
+
+class CONST:
+    """ === Physical constants === """
+
+    G = 6.67 * 1e-11 * (UNITS.N / UNITS.kg**2 * UNITS.m**2)
+    G_F = 1.166 * 1e-5 / UNITS.GeV**2
+    sin_theta_w_2 = 0.23
+    g_R = sin_theta_w_2
+    g_L = sin_theta_w_2 - 0.5
 
 
 class PARAMS:
@@ -34,27 +55,33 @@ class PARAMS:
     """ == Parameters ==
         Master object carrying the cosmological state of the system and initial conditions """
 
-    # Initial scale factor - arbitrary
-    a_initial = 1.
-
     # Temperature bounds define the simulations boundaries of the system
-    T_initial = 2.1 * nu.MeV
-    T_final = 1 * nu.keV
+    T_initial = 10 * UNITS.MeV
+    T_final = 10 * UNITS.keV
 
     # Arbitrary normalization of the conformal scale factor
-    m = 1. * nu.MeV
+    m = 1. * UNITS.MeV
     # Conformal scale factor step size during computations
-    dx = 1e-2 * nu.MeV
+    dx = 1e-1 * UNITS.MeV
     # Initial time
     t = 0. * UNITS.s
     # Hubble rate
     H = 0.
+    # Total energy density
+    rho = 0.
 
-    # Compute present-state parameters that can be inferred from the base ones
-    a = a_initial
-    x = a * m
-    T = T_initial
-    aT = a * T
+    @classmethod
+    def infer(cls):
+        # Initial scale factor - arbitrary
+        PARAMS.a_initial = 1. / PARAMS.T_initial * UNITS.MeV
+
+        # Compute present-state parameters that can be inferred from the base ones
+        PARAMS.a = PARAMS.a_initial
+        PARAMS.x = PARAMS.a * PARAMS.m
+        PARAMS.T = PARAMS.T_initial
+        PARAMS.aT = PARAMS.a * PARAMS.T
+
+PARAMS.infer()
 
 
 class GRID:
@@ -74,23 +101,13 @@ class GRID:
         """
 
     # Momentum range `(MIN_MOMENTUM, MAX_MOMENTUM)` must be divisible by `MOMENTUM_STEP`
-    MIN_MOMENTUM = 1e-1 * nu.eV
-    MAX_MOMENTUM = MIN_MOMENTUM + 1e8 * nu.eV
-    MOMENTUM_STEP = 0.5 * 1e7 * nu.eV
+    MIN_MOMENTUM = 1e-1 * UNITS.eV
+    MAX_MOMENTUM = MIN_MOMENTUM + 1e8 * UNITS.eV
+    MOMENTUM_STEP = 0.5 * 1e7 * UNITS.eV
     MOMENTUM_SAMPLES = int(numpy.round_((MAX_MOMENTUM - MIN_MOMENTUM) / MOMENTUM_STEP))
 
     # Grid template can be copied when defining a new distribution function
     TEMPLATE = numpy.linspace(MIN_MOMENTUM, MAX_MOMENTUM, num=MOMENTUM_SAMPLES, endpoint=True)
-
-
-class CONST:
-    """ === Physical constants === """
-
-    G = 6.67 * 1e-11 * (UNITS.N / UNITS.kg**2 * UNITS.m**2)
-    G_F = 1.166 * 1e-5 / nu.GeV**2
-    sin_theta_w_2 = 0.23
-    g_R = sin_theta_w_2
-    g_L = sin_theta_w_2 - 0.5
 
 
 def memodict(f):

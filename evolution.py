@@ -129,9 +129,10 @@ class Universe:
         # Print parameters each 100 steps
         if self.step % 100 == 0:
             print 't =', PARAMS.t / UNITS.s, \
-                "\tT =", PARAMS.T / nu.MeV, \
+                '\taT =', PARAMS.aT / UNITS.MeV, \
+                "\tT =", PARAMS.T / UNITS.MeV, \
                 "\ta =", PARAMS.a, \
-                "\tρ =", rho / nu.MeV**4, \
+                "\tρ =", PARAMS.rho / UNITS.eV**4, \
                 "\tH =", PARAMS.H / nu.GeV
             self.graphics.plot(self.data)
 

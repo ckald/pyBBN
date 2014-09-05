@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
 import numpy
-from common import GRID, PARAMS, theta
+from common import GRID, PARAMS, theta, UNITS
 from ds import D
 from scipy import integrate
-import numericalunits as nu
 
 
 class INTERACTIONS:
@@ -65,9 +64,9 @@ class Interaction:
             lambda x: GRID.MIN_MOMENTUM, lambda x: GRID.MAX_MOMENTUM
         )
         tmp *= integral[0] * PARAMS.m**5 / PARAMS.x**6 / PARAMS.H
-        print p0 / nu.MeV, '\t', \
-            tmp * PARAMS.dx, '\t',\
-            integral[1] / integral[0]
+        # print p0 / UNITS.MeV, '\t', \
+        #     tmp * PARAMS.dx, '\t',\
+        #     integral[1] / integral[0]
 
         return tmp
 

@@ -1,7 +1,6 @@
 from particle import Particle
 from evolution import Universe
-from common import STATISTICS
-import numericalunits as nu
+from common import STATISTICS, UNITS
 
 
 Particles = []
@@ -11,23 +10,23 @@ Particles.append(photon)
 
 neutron = Particle(name='Neutron',
                    statistics=STATISTICS.FERMION,
-                   mass=0.939 * nu.GeV)
+                   mass=0.939 * UNITS.GeV)
 Particles.append(neutron)
 
 proton = Particle(name='Proton',
                   statistics=STATISTICS.FERMION,
-                  mass=0.938 * nu.GeV)
+                  mass=0.938 * UNITS.GeV)
 Particles.append(proton)
 
 neutrino = Particle(name='Neutrino',
                     statistics=STATISTICS.FERMION,
                     dof=4,
-                    decoupling_temperature=2 * nu.MeV
+                    decoupling_temperature=3 * UNITS.MeV
                     )
 Particles.append(neutrino)
 
 electron = Particle(name='Electron',
-                    mass=0.511 * nu.MeV,
+                    mass=0.511 * UNITS.MeV,
                     statistics=STATISTICS.FERMION,
                     dof=4)
 Particles.append(electron)

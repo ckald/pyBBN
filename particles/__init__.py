@@ -10,6 +10,7 @@ import numericalunits as nu
 from scipy import interpolate, integrate
 
 from ..common import momentum_to_index, index_to_momentum, GRID, PARAMS
+from common import index_to_momentum, GRID, PARAMS, UNITS
 
 from regimes import DustParticle, RadiationParticle, IntermediateParticle, NonEqParticle
 
@@ -81,9 +82,9 @@ class Particle():
                                                                otypes=[numpy.float_])
 
         """ Set internal parameters using arguments or default values """
-        self.temperature = PARAMS.T
-        self.mass = kwargs.get('mass', 0 * nu.eV)
-        self.decoupling_temperature = kwargs.get('decoupling_temperature', 0 * nu.eV)
+        self.T = PARAMS.T
+        self.mass = kwargs.get('mass', 0 * UNITS.eV)
+        self.decoupling_temperature = kwargs.get('decoupling_temperature', 0 * UNITS.eV)
         self.name = kwargs.get('name', 'Particle')
 
         self.dof = kwargs.get('dof', 2)  # particle species degeneracy (e.g., spin-degeneracy)
@@ -142,9 +143,9 @@ class Particle():
         return "%s (%s, %s)\nn = %s, rho = %s\n" % (
             self.name,
             "eq" if self.in_equilibrium else "non-eq",
-            self.regime,
-            self.density() / nu.eV**3,
-            self.energy_density() / nu.eV**4
+            self.regime.name,
+            self.density() / UNITS.eV**3,
+            self.energy_density() / UNITS.eV**4
         ) + ("-" * 80)
 
     def __repr__(self):
@@ -193,9 +194,9 @@ class Particle():
             lambda x: GRID.MIN_MOMENTUM, lambda x: GRID.MAX_MOMENTUM
         )
         tmp *= integral[0] * PARAMS.m**5 / PARAMS.x**6 / PARAMS.H
-        print p0 / nu.MeV, '\t', \
-            tmp * PARAMS.dx, '\t',\
-            integral[1] / integral[0] if integral[0] else 0
+        # print p0 / UNITS.MeV, '\t', \
+        #     tmp * PARAMS.dx, '\t',\
+        #     integral[1] / integral[0] if integral[0] else 0
 
         return tmp
 
