@@ -185,13 +185,13 @@ class Particle():
     def integrate_collisions(self, p0):
         """ == Particle collisions integration == """
 
-        if not self.F_1 or not self.F_f:
-            return 0
+        integral = None
+        if self.F_1 and self.F_f:
 
-        tmp = 1./64. / numpy.pi**3 / p0 / self.energy_normalized(p0)
+            tmp = 1./64. / numpy.pi**3 / p0 / self.energy_normalized(p0) \
+                * PARAMS.m**5 / PARAMS.x**6 / PARAMS.H
 
-        integral = integrate.dblquad(
-            lambda p1, p2: (
+            integrand = lambda (p1, p2): (
                 self.distribution(p0) * numpy.sum([F(p0, p1, p2) for F in self.F_f])
                 + numpy.sum([F(p0, p1, p2) for F in self.F_1])
             ),
