@@ -9,7 +9,7 @@ This test checks that in the photon universe:
 
 [Log file](log.txt)
 
-TODO: why is there a discrepancy $\sim 13\%$?
+TODO: why is there a discrepancy $\sim 13\%$? Test if it is because of the electrons regime
 TODO: why is `aT` not conserved? Does it mean that fewer particles are moving faster?
 
 """
