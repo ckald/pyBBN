@@ -1,6 +1,12 @@
-from particle import Particle
+from particles import Particle, STATISTICS
 from evolution import Universe
-from common import STATISTICS, UNITS
+from common import UNITS, PARAMS
+
+
+PARAMS.T_initial = 100 * UNITS.MeV
+PARAMS.T_final = 1e-1 * UNITS.MeV
+PARAMS.dx = 1e-2 * UNITS.MeV
+PARAMS.infer()
 
 
 Particles = []
@@ -21,8 +27,7 @@ Particles.append(proton)
 neutrino = Particle(name='Neutrino',
                     statistics=STATISTICS.FERMION,
                     dof=4,
-                    decoupling_temperature=3 * UNITS.MeV
-                    )
+                    decoupling_temperature=3 * UNITS.MeV)
 Particles.append(neutrino)
 
 electron = Particle(name='Electron',
@@ -33,7 +38,7 @@ Particles.append(electron)
 
 universe = Universe(Particles)
 universe.graphics.monitor([neutrino])
-universe.evolve()
+universe.evolve(dx=PARAMS.dx, T_final=PARAMS.T_final)
 
 initial_aT = universe.data['aT'][0]
 print "a * T is conserved: {}".format(all([initial_aT == value for value in universe.data['aT']]))
