@@ -180,8 +180,17 @@ def lambda_integrate(func):
         grid template """
     @wraps(func)
     def wrapper(*args, **kw):
-        fpp = func(*args, **kw)(GRID.TEMPLATE)
-        return integrate.simps(fpp, dx=GRID.MOMENTUM_STEP)
+        # fpp = func(*args, **kw)(GRID.TEMPLATE)
+        # result = integrate.simps(fpp, dx=GRID.MOMENTUM_STEP)
+
+        fpp = func(*args, **kw)
+        result, err = integrate.quad(fpp, GRID.MIN_MOMENTUM, GRID.MAX_MOMENTUM)
+        # print result, err
+
+        # fpp = func(*args, **kw)
+        # result = integrate.romberg(fpp, GRID.MIN_MOMENTUM, GRID.MAX_MOMENTUM)
+
+        return result
     return wrapper
 
 
