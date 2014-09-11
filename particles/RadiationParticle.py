@@ -61,4 +61,4 @@ def denominator(particle):
             \frac{2 \pi^2}{15} g (a T)^3
         \end{equation}
     """
-    return 2. * numpy.pi**2 / 15. * particle.dof * (PARAMS.a * particle.T)**3
+    return 2. * numpy.pi**2 / 15. * particle.dof * (PARAMS.aT)**3
