@@ -157,7 +157,7 @@ def momentum_to_index(p):
     elif index < 0:
         index = 0
 
-    return index
+    return int(index)
 
 
 @memodict
@@ -240,6 +240,7 @@ def parmap(f, X):
 
 
 class Logger(object):
+    """ Convenient double logger that redirects `stdout` and save the output also to the file """
     def __init__(self, filename):
         self.terminal = sys.stdout
         self.log = codecs.open(filename, "w", encoding="utf8")
@@ -249,6 +250,9 @@ class Logger(object):
             self.terminal.write(message)
         if log:
             self.log.write(message.decode('utf8'))
+
+    def __del__(self):
+        sys.stdout = self.terminal
 
 
 def forward_euler_integrator(y, t, f, h):
