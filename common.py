@@ -26,7 +26,7 @@ class UNITS:
         are useless. Here some useful units are defined in terms of `GeV`s. """
 
     # eV = nu.eV
-    eV = 1.
+    eV = 1e-6
 
     @classmethod
     def reset_units(cls):
