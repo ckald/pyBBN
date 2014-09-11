@@ -29,7 +29,7 @@ def energy_density(particle):
 def pressure(particle):
     return numpy.vectorize(lambda p: (
         particle.distribution(p) * p ** 4
-        / particle.energy(p)
+        / particle.energy_normalized(p)
         * particle.dof / 6. / numpy.pi**2 / PARAMS.a**4
     ), otypes=[numpy.float_])
 
