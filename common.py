@@ -64,7 +64,7 @@ class PARAMS:
     # Arbitrary normalization of the conformal scale factor
     m = 1. * UNITS.MeV
     # Conformal scale factor step size during computations
-    dx = 1e-1 * UNITS.MeV
+    dx = 1e-2 * UNITS.MeV
     # Initial time
     t = 0. * UNITS.s
     # Hubble rate
@@ -75,7 +75,8 @@ class PARAMS:
     @classmethod
     def infer(cls):
         # Initial scale factor - arbitrary
-        PARAMS.a_initial = 1. / PARAMS.T_initial * UNITS.MeV
+        PARAMS.a_initial = 1. / (PARAMS.T_initial / UNITS.MeV)
+        # PARAMS.a_initial = 1.
 
         # Compute present-state parameters that can be inferred from the base ones
         PARAMS.a = PARAMS.a_initial
