@@ -34,12 +34,12 @@ class STATISTICS:
         """
         return 1. / (numpy.exp(e) - 1.)
 
-    # Vectorized distribution functions. Just for convenience - no performance gain.
-    FermiV = numpy.vectorize(Fermi, otypes=[numpy.float_])
-    BoseV = numpy.vectorize(Bose, otypes=[numpy.float_])
-
     BOSON = Bose
     FERMION = Fermi
+
+# Vectorized distribution functions. Just for convenience - no performance gain.
+STATISTICS.FermiV = numpy.vectorize(STATISTICS.Fermi, otypes=[numpy.float_])
+STATISTICS.BoseV = numpy.vectorize(STATISTICS.Bose, otypes=[numpy.float_])
 
 
 class REGIMES(dict):
