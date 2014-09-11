@@ -1,7 +1,13 @@
 from interaction import Interaction
-from particle import Particle
+from particles import Particle, STATISTICS
 from evolution import Universe
-from common import STATISTICS, CONST, UNITS
+from common import CONST, UNITS, PARAMS, GRID
+
+
+PARAMS.T_initial = 3 * UNITS.MeV
+PARAMS.T_final = 0.075 * UNITS.MeV
+PARAMS.dx = 1e-6 * UNITS.MeV
+PARAMS.infer()
 
 
 Particles = []
@@ -25,15 +31,15 @@ Particles.append(photon)
 neutrino = Particle(name='Neutrino',
                     statistics=STATISTICS.FERMION,
                     dof=4,
-                    decoupling_temperature=2 * UNITS.MeV
+                    decoupling_temperature=3 * UNITS.MeV
                     )
 Particles.append(neutrino)
 
-electron = Particle(name='Electron',
-                    mass=0.511 * UNITS.MeV,
-                    statistics=STATISTICS.FERMION,
-                    dof=4)
-Particles.append(electron)
+# electron = Particle(name='Electron',
+#                     mass=0.511 * UNITS.MeV,
+#                     statistics=STATISTICS.FERMION,
+#                     dof=4)
+# Particles.append(electron)
 
 neutrino_scattering = Interaction(
     in_particles=[neutrino, neutrino],
@@ -48,9 +54,13 @@ neutrino_scattering = Interaction(
 )
 Interactions.append(neutrino_scattering)
 
+# import numpy
+# neutrino._distribution += numpy.vectorize(lambda x: 0.3 * numpy.exp(-(x-10)**2),
+#                                           otypes=[numpy.float_])(GRID.TEMPLATE)
+
 universe = Universe(Particles, Interactions)
 universe.graphics.monitor(particles=[neutrino])
-universe.evolve()
+universe.evolve(dx=PARAMS.dx, T_final=PARAMS.T_final)
 
 for particle in Particles:
     print particle
