@@ -81,6 +81,7 @@ class Particle():
 
         """ Set internal parameters using arguments or default values """
         self.T = PARAMS.T
+        self.aT = PARAMS.aT
         self.mass = kwargs.get('mass', 0 * UNITS.eV)
         self.decoupling_temperature = kwargs.get('decoupling_temperature', 0 * UNITS.eV)
         self.name = kwargs.get('name', 'Particle')
@@ -154,12 +155,16 @@ class Particle():
         oldregime = self.regime
         oldeq = self.in_equilibrium
 
-        self.T = PARAMS.T
-
         # Clear saved values of density, energy_density and pressure
         self._density = None
         self._energy_density = None
         self._pressure = None
+
+        # Update particle internal params only while it is in equilibrium
+        if self.in_equilibrium:
+            # Particle species has temperature only when it is in equilibrium
+            self.T = PARAMS.T
+            self.aT = PARAMS.aT
 
         if self.in_equilibrium != oldeq and not self.in_equilibrium:
             # Particle decouples, have to init the distribution function array for kinetics
@@ -296,7 +301,7 @@ class Particle():
 
     def init_distribution(self):
         self._distribution = self.distribution_function(
-            self.energy_normalized_vectorized(GRID.TEMPLATE) / self.T
+            self.energy_normalized_vectorized(GRID.TEMPLATE) / PARAMS.aT
         )
 
     @property
