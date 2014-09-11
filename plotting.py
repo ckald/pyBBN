@@ -1,6 +1,7 @@
 import os
 import itertools
 import matplotlib.pyplot as plt
+
 from collections import deque
 
 from common import UNITS, GRID
@@ -127,10 +128,12 @@ class Plotting:
         if self.particles:
             for i, particle in enumerate(self.particles):
                 if not particle.in_equilibrium:
-                    self.particles_plots[i*2].plot(GRID.TEMPLATE / UNITS.MeV, particle._distribution)
+                    self.particles_plots[i*2].plot(GRID.TEMPLATE / UNITS.MeV,
+                                                   particle._distribution)
+
                     feq = particle.distribution_function_vectorized(
                         particle.energy_normalized_vectorized(GRID.TEMPLATE)
-                        / particle.T
+                        / particle.aT
                     )
                     self.particles_plots[i*2 + 1].plot(
                         GRID.TEMPLATE / UNITS.MeV,
