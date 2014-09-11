@@ -101,14 +101,9 @@ class Particle():
         """ For equilibrium particles distribution function is by definition given by its\
             statistics and will not be used until species comes into non-equilibrium regime """
         self._distribution = numpy.zeros(GRID.MOMENTUM_SAMPLES, dtype=numpy.float_)
-        self._distribution_interpolation = interpolate.interp1d(GRID.TEMPLATE,
-                                                                self._distribution,
-                                                                kind='cubic')
+        self._distribution_interpolation = self.interpolate_distribution(self._distribution)
         """ Particle collision integral as well is not effective in equilibrium """
         self.collision_integral = numpy.zeros(GRID.MOMENTUM_SAMPLES, dtype=numpy.float_)
-
-        self.update()
-        self.init_distribution()
 
         """
         == Collision integral constants ==
@@ -136,6 +131,9 @@ class Particle():
         """
         self.F_f = []
         self.F_1 = []
+
+        self.update()
+        self.init_distribution()
 
     def __str__(self):
         """ String-like representation of particle species it's regime and parameters """
@@ -173,10 +171,9 @@ class Particle():
         if not self.in_equilibrium:
             # For non-equilibrium particle calculate the collision integrals
             self.collision_integral = self.integrate_collisions_vectorized(GRID.TEMPLATE)
-            self._distribution += PARAMS.dx * self.collision_integral
-            self._distribution_interpolation = interpolate.interp1d(GRID.TEMPLATE,
-                                                                    self._distribution,
-                                                                    kind='cubic')
+            print(self.collision_integral * UNITS.MeV)
+            self._distribution += self.collision_integral * PARAMS.dx
+            self._distribution_interpolation = self.interpolate_distribution(self._distribution)
             # Clear [collision integral constants](#collision-integral-constants) \
             # until the next computation step
             self.F_f = []
@@ -289,7 +286,7 @@ class Particle():
                 p = GRID.MIN_MOMENTUM
             if p > GRID.MAX_MOMENTUM:
                 p = GRID.MAX_MOMENTUM
-            return self._distribution_interpolation(numpy.abs(p))
+            return self._distribution_interpolation(p)
 
         if by_index:
             if p < GRID.MOMENTUM_SAMPLES:
@@ -299,10 +296,15 @@ class Particle():
             else:
                 return 0.
 
+    def interpolate_distribution(self, distribution):
+        return interpolate.interp1d(GRID.TEMPLATE, distribution,
+                                    kind='quadratic', assume_sorted=True, copy=False)
+
     def init_distribution(self):
         self._distribution = self.distribution_function(
             self.energy_normalized_vectorized(GRID.TEMPLATE) / PARAMS.aT
         )
+        self._distribution_interpolation = self.interpolate_distribution(self._distribution)
 
     @property
     def in_equilibrium(self):
