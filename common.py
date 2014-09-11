@@ -84,7 +84,7 @@ class PARAMS:
         PARAMS.T = PARAMS.T_initial
         PARAMS.aT = PARAMS.a * PARAMS.T
 
-PARAMS.infer()
+        GRID.init()
 
 
 class GRID:
@@ -103,14 +103,20 @@ class GRID:
         and errors).
         """
 
-    # Momentum range `(MIN_MOMENTUM, MAX_MOMENTUM)` must be divisible by `MOMENTUM_STEP`
-    MIN_MOMENTUM = 1e-1 * UNITS.eV
-    MAX_MOMENTUM = MIN_MOMENTUM + 1e8 * UNITS.eV
-    MOMENTUM_STEP = 0.5 * 1e7 * UNITS.eV
-    MOMENTUM_SAMPLES = int(numpy.round_((MAX_MOMENTUM - MIN_MOMENTUM) / MOMENTUM_STEP))
+    @classmethod
+    def init(cls):
+        # Momentum range `(MIN_MOMENTUM, MAX_MOMENTUM)` must be divisible by `MOMENTUM_STEP`
+        GRID.MIN_MOMENTUM = 1 * UNITS.eV
+        GRID.MAX_MOMENTUM = GRID.MIN_MOMENTUM + 20 * UNITS.MeV
+        GRID.MOMENTUM_STEP = 1 * UNITS.MeV
+        GRID.MOMENTUM_SAMPLES = int(numpy.round_((GRID.MAX_MOMENTUM - GRID.MIN_MOMENTUM)
+                                    / GRID.MOMENTUM_STEP))
 
-    # Grid template can be copied when defining a new distribution function
-    TEMPLATE = numpy.linspace(MIN_MOMENTUM, MAX_MOMENTUM, num=MOMENTUM_SAMPLES, endpoint=True)
+        # Grid template can be copied when defining a new distribution function
+        GRID.TEMPLATE = numpy.linspace(GRID.MIN_MOMENTUM, GRID.MAX_MOMENTUM,
+                                       num=GRID.MOMENTUM_SAMPLES, endpoint=True)
+
+PARAMS.infer()
 
 
 def memodict(f):
