@@ -5,10 +5,16 @@ This file contains `Particle` class definition and code governing the switching 
 regimes
 """
 
+import os
 import numpy
+import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
+from skmonaco import mcquad
+
+from matplotlib import cm
 from scipy import interpolate, integrate
 
-from common import index_to_momentum, GRID, PARAMS, UNITS
+from common import index_to_momentum, GRID, PARAMS, UNITS, benchmark
 
 from particles import DustParticle, RadiationParticle, IntermediateParticle, NonEqParticle
 
@@ -194,14 +200,47 @@ class Particle():
             integrand = lambda (p1, p2): (
                 self.distribution(p0) * numpy.sum([F(p0, p1, p2) for F in self.F_f])
                 + numpy.sum([F(p0, p1, p2) for F in self.F_1])
-            ),
-            GRID.MIN_MOMENTUM, GRID.MAX_MOMENTUM,
-            lambda x: GRID.MIN_MOMENTUM, lambda x: GRID.MAX_MOMENTUM
-        )
-        tmp *= integral[0] * PARAMS.m**5 / PARAMS.x**6 / PARAMS.H
-        # print p0 / UNITS.MeV, '\t', \
-        #     tmp * PARAMS.dx, '\t',\
-        #     integral[1] / integral[0] if integral[0] else 0
+            )
+
+            fig = plt.figure(3)
+            ax = fig.gca(projection='3d')
+            plt.cla()
+            X, Y = numpy.meshgrid(GRID.TEMPLATE, GRID.TEMPLATE)
+            Z = numpy.array([integrand([x, y]) for x, y in zip(numpy.ravel(X), numpy.ravel(Y))])\
+                .reshape(X.shape)
+
+            ax.plot_surface(X, Y, Z, rstride=1, cstride=1, alpha=0.1)
+            ax.contourf(X, Y, Z, zdir='z', offset=numpy.amin(Z), cmap=cm.coolwarm)
+            ax.contourf(X, Y, Z, zdir='x', offset=ax.get_xlim()[0], cmap=cm.coolwarm)
+            ax.contourf(X, Y, Z, zdir='y', offset=ax.get_ylim()[1], cmap=cm.coolwarm)
+
+            ax.set_xlabel('p1')
+            ax.set_ylabel('p2')
+            ax.set_title('p0 = {}'.format(p0))
+
+            plt.savefig(os.path.join(os.path.split(__file__)[0], '../logs/plt_{}.png'.format(p0)))
+
+            with benchmark("integrating {}".format(p0)):
+                # integral, error = integrate.dblquad(
+                #     integrand,
+                #     GRID.MIN_MOMENTUM, GRID.MAX_MOMENTUM,
+                #     lambda p1: GRID.MIN_MOMENTUM, lambda p1: p0 + p1,  # GRID.MAX_MOMENTUM,
+                #     epsrel=0.01
+                # )
+                integral, error = mcquad(
+                    integrand,
+                    xl=[GRID.MIN_MOMENTUM, GRID.MIN_MOMENTUM],
+                    xu=[GRID.MAX_MOMENTUM, GRID.MAX_MOMENTUM],
+                    npoints=1e3
+                )
+                print integral, error
+            tmp *= integral
+        else:
+            tmp = 0
+
+        # print 'p0 =', p0 / UNITS.MeV, '\t', \
+        #     'res =', tmp * PARAMS.dx, '\t',\
+        #     'relerr =', error / integral if integral else 0
 
         return tmp
 
