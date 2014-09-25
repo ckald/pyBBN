@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 import numpy
-from common import GRID, PARAMS, theta
-from ds import D
-from scipy import integrate
+from common import PARAMS, theta
+from ds import D, Db1, Db2
 
 
 class INTERACTIONS:
@@ -36,8 +35,6 @@ class Interaction:
     decoupling_temperature = 0.
     # Interaction symmetry factor
     symmetry_factor = 1.
-    # Constant shared by all 4-particle interactions
-    constant = 1./64. / numpy.pi**3
 
     """ Four-particle interactions of the interest can all be rewritten in a form
 
@@ -47,6 +44,7 @@ class Interaction:
         \end{equation} """
     K1 = 0.
     K2 = 0.
+    order = (0, 1, 2, 3)
     """ 2-to-2 interactions and 1-to-3 decays can be generalized by introducing a multiplier `s` \
         for the momentum of the second particle: $p_1 + s p_2 = p_3 + p_4 $ """
     s = 1.
@@ -57,7 +55,6 @@ class Interaction:
             setattr(self, key, kwargs[key])
 
         self.particles = self.in_particles + self.out_particles
-        # self.collision = numpy.vectorize(self.collision, otypes=[numpy.float_])
         self.s = 1. if len(self.in_particles) == 2 else -1.
 
     def calculate(self):
@@ -65,34 +62,14 @@ class Interaction:
         Calculate collision integral constants and save them to the first involved particle
         """
         if PARAMS.T > self.decoupling_temperature and not self.in_particles[0].in_equilibrium:
-            self.particles[0].F_f.append(
-                lambda p0, p1, p2:
-                self.quad_integrand(p=[p0, p1, p2, 0], method=self.variable_integrand)
+
+            self.particles[0].collision_integrands.append(
+                lambda p0, p1, p2: self.integrand(p=[p0, p1, p2, 0], order=(0, 1, 2, 3))
             )
-            self.particles[0].F_1.append(
-                lambda p0, p1, p2:
-                self.quad_integrand(p=[p0, p1, p2, 0], method=self.const_integrand)
-            )
-
-    # def collision(self, p0):
-    #     """ TODO: what is this? Probably not used at the moment """
-    #     tmp = self.constant / p0 / self.particles[0].energy_normalized(p0)
-
-    #     integral = integrate.dblquad(
-    #         lambda p1, p2: (
-    #             self.particles[0].distribution(p0)
-    #             * self.quad_integrand(p=[p0, p1, p2, 0], method=self.variable_integrand)
-    #             + self.quad_integrand(p=[p0, p1, p2, 0], method=self.const_integrand)
-    #         ),
-    #         GRID.MIN_MOMENTUM, GRID.MAX_MOMENTUM,
-    #         lambda x: GRID.MIN_MOMENTUM, lambda x: GRID.MAX_MOMENTUM
-    #     )
-    #     tmp *= integral[0] * PARAMS.m**5 / PARAMS.x**6 / PARAMS.H
-    #     # print p0 / UNITS.MeV, '\t', \
-    #     #     tmp * PARAMS.dx, '\t',\
-    #     #     integral[1] / integral[0]
-
-    #     return tmp
+            # if self.particles[0] != self.particles[1]:
+            #     self.particles[1].collision_integrands.append(
+            #         lambda p0, p1, p2: self.integrand(p=[p0, p1, p2, 0], order=(1, 0, 2, 3))
+            #     )
 
     def calculate_impulses(self, p=[]):
         """ Helper procedure that caches energies and normalized masses of particles """
@@ -101,73 +78,97 @@ class Interaction:
         for i, particle in enumerate(self.particles):
             E.append(particle.energy_normalized(p[i]))
             m.append(particle.mass_normalized)
-        E[3] = E[0] + self.s * E[1] - E[2]
+        E[3] = sum(self.in_values(E)) - sum(self.out_values(E))
+        # E[3] = E[0] + self.s * E[1] - E[2]
         p[3] = numpy.sqrt(numpy.abs(E[3]**2 - m[3]**2))
         return p, E, m
 
-    def quad_integrand(self, p=[], method=None):
+    def integrand(self, p=[], order=(0, 1, 2, 3)):
         """ Total collision integral interior with performance optimizations """
         p, E, m = self.calculate_impulses(p)
         integrand = theta(E[3] - m[3]) * self.symmetry_factor
+
         if integrand == 0:
             return 0
 
-        integrand *= D(p=p, E=E, m=m, K1=self.K1, K2=self.K2)
+        if p[0] != 0:
+            integrand *= D(p=p, E=E, m=m, K1=self.K1, K2=self.K2, order=order) / p[0] / E[0]
+        else:
+            # raise Exception("how did i get here?!")
+            integrand *= Db1(*p[1:]) * m[1] * (E[2] * E[3] + Db2(*p[1:]))
+
         if integrand == 0:
             return 0
 
-        return -integrand * method(p=p, E=E, m=m) * p[1] / E[1] * p[2] / E[2]
+        for i in [1, 2, 3]:
+            if m[i] != 0:
+                integrand *= p[i] / E[i]
 
-    def variable_integrand(self, p=[], E=[], m=[]):
+        integrand *= (self.F_B(p) - self.F_A(p))
+
+        return integrand
+
+    def F_f(self, p=[]):
         """ Variable part of the collision integral ready for integration """
         return \
-            self.F_A(in_p=p[:len(self.in_particles)],
-                     out_p=p[len(self.in_particles):])\
-            - self.in_particles[0].eta * self.F_B(in_p=p[:len(self.in_particles)],
-                                                  out_p=p[len(self.in_particles):])
+            self.F_A(p=p, skip_index=0) + self.in_particles[0].eta * self.F_B(p=p, skip_index=0)
 
-    def const_integrand(self, p=[], E=[], m=[]):
+    def F_1(self, p=[]):
         """ Constant part of the collision integral ready for integration """
-        return - self.F_B(in_p=p[:len(self.in_particles)], out_p=p[len(self.in_particles):])
+        return - self.F_B(p=p, skip_index=0)
 
     """
     \begin{equation}
-        -\mathcal{F}(f) = f_1 f_2 (1 \pm f_3) (1 \pm f_4) - f_3 f_4 (1 \pm f_1) (1 \pm f_2)
+        \mathcal{F}(f) = f_3 f_4 (1 \pm f_1) (1 \pm f_2) - f_1 f_2 (1 \pm f_3) (1 \pm f_4)
     \end{equation}
 
     \begin{equation}
-        -\mathcal{F}(f) = f_1 (f_2 (1 \pm f_3) (1 \pm f_4) \pm f_3 f_4 (1 \pm f_2)) \
-        - f_3 f_4 (1 \pm f_2)
+        \mathcal{F}(f) = f_1 (\mp f_3 f_4 (1 \pm f_2) - f_2 (1 \pm f_3) (1 \pm f_4)) \
+        + f_3 f_4 (1 \pm f_2)
     \end{equation}
 
     \begin{equation}
-        -\mathcal{F}(f) = f_1 (\mathcal{F}_A \pm \mathcal{F}_B) - \mathcal{F}_B
+        \mathcal{F}(f) = \mathcal{F}_B - f_1 (\mathcal{F}_A \mp \mathcal{F}_B)
     \end{equation}
-
-    \begin{equation}
-        \mathcal{F}_A = f_2 (1 \pm f_3) (1 \pm f_4)
-    \end{equation}
-    \begin{equation}
-        \mathcal{F}_B = f_3 f_4 (1 \pm f_2)
-    \end{equation}
-
     """
-    def F_A(self, in_p=[], out_p=[], index=0):
-        """ Forward reaction distribution functional term without the `index`-th particle """
+    def F_A(self, p=[], skip_index=None):
+        """
+        Forward reaction distribution functional term without the `index`-th particle
+
+        \begin{equation}
+            \mathcal{F}_A = f_2 (1 \pm f_3) (1 \pm f_4)
+        \end{equation}
+        """
+        in_p = self.in_values(p)
+        out_p = self.out_values(p)
         temp = 1.
-        for i, particle in enumerate(self.out_particles):
-            if i != index:
-                temp *= particle.distribution(out_p[i])
         for i, particle in enumerate(self.in_particles):
-            temp *= 1. - particle.eta * particle.distribution(in_p[i])
+            if i != skip_index:
+                temp *= particle.distribution(in_p[i])
+        for i, particle in enumerate(self.out_particles):
+            temp *= 1. - particle.eta * particle.distribution(out_p[i])
         return temp
 
-    def F_B(self, in_p=[], out_p=[], index=0):
-        """ Backward reaction distribution functional term without the `index`-th particle  """
+    def F_B(self, p=[], skip_index=None):
+        """
+        Backward reaction distribution functional term without the `index`-th particle
+
+        \begin{equation}
+            \mathcal{F}_B = f_3 f_4 (1 \pm f_2)
+        \end{equation}
+        """
+        in_p = self.in_values(p)
+        out_p = self.out_values(p)
         temp = 1.
-        for i, particle in enumerate(self.in_particles):
-            temp *= particle.distribution(in_p[i])
         for i, particle in enumerate(self.out_particles):
-            if i != index:
-                temp *= 1. - particle.eta * particle.distribution(out_p[i])
+            temp *= particle.distribution(out_p[i])
+        for i, particle in enumerate(self.in_particles):
+            if skip_index is None or i != skip_index:
+                temp *= 1. - particle.eta * particle.distribution(in_p[i])
         return temp
+
+    def in_values(self, p=[]):
+        return p[:len(self.in_particles)]
+
+    def out_values(self, p=[]):
+        return p[len(self.in_particles):]
