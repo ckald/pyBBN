@@ -12,7 +12,6 @@ import codecs
 from scipy import integrate
 from functools import wraps
 import numericalunits as nu
-import cPickle
 
 
 # Numpy error handling behavior. Uncomment to see a notice each time you get an overflow.
@@ -208,14 +207,12 @@ class MemoizeMutable:
         self.fn = fn
         self.memo = {}
 
-    def __call__(self, *args, **kwds):
-        pickle = cPickle.dumps(args, 1) + cPickle.dumps(kwds, 1)
+    def __call__(self, *args):
+        pickle = tuple(args)
         if not pickle in self.memo:
-            self.memo[pickle] = self.fn(*args, **kwds)
-            # mc.set(pickle, self.fn(*args, **kwds))
+            self.memo[pickle] = self.fn(*args)
 
         return self.memo[pickle]
-        # return mc.get(pickle)
 
 
 import multiprocessing
