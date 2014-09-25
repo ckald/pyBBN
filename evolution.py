@@ -14,7 +14,7 @@ class Universe:
 
     """ The master object that governs the calculation. """
 
-    log_freq = 10
+    log_freq = 1
 
     def __init__(self, particles=[], interactions=[],
                  logfile='logs/' + str(datetime.now()) + '.txt'):
@@ -162,7 +162,7 @@ class Universe:
     def log(self):
         """ Runtime log output """
 
-        # Print parameters each 100 steps
+        # Print parameters every now and then
         if self.step % self.log_freq == 0:
             print 't =', PARAMS.t / UNITS.s, \
                 '\taT =', PARAMS.aT / UNITS.MeV, \
