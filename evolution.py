@@ -34,7 +34,7 @@ class Universe:
         for particle in self.particles:
             print particle
 
-    def evolve(self, T_final=PARAMS.T_final, dx=PARAMS.dx):
+    def evolve(self):
         """
         == Main computing routine ==
 
@@ -74,9 +74,10 @@ class Universe:
 
             return numerator / denominator
 
-        while PARAMS.T > T_final:
+        while PARAMS.T > PARAMS.T_final:
 
             rho = 0
+
             for particle in self.particles:
                 rho += particle.energy_density()
 
