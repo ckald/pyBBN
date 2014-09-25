@@ -1,10 +1,14 @@
 import os
 import itertools
+
+import numpy
 import matplotlib.pyplot as plt
+from matplotlib import cm
+from mpl_toolkits.mplot3d import Axes3D
 
 from collections import deque
 
-from common import UNITS, GRID
+from common import UNITS, GRID, PARAMS
 
 
 class ring_deque(deque):
@@ -131,10 +135,24 @@ class Plotting:
                     self.particles_plots[i*2].plot(GRID.TEMPLATE / UNITS.MeV,
                                                    particle._distribution)
 
-                    feq = particle.distribution_function_vectorized(
+                    effective_temperature = (
+                        240. * particle.energy_density() / 7. / numpy.pi**2 / particle.dof
+                    ) ** 0.25
+
+                    feq = particle.distribution_function(
                         particle.energy_normalized_vectorized(GRID.TEMPLATE)
-                        / particle.aT
+                        / PARAMS.a / effective_temperature
                     )
+                    self.particles_plots[i*2 + 1].set_title(
+                        particle.name + " (T' = {})".format(effective_temperature / UNITS.MeV)
+                    )
+                    for line in self.particles_plots[i*2 + 1].get_axes().lines:
+                        alpha = line.get_alpha() or 1.
+                        if alpha < 0.1:
+                            line.remove()
+                        else:
+                            line.set_alpha((line.get_alpha() or 1.) * 0.8)
+
                     self.particles_plots[i*2 + 1].plot(
                         GRID.TEMPLATE / UNITS.MeV,
                         particle._distribution / feq
@@ -142,3 +160,23 @@ class Plotting:
 
             plt.figure(2)
             plt.draw()
+
+
+def plot_integrand(integrand, particle, p0):
+    fig = plt.figure(3)
+    ax = fig.gca(projection='3d')
+    plt.cla()
+    X, Y = numpy.meshgrid(GRID.TEMPLATE, GRID.TEMPLATE)
+    Z = numpy.array([integrand([x, y]) for x, y in zip(numpy.ravel(X), numpy.ravel(Y))])\
+        .reshape(X.shape)
+
+    ax.plot_surface(X, Y, Z, rstride=4, cstride=4, alpha=0.1)
+    ax.contourf(X, Y, Z, zdir='z', offset=numpy.amin(Z), cmap=cm.coolwarm)
+    ax.contourf(X, Y, Z, zdir='x', offset=ax.get_xlim()[0], cmap=cm.coolwarm)
+    ax.contourf(X, Y, Z, zdir='y', offset=ax.get_ylim()[1], cmap=cm.coolwarm)
+
+    ax.set_xlabel('p1')
+    ax.set_ylabel('p2')
+    ax.set_title('{} p0 = {}'.format(particle.name, p0 / UNITS.MeV))
+
+    plt.savefig(os.path.join(os.path.split(__file__)[0], 'logs/plt_{}.png'.format(p0 / UNITS.MeV)))
