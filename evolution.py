@@ -6,7 +6,7 @@ import numericalunits as nu
 import array
 from datetime import datetime
 
-from common import UNITS, PARAMS, CONST, parmap, Logger
+from common import UNITS, PARAMS, CONST, GRID, parmap, Logger, forward_euler_integrator
 from plotting import Plotting
 
 
@@ -83,23 +83,12 @@ class Universe:
 
             """ Conformal scale factor $x = a m$ step size is fixed: expansion of the Universe \
                 is the main factor that controls the thermodynamical state of the system """
-            PARAMS.x += dx
-            """ TODO: Sanity check: $a T$ remains constant if the entropy of the system is \
-                conserved.
+            PARAMS.x += PARAMS.dx
 
-                A bump in the $a T$ can be seen if the number of relativistic degrees of\
-                freedom changes as a result of effective disappearance of the particle species \
-                from the system. For example, electron-positron pairs annihilate at temperatures\
-                close to the electron mass $\sim 511 keV$. Basically, this result in a cosmic \
-                photon and neutrino backgrounds temperature ratio around \
-                $\frac{T_\nu}{T_\gamma} \sim 1.401$"""
-
-            from common import forward_euler_integrator
             PARAMS.aT = forward_euler_integrator(y=self.data['aT'],
                                                  t=self.data['a'],
                                                  f=integrand,
-                                                 h=dx)
-            # PARAMS.aT = PARAMS.aT + numerator / denominator * dx
+                                                 h=PARAMS.dx)
             """ Physical scale factor and temperature for convenience """
             PARAMS.a = PARAMS.x / PARAMS.m
             PARAMS.T = PARAMS.aT / PARAMS.a
