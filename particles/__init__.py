@@ -237,9 +237,9 @@ class Particle():
         temperature of the system $T$ drops to the value about $ M \gamma $, particle should be \
         switched to the computation regime where its mass is also considered: \
         `REGIMES.INTERMEDIATE`. When $T$ drops down even further to the value $ M / \gamma $,\
-        particle species can be treated as `REGIMES.DUST` with a Boltzman distribution function.
+        particle species can be treated as `REGIMES.DUST` with a Boltzmann distribution function.
         """
-        regime_factor = 1e4
+        regime_factor = 1e2
 
         if not self.in_equilibrium:
             return REGIMES.NONEQ
