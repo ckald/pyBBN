@@ -125,10 +125,18 @@ class Universe:
             for interaction in self.interactions:
                 interaction.calculate()
 
+            for particle in self.particles:
+                # For non-equilibrium particle calculate the collision integrals
+                particle.collision_integral = \
+                    particle.integrate_collisions_vectorized(GRID.TEMPLATE)
+
             """ Update particle species distribution functions, check for regime switching, update\
                 precalculated variables like energy density and pressure. """
             for particle in self.particles:
                 particle.update()
+
+            for particle in self.particles:
+                particle.update_distribution()
 
             self.log()
             self.step += 1
