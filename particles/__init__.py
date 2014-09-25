@@ -255,35 +255,18 @@ class Particle():
 
     # TODO: probably just remove these and always use `particle.regime.something()`?
     def density(self):
-        """
-        Number density of particle species. See particles/*.py for implementations
-        """
         return self.regime.density(self)
 
     def energy_density(self):
-        """
-        Energy density of particle species. See particles/*.py for implementations
-        """
         return self.regime.energy_density(self)
 
     def pressure(self):
-        """
-        Pressure of particle species. See particles/*.py for implementations
-        """
         return self.regime.pressure(self)
 
     def numerator(self):
-        """
-        Numerator term of particle species in equation for the temperature.
-        See particles/*.py for implementations
-        """
         return self.regime.numerator(self)
 
     def denominator(self):
-        """
-        Denominator term of particle species in equation for the temperature.
-        See particles/*.py for implementations
-        """
         return self.regime.denominator(self)
 
     def distribution(self, p):
