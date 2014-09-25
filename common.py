@@ -25,7 +25,7 @@ class UNITS:
         are useless. Here some useful units are defined in terms of `GeV`s. """
 
     # eV = nu.eV
-    eV = 1e-6
+    eV = 1e-9
 
     @classmethod
     def reset_units(cls):
@@ -105,7 +105,7 @@ class GRID:
     @classmethod
     def init(cls):
         # Momentum range `(MIN_MOMENTUM, MAX_MOMENTUM)` must be divisible by `MOMENTUM_STEP`
-        GRID.MIN_MOMENTUM = 1 * UNITS.eV
+        GRID.MIN_MOMENTUM = 0.  # 1 * UNITS.eV
         GRID.MAX_MOMENTUM = GRID.MIN_MOMENTUM + 20 * UNITS.MeV
         GRID.MOMENTUM_STEP = 1 * UNITS.MeV
         GRID.MOMENTUM_SAMPLES = int(numpy.round_((GRID.MAX_MOMENTUM - GRID.MIN_MOMENTUM)
