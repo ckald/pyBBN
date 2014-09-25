@@ -1,22 +1,24 @@
+# -*- coding: utf-8 -*-
 """
 = Particles =
 
 This file contains `Particle` class definition and code governing the switching of the dynamical\
 regimes
 """
+from __future__ import division
+import functools
+import math
 
-import os
 import numpy
-import matplotlib.pyplot as plt
-from mpl_toolkits.mplot3d import Axes3D
 from skmonaco import mcquad
 
-from matplotlib import cm
-from scipy import interpolate, integrate
+from scipy import integrate
 
-from common import index_to_momentum, GRID, PARAMS, UNITS, benchmark
+from plotting import plot_integrand
+from common import GRID, PARAMS, UNITS, benchmark, smoothe_function
 
 from particles import DustParticle, RadiationParticle, IntermediateParticle, NonEqParticle
+# from particles.interpolation import distribution_interpolation
 
 
 class STATISTICS:
