@@ -76,6 +76,8 @@ class Particle():
         particle `decoupling_temperature`
     """
 
+    COLLISION_INTEGRATION_METHOD = ['mcquad', 'dblquad'][0]
+
     def __init__(self, *args, **kwargs):
 
         # Functions are vectorized for convenience
@@ -105,36 +107,10 @@ class Particle():
         """ For equilibrium particles distribution function is by definition given by its\
             statistics and will not be used until species comes into non-equilibrium regime """
         self._distribution = numpy.zeros(GRID.MOMENTUM_SAMPLES, dtype=numpy.float_)
-        self._distribution_interpolation = self.interpolate_distribution(self._distribution)
         """ Particle collision integral as well is not effective in equilibrium """
         self.collision_integral = numpy.zeros(GRID.MOMENTUM_SAMPLES, dtype=numpy.float_)
 
-        """
-        == Collision integral constants ==
-        Collision integral for a particle starting to go out of the equilibrium is a difference\
-        of 2 big numbers that cancel each other almost precisely.
-
-        Collision integrand functional
-
-        \begin{equation}
-            \mathcal{F}(\left\\{ f_{\alpha} \right\\} ) = \
-                \prod_j \prod_k f_{j_{in}} (1 \pm f_{k_{out}}) \
-                - \prod_j \prod_k (1 \pm f_{j_{in}}) f_{k_{out}}
-        \end{equation}
-
-        can be basically reorganized in 2 parts: one that contains $f_{\alpha}$ and one that\
-        doesn't:
-
-        \begin{equation}
-            \mathcal{F}(\left\\{ f_{\alpha} \right\\} ) = F_1 + F_f f_{\alpha}
-        \end{equation}
-
-        It is convenient because typical values of distribution functions can be very small at\
-        the high momentum sector and operation of addition $(1 \pm \epsilon)$ can lead to\
-        losing the $\epsilon$ and, hence, to numerical error.
-        """
-        self.F_f = []
-        self.F_1 = []
+        self.collision_integrands = []
 
         self.update()
         self.init_distribution()
@@ -172,74 +148,81 @@ class Particle():
             # Particle decouples, have to init the distribution function array for kinetics
             self.init_distribution()
 
-        if not self.in_equilibrium:
-            # For non-equilibrium particle calculate the collision integrals
-            self.collision_integral = self.integrate_collisions_vectorized(GRID.TEMPLATE)
-            print(self.collision_integral * UNITS.MeV)
-            self._distribution += self.collision_integral * PARAMS.dx
-            self._distribution_interpolation = self.interpolate_distribution(self._distribution)
-            # Clear [collision integral constants](#collision-integral-constants) \
-            # until the next computation step
-            self.F_f = []
-            self.F_1 = []
-
         if force_print or self.regime != oldregime or self.in_equilibrium != oldeq:
             print self
+
+    def check_step_size(self, delta):
+        """
+        Scale factor step size controller.
+
+        TODO: not usable now, need to orchestrate between many collision integrations - \
+              i.e., select smallest suggested
+        """
+        relative_delta = numpy.absolute(delta / self._distribution).max()
+        if relative_delta < 0.1:
+            PARAMS.dx *= 2
+            delta *= 2
+            print "//// Step size increased to", PARAMS.dx / UNITS.MeV
+        elif relative_delta > 0.2:
+            PARAMS.dx /= 2
+            delta /= 2
+            print "//// Step size decreased to", PARAMS.dx / UNITS.MeV
+
+    def update_distribution(self):
+        if self.in_equilibrium:
+            return
+
+        # # Smooth the collision integral a bit to eliminate the Monte Carlo errors
+        # self.collision_integral = smoothe_function(self.collision_integral, GRID.MOMENTUM_SAMPLES)
+
+        delta = self.collision_integral * PARAMS.dx
+
+        prediction = self._distribution + delta
+        if numpy.any(prediction < 0):
+            print("Holy cow, negative distribution!")
+
+        # self.check_step_size(delta)
+
+        # Force minimal distribution function value to 0
+        self._distribution = numpy.fmax(prediction, 0)
+
+        # Clear collision integrands for the next computation step
+        self.collision_integrands = []
 
     def integrate_collisions(self, p0):
         """ == Particle collisions integration == """
 
-        integral = None
-        if self.F_1 and self.F_f:
+        if not self.collision_integrands:
+            return 0
 
-            tmp = 1./64. / numpy.pi**3 / p0 / self.energy_normalized(p0) \
-                * PARAMS.m**5 / PARAMS.x**6 / PARAMS.H
+        tmp = 1./64. / numpy.pi**3 * PARAMS.m**5 / PARAMS.x**6 / PARAMS.H
 
-            integrand = lambda (p1, p2): (
-                self.distribution(p0) * numpy.sum([F(p0, p1, p2) for F in self.F_f])
-                + numpy.sum([F(p0, p1, p2) for F in self.F_1])
-            )
+        integrand = lambda p1, p2: sum([func(p0, p1, p2) for func in self.collision_integrands])
 
-            fig = plt.figure(3)
-            ax = fig.gca(projection='3d')
-            plt.cla()
-            X, Y = numpy.meshgrid(GRID.TEMPLATE, GRID.TEMPLATE)
-            Z = numpy.array([integrand([x, y]) for x, y in zip(numpy.ravel(X), numpy.ravel(Y))])\
-                .reshape(X.shape)
+        # plot_integrand(integrand, self, p0)
 
-            ax.plot_surface(X, Y, Z, rstride=1, cstride=1, alpha=0.1)
-            ax.contourf(X, Y, Z, zdir='z', offset=numpy.amin(Z), cmap=cm.coolwarm)
-            ax.contourf(X, Y, Z, zdir='x', offset=ax.get_xlim()[0], cmap=cm.coolwarm)
-            ax.contourf(X, Y, Z, zdir='y', offset=ax.get_ylim()[1], cmap=cm.coolwarm)
-
-            ax.set_xlabel('p1')
-            ax.set_ylabel('p2')
-            ax.set_title('p0 = {}'.format(p0))
-
-            plt.savefig(os.path.join(os.path.split(__file__)[0], '../logs/plt_{}.png'.format(p0)))
-
-            with benchmark("integrating {}".format(p0)):
-                # integral, error = integrate.dblquad(
-                #     integrand,
-                #     GRID.MIN_MOMENTUM, GRID.MAX_MOMENTUM,
-                #     lambda p1: GRID.MIN_MOMENTUM, lambda p1: p0 + p1,  # GRID.MAX_MOMENTUM,
-                #     epsrel=0.01
-                # )
+        with benchmark("p0 = {:.2f}\t".format(p0 / UNITS.MeV)):
+            if self.COLLISION_INTEGRATION_METHOD == 'dblquad':
+                integral, error = integrate.dblquad(
+                    lambda p1, p2: integrand((p1, p2)),
+                    GRID.MIN_MOMENTUM, GRID.MAX_MOMENTUM,
+                    lambda p1: GRID.MIN_MOMENTUM, lambda p1: min(p0 + p1, GRID.MAX_MOMENTUM)
+                )
+            elif self.COLLISION_INTEGRATION_METHOD == 'mcquad':
                 integral, error = mcquad(
                     integrand,
                     xl=[GRID.MIN_MOMENTUM, GRID.MIN_MOMENTUM],
                     xu=[GRID.MAX_MOMENTUM, GRID.MAX_MOMENTUM],
                     npoints=1e3
                 )
-                print integral, error
-            tmp *= integral
-        else:
-            tmp = 0
+            print '{name:}\t{integral: .5e}\t±{error: .5e}\t({relerror: 8.2f}%)\t'\
+                .format(name=self.name,
+                        integral=integral / UNITS.MeV,
+                        error=error / UNITS.MeV,
+                        relerror=(error / integral * 100 if integral else 0)
+                        ),
 
-        # print 'p0 =', p0 / UNITS.MeV, '\t', \
-        #     'res =', tmp * PARAMS.dx, '\t',\
-        #     'relerr =', error / integral if integral else 0
-
+        tmp *= integral
         return tmp
 
     @property
@@ -303,45 +286,80 @@ class Particle():
         """
         return self.regime.denominator(self)
 
-    def distribution(self, p, by_index=False):
+    def distribution(self, p):
         """
-        Returns interpolated value of distribution function by momentum or grid element index.
-
-        Checks boundaries, neglects `p > GRID.MAX_MOMENTUM` and sets `p < GRID.MIN_MOMENTUM` to\
-        `GRID.MIN_MOMENTUM`
-
-        :param by_index: Return the real value of sample function by given grid point index `p`
+        Returns interpolated value of distribution function by momentum.
         """
+        exponential_interpolation = False  # True
         p = abs(p)
-        if self.in_equilibrium:
-            if by_index:
-                p = index_to_momentum(p)
+        if self.in_equilibrium or p > GRID.MAX_MOMENTUM:
             return self.distribution_function(self.energy_normalized(p) / PARAMS.aT)
 
-        if not by_index:
-            if p < GRID.MIN_MOMENTUM:
-                p = GRID.MIN_MOMENTUM
-            if p > GRID.MAX_MOMENTUM:
-                p = GRID.MAX_MOMENTUM
-            return self._distribution_interpolation(p)
+        index = numpy.where(GRID.TEMPLATE == p)
+        if len(index[0]):
+            return self._distribution[index[0][0]]
 
-        if by_index:
-            if p < GRID.MOMENTUM_SAMPLES:
-                if p < 0:
-                    p = 0
-                return self._distribution[p]
-            else:
-                return 0.
+        # return distribution_interpolation(GRID.TEMPLATE, self._distribution, p,
+        #                                   # energy_normalized=self.energy_normalized,
+        #                                   eta=self.eta)
 
-    def interpolate_distribution(self, distribution):
-        return interpolate.interp1d(GRID.TEMPLATE, distribution,
-                                    kind='quadratic', assume_sorted=True, copy=False)
+        p_low = None  # GRID.MIN_MOMENTUM
+        p_high = None  # GRID.MAX_MOMENTUM
+
+        i = 0
+        for point in GRID.TEMPLATE:
+            if point == p:
+                return self._distribution[i]
+            elif point < p:
+                p_low = point
+                i_low = i
+            elif point > p:
+                p_high = point
+                i_high = i
+                break
+            i += 1
+
+        if p_low is None:
+            raise Exception("Outside of interpolated range: {}".format(p))
+
+        if exponential_interpolation:
+            E_p = self.energy_normalized(p)
+            E_low = self.energy_normalized(p_low)
+            E_high = self.energy_normalized(p_high)
+
+            """
+            \begin{equation}
+                g = \frac{ (E_p - E_low) g_high + (E_high - E_p) g_low }{ (E_high - E_low) }
+            \end{equation}
+            """
+
+            g_high = self._distribution[i_high]
+            g_low = self._distribution[i_low]
+
+            if g_high > 0:
+                g_high = (1. / g_high - 1.)
+                if g_high > 0:
+                    g_high = math.log(g_high)
+
+            if g_low > 0:
+                g_low = (1. / g_low - 1.)
+                if g_low > 0:
+                    g_low = math.log(g_low)
+
+            g = ((E_p - E_low) * g_high + (E_high - E_p) * g_low) / (E_high - E_low)
+
+            return 1. / (numpy.exp(g) + self.eta)
+
+        else:
+            return (
+                self._distribution[i_low] * (p_high - p) + self._distribution[i_high] * (p - p_low)
+            ) / (p_high - p_low)
 
     def init_distribution(self):
         self._distribution = self.distribution_function(
-            self.energy_normalized_vectorized(GRID.TEMPLATE) / PARAMS.aT
+            self.energy_normalized_vectorized(GRID.TEMPLATE) / self.aT
         )
-        self._distribution_interpolation = self.interpolate_distribution(self._distribution)
+        return self._distribution
 
     @property
     def in_equilibrium(self):
