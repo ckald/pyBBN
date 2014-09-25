@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>pyBBN v0.1.0: tests/interpolation_test.py</title>
+  <link rel="stylesheet" href="../pyccoon.css">
+  <script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+  });
+  </script>
+  <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</head>
+<body>
+<div id='container'>
+  <a id="top"></a>
+  <div id="background"></div>
+  <div id="footer">
+    <a class="btn" id="project-name" href="../index.html">pyBBN v0.1.0</a>
+    <a class="btn" class="source source-1" href="#top">Back to top</a>
+    <div class="generation-time">
+        Generated at
+        <a target="_blank" href="http://ckald.github.io/pyccoon/" title="Pyccoon: side-to-side documentation generator">
+            <img id="pyccoon-icon" src="../pyccoon_icon.svg" alt="Pyccoon: side-to-side documentation generator" /></a>
+        <code>2014-09-25 03:36:38.323161</code>/
+        by a diligent
+        <a target="_blank" href="http://ckald.github.io/pyccoon/" title="Pyccoon: side-to-side documentation generator">pyccoon</a>
+    </div>
+  </div>
+  <div class='section'>
+    <div class='docs'>
+      <h1 id="breadcrumbs">/ <a href="interpolation_test.py.html/../../index.html">.</a> / <a href="interpolation_test.py.html/../index.html">tests</a> / <a href="interpolation_test.py.html">interpolation_test.py</a> </h1>
+      <ul id="children"></ul>
+    </div>
+  </div>
+  <div class='clearall'>
+  <div class='section'>
+    <a id="section-0" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-0'>#</a>
+          </div>
+          
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre><span class="kn">from</span> <span class="nn">interaction</span> <span class="kn">import</span> <span class="n">Interaction</span>
+<span class="kn">from</span> <span class="nn">particles</span> <span class="kn">import</span> <span class="n">Particle</span><span class="p">,</span> <span class="n">STATISTICS</span>
+<span class="kn">from</span> <span class="nn">evolution</span> <span class="kn">import</span> <span class="n">Universe</span>
+<span class="kn">from</span> <span class="nn">common</span> <span class="kn">import</span> <span class="n">CONST</span><span class="p">,</span> <span class="n">UNITS</span><span class="p">,</span> <span class="n">PARAMS</span><span class="p">,</span> <span class="n">GRID</span>
+
+
+<span class="n">PARAMS</span><span class="o">.</span><span class="n">T_initial</span> <span class="o">=</span> <span class="mi">3</span> <span class="o">*</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">MeV</span>
+<span class="n">PARAMS</span><span class="o">.</span><span class="n">T_final</span> <span class="o">=</span> <span class="mf">0.075</span> <span class="o">*</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">MeV</span>
+<span class="n">PARAMS</span><span class="o">.</span><span class="n">dx</span> <span class="o">=</span> <span class="mf">1e-1</span> <span class="o">*</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">MeV</span>
+<span class="n">PARAMS</span><span class="o">.</span><span class="n">infer</span><span class="p">()</span>
+
+
+<span class="n">Particles</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">Interactions</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">photon</span> <span class="o">=</span> <span class="n">Particle</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s">&#39;Photon&#39;</span><span class="p">,</span>
+                  <span class="n">statistics</span><span class="o">=</span><span class="n">STATISTICS</span><span class="o">.</span><span class="n">BOSON</span><span class="p">)</span>
+<span class="n">Particles</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">photon</span><span class="p">)</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+  </div>
+  <div class='section'>
+    <a id="section-1" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-1'>#</a>
+          </div>
+          <p>neutron = Particle(name='Neutron',
+                   statistics=STATISTICS.FERMION,
+                   mass=0.939 * UNITS.GeV,
+                   decoupling_temperature=1.3 * UNITS.MeV)
+Particles.append(neutron)</p>
+        </div>
+        <div class='code'>
+          
+        </div>
+        <div class='clearall'></div>
+    </section>
+  </div>
+  <div class='section'>
+    <a id="section-2" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-2'>#</a>
+          </div>
+          <p>proton = Particle(name='Proton',
+                  statistics=STATISTICS.FERMION,
+                  mass=0.938 * UNITS.GeV,
+                  )
+Particles.append(proton)</p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre><span class="n">neutrino</span> <span class="o">=</span> <span class="n">Particle</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s">&#39;Neutrino&#39;</span><span class="p">,</span>
+                    <span class="n">statistics</span><span class="o">=</span><span class="n">STATISTICS</span><span class="o">.</span><span class="n">FERMION</span><span class="p">,</span>
+                    <span class="n">dof</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
+                    <span class="n">decoupling_temperature</span><span class="o">=</span><span class="mi">3</span> <span class="o">*</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">MeV</span>
+                    <span class="p">)</span>
+<span class="n">Particles</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">neutrino</span><span class="p">)</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+  </div>
+  <div class='section'>
+    <a id="section-3" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-3'>#</a>
+          </div>
+          <p>electron = Particle(name='Electron',
+                    mass=0.511 * UNITS.MeV,
+                    statistics=STATISTICS.FERMION,
+                    dof=4)
+Particles.append(electron)</p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre><span class="n">neutrino_scattering</span> <span class="o">=</span> <span class="n">Interaction</span><span class="p">(</span>
+    <span class="n">in_particles</span><span class="o">=</span><span class="p">[</span><span class="n">neutrino</span><span class="p">,</span> <span class="n">neutrino</span><span class="p">],</span>
+    <span class="n">out_particles</span><span class="o">=</span><span class="p">[</span><span class="n">neutrino</span><span class="p">,</span> <span class="n">neutrino</span><span class="p">],</span>
+    <span class="n">decoupling_temperature</span><span class="o">=</span><span class="mi">0</span> <span class="o">*</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">MeV</span><span class="p">,</span>
+    <span class="n">K1</span><span class="o">=</span><span class="mi">128</span> <span class="o">*</span> <span class="n">CONST</span><span class="o">.</span><span class="n">G_F</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span>
+    <span class="n">K2</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span>
+    <span class="n">order</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span>
+    <span class="n">symmetry_factor</span><span class="o">=</span><span class="mf">0.5</span>
+<span class="p">)</span>
+<span class="n">Interactions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">neutrino_scattering</span><span class="p">)</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span>
+<span class="n">neutrino</span><span class="o">.</span><span class="n">_distribution</span> <span class="o">+=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="mf">0.1</span> <span class="o">*</span> <span class="n">numpy</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="p">(</span><span class="n">x</span><span class="o">-</span><span class="mi">5</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">),</span>
+                                          <span class="n">otypes</span><span class="o">=</span><span class="p">[</span><span class="n">numpy</span><span class="o">.</span><span class="n">float_</span><span class="p">])(</span><span class="n">GRID</span><span class="o">.</span><span class="n">TEMPLATE</span><span class="p">)</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+  </div>
+  <div class='section'>
+    <a id="section-4" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-4'>#</a>
+          </div>
+          <p>def check(p=[]):
+    return neutrino_scattering.F_B(in_p=p[:2], out_p=p[2:]) * (1 - neutrino.distribution(p[0])) - neutrino_scattering.F_A(in_p=p[:2], out_p=p[2:]) * neutrino.distribution(p[0])</p>
+        </div>
+        <div class='code'>
+          
+        </div>
+        <div class='clearall'></div>
+    </section>
+  </div>
+  <div class='section'>
+    <a id="section-5" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-5'>#</a>
+          </div>
+          <p>print [neutrino.distribution(p) - neutrino._distribution_interpolation(p)
+       for p in numpy.linspace(GRID.MIN_MOMENTUM, GRID.MAX_MOMENTUM,
+                               num=200, endpoint=True)]</p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+
+<span class="n">x</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">GRID</span><span class="o">.</span><span class="n">MIN_MOMENTUM</span><span class="p">,</span> <span class="n">GRID</span><span class="o">.</span><span class="n">MAX_MOMENTUM</span><span class="p">,</span> <span class="n">num</span><span class="o">=</span><span class="mi">10000</span><span class="p">,</span> <span class="n">endpoint</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="n">neutrino</span><span class="o">.</span><span class="n">distribution</span><span class="p">)(</span><span class="n">x</span><span class="p">)</span>
+<span class="n">z</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="n">neutrino</span><span class="o">.</span><span class="n">distribution_function</span><span class="p">)(</span><span class="n">x</span> <span class="o">/</span> <span class="n">PARAMS</span><span class="o">.</span><span class="n">aT</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">z</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+  </div>
+  <div class='section'>
+    <a id="section-6" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-6'>#</a>
+          </div>
+          <p>res = []
+for p0 in GRID.TEMPLATE:
+    for p1 in GRID.TEMPLATE:
+        for p2 in GRID.TEMPLATE:
+            p3 = p0 + p1 - p2
+            if p3 &gt;= 0 and p3 &lt;= GRID.MAX_MOMENTUM:
+val = check(p=[p0, p1, p2, p3])
+f0 = neutrino.distribution(p0)
+f1 = neutrino.distribution(p1)
+f2 = neutrino.distribution(p2)
+f3 = neutrino.distribution(p3)
+val = f2 * f3 * (1 - f0) * (1 - f1) - f0 * f1 * (1 - f2) * (1 - f3)
+                res.append(val)</p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre><span class="kn">from</span> <span class="nn">ds</span> <span class="kn">import</span> <span class="n">D1</span><span class="p">,</span> <span class="n">D2</span><span class="p">,</span> <span class="n">D3</span>
+<span class="kn">from</span> <span class="nn">plotting</span> <span class="kn">import</span> <span class="n">plot_integrand</span>
+
+<span class="n">plot_integrand</span><span class="p">(</span><span class="k">lambda</span> <span class="p">(</span><span class="n">p1</span><span class="p">,</span> <span class="n">p2</span><span class="p">):</span> <span class="n">D1</span><span class="p">(</span><span class="n">p1</span><span class="p">,</span> <span class="n">p2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="s">&#39;D1&#39;</span><span class="p">)</span>
+<span class="n">plot_integrand</span><span class="p">(</span><span class="k">lambda</span> <span class="p">(</span><span class="n">p1</span><span class="p">,</span> <span class="n">p2</span><span class="p">):</span> <span class="n">D2</span><span class="p">(</span><span class="n">p1</span><span class="p">,</span> <span class="n">p2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="s">&#39;D2&#39;</span><span class="p">)</span>
+<span class="n">plot_integrand</span><span class="p">(</span><span class="k">lambda</span> <span class="p">(</span><span class="n">p1</span><span class="p">,</span> <span class="n">p2</span><span class="p">):</span> <span class="n">D3</span><span class="p">(</span><span class="n">p1</span><span class="p">,</span> <span class="n">p2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="s">&#39;D3&#39;</span><span class="p">)</span>
+
+<span class="nb">raw_input</span><span class="p">(</span><span class="s">&quot;...&quot;</span><span class="p">)</span>
+
+</pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+  </div>
+</div>
+</body>

@@ -22,7 +22,7 @@
         Generated at
         <a target="_blank" href="http://ckald.github.io/pyccoon/" title="Pyccoon: side-to-side documentation generator">
             <img id="pyccoon-icon" src="../pyccoon_icon.svg" alt="Pyccoon: side-to-side documentation generator" /></a>
-        <code>2014-09-05 23:45:46.276726</code>/
+        <code>2014-09-25 03:36:38.300642</code>/
         by a diligent
         <a target="_blank" href="http://ckald.github.io/pyccoon/" title="Pyccoon: side-to-side documentation generator">pyccoon</a>
     </div>
@@ -44,9 +44,15 @@
           
         </div>
         <div class='code'>
-          <div class="highlight"><pre><span class="kn">from</span> <span class="nn">particle</span> <span class="kn">import</span> <span class="n">Particle</span>
+          <div class="highlight"><pre><span class="kn">from</span> <span class="nn">particles</span> <span class="kn">import</span> <span class="n">Particle</span><span class="p">,</span> <span class="n">STATISTICS</span>
 <span class="kn">from</span> <span class="nn">evolution</span> <span class="kn">import</span> <span class="n">Universe</span>
-<span class="kn">from</span> <span class="nn">common</span> <span class="kn">import</span> <span class="n">STATISTICS</span><span class="p">,</span> <span class="n">UNITS</span>
+<span class="kn">from</span> <span class="nn">common</span> <span class="kn">import</span> <span class="n">UNITS</span><span class="p">,</span> <span class="n">PARAMS</span>
+
+
+<span class="n">PARAMS</span><span class="o">.</span><span class="n">T_initial</span> <span class="o">=</span> <span class="mi">100</span> <span class="o">*</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">MeV</span>
+<span class="n">PARAMS</span><span class="o">.</span><span class="n">T_final</span> <span class="o">=</span> <span class="mf">1e-1</span> <span class="o">*</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">MeV</span>
+<span class="n">PARAMS</span><span class="o">.</span><span class="n">dx</span> <span class="o">=</span> <span class="mf">1e-2</span> <span class="o">*</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">MeV</span>
+<span class="n">PARAMS</span><span class="o">.</span><span class="n">infer</span><span class="p">()</span>
 
 
 <span class="n">Particles</span> <span class="o">=</span> <span class="p">[]</span>
@@ -67,8 +73,7 @@
 <span class="n">neutrino</span> <span class="o">=</span> <span class="n">Particle</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s">&#39;Neutrino&#39;</span><span class="p">,</span>
                     <span class="n">statistics</span><span class="o">=</span><span class="n">STATISTICS</span><span class="o">.</span><span class="n">FERMION</span><span class="p">,</span>
                     <span class="n">dof</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
-                    <span class="n">decoupling_temperature</span><span class="o">=</span><span class="mi">3</span> <span class="o">*</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">MeV</span>
-                    <span class="p">)</span>
+                    <span class="n">decoupling_temperature</span><span class="o">=</span><span class="mi">3</span> <span class="o">*</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">MeV</span><span class="p">)</span>
 <span class="n">Particles</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">neutrino</span><span class="p">)</span>
 
 <span class="n">electron</span> <span class="o">=</span> <span class="n">Particle</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s">&#39;Electron&#39;</span><span class="p">,</span>

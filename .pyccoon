@@ -1,5 +1,6 @@
 {
     "project_name": "pyBBN v0.1.0",
-    "skip_files": [".+\\.pyc", "__pycache__", "\\.git", "\\.DS_Store", "docs", ".*\\.sublime-.+", "logs"],
-    "copy_files": []
+    "skip_files": [".+\\.pyc", "__pycache__", "\\.git", "\\.DS_Store", "docs", ".*\\.sublime-.+", "logs", ".+\\.o", ".+\\.so", "build"],
+    "copy_files": [".+\\.png", ".+\\.json"],
+    "mathjax": true
 }

@@ -30,7 +30,7 @@
         Generated at
         <a target="_blank" href="http://ckald.github.io/pyccoon/" title="Pyccoon: side-to-side documentation generator">
             <img id="pyccoon-icon" src="./pyccoon_icon.svg" alt="Pyccoon: side-to-side documentation generator" /></a>
-        <code>2014-09-05 23:45:45.765640</code>/
+        <code>2014-09-25 03:36:35.618050</code>/
         by a diligent
         <a target="_blank" href="http://ckald.github.io/pyccoon/" title="Pyccoon: side-to-side documentation generator">pyccoon</a>
     </div>
@@ -58,7 +58,7 @@
 <span class="kn">import</span> <span class="nn">array</span>
 <span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
 
-<span class="kn">from</span> <span class="nn">common</span> <span class="kn">import</span> <span class="n">UNITS</span><span class="p">,</span> <span class="n">PARAMS</span><span class="p">,</span> <span class="n">CONST</span><span class="p">,</span> <span class="n">parmap</span><span class="p">,</span> <span class="n">Logger</span>
+<span class="kn">from</span> <span class="nn">common</span> <span class="kn">import</span> <span class="n">UNITS</span><span class="p">,</span> <span class="n">PARAMS</span><span class="p">,</span> <span class="n">CONST</span><span class="p">,</span> <span class="n">GRID</span><span class="p">,</span> <span class="n">parmap</span><span class="p">,</span> <span class="n">Logger</span><span class="p">,</span> <span class="n">forward_euler_integrator</span>
 <span class="kn">from</span> <span class="nn">plotting</span> <span class="kn">import</span> <span class="n">Plotting</span></pre></div>
         </div>
         <div class='clearall'></div>
@@ -76,7 +76,7 @@
         <div class='code'>
           <div class="highlight"><pre><span class="k">class</span> <span class="nc">Universe</span><span class="p">:</span>
 
-    <span class="n">log_freq</span> <span class="o">=</span> <span class="mi">10</span></pre></div>
+    <span class="n">log_freq</span> <span class="o">=</span> <span class="mi">1</span></pre></div>
         </div>
         <div class='clearall'></div>
     </section>
@@ -134,7 +134,7 @@
 <p>Initial temperature (e.g. 10 MeV) corresponds to a point in the history of the Universe long before BBN when most particle species are in the thermodynamical equilibrium</p>
         </div>
         <div class='code'>
-          <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">evolve</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">T_final</span><span class="o">=</span><span class="n">PARAMS</span><span class="o">.</span><span class="n">T_final</span><span class="p">,</span> <span class="n">dx</span><span class="o">=</span><span class="n">PARAMS</span><span class="o">.</span><span class="n">dx</span><span class="p">):</span>
+          <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">evolve</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 
         <span class="k">print</span> <span class="s">&quot;dx =&quot;</span><span class="p">,</span> <span class="n">PARAMS</span><span class="o">.</span><span class="n">dx</span>
 
@@ -177,9 +177,10 @@
 
             <span class="k">return</span> <span class="n">numerator</span> <span class="o">/</span> <span class="n">denominator</span>
 
-        <span class="k">while</span> <span class="n">PARAMS</span><span class="o">.</span><span class="n">T</span> <span class="o">&gt;</span> <span class="n">T_final</span><span class="p">:</span>
+        <span class="k">while</span> <span class="n">PARAMS</span><span class="o">.</span><span class="n">T</span> <span class="o">&gt;</span> <span class="n">PARAMS</span><span class="o">.</span><span class="n">T_final</span><span class="p">:</span>
 
             <span class="n">rho</span> <span class="o">=</span> <span class="mi">0</span>
+
             <span class="k">for</span> <span class="n">particle</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">particles</span><span class="p">:</span>
                 <span class="n">rho</span> <span class="o">+=</span> <span class="n">particle</span><span class="o">.</span><span class="n">energy_density</span><span class="p">()</span></pre></div>
         </div>
@@ -196,7 +197,12 @@
           <p>Conformal scale factor $x = a m$ step size is fixed: expansion of the Universe is the main factor that controls the thermodynamical state of the system </p>
         </div>
         <div class='code'>
-          <div class="highlight"><pre>            <span class="n">PARAMS</span><span class="o">.</span><span class="n">x</span> <span class="o">+=</span> <span class="n">dx</span></pre></div>
+          <div class="highlight"><pre>            <span class="n">PARAMS</span><span class="o">.</span><span class="n">x</span> <span class="o">+=</span> <span class="n">PARAMS</span><span class="o">.</span><span class="n">dx</span>
+
+            <span class="n">PARAMS</span><span class="o">.</span><span class="n">aT</span> <span class="o">=</span> <span class="n">forward_euler_integrator</span><span class="p">(</span><span class="n">y</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s">&#39;aT&#39;</span><span class="p">],</span>
+                                                 <span class="n">t</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s">&#39;a&#39;</span><span class="p">],</span>
+                                                 <span class="n">f</span><span class="o">=</span><span class="n">integrand</span><span class="p">,</span>
+                                                 <span class="n">h</span><span class="o">=</span><span class="n">PARAMS</span><span class="o">.</span><span class="n">dx</span><span class="p">)</span></pre></div>
         </div>
         <div class='clearall'></div>
     </section>
@@ -208,27 +214,6 @@
           <div class='octowrap'>
             <a class='octothorpe' href='#section-7'>#</a>
           </div>
-          <p><span class=todo><strong>TODO</strong>: Sanity check: $a T$ remains constant if the entropy of the system is conserved.</span></p>
-<p>A bump in the $a T$ can be seen if the number of relativistic degrees of freedom changes as a result of effective disappearance of the particle species from the system. For example, electron-positron pairs annihilate at temperatures close to the electron mass $\sim 511 keV$. Basically, this result in a cosmic photon and neutrino backgrounds temperature ratio around $\frac{T_\nu}{T_\gamma} \sim 1.401$</p>
-        </div>
-        <div class='code'>
-          <div class="highlight"><pre>            <span class="kn">from</span> <span class="nn">common</span> <span class="kn">import</span> <span class="n">forward_euler_integrator</span>
-            <span class="n">PARAMS</span><span class="o">.</span><span class="n">aT</span> <span class="o">=</span> <span class="n">forward_euler_integrator</span><span class="p">(</span><span class="n">y</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s">&#39;aT&#39;</span><span class="p">],</span>
-                                                 <span class="n">t</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s">&#39;a&#39;</span><span class="p">],</span>
-                                                 <span class="n">f</span><span class="o">=</span><span class="n">integrand</span><span class="p">,</span>
-                                                 <span class="n">h</span><span class="o">=</span><span class="n">dx</span><span class="p">)</span>
-            <span class="c"># PARAMS.aT = PARAMS.aT + numerator / denominator * dx</span></pre></div>
-        </div>
-        <div class='clearall'></div>
-    </section>
-  </div>
-  <div class='section'>
-    <a id="section-8" class="section-anchor"></a>
-    <section>
-        <div class='docs'>
-          <div class='octowrap'>
-            <a class='octothorpe' href='#section-8'>#</a>
-          </div>
           <p>Physical scale factor and temperature for convenience </p>
         </div>
         <div class='code'>
@@ -239,11 +224,11 @@
     </section>
   </div>
   <div class='section'>
-    <a id="section-9" class="section-anchor"></a>
+    <a id="section-8" class="section-anchor"></a>
     <section>
         <div class='docs'>
           <div class='octowrap'>
-            <a class='octothorpe' href='#section-9'>#</a>
+            <a class='octothorpe' href='#section-8'>#</a>
           </div>
           <p>Hubble expansion parameter defined by a Friedmann equation:</p>
 <p>\begin{equation}
@@ -257,11 +242,11 @@
     </section>
   </div>
   <div class='section'>
-    <a id="section-10" class="section-anchor"></a>
+    <a id="section-9" class="section-anchor"></a>
     <section>
         <div class='docs'>
           <div class='octowrap'>
-            <a class='octothorpe' href='#section-10'>#</a>
+            <a class='octothorpe' href='#section-9'>#</a>
           </div>
           <p>Time step size is inferred from the approximation of the scale factor <code>a</code> derivative and a definition of the Hubble parameter <code>H</code>:</p>
 <p>\begin{equation}
@@ -282,17 +267,35 @@
     </section>
   </div>
   <div class='section'>
+    <a id="section-10" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-10'>#</a>
+          </div>
+          <p>Non equilibrium interactions of different particle species are treated by a numerical integration of the Boltzman equation for distribution functions in the expanding spacetime.</p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>            <span class="k">for</span> <span class="n">interaction</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">interactions</span><span class="p">:</span>
+                <span class="n">interaction</span><span class="o">.</span><span class="n">calculate</span><span class="p">()</span>
+
+            <span class="k">for</span> <span class="n">particle</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">particles</span><span class="p">:</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+  </div>
+  <div class='section'>
     <a id="section-11" class="section-anchor"></a>
     <section>
         <div class='docs'>
           <div class='octowrap'>
             <a class='octothorpe' href='#section-11'>#</a>
           </div>
-          <p>Non equilibrium interactions of different particle species are treated by a numerical integration of the Boltzman equation for distribution functions in the expanding spacetime.</p>
+          <p>For non-equilibrium particle calculate the collision integrals</p>
         </div>
         <div class='code'>
-          <div class="highlight"><pre>            <span class="k">for</span> <span class="n">interaction</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">interactions</span><span class="p">:</span>
-                <span class="n">interaction</span><span class="o">.</span><span class="n">calculate</span><span class="p">()</span></pre></div>
+          <div class="highlight"><pre>                <span class="n">particle</span><span class="o">.</span><span class="n">collision_integral</span> <span class="o">=</span> \
+                    <span class="n">particle</span><span class="o">.</span><span class="n">integrate_collisions_vectorized</span><span class="p">(</span><span class="n">GRID</span><span class="o">.</span><span class="n">TEMPLATE</span><span class="p">)</span></pre></div>
         </div>
         <div class='clearall'></div>
     </section>
@@ -309,6 +312,9 @@
         <div class='code'>
           <div class="highlight"><pre>            <span class="k">for</span> <span class="n">particle</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">particles</span><span class="p">:</span>
                 <span class="n">particle</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
+
+            <span class="k">for</span> <span class="n">particle</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">particles</span><span class="p">:</span>
+                <span class="n">particle</span><span class="o">.</span><span class="n">update_distribution</span><span class="p">()</span>
 
             <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">step</span> <span class="o">+=</span> <span class="mi">1</span></pre></div>
@@ -379,7 +385,7 @@
           <div class='octowrap'>
             <a class='octothorpe' href='#section-16'>#</a>
           </div>
-          <p>Print parameters each 100 steps</p>
+          <p>Print parameters every now and then</p>
         </div>
         <div class='code'>
           <div class="highlight"><pre>        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">step</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">log_freq</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>

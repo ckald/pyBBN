@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>pyBBN v0.1.0: particles/interpolation.pyx</title>
+  <link rel="stylesheet" href="../pyccoon.css">
+  <script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+  });
+  </script>
+  <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</head>
+<body>
+<div id='container'>
+  <a id="top"></a>
+  <div id="background"></div>
+  <div id="footer">
+    <a class="btn" id="project-name" href="../index.html">pyBBN v0.1.0</a>
+    <a class="btn" class="source source-1" href="#top">Back to top</a>
+    <div class="generation-time">
+        Generated at
+        <a target="_blank" href="http://ckald.github.io/pyccoon/" title="Pyccoon: side-to-side documentation generator">
+            <img id="pyccoon-icon" src="../pyccoon_icon.svg" alt="Pyccoon: side-to-side documentation generator" /></a>
+        <code>2014-09-25 03:36:38.108632</code>/
+        by a diligent
+        <a target="_blank" href="http://ckald.github.io/pyccoon/" title="Pyccoon: side-to-side documentation generator">pyccoon</a>
+    </div>
+  </div>
+  <div class='section'>
+    <div class='docs'>
+      <h1 id="breadcrumbs">/ <a href="interpolation.pyx.html/../../index.html">.</a> / <a href="interpolation.pyx.html/../index.html">particles</a> / <a href="interpolation.pyx.html">interpolation.pyx</a> </h1>
+      <ul id="children"></ul>
+    </div>
+  </div>
+  <div class='clearall'>
+  <div class='section'>
+    <a id="section-0" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-0'>#</a>
+          </div>
+          <p>Cython version of the distribution interpolation.</p>
+<p><span class=todo><strong>TODO</strong>: currently massless only</span>
+<span class=todo><strong>TODO</strong>: no significant performance gain </span></p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">division</span>
+<span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">import</span> <span class="nn">numpy</span>
+<span class="n">cimport</span> <span class="n">numpy</span>
+<span class="n">cimport</span> <span class="n">cython</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+  </div>
+  <div class='section'>
+    <a id="section-1" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-1'>#</a>
+          </div>
+          <p>We now need to fix a datatype for our arrays. I've used the variable
+DTYPE for this, which is assigned to the usual NumPy runtime
+type info object.</p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre><span class="n">DTYPE</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">float_</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+  </div>
+  <div class='section'>
+    <a id="section-2" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-2'>#</a>
+          </div>
+          <p>"ctypedef" assigns a corresponding compile-time type to DTYPE_t. For
+every type in the numpy module there's a corresponding compile-time
+type with a _t-suffix.</p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre><span class="n">ctypedef</span> <span class="n">numpy</span><span class="o">.</span><span class="n">float_t</span> <span class="n">DTYPE_t</span>
+
+<span class="n">cdef</span> <span class="nb">int</span> <span class="n">exponential_interpolation</span> <span class="o">=</span> <span class="bp">True</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+  </div>
+  <div class='section'>
+    <a id="section-3" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-3'>#</a>
+          </div>
+          
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre><span class="nd">@cython.boundscheck</span><span class="p">(</span><span class="bp">False</span><span class="p">)</span>  <span class="c"># turn of bounds-checking for entire function</span>
+<span class="k">def</span> <span class="nf">distribution_interpolation</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="n">DTYPE_t</span><span class="p">,</span> <span class="n">ndim</span><span class="o">=</span><span class="mi">1</span><span class="p">]</span> <span class="n">grid</span><span class="p">,</span>
+                               <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="n">DTYPE_t</span><span class="p">,</span> <span class="n">ndim</span><span class="o">=</span><span class="mi">1</span><span class="p">]</span> <span class="n">distribution</span><span class="p">,</span>
+                               <span class="n">DTYPE_t</span> <span class="n">p</span><span class="p">,</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+  </div>
+  <div class='section'>
+    <a id="section-4" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-4'>#</a>
+          </div>
+          <p>energy_normalized=lambda x: 0,</p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>                               <span class="n">DTYPE_t</span> <span class="n">eta</span><span class="o">=</span><span class="mf">1.</span><span class="p">):</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+  </div>
+  <div class='section'>
+    <a id="section-5" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-5'>#</a>
+          </div>
+          
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>    <span class="n">cdef</span> <span class="n">DTYPE_t</span> <span class="n">p_low</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">p_high</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+
+    <span class="n">cdef</span> <span class="n">unsigned</span> <span class="nb">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">i_low</span><span class="p">,</span> <span class="n">i_high</span>
+    <span class="k">for</span> <span class="n">point</span> <span class="ow">in</span> <span class="n">grid</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">point</span> <span class="o">==</span> <span class="n">p</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">distribution</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="n">point</span> <span class="o">&lt;</span> <span class="n">p</span><span class="p">:</span>
+            <span class="n">p_low</span> <span class="o">=</span> <span class="n">point</span>
+            <span class="n">i_low</span> <span class="o">=</span> <span class="n">i</span>
+        <span class="k">elif</span> <span class="n">point</span> <span class="o">&gt;</span> <span class="n">p</span><span class="p">:</span>
+            <span class="n">p_high</span> <span class="o">=</span> <span class="n">point</span>
+            <span class="n">i_high</span> <span class="o">=</span> <span class="n">i</span>
+            <span class="k">break</span>
+        <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="k">if</span> <span class="n">p_low</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&quot;Outside of interpolated range: {}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">p</span><span class="p">))</span>
+
+    <span class="n">cdef</span> <span class="n">DTYPE_t</span> <span class="n">E_p</span><span class="p">,</span> <span class="n">E_low</span><span class="p">,</span> <span class="n">E_high</span><span class="p">,</span> <span class="n">g_high</span><span class="p">,</span> <span class="n">g_low</span><span class="p">,</span> <span class="n">g</span>
+
+    <span class="k">if</span> <span class="n">exponential_interpolation</span><span class="p">:</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+  </div>
+  <div class='section'>
+    <a id="section-6" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-6'>#</a>
+          </div>
+          <p>E_p = energy_normalized(p)
+E_low = energy_normalized(p_low)
+E_high = energy_normalized(p_high)</p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>        <span class="n">E_p</span> <span class="o">=</span> <span class="n">p</span>
+        <span class="n">E_low</span> <span class="o">=</span> <span class="n">p_low</span>
+        <span class="n">E_high</span> <span class="o">=</span> <span class="n">p_high</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+  </div>
+  <div class='section'>
+    <a id="section-7" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-7'>#</a>
+          </div>
+          <p>\begin{equation}
+    g = \frac{ (E_p - E_{low}) g_{high} + (E_{high} - E_p) g_{low} }{ (E_{high} - E_{low}) }
+\end{equation}</p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>        <span class="n">g_high</span> <span class="o">=</span> <span class="n">distribution</span><span class="p">[</span><span class="n">i_high</span><span class="p">]</span>
+        <span class="n">g_low</span> <span class="o">=</span> <span class="n">distribution</span><span class="p">[</span><span class="n">i_low</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="n">g_high</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">g_high</span> <span class="o">=</span> <span class="p">(</span><span class="mf">1.</span> <span class="o">/</span> <span class="n">g_high</span> <span class="o">-</span> <span class="mf">1.</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">g_high</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">g_high</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">g_high</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">g_low</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">g_low</span> <span class="o">=</span> <span class="p">(</span><span class="mf">1.</span> <span class="o">/</span> <span class="n">g_low</span> <span class="o">-</span> <span class="mf">1.</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">g_low</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">g_low</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">g_low</span><span class="p">)</span>
+
+        <span class="n">g</span> <span class="o">=</span> <span class="p">((</span><span class="n">E_p</span> <span class="o">-</span> <span class="n">E_low</span><span class="p">)</span> <span class="o">*</span> <span class="n">g_high</span> <span class="o">+</span> <span class="p">(</span><span class="n">E_high</span> <span class="o">-</span> <span class="n">E_p</span><span class="p">)</span> <span class="o">*</span> <span class="n">g_low</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">E_high</span> <span class="o">-</span> <span class="n">E_low</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="mf">1.</span> <span class="o">/</span> <span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">g</span><span class="p">)</span> <span class="o">+</span> <span class="n">eta</span><span class="p">)</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+  </div>
+  <div class='section'>
+    <a id="section-8" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-8'>#</a>
+          </div>
+          
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="n">distribution</span><span class="p">[</span><span class="n">i_low</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">p_high</span> <span class="o">-</span> <span class="n">p</span><span class="p">)</span> <span class="o">+</span> <span class="n">distribution</span><span class="p">[</span><span class="n">i_high</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">p</span> <span class="o">-</span> <span class="n">p_low</span><span class="p">)</span>
+        <span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">p_high</span> <span class="o">-</span> <span class="n">p_low</span><span class="p">)</span>
+
+</pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+  </div>
+</div>
+</body>

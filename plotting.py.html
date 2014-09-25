@@ -22,7 +22,7 @@
         Generated at
         <a target="_blank" href="http://ckald.github.io/pyccoon/" title="Pyccoon: side-to-side documentation generator">
             <img id="pyccoon-icon" src="./pyccoon_icon.svg" alt="Pyccoon: side-to-side documentation generator" /></a>
-        <code>2014-09-05 23:45:46.115306</code>/
+        <code>2014-09-25 03:36:38.165221</code>/
         by a diligent
         <a target="_blank" href="http://ckald.github.io/pyccoon/" title="Pyccoon: side-to-side documentation generator">pyccoon</a>
     </div>
@@ -46,10 +46,15 @@
         <div class='code'>
           <div class="highlight"><pre><span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">itertools</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+<span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">cm</span>
+<span class="kn">from</span> <span class="nn">mpl_toolkits.mplot3d</span> <span class="kn">import</span> <span class="n">Axes3D</span>
+
 <span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">deque</span>
 
-<span class="kn">from</span> <span class="nn">common</span> <span class="kn">import</span> <span class="n">UNITS</span><span class="p">,</span> <span class="n">GRID</span></pre></div>
+<span class="kn">from</span> <span class="nn">common</span> <span class="kn">import</span> <span class="n">UNITS</span><span class="p">,</span> <span class="n">GRID</span><span class="p">,</span> <span class="n">PARAMS</span></pre></div>
         </div>
         <div class='clearall'></div>
     </section>
@@ -262,18 +267,66 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">particles</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">particle</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">particles</span><span class="p">):</span>
                 <span class="k">if</span> <span class="ow">not</span> <span class="n">particle</span><span class="o">.</span><span class="n">in_equilibrium</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">particles_plots</span><span class="p">[</span><span class="n">i</span><span class="o">*</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">GRID</span><span class="o">.</span><span class="n">TEMPLATE</span> <span class="o">/</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">MeV</span><span class="p">,</span> <span class="n">particle</span><span class="o">.</span><span class="n">_distribution</span><span class="p">)</span>
-                    <span class="n">feq</span> <span class="o">=</span> <span class="n">particle</span><span class="o">.</span><span class="n">distribution_function_vectorized</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">particles_plots</span><span class="p">[</span><span class="n">i</span><span class="o">*</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">GRID</span><span class="o">.</span><span class="n">TEMPLATE</span> <span class="o">/</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">MeV</span><span class="p">,</span>
+                                                   <span class="n">particle</span><span class="o">.</span><span class="n">_distribution</span><span class="p">)</span>
+
+                    <span class="n">effective_temperature</span> <span class="o">=</span> <span class="p">(</span>
+                        <span class="mf">240.</span> <span class="o">*</span> <span class="n">particle</span><span class="o">.</span><span class="n">energy_density</span><span class="p">()</span> <span class="o">/</span> <span class="mf">7.</span> <span class="o">/</span> <span class="n">numpy</span><span class="o">.</span><span class="n">pi</span><span class="o">**</span><span class="mi">2</span> <span class="o">/</span> <span class="n">particle</span><span class="o">.</span><span class="n">dof</span>
+                    <span class="p">)</span> <span class="o">**</span> <span class="mf">0.25</span>
+
+                    <span class="n">feq</span> <span class="o">=</span> <span class="n">particle</span><span class="o">.</span><span class="n">distribution_function</span><span class="p">(</span>
                         <span class="n">particle</span><span class="o">.</span><span class="n">energy_normalized_vectorized</span><span class="p">(</span><span class="n">GRID</span><span class="o">.</span><span class="n">TEMPLATE</span><span class="p">)</span>
-                        <span class="o">/</span> <span class="n">particle</span><span class="o">.</span><span class="n">T</span>
+                        <span class="o">/</span> <span class="n">PARAMS</span><span class="o">.</span><span class="n">a</span> <span class="o">/</span> <span class="n">effective_temperature</span>
                     <span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">particles_plots</span><span class="p">[</span><span class="n">i</span><span class="o">*</span><span class="mi">2</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span>
+                        <span class="n">particle</span><span class="o">.</span><span class="n">name</span> <span class="o">+</span> <span class="s">&quot; (T&#39; = {})&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">effective_temperature</span> <span class="o">/</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">MeV</span><span class="p">)</span>
+                    <span class="p">)</span>
+                    <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">particles_plots</span><span class="p">[</span><span class="n">i</span><span class="o">*</span><span class="mi">2</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">get_axes</span><span class="p">()</span><span class="o">.</span><span class="n">lines</span><span class="p">:</span>
+                        <span class="n">alpha</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">get_alpha</span><span class="p">()</span> <span class="ow">or</span> <span class="mf">1.</span>
+                        <span class="k">if</span> <span class="n">alpha</span> <span class="o">&lt;</span> <span class="mf">0.1</span><span class="p">:</span>
+                            <span class="n">line</span><span class="o">.</span><span class="n">remove</span><span class="p">()</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">line</span><span class="o">.</span><span class="n">set_alpha</span><span class="p">((</span><span class="n">line</span><span class="o">.</span><span class="n">get_alpha</span><span class="p">()</span> <span class="ow">or</span> <span class="mf">1.</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.8</span><span class="p">)</span>
+
                     <span class="bp">self</span><span class="o">.</span><span class="n">particles_plots</span><span class="p">[</span><span class="n">i</span><span class="o">*</span><span class="mi">2</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
                         <span class="n">GRID</span><span class="o">.</span><span class="n">TEMPLATE</span> <span class="o">/</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">MeV</span><span class="p">,</span>
                         <span class="n">particle</span><span class="o">.</span><span class="n">_distribution</span> <span class="o">/</span> <span class="n">feq</span>
                     <span class="p">)</span>
 
             <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
-            <span class="n">plt</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+  </div>
+  <div class='section'>
+    <a id="section-8" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-8'>#</a>
+          </div>
+          
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre><span class="k">def</span> <span class="nf">plot_integrand</span><span class="p">(</span><span class="n">integrand</span><span class="p">,</span> <span class="n">particle</span><span class="p">,</span> <span class="n">p0</span><span class="p">):</span>
+    <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+    <span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">gca</span><span class="p">(</span><span class="n">projection</span><span class="o">=</span><span class="s">&#39;3d&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">cla</span><span class="p">()</span>
+    <span class="n">X</span><span class="p">,</span> <span class="n">Y</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">GRID</span><span class="o">.</span><span class="n">TEMPLATE</span><span class="p">,</span> <span class="n">GRID</span><span class="o">.</span><span class="n">TEMPLATE</span><span class="p">)</span>
+    <span class="n">Z</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">integrand</span><span class="p">([</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">])</span> <span class="k">for</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">ravel</span><span class="p">(</span><span class="n">X</span><span class="p">),</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ravel</span><span class="p">(</span><span class="n">Y</span><span class="p">))])</span>\
+        <span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+
+    <span class="n">ax</span><span class="o">.</span><span class="n">plot_surface</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">Z</span><span class="p">,</span> <span class="n">rstride</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">cstride</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">contourf</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">Z</span><span class="p">,</span> <span class="n">zdir</span><span class="o">=</span><span class="s">&#39;z&#39;</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">amin</span><span class="p">(</span><span class="n">Z</span><span class="p">),</span> <span class="n">cmap</span><span class="o">=</span><span class="n">cm</span><span class="o">.</span><span class="n">coolwarm</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">contourf</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">Z</span><span class="p">,</span> <span class="n">zdir</span><span class="o">=</span><span class="s">&#39;x&#39;</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="n">ax</span><span class="o">.</span><span class="n">get_xlim</span><span class="p">()[</span><span class="mi">0</span><span class="p">],</span> <span class="n">cmap</span><span class="o">=</span><span class="n">cm</span><span class="o">.</span><span class="n">coolwarm</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">contourf</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">Z</span><span class="p">,</span> <span class="n">zdir</span><span class="o">=</span><span class="s">&#39;y&#39;</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="n">ax</span><span class="o">.</span><span class="n">get_ylim</span><span class="p">()[</span><span class="mi">1</span><span class="p">],</span> <span class="n">cmap</span><span class="o">=</span><span class="n">cm</span><span class="o">.</span><span class="n">coolwarm</span><span class="p">)</span>
+
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s">&#39;p1&#39;</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s">&#39;p2&#39;</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s">&#39;{} p0 = {}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">particle</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">p0</span> <span class="o">/</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">MeV</span><span class="p">))</span>
+
+    <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">__file__</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span> <span class="s">&#39;logs/plt_{}.png&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">p0</span> <span class="o">/</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">MeV</span><span class="p">)))</span>
 
 </pre></div>
         </div>
