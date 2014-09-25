@@ -25,6 +25,7 @@ class STATISTICS:
     """ === Particle species statistics === """
 
     @staticmethod
+    @numpy.vectorize
     def Fermi(e):
         """ Fermi-Dirac:
             \begin{equation}
@@ -34,6 +35,7 @@ class STATISTICS:
         return 1. / (numpy.exp(e) + 1.)
 
     @staticmethod
+    @numpy.vectorize
     def Bose(e):
         """ Bose-Einstein:
             \begin{equation}
@@ -44,10 +46,6 @@ class STATISTICS:
 
     BOSON = Bose
     FERMION = Fermi
-
-# Vectorized distribution functions. Just for convenience - no performance gain.
-STATISTICS.FermiV = numpy.vectorize(STATISTICS.Fermi, otypes=[numpy.float_])
-STATISTICS.BoseV = numpy.vectorize(STATISTICS.Bose, otypes=[numpy.float_])
 
 
 class REGIMES(dict):
@@ -100,11 +98,9 @@ class Particle():
         if self.statistics == STATISTICS.FERMION:
             self.eta = 1.
             self.distribution_function = STATISTICS.Fermi
-            self.distribution_function_vectorized = STATISTICS.FermiV
         else:
             self.eta = -1.
             self.distribution_function = STATISTICS.Bose
-            self.distribution_function_vectorized = STATISTICS.BoseV
 
         """ For equilibrium particles distribution function is by definition given by its\
             statistics and will not be used until species comes into non-equilibrium regime """
