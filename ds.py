@@ -1,27 +1,17 @@
-import itertools
-
-from common import MemoizeMutable
-
-permutations = [x for x in itertools.permutations([0, 1, 2, 3])]
-
-
-def D(p=None, E=None, m=None, K1=lambda (i, j, k, l): 0., K2=lambda (i, j, k, l): 0.):
+def D(p=None, E=None, m=None, K1=0., K2=0., order=(0, 1, 2, 3)):
     """ Dimensionality: energy """
+
+    i, j, k, l = order
 
     sum = 0.
 
-    sum += K1([0, 1, 2, 3]) * (E[0]*E[1]*E[2]*E[3] * D1(*p) + D3(*p)) * len(permutations)
+    sum += K1 * (E[0]*E[1]*E[2]*E[3] * D1(*p) + D3(*p))
 
-    for i, j, k, l in permutations:
-        sum += K1([i, j, k, l]) * (
-            E[i]*E[j] * D2(p[i], p[j], p[k], p[l]) + E[k]*E[l] * D2(p[k], p[l], p[i], p[j])
-        ) + K2([i, j, k, l]) * m[i]*m[j] * (
-            E[k]*E[l] * D1(*p) + D2(p[i], p[j], p[k], p[l])
-        )
+    sum += K1 * (E[i]*E[j] * D2(p[i], p[j], p[k], p[l]) + E[k]*E[l] * D2(p[k], p[l], p[i], p[j]))
+
+    # sum += K2 * m[i]*m[j] * (E[k]*E[l] * D1(*p) + D2(p[i], p[j], p[k], p[l]))
 
     return sum
-
-# D = MemoizeMutable(D)
 
 
 def D1(k1, k2, k3, k4):
@@ -40,8 +30,6 @@ def D1(k1, k2, k3, k4):
 
     return sum
 
-# D1 = MemoizeMutable(D1)
-
 
 def D2(k1, k2, k3, k4):
     """ Dimensionality: energy**3 """
@@ -56,8 +44,7 @@ def D2(k1, k2, k3, k4):
         if q1 + q4 >= q2 + q3:
             a = q1 - q2
             sum = (
-                a * (a**2 - 3. * (q3**2 + q4**2))
-                + 2. * (q3**3 + q4**3)
+                a * (a**2 - 3. * (q3**2 + q4**2)) + 2. * (q3**3 + q4**3)
             ) / 12.
         else:
             sum = q4**3 / 3.
@@ -67,13 +54,10 @@ def D2(k1, k2, k3, k4):
         else:
             a = q1 + q2
             sum = (
-                a * (3. * (q3**2 + q4**2) - a**2)
-                + 2. * (q4**3 - q3**3)
+                a * (3. * (q3**2 + q4**2) - a**2) + 2. * (q4**3 - q3**3)
             ) / 12.
 
     return sum
-
-# D2 = MemoizeMutable(D2)
 
 
 def D3(k1, k2, k3, k4):
@@ -113,8 +97,6 @@ def D3(k1, k2, k3, k4):
     # print sum / UNITS.MeV**5,
 
     return sum
-
-# D3 = MemoizeMutable(D3)
 
 
 def Db1(q2, q3, q4):
