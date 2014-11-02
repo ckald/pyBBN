@@ -5,11 +5,14 @@ def D(p=None, E=None, m=None, K1=0., K2=0., order=(0, 1, 2, 3)):
 
     sum = 0.
 
-    sum += K1 * (E[0]*E[1]*E[2]*E[3] * D1(*p) + D3(*p))
+    if K1 != 0:
+        sum += K1 * (E[0]*E[1]*E[2]*E[3] * D1(*p) + D3(*p))
 
-    sum += K1 * (E[i]*E[j] * D2(p[i], p[j], p[k], p[l]) + E[k]*E[l] * D2(p[k], p[l], p[i], p[j]))
+        sum += K1 * (E[i]*E[j] * D2(p[i], p[j], p[k], p[l])
+                     + E[k]*E[l] * D2(p[k], p[l], p[i], p[j]))
 
-    # sum += K2 * m[i]*m[j] * (E[k]*E[l] * D1(*p) + D2(p[i], p[j], p[k], p[l]))
+    if K2 != 0:
+        sum += K2 * m[i]*m[j] * (E[k]*E[l] * D1(*p) + D2(p[i], p[j], p[k], p[l]))
 
     return sum
 
