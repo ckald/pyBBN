@@ -80,13 +80,6 @@ class Particle():
 
     def __init__(self, *args, **kwargs):
 
-        # Functions are vectorized for convenience
-        self.energy_vectorized = numpy.vectorize(self.energy, otypes=[numpy.float_])
-        self.energy_normalized_vectorized = numpy.vectorize(self.energy_normalized,
-                                                            otypes=[numpy.float_])
-        self.integrate_collisions_vectorized = numpy.vectorize(self.integrate_collisions,
-                                                               otypes=[numpy.float_])
-
         """ Set internal parameters using arguments or default values """
         self.T = PARAMS.T
         self.aT = PARAMS.aT
@@ -172,7 +165,7 @@ class Particle():
         if self.in_equilibrium:
             return
 
-        # # Smooth the collision integral a bit to eliminate the Monte Carlo errors
+        # Smooth the collision integral a bit to eliminate the Monte Carlo errors
         # self.collision_integral = smoothe_function(self.collision_integral, GRID.MOMENTUM_SAMPLES)
 
         delta = self.collision_integral * PARAMS.dx
@@ -197,7 +190,7 @@ class Particle():
 
         tmp = 1./64. / numpy.pi**3 * PARAMS.m**5 / PARAMS.x**6 / PARAMS.H
 
-        integrand = lambda p1, p2: sum([func(p0, p1, p2) for func in self.collision_integrands])
+        integrand = lambda (p1, p2): sum([func(p0, p1, p2) for func in self.collision_integrands])
 
         # plot_integrand(integrand, self, p0)
 
@@ -213,7 +206,7 @@ class Particle():
                     integrand,
                     xl=[GRID.MIN_MOMENTUM, GRID.MIN_MOMENTUM],
                     xu=[GRID.MAX_MOMENTUM, GRID.MAX_MOMENTUM],
-                    npoints=1e3
+                    npoints=1e4
                 )
             print '{name:}\t{integral: .5e}\t±{error: .5e}\t({relerror: 8.2f}%)\t'\
                 .format(name=self.name,
@@ -340,7 +333,7 @@ class Particle():
 
     def init_distribution(self):
         self._distribution = self.distribution_function(
-            self.energy_normalized_vectorized(GRID.TEMPLATE) / self.aT
+            numpy.vectorize(self.energy_normalized)(GRID.TEMPLATE) / self.aT
         )
         return self._distribution
 
