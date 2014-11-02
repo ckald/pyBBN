@@ -54,6 +54,7 @@ class Universe:
             'aT': array.array('f', [PARAMS.aT]),
             'T': array.array('f', [PARAMS.T]),
             'a': array.array('f', [PARAMS.a]),
+            'x': array.array('f', [PARAMS.x]),
             't': array.array('f', [PARAMS.t]),
             'rho': array.array('f', [0])
         }
@@ -64,6 +65,21 @@ class Universe:
         self.log()
 
         def integrand(t, y):
+            """ Master equation for the temperature looks like
+
+                \begin{equation}
+                    \frac{d (aT)}{dx} = \frac{\sum_i{N_i}}{\sum_i{D_i}}
+                \end{equation}
+
+                Where $N_i$ and $D_i$ represent contributions from different particle species.
+
+                See definitions for different regimes:
+                  * [[Radiation|particles/RadiationParticle.py#master-equation-terms]]
+                  * [[Intermediate|particles/IntermediateParticle.py#master-equation-terms]]
+                  * [[Dust|particles/DustParticle.py#master-equation-terms]]
+                  * [[Non-equilibrium|particles/NonEqParticle.py#master-equation-terms]]
+
+            """
 
             numerator = 0
             denominator = 0
@@ -75,71 +91,76 @@ class Universe:
             return numerator / denominator
 
         while PARAMS.T > PARAMS.T_final:
+            try:
+                rho = 0
 
-            rho = 0
+                for particle in self.particles:
+                    rho += particle.energy_density()
 
-            for particle in self.particles:
-                rho += particle.energy_density()
+                """ Conformal scale factor $x = a m$ step size is fixed: expansion of the Universe \
+                    is the main factor that controls the thermodynamical state of the system """
+                PARAMS.x += PARAMS.dx
 
-            """ Conformal scale factor $x = a m$ step size is fixed: expansion of the Universe \
-                is the main factor that controls the thermodynamical state of the system """
-            PARAMS.x += PARAMS.dx
+                PARAMS.aT = forward_euler_integrator(y=self.data['aT'],
+                                                     t=self.data['x'],
+                                                     f=integrand,
+                                                     h=PARAMS.dx)
+                """ Physical scale factor and temperature for convenience """
+                PARAMS.a = PARAMS.x / PARAMS.m
+                PARAMS.T = PARAMS.aT / PARAMS.a
+                """ Hubble expansion parameter defined by a Friedmann equation:
 
-            PARAMS.aT = forward_euler_integrator(y=self.data['aT'],
-                                                 t=self.data['a'],
-                                                 f=integrand,
-                                                 h=PARAMS.dx)
-            """ Physical scale factor and temperature for convenience """
-            PARAMS.a = PARAMS.x / PARAMS.m
-            PARAMS.T = PARAMS.aT / PARAMS.a
-            """ Hubble expansion parameter defined by a Friedmann equation:
+                    \begin{equation}
+                        H = \sqrt{\frac{8 \pi}{3} G \rho}
+                    \end{equation}
+                """
+                PARAMS.H = numpy.sqrt(8./3.*numpy.pi * CONST.G * rho)
 
-                \begin{equation}
-                    H = \sqrt{\frac{8 \pi}{3} G \rho}
-                \end{equation}
-            """
-            PARAMS.H = numpy.sqrt(8./3.*numpy.pi * CONST.G * rho)
+                """ Time step size is inferred from the approximation of the scale factor `a` \
+                    derivative and a definition of the Hubble parameter `H`:
 
-            """ Time step size is inferred from the approximation of the scale factor `a` \
-                derivative and a definition of the Hubble parameter `H`:
+                    \begin{equation}
+                        H = \frac{\dot{a}}{a} = \frac{1}{a_{i-1}} \frac{a_i - a_{i-1}}{\Delta t} \
+                          = \frac{1}{\Delta t}(\frac{a_i}{a_{i-1}} -1)
+                    \end{equation}
 
-                \begin{equation}
-                    H = \frac{\dot{a}}{a} = \frac{1}{a_{i-1}} \frac{a_i - a_{i-1}}{\Delta t} \
-                      = \frac{1}{\Delta t}(\frac{a_i}{a_{i-1}} -1)
-                \end{equation}
+                    \begin{equation}
+                        \Delta t = \frac{1}{H} (\frac{a_i}{a_{i-1}} - 1)
+                    \end{equation}
+                """
+                dt = (PARAMS.a / self.data['a'][-1] - 1) / PARAMS.H
+                PARAMS.t += dt
+                PARAMS.rho = rho
 
-                \begin{equation}
-                    \Delta t = \frac{1}{H} (\frac{a_i}{a_{i-1}} - 1)
-                \end{equation}
-            """
-            dt = (PARAMS.a / self.data['a'][-1] - 1) / PARAMS.H
-            PARAMS.t += dt
-            PARAMS.rho = rho
+                self.save()
 
-            self.save()
+                """ Non equilibrium interactions of different particle species are treated by a\
+                    numerical integration of the Boltzman equation for distribution functions in\
+                    the expanding spacetime.
+                """
+                for interaction in self.interactions:
+                    interaction.calculate()
 
-            """ Non equilibrium interactions of different particle species are treated by a\
-                numerical integration of the Boltzman equation for distribution functions in\
-                the expanding spacetime.
-            """
-            for interaction in self.interactions:
-                interaction.calculate()
+                from common import parmap
 
-            for particle in self.particles:
-                # For non-equilibrium particle calculate the collision integrals
-                particle.collision_integral = \
-                    particle.integrate_collisions_vectorized(GRID.TEMPLATE)
+                for particle in self.particles:
+                    # For non-equilibrium particle calculate the collision integrals
+                    particle.collision_integral = \
+                        numpy.array(parmap(particle.integrate_collisions, GRID.TEMPLATE, workers=7))
 
-            """ Update particle species distribution functions, check for regime switching, update\
-                precalculated variables like energy density and pressure. """
-            for particle in self.particles:
-                particle.update()
+                """ Update particle species distribution functions, check for regime switching,\
+                    update precalculated variables like energy density and pressure. """
+                for particle in self.particles:
+                    particle.update()
 
-            for particle in self.particles:
-                particle.update_distribution()
+                for particle in self.particles:
+                    particle.update_distribution()
 
-            self.log()
-            self.step += 1
+                self.log()
+                self.step += 1
+            except KeyboardInterrupt:
+                print "Keyboard interrupt!"
+                break
 
         self.log()
         for particle in self.particles:
@@ -153,6 +174,7 @@ class Universe:
         self.data['aT'].append(PARAMS.aT)
         self.data['T'].append(PARAMS.T)
         self.data['a'].append(PARAMS.a)
+        self.data['x'].append(PARAMS.x)
         self.data['rho'].append(PARAMS.rho)
         self.data['t'].append(PARAMS.t)
 
