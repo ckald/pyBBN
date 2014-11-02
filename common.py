@@ -219,14 +219,14 @@ def spawn(f):
     return fun
 
 
-def parmap(f, X):
+def parmap(f, X, workers=multiprocessing.cpu_count()):
     pipe = [Pipe() for x in X]
     processes = [Process(target=spawn(f), args=(c, x)) for x, (p, c) in izip(X, pipe)]
     numProcesses = len(processes)
     processNum = 0
     outputList = []
     while processNum < numProcesses:
-        endProcessNum = min(processNum+multiprocessing.cpu_count(), numProcesses)
+        endProcessNum = min(processNum+workers, numProcesses)
         for proc in processes[processNum:endProcessNum]:
             proc.start()
         for proc in processes[processNum:endProcessNum]:
