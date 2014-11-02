@@ -169,6 +169,7 @@ class Universe:
                 "\tH =", PARAMS.H / nu.GeV
 
             self.graphics.plot(self.data)
+            # self.graphics.plot_pipe.send([self.data, False])
 
     def totals(self):
         """

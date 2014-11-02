@@ -2,9 +2,12 @@ import os
 import itertools
 
 import numpy
+# import matplotlib
+# matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
 from matplotlib import cm
 from mpl_toolkits.mplot3d import Axes3D
+# from multiprocessing import Process, Pipe
 
 from collections import deque
 
@@ -82,6 +85,12 @@ class Plotting:
 
         self.params_figure.show()
 
+        # self.pipe, self.plot_pipe = Pipe(False)
+        # self.plot_process = Process(target=self,
+        #                             name="Plotting process")
+        # self.plot_process.daemon = True
+        # self.plot_process.start()
+
     def save(self, filename):
         folder = os.path.split(filename)[0]
         plt.figure(1)
@@ -143,7 +152,7 @@ class Plotting:
                     ) ** 0.25
 
                     feq = particle.distribution_function(
-                        particle.energy_normalized_vectorized(GRID.TEMPLATE)
+                        numpy.vectorize(particle.energy_normalized)(GRID.TEMPLATE)
                         / PARAMS.a / effective_temperature
                     )
                     self.particles_plots[i*2 + 1].set_title(
@@ -154,7 +163,7 @@ class Plotting:
                         if alpha < 0.1:
                             line.remove()
                         else:
-                            line.set_alpha((line.get_alpha() or 1.) * 0.8)
+                            line.set_alpha((line.get_alpha() or 1.) * 0.85)
 
                     self.particles_plots[i*2 + 1].plot(
                         GRID.TEMPLATE / UNITS.MeV,
@@ -163,6 +172,33 @@ class Plotting:
 
             plt.figure(2)
             plt.draw()
+
+    # def terminate(self):
+    #     plt.close('all')
+
+    # def poll_draw(self):
+    #     print 'poll_draw'
+    #     while 1:
+    #         print 'Callback'
+    #         if not self.pipe.poll(None):
+    #             print 'not'
+    #             break
+
+    #         command = self.pipe.recv()
+    #         print command
+    #         if command is None:
+    #             self.terminate()
+    #             return False
+
+    #         else:
+    #             self.plot(command[0], full=command[1])
+
+    #     return True
+
+    # def __call__(self):
+    #     print 'Called'
+    #     # self.gid = gobject.timeout_add(100, self.poll_draw())
+    #     self.poll_draw()
 
 
 def plot_integrand(integrand, particle, p0):
