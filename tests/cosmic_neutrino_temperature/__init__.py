@@ -58,7 +58,7 @@ electron = Particle(name='Electron',
 Particles.append(electron)
 
 universe = Universe(Particles, logfile='tests/cosmic_neutrino_temperature/log.txt')
-universe.evolve(dx=PARAMS.dx, T_final=PARAMS.T_final)
+universe.evolve()
 
 print """
     Cosmic photon background temperature is {:.3f} times bigger than cosmic neutrinos temperature.

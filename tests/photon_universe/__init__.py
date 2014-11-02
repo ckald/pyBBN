@@ -31,7 +31,7 @@ photon = Particle(name='Photon',
 Particles.append(photon)
 
 universe = Universe(Particles, logfile="tests/photon_universe/log.txt")
-universe.evolve(dx=PARAMS.dx)
+universe.evolve()
 
 initial_aT = universe.data['aT'][0]
 print "a * T is conserved: {}".format(all([initial_aT == value for value in universe.data['aT']]))

@@ -27,6 +27,7 @@ PARAMS.infer()
 
 
 Particles = []
+
 neutron = Particle(name='Neutron',
                    statistics=STATISTICS.FERMION,
                    mass=0.939 * UNITS.GeV,
@@ -34,7 +35,7 @@ neutron = Particle(name='Neutron',
 Particles.append(neutron)
 
 universe = Universe(Particles, logfile="tests/neutron_universe/log.txt")
-universe.evolve(dx=PARAMS.dx, T_final=PARAMS.T_final)
+universe.evolve()
 
 initial_aT = universe.data['aT'][0]
 print "a * T is conserved: {}".format(all([initial_aT == value for value in universe.data['aT']]))

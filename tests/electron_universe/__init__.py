@@ -33,7 +33,7 @@ electron = Particle(name='Electron',
 Particles.append(electron)
 
 universe = Universe(Particles, logfile="tests/electron_universe/log.txt")
-universe.evolve(dx=PARAMS.dx, T_final=PARAMS.T_final)
+universe.evolve()
 
 initial_aT = universe.data['aT'][0]
 print "a * T is conserved: {}".format(all([initial_aT == value for value in universe.data['aT']]))

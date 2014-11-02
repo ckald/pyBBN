@@ -37,7 +37,7 @@ electron = Particle(name='Electron',
 Particles.append(electron)
 
 universe = Universe(Particles, logfile="tests/photon_electron_universe/log.txt")
-universe.evolve(dx=PARAMS.dx)
+universe.evolve()
 
 initial_aT = universe.data['aT'][0]
 print "a * T is not conserved: {}"\
