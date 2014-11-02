@@ -40,6 +40,6 @@ def pressure(particle):
 
 
 # == Master equation terms ==
-# Dust regime do not differ from intermediate regime here.
+# Dust regime does not differ from intermediate regime here.
 numerator = IntermediateParticle.numerator
 denominator = IntermediateParticle.denominator

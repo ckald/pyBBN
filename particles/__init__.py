@@ -54,7 +54,7 @@ class REGIMES(dict):
         :   particle mass is neglected, all values obtained analytically
         Dust (non-relativistic) `DUST`
         :   Boltzman law is used as species distribution function, simplifying the computations
-        Tntermediate regime `INTERMEDIATE`
+        Intermediate regime `INTERMEDIATE`
         :   values are computed explicitly using the precise form of the Bose-Einstein and\
             Fermi-Dirac distributions including particle mass term
         Non-equilibrium `NONEQ`
@@ -107,7 +107,7 @@ class Particle():
         """ For equilibrium particles distribution function is by definition given by its\
             statistics and will not be used until species comes into non-equilibrium regime """
         self._distribution = numpy.zeros(GRID.MOMENTUM_SAMPLES, dtype=numpy.float_)
-        """ Particle collision integral as well is not effective in equilibrium """
+        """ Particle collision integral is not effective in the equilibrium as well """
         self.collision_integral = numpy.zeros(GRID.MOMENTUM_SAMPLES, dtype=numpy.float_)
 
         self.collision_integrands = []

@@ -75,7 +75,7 @@ def pressure(particle):
     ))
 
 
-""" == Temperature evolution contributions == """
+""" == Master equation terms == """
 
 """ === Numerator ===
 
