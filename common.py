@@ -252,6 +252,9 @@ class Logger(object):
     def __del__(self):
         sys.stdout = self.terminal
 
+    def __getattr__(self, attr):
+        return getattr(self.terminal, attr)
+
 
 def forward_euler_integrator(y, t, f, h):
     """
