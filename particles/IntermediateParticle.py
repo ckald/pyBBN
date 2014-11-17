@@ -23,7 +23,8 @@ def density(particle):
                 particle.distribution_function(
                     particle.energy(p) / particle.T
                 ) * p**2 * particle.dof / 2. / numpy.pi**2
-            ), GRID.MIN_MOMENTUM, GRID.MAX_MOMENTUM
+            ), GRID.MIN_MOMENTUM, GRID.MAX_MOMENTUM,
+            epsrel=1e-8, epsabs=0
         )
     return particle._density
 
@@ -51,7 +52,8 @@ def energy_density(particle):
     if not particle._energy_density:
         particle._energy_density, _ = integrate.quad(
             lambda p: energy_density_integrand(p, particle),
-            GRID.MIN_MOMENTUM, GRID.MAX_MOMENTUM
+            GRID.MIN_MOMENTUM, GRID.MAX_MOMENTUM,
+            epsrel=1e-8, epsabs=0
         )
     return particle._energy_density
 
@@ -79,7 +81,8 @@ def pressure(particle):
     if not particle._pressure:
         particle._pressure, _ = integrate.quad(
             lambda p: pressure_integrand(p, particle),
-            GRID.MIN_MOMENTUM, GRID.MAX_MOMENTUM
+            GRID.MIN_MOMENTUM, GRID.MAX_MOMENTUM,
+            epsrel=1e-8, epsabs=0
         )
     return particle._pressure
 
@@ -112,5 +115,5 @@ def I(particle, y_power=2):
         lambda y: (
             y**y_power * numpy.exp(-particle.energy_normalized(y) / PARAMS.aT)
             / (numpy.exp(-particle.energy_normalized(y) / PARAMS.aT) + particle.eta) ** 2
-        ), GRID.MIN_MOMENTUM, GRID.MAX_MOMENTUM
+        ), GRID.MIN_MOMENTUM, GRID.MAX_MOMENTUM, epsrel=1e-8, epsabs=0
     )[0]

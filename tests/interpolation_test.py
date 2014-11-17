@@ -1,10 +1,11 @@
-from interaction import Interaction
-from particles import Particle, STATISTICS
+from library import StandardModelParticles as SMP
+from interaction import Interaction, M
+from particles import Particle
 from evolution import Universe
 from common import CONST, UNITS, PARAMS, GRID
 
 
-PARAMS.T_initial = 3 * UNITS.MeV
+PARAMS.T_initial = 2 * UNITS.MeV
 PARAMS.T_final = 0.075 * UNITS.MeV
 PARAMS.dx = 1e-1 * UNITS.MeV
 PARAMS.infer()
@@ -12,50 +13,27 @@ PARAMS.infer()
 
 Particles = []
 Interactions = []
-photon = Particle(name='Photon',
-                  statistics=STATISTICS.BOSON)
+photon = Particle(**SMP.photon)
 Particles.append(photon)
 
-# neutron = Particle(name='Neutron',
-#                    statistics=STATISTICS.FERMION,
-#                    mass=0.939 * UNITS.GeV,
-#                    decoupling_temperature=1.3 * UNITS.MeV)
-# Particles.append(neutron)
-
-# proton = Particle(name='Proton',
-#                   statistics=STATISTICS.FERMION,
-#                   mass=0.938 * UNITS.GeV,
-#                   )
-# Particles.append(proton)
-
-neutrino = Particle(name='Neutrino',
-                    statistics=STATISTICS.FERMION,
-                    dof=4,
-                    decoupling_temperature=3 * UNITS.MeV
-                    )
+neutrino = Particle(**SMP.neutrino_e)
 Particles.append(neutrino)
-
-# electron = Particle(name='Electron',
-#                     mass=0.511 * UNITS.MeV,
-#                     statistics=STATISTICS.FERMION,
-#                     dof=4)
-# Particles.append(electron)
 
 neutrino_scattering = Interaction(
     in_particles=[neutrino, neutrino],
     out_particles=[neutrino, neutrino],
     decoupling_temperature=0 * UNITS.MeV,
-    K1=128 * CONST.G_F**2,
-    K2=0.,
-    order=(0, 1, 2, 3),
+    Ms=[M(K1=128 * CONST.G_F**2, order=(0, 1, 2, 3))],
     symmetry_factor=0.5
 )
 Interactions.append(neutrino_scattering)
 
-import numpy
-neutrino._distribution += numpy.vectorize(lambda x: 0.1 * numpy.exp(-(x-5)**2),
-                                          otypes=[numpy.float_])(GRID.TEMPLATE)
+universe = Universe(Particles, Interactions, plotting=False)
 
+import numpy
+addition = numpy.vectorize(lambda x: 0.1 * numpy.exp(-(x/UNITS.MeV-5)**2),
+                           otypes=[numpy.float_])
+# neutrino._distribution += addition(GRID.TEMPLATE)
 
 # def check(p=[]):
 #     return neutrino_scattering.F_B(in_p=p[:2], out_p=p[2:]) * (1 - neutrino.distribution(p[0])) \
@@ -68,11 +46,14 @@ neutrino._distribution += numpy.vectorize(lambda x: 0.1 * numpy.exp(-(x-5)**2),
 
 import matplotlib.pyplot as plt
 
-x = numpy.linspace(GRID.MIN_MOMENTUM, GRID.MAX_MOMENTUM, num=10000, endpoint=True)
+x = numpy.linspace(GRID.MIN_MOMENTUM, GRID.MAX_MOMENTUM*2,
+                   num=GRID.MOMENTUM_SAMPLES*10, endpoint=True)
 y = numpy.vectorize(neutrino.distribution)(x)
 z = numpy.vectorize(neutrino.distribution_function)(x / PARAMS.aT)
+w = z + addition(x)
 plt.plot(x, y)
-plt.plot(x, z)
+# plt.plot(x, z)
+# plt.plot(x, w)
 plt.show()
 
 # res = []
@@ -92,8 +73,8 @@ plt.show()
 from ds import D1, D2, D3
 from plotting import plot_integrand
 
-plot_integrand(lambda (p1, p2): D1(p1, p2, 1, 1), 'D1')
-plot_integrand(lambda (p1, p2): D2(p1, p2, 1, 1), 'D2')
-plot_integrand(lambda (p1, p2): D3(p1, p2, 1, 1), 'D3')
+plot_integrand(lambda (p1, p2): D1(p1, p2, 1, 1), 'D1', 0)
+plot_integrand(lambda (p1, p2): D2(p1, p2, 1, 1), 'D2', 0)
+plot_integrand(lambda (p1, p2): D3(p1, p2, 1, 1), 'D3', 0)
 
 raw_input("...")

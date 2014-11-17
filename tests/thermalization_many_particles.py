@@ -1,109 +1,55 @@
-from interaction import Interaction
-from particles import Particle, library
+from particles import Particle
+from library import StandardModelParticles as SMP, StandardModelInteractions as SMI
 from evolution import Universe
-from common import CONST, UNITS, PARAMS, GRID
+from common import CONST, UNITS, PARAMS
 
 
-PARAMS.T_initial = 3 * UNITS.MeV
+PARAMS.T_initial = 5. * UNITS.MeV
 PARAMS.T_final = 0.075 * UNITS.MeV
-PARAMS.dx = 1e-3 * UNITS.MeV
+PARAMS.dx = 1e-4 * UNITS.MeV
 PARAMS.infer()
 
 
 Particles = []
 Interactions = []
 
-photon = Particle(**library.StandardModelParticles.photon)
-electron = Particle(**library.StandardModelParticles.electron)
-neutrino_e = Particle(**library.StandardModelParticles.neutrino_e)
-neutrino_mu = Particle(**library.StandardModelParticles.neutrino_mu)
-neutrino_tau = Particle(**library.StandardModelParticles.neutrino_tau)
+photon = Particle(**SMP.photon)
+electron = Particle(**SMP.electron)
+neutrino_e = Particle(**SMP.neutrino_e)
+neutrino_mu = Particle(**SMP.neutrino_mu)
+neutrino_tau = Particle(**SMP.neutrino_tau)
 
-Particles += [photon, electron, neutrino_e, neutrino_mu, neutrino_tau]
+Particles += [
+    photon,
+    electron,
+    neutrino_e,
+    neutrino_mu,
+    neutrino_tau,
+]
 
-""" \begin{align}
-        \nu_e + \nu_e &\to \nu_e + \nu_e
-        \\\\ \nu_e + \overline{\nu_e} &\to \nu_e + \overline{\nu_e}
-    \end{align} """
-neutrino_e_scattering = Interaction(
-    in_particles=[neutrino_e, neutrino_e],
-    out_particles=[neutrino_e, neutrino_e],
-    decoupling_temperature=0 * UNITS.MeV,
-    K1=(64 + 128) * CONST.G_F**2,
-    K2=0.,
-    order=(0, 1, 2, 3)
-)
-Interactions.append(neutrino_e_scattering)
-
-""" \begin{align}
-        \nu_\mu + \nu_\mu &\to \nu_\mu + \nu_\mu
-        \\\\ \nu_\mu + \overline{\nu_\mu} &\to \nu_\mu + \overline{\nu_\mu}
-    \end{align} """
-neutrino_mu_scattering = Interaction(
-    in_particles=[neutrino_mu, neutrino_mu],
-    out_particles=[neutrino_mu, neutrino_mu],
-    decoupling_temperature=0 * UNITS.MeV,
-    K1=(64 + 128) * CONST.G_F**2,
-    K2=0.,
-    order=(0, 1, 2, 3)
-)
-Interactions.append(neutrino_mu_scattering)
-
-neutrino_tau_scattering = Interaction(
-    in_particles=[neutrino_tau, neutrino_tau],
-    out_particles=[neutrino_tau, neutrino_tau],
-    decoupling_temperature=0 * UNITS.MeV,
-    K1=(64 + 128) * CONST.G_F**2,
-    K2=0.,
-    order=(0, 1, 2, 3)
-)
-Interactions.append(neutrino_tau_scattering)
-
-""" \begin{align}
-        \nu_e + \nu_\mu &\to \nu_e + \nu_\mu
-        \\\\ \nu_e + \overline{\nu_\mu} &\to \nu_e + \overline{\nu_\mu}
-    \end{align} """
-neutrino_e_mu_scattering = Interaction(
-    in_particles=[neutrino_e, neutrino_mu],
-    out_particles=[neutrino_e, neutrino_mu],
-    decoupling_temperature=0 * UNITS.MeV,
-    K1=32 * CONST.G_F**2 * 2,
-    K2=0.,
-    order=(0, 1, 2, 3)
-)
-Interactions.append(neutrino_e_mu_scattering)
-
-neutrino_mu_tau_scattering = Interaction(
-    in_particles=[neutrino_tau, neutrino_mu],
-    out_particles=[neutrino_tau, neutrino_mu],
-    decoupling_temperature=0 * UNITS.MeV,
-    K1=32 * CONST.G_F**2 * 2,
-    K2=0.,
-    order=(0, 1, 2, 3)
-)
-Interactions.append(neutrino_mu_tau_scattering)
-
-neutrino_tau_e_scattering = Interaction(
-    in_particles=[neutrino_tau, neutrino_e],
-    out_particles=[neutrino_tau, neutrino_e],
-    decoupling_temperature=0 * UNITS.MeV,
-    K1=32 * CONST.G_F**2 * 2,
-    K2=0.,
-    order=(0, 1, 2, 3)
-)
-Interactions.append(neutrino_tau_e_scattering)
-
-""" Add non-equilibrium parts to the distribution functions """
-import numpy
-neutrino_e._distribution += \
-    numpy.vectorize(lambda x: 0.01 * numpy.exp(-(x/UNITS.MeV-5)**2))(GRID.TEMPLATE)
-neutrino_mu._distribution += \
-    numpy.vectorize(lambda x: 0.01 * numpy.exp(-(x/UNITS.MeV-5)**2))(GRID.TEMPLATE)
-neutrino_tau._distribution += \
-    numpy.vectorize(lambda x: 0.01 * numpy.exp(-(x/UNITS.MeV-5)**2))(GRID.TEMPLATE)
+Interactions += [
+    SMI.neutrino_self_scattering(neutrino_e),
+    SMI.neutrino_self_scattering(neutrino_mu),
+    SMI.neutrino_self_scattering(neutrino_tau),
+    SMI.neutrino_inter_scattering(neutrino_e, neutrino_mu),
+    SMI.neutrino_inter_scattering(neutrino_mu, neutrino_tau),
+    SMI.neutrino_inter_scattering(neutrino_tau, neutrino_e),
+    SMI.neutrinos_to_electrons(neutrino=neutrino_e, electron=electron, g_L=CONST.g_R+0.5),
+    SMI.neutrinos_to_electrons(neutrino=neutrino_mu, electron=electron, g_L=CONST.g_R-0.5),
+    SMI.neutrinos_to_electrons(neutrino=neutrino_tau, electron=electron, g_L=CONST.g_R-0.5),
+    SMI.neutrino_electron_scattering(neutrino=neutrino_e, electron=electron, g_L=CONST.g_R+0.5),
+    SMI.neutrino_electron_scattering(neutrino=neutrino_mu, electron=electron, g_L=CONST.g_R-0.5),
+    SMI.neutrino_electron_scattering(neutrino=neutrino_tau, electron=electron, g_L=CONST.g_R-0.5),
+]
 
 universe = Universe(Particles, Interactions)
-universe.graphics.monitor(particles=[neutrino_e, neutrino_mu, neutrino_tau])
+universe.graphics.monitor(particles=[
+    neutrino_e,
+    neutrino_mu,
+    neutrino_tau
+])
+
+
 universe.evolve()
 
 raw_input("...")

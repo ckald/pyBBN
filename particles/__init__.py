@@ -6,16 +6,14 @@ This file contains `Particle` class definition and code governing the switching 
 regimes
 """
 from __future__ import division
-import functools
 import math
 
 import numpy
-from skmonaco import mcquad
-
-from scipy import integrate
 
 from plotting import plot_integrand
-from common import GRID, PARAMS, UNITS, benchmark, smoothe_function
+from common import GRID, PARAMS, UNITS
+from common.integrators import integrate_2D, implicit_euler
+from common.utils import benchmark
 
 from particles import DustParticle, RadiationParticle, IntermediateParticle, NonEqParticle
 # from particles.interpolation import distribution_interpolation
@@ -76,7 +74,8 @@ class Particle():
         particle `decoupling_temperature`
     """
 
-    COLLISION_INTEGRATION_METHOD = ['mcquad', 'dblquad'][0]
+    COLLISION_INTEGRATION_METHOD = ['mcquad', 'dblquad', 'fixed'][2]
+    COLLECTIVE_INTEGRATION = False
 
     def __init__(self, *args, **kwargs):
 
@@ -86,6 +85,7 @@ class Particle():
         self.mass = kwargs.get('mass', 0 * UNITS.eV)
         self.decoupling_temperature = kwargs.get('decoupling_temperature', 0 * UNITS.eV)
         self.name = kwargs.get('name', 'Particle')
+        self.symbol = kwargs.get('symbol', 'p')
 
         self.dof = kwargs.get('dof', 2)  # particle species degeneracy (e.g., spin-degeneracy)
 
@@ -106,7 +106,11 @@ class Particle():
         self.collision_integrands = []
 
         self.update()
+        self.T = PARAMS.T
+        self.aT = PARAMS.aT
         self.init_distribution()
+
+        print self
 
     def __str__(self):
         """ String-like representation of particle species it's regime and parameters """
@@ -119,7 +123,12 @@ class Particle():
         ) + ("-" * 80)
 
     def __repr__(self):
-        return self.name
+        return self.symbol
+
+    def __copy__(self):
+        newone = type(self)()
+        newone.__dict__.update(self.__dict__)
+        return newone
 
     def update(self, force_print=False):
         """ Update the particle parameters according to the new state of the system """
@@ -144,23 +153,6 @@ class Particle():
         if force_print or self.regime != oldregime or self.in_equilibrium != oldeq:
             print self
 
-    def check_step_size(self, delta):
-        """
-        Scale factor step size controller.
-
-        TODO: not usable now, need to orchestrate between many collision integrations - \
-              i.e., select smallest suggested
-        """
-        relative_delta = numpy.absolute(delta / self._distribution).max()
-        if relative_delta < 0.1:
-            PARAMS.dx *= 2
-            delta *= 2
-            print "//// Step size increased to", PARAMS.dx / UNITS.MeV
-        elif relative_delta > 0.2:
-            PARAMS.dx /= 2
-            delta /= 2
-            print "//// Step size decreased to", PARAMS.dx / UNITS.MeV
-
     def update_distribution(self):
         if self.in_equilibrium:
             return
@@ -174,13 +166,27 @@ class Particle():
         if numpy.any(prediction < 0):
             print("Holy cow, negative distribution!")
 
-        # self.check_step_size(delta)
-
         # Force minimal distribution function value to 0
-        self._distribution = numpy.fmax(prediction, 0)
+        self._distribution = numpy.maximum(prediction, 0)
 
         # Clear collision integrands for the next computation step
         self.collision_integrands = []
+
+    def benchmarked_integration(self, p0, integrand, name):
+        with benchmark("\t"):
+            integral, error = integrate_2D(
+                lambda (p1, p2): integrand([p0, p1, p2, 0]),
+                bounds=(
+                    (GRID.MIN_MOMENTUM, GRID.MAX_MOMENTUM),
+                    (lambda p1: GRID.MIN_MOMENTUM,
+                     lambda p1: min(p0 + p1, GRID.MAX_MOMENTUM)),
+                ),
+                method=self.COLLISION_INTEGRATION_METHOD)
+
+            print '{name:}\t\tI( {p0:5.2f} ) = {integral: .5e}\t'\
+                .format(name=name, integral=integral / UNITS.MeV, p0=p0 / UNITS.MeV),
+
+        return integral, error
 
     def integrate_collisions(self, p0):
         """ == Particle collisions integration == """
@@ -188,35 +194,52 @@ class Particle():
         if not self.collision_integrands:
             return 0
 
-        tmp = 1./64. / numpy.pi**3 * PARAMS.m**5 / PARAMS.x**6 / PARAMS.H
+        As = []
+        Bs = []
 
-        integrand = lambda (p1, p2): sum([func(p0, p1, p2) for func in self.collision_integrands])
+        if self.COLLECTIVE_INTEGRATION:
 
-        # plot_integrand(integrand, self, p0)
+            integral_1, _ = self.benchmarked_integration(
+                p0, lambda ps: sum([
+                    i.integrand(ps, F_A=False, F_B=False, F_1=True, F_f=False)
+                    for i in self.collision_integrands
+                ]), name='{} ~1 interactions'.format(self.symbol)
+            )
+            As.append(integral_1)
 
-        with benchmark("p0 = {:.2f}\t".format(p0 / UNITS.MeV)):
-            if self.COLLISION_INTEGRATION_METHOD == 'dblquad':
-                integral, error = integrate.dblquad(
-                    lambda p1, p2: integrand((p1, p2)),
-                    GRID.MIN_MOMENTUM, GRID.MAX_MOMENTUM,
-                    lambda p1: GRID.MIN_MOMENTUM, lambda p1: min(p0 + p1, GRID.MAX_MOMENTUM)
+            integral_f, _ = self.benchmarked_integration(
+                p0, lambda ps: sum([
+                    i.integrand(ps, F_A=False, F_B=False, F_1=False, F_f=True)
+                    for i in self.collision_integrands
+                ]), name='{} ~f interactions'.format(self.symbol)
+            )
+            Bs.append(integral_f)
+
+        else:
+            for i in self.collision_integrands:
+                # plot_integrand(lambda (p1, p2): i.integrand([p0, p1, p2, 0]), self.name, p0)
+
+                integral_1, _ = self.benchmarked_integration(
+                    p0, lambda ps: i.integrand(ps, F_A=False, F_B=False, F_1=True, F_f=False),
+                    name=str(i)
                 )
-            elif self.COLLISION_INTEGRATION_METHOD == 'mcquad':
-                integral, error = mcquad(
-                    integrand,
-                    xl=[GRID.MIN_MOMENTUM, GRID.MIN_MOMENTUM],
-                    xu=[GRID.MAX_MOMENTUM, GRID.MAX_MOMENTUM],
-                    npoints=1e4
-                )
-            print '{name:}\t{integral: .5e}\t±{error: .5e}\t({relerror: 8.2f}%)\t'\
-                .format(name=self.name,
-                        integral=integral / UNITS.MeV,
-                        error=error / UNITS.MeV,
-                        relerror=(error / integral * 100 if integral else 0)
-                        ),
+                As.append(integral_1)
 
-        tmp *= integral
-        return tmp
+                integral_f, _ = self.benchmarked_integration(
+                    p0, lambda ps: i.integrand(ps, F_A=False, F_B=False, F_1=False, F_f=True),
+                    name=str(i)
+                )
+                Bs.append(integral_f)
+
+        prediction = implicit_euler(y=self.distribution(p0),
+                                    t=PARAMS.x,
+                                    A=lambda t: sum(As),
+                                    B=lambda t: sum(Bs),
+                                    h=PARAMS.dx)
+
+        total_integral = (prediction - self.distribution(p0)) / PARAMS.dx
+
+        return total_integral
 
     @property
     def regime(self):
@@ -232,7 +255,7 @@ class Particle():
         `REGIMES.INTERMEDIATE`. When $T$ drops down even further to the value $ M / \gamma $,\
         particle species can be treated as `REGIMES.DUST` with a Boltzmann distribution function.
         """
-        regime_factor = 1e2
+        regime_factor = 1e1
 
         if not self.in_equilibrium:
             return REGIMES.NONEQ
@@ -264,39 +287,45 @@ class Particle():
 
     def distribution(self, p):
         """
-        Returns interpolated value of distribution function by momentum.
+        == Distribution function interpolation ==
+
+        Two possible strategies for the distribution function interpolation are implemented:
+
+          * linear interpolation
+          * exponential interpolation
+
+        While linear interpolation is exceptionally simple, the exponential interpolation gives
+        exact results for the equilibrium functions - thus collision integral for them almost
+        exactly cancels unlike the case of linear interpolation.
         """
-        exponential_interpolation = False  # True
+        # exponential_interpolation = False
+        exponential_interpolation = True
         p = abs(p)
         if self.in_equilibrium or p > GRID.MAX_MOMENTUM:
-            return self.distribution_function(self.energy_normalized(p) / PARAMS.aT)
-
-        index = numpy.where(GRID.TEMPLATE == p)
-        if len(index[0]):
-            return self._distribution[index[0][0]]
+            return self.distribution_function(self.energy_normalized(p) / self.aT)
 
         # return distribution_interpolation(GRID.TEMPLATE, self._distribution, p,
         #                                   # energy_normalized=self.energy_normalized,
         #                                   eta=self.eta)
 
-        p_low = None  # GRID.MIN_MOMENTUM
-        p_high = None  # GRID.MAX_MOMENTUM
+        remnant = (p - GRID.MIN_MOMENTUM) % GRID.MOMENTUM_STEP
+        index = int((p - GRID.MIN_MOMENTUM) / GRID.MOMENTUM_STEP - remnant)
 
-        i = 0
-        for point in GRID.TEMPLATE:
-            if point == p:
-                return self._distribution[i]
-            elif point < p:
-                p_low = point
-                i_low = i
-            elif point > p:
-                p_high = point
-                i_high = i
-                break
-            i += 1
+        if remnant == 0:
+            return self._distribution[index]
 
-        if p_low is None:
-            raise Exception("Outside of interpolated range: {}".format(p))
+        if index >= GRID.MOMENTUM_SAMPLES - 1:
+            return self._distribution[-1]
+
+        i_low = index
+        p_low = GRID.TEMPLATE[i_low]
+
+        i_high = index + 1
+        p_high = GRID.TEMPLATE[i_high]
+
+        if index > GRID.MOMENTUM_SAMPLES - 1:
+            raise Exception("Outside of interpolated range: {} ({}..{})"
+                            .format(p, GRID.MIN_MOMENTUM, GRID.MAX_MOMENTUM))
 
         if exponential_interpolation:
             E_p = self.energy_normalized(p)
@@ -362,7 +391,7 @@ class Particle():
             \end{equation}
         """
         if self.mass > 0:
-            return numpy.sqrt(y**2 + self.mass_normalized**2, dtype=numpy.float_)
+            return numpy.sqrt(y**2 + self.mass_normalized**2)
         else:
             return abs(y)
 

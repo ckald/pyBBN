@@ -102,17 +102,16 @@ class Plotting:
     def monitor(self, particles=[]):
         self.particles = particles
         if self.particles:
-            self.particles_figure, self.particles_plots = plt.subplots(len(particles)*2, 1, num=2)
+            self.particles_figure, self.particles_plots = plt.subplots(len(particles), 2, num=2)
             self.particles_figure.subplots_adjust(hspace=0.5, wspace=0.5)
 
             for i, particle in enumerate(self.particles):
-                self.particles_plots[i*2].set_title(particle.name)
-                self.particles_plots[i*2].set_xlabel("y, MeV")
-                self.particles_plots[i*2].set_ylabel("f")
+                self.particles_plots[i][0].set_title(particle.name)
+                self.particles_plots[i][0].set_xlabel("y, MeV")
+                self.particles_plots[i][0].set_ylabel("f")
 
-                self.particles_plots[i*2 + 1].set_title(particle.name)
-                self.particles_plots[i*2 + 1].set_xlabel("y, MeV")
-                self.particles_plots[i*2 + 1].set_ylabel("f/f_eq")
+                self.particles_plots[i][1].set_xlabel("y, MeV")
+                self.particles_plots[i][1].set_ylabel("f/f_eq")
 
             self.particles_figure.show()
 
@@ -144,28 +143,30 @@ class Plotting:
         if self.particles:
             for i, particle in enumerate(self.particles):
                 if not particle.in_equilibrium:
-                    self.particles_plots[i*2].plot(GRID.TEMPLATE / UNITS.MeV,
-                                                   particle._distribution)
+                    self.particles_plots[i][0].plot(GRID.TEMPLATE / UNITS.MeV,
+                                                    particle._distribution)
 
-                    effective_temperature = (
-                        240. * particle.energy_density() / 7. / numpy.pi**2 / particle.dof
-                    ) ** 0.25
+                    # effective_temperature = (
+                    #     240. * particle.energy_density() / 7. / numpy.pi**2 / particle.dof
+                    # ) ** 0.25
 
                     feq = particle.distribution_function(
                         numpy.vectorize(particle.energy_normalized)(GRID.TEMPLATE)
-                        / PARAMS.a / effective_temperature
+                        / UNITS.MeV
+                        # / PARAMS.a / effective_temperature
                     )
-                    self.particles_plots[i*2 + 1].set_title(
-                        particle.name + " (T' = {})".format(effective_temperature / UNITS.MeV)
-                    )
-                    for line in self.particles_plots[i*2 + 1].get_axes().lines:
+
+                    # self.particles_plots[i][1].set_title(
+                    #     "T' = {}".format(effective_temperature / UNITS.MeV)
+                    # )
+                    for line in self.particles_plots[i][1].get_axes().lines:
                         alpha = line.get_alpha() or 1.
                         if alpha < 0.1:
                             line.remove()
                         else:
-                            line.set_alpha((line.get_alpha() or 1.) * 0.85)
+                            line.set_alpha((line.get_alpha() or 1.) * 0.8)
 
-                    self.particles_plots[i*2 + 1].plot(
+                    self.particles_plots[i][1].plot(
                         GRID.TEMPLATE / UNITS.MeV,
                         particle._distribution / feq
                     )
@@ -201,7 +202,7 @@ class Plotting:
     #     self.poll_draw()
 
 
-def plot_integrand(integrand, particle, p0):
+def plot_integrand(integrand, name, p0):
     fig = plt.figure(3)
     ax = fig.gca(projection='3d')
     plt.cla()
@@ -209,13 +210,19 @@ def plot_integrand(integrand, particle, p0):
     Z = numpy.array([integrand([x, y]) for x, y in zip(numpy.ravel(X), numpy.ravel(Y))])\
         .reshape(X.shape)
 
-    ax.plot_surface(X, Y, Z, rstride=4, cstride=4, alpha=0.1)
+    ax.plot_surface(X, Y, Z, rstride=1, cstride=1, alpha=0.1)
     ax.contourf(X, Y, Z, zdir='z', offset=numpy.amin(Z), cmap=cm.coolwarm)
     ax.contourf(X, Y, Z, zdir='x', offset=ax.get_xlim()[0], cmap=cm.coolwarm)
     ax.contourf(X, Y, Z, zdir='y', offset=ax.get_ylim()[1], cmap=cm.coolwarm)
 
     ax.set_xlabel('p1')
     ax.set_ylabel('p2')
-    ax.set_title('{} p0 = {}'.format(particle.name, p0 / UNITS.MeV))
+    ax.set_title('{} p0 = {}'.format(name, p0 / UNITS.MeV))
 
     plt.savefig(os.path.join(os.path.split(__file__)[0], 'logs/plt_{}.png'.format(p0 / UNITS.MeV)))
+
+
+def plot_points(points, name):
+    plt.figure(4)
+    plt.scatter(*zip(*points))
+    plt.show()

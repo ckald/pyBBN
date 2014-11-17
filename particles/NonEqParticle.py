@@ -15,30 +15,34 @@ def lambda_integrate(func):
     """ Scipy integration over the momentum space of the lambda function applied to the \
         grid template """
 
-    method = ['simps', 'quad', 'romberg'][1]
+    method = ['simps', 'quad'][1]
 
-    @functools.wraps(func)
-    def wrapper(*args, **kw):
-        if method == 'simps':
+    if method == 'simps':
+
+        @functools.wraps(func)
+        def wrapper(*args, **kw):
             fpp = func(*args, **kw)(GRID.TEMPLATE)
             result = integrate.simps(fpp, dx=GRID.MOMENTUM_STEP)
 
-        elif method == 'quad':
-            fpp = func(*args, **kw)
-            result, err = integrate.quad(fpp, GRID.MIN_MOMENTUM, GRID.MAX_MOMENTUM)
+            return result
 
-        elif method == 'romberg':
-            fpp = func(*args, **kw)
-            result = integrate.romberg(fpp, GRID.MIN_MOMENTUM, GRID.MAX_MOMENTUM)
+    elif method == 'quad':
 
-        return result
+        @functools.wraps(func)
+        def wrapper(*args, **kw):
+            fpp = func(*args, **kw)
+            result, err = integrate.quad(fpp, GRID.MIN_MOMENTUM, GRID.MAX_MOMENTUM,
+                                         epsrel=1e-5, epsabs=0)
+
+            return result
+
     return wrapper
 
 
 @lambda_integrate
 def density(particle):
     return numpy.vectorize(lambda p: (
-        particle.distribution(p) * p ** 2
+        particle.distribution(p) * p**2
         * particle.dof / 2. / numpy.pi**2 / PARAMS.a**3
     ), otypes=[numpy.float_])
 
@@ -53,10 +57,10 @@ def energy_density(particle):
         \end{equation}
     """
     return numpy.vectorize(lambda y: (
-        particle.distribution(y) * y ** 2
-        * particle.energy_normalized(y)
+        particle.distribution(y)
+        * y**2 * particle.energy_normalized(y)
         * particle.dof / 2. / numpy.pi**2 / PARAMS.a**4
-    ))
+    ), otypes=[numpy.float_])
 
 
 @lambda_integrate
@@ -72,7 +76,7 @@ def pressure(particle):
         particle.distribution(p) * p ** 4
         / particle.energy_normalized(p)
         * particle.dof / 6. / numpy.pi**2 / PARAMS.a**4
-    ))
+    ), otypes=[numpy.float_])
 
 
 """ == Master equation terms == """
@@ -85,20 +89,15 @@ def pressure(particle):
 """
 
 
-@numpy.vectorize
-def numerator_lambda(y, particle, integral):
-    return (
-        -1. * particle.dof / 2. / numpy.pi**2
-        * y**2 * particle.energy_normalized(y)
-        * integral(y)
-    )
-
-
 @lambda_integrate
 def numerator(particle):
     integral = interpolate.interp1d(GRID.TEMPLATE, particle.collision_integral,
                                     kind='quadratic', assume_sorted=True, copy=False)
-    return functools.partial(numerator_lambda, particle=particle, integral=integral)
+    return numpy.vectorize(lambda y: (
+        -1. * particle.dof / 2. / numpy.pi**2
+        * y**2 * particle.energy_normalized(y)
+        * integral(y)
+    ), otypes=[numpy.float_])
 
 
 def denominator(particle):
