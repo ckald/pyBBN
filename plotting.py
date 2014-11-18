@@ -107,8 +107,8 @@ class Plotting:
 
             for i, particle in enumerate(self.particles):
                 self.particles_plots[i][0].set_title(particle.name)
-                self.particles_plots[i][0].set_xlabel("y, MeV")
-                self.particles_plots[i][0].set_ylabel("f")
+                self.particles_plots[i][0].set_xlabel("a")
+                self.particles_plots[i][0].set_ylabel("ρ, eV**4")
 
                 self.particles_plots[i][1].set_xlabel("y, MeV")
                 self.particles_plots[i][1].set_ylabel("f/f_eq")
@@ -143,22 +143,14 @@ class Plotting:
         if self.particles:
             for i, particle in enumerate(self.particles):
                 if not particle.in_equilibrium:
-                    self.particles_plots[i][0].plot(GRID.TEMPLATE / UNITS.MeV,
-                                                    particle._distribution)
-
-                    # effective_temperature = (
-                    #     240. * particle.energy_density() / 7. / numpy.pi**2 / particle.dof
-                    # ) ** 0.25
+                    self.particles_plots[i][0].plot(PARAMS.a,
+                                                    particle.energy_density() / UNITS.eV**4)
 
                     feq = particle.distribution_function(
                         numpy.vectorize(particle.energy_normalized)(GRID.TEMPLATE)
                         / UNITS.MeV
-                        # / PARAMS.a / effective_temperature
                     )
 
-                    # self.particles_plots[i][1].set_title(
-                    #     "T' = {}".format(effective_temperature / UNITS.MeV)
-                    # )
                     for line in self.particles_plots[i][1].get_axes().lines:
                         alpha = line.get_alpha() or 1.
                         if alpha < 0.1:
@@ -168,7 +160,7 @@ class Plotting:
 
                     self.particles_plots[i][1].plot(
                         GRID.TEMPLATE / UNITS.MeV,
-                        particle._distribution / feq
+                        particle._distribution / feq - 1
                     )
 
             plt.figure(2)
