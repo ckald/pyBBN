@@ -53,17 +53,19 @@ class Universe:
 
         self.step = 0
 
+        PARAMS.update(self.total_energy_density())
         self.data = {
             'aT': array.array('f', [PARAMS.aT]),
             'T': array.array('f', [PARAMS.T]),
             'a': array.array('f', [PARAMS.a]),
             'x': array.array('f', [PARAMS.x]),
             't': array.array('f', [PARAMS.t]),
-            'rho': array.array('f', [self.total_energy_density()])
+            'rho': array.array('f', [PARAMS.rho])
         }
 
-        print '# Time, s\taT, MeV\tTemperature, MeV\tscale factor\tρ energy density, eV^4\tH, GeV'
+        print '#step\tTime, s\taT, MeV\tT, MeV\tscale factor\tρ energy density, eV^4\tH, GeV'
         self.log()
+        self.step += 1
 
         while PARAMS.T > PARAMS.T_final:
             try:
@@ -75,8 +77,6 @@ class Universe:
                     PARAMS.aT += integrators.euler_correction(y=PARAMS.aT, f=self.integrand,
                                                               t=PARAMS.x, h=PARAMS.dx)
 
-                """ Conformal scale factor $x = a m$ step size is fixed: expansion of the Universe \
-                    is the main factor that controls the thermodynamical state of the system """
                 PARAMS.x += PARAMS.dx
 
                 PARAMS.update(self.total_energy_density())
@@ -204,7 +204,8 @@ class Universe:
 
         # Print parameters every now and then
         if self.step % self.log_freq == 0:
-            print 't =', PARAMS.t / UNITS.s, \
+            print '#' + str(self.step), \
+                '\tt =', PARAMS.t / UNITS.s, \
                 '\taT =', PARAMS.aT / UNITS.MeV, \
                 '\tT =', PARAMS.T / UNITS.MeV, \
                 '\ta =', PARAMS.a
