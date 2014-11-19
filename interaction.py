@@ -92,7 +92,7 @@ class Interaction:
         self.integrals = []
         self.particles = self.in_particles + self.out_particles
 
-        Ms = copy.copy(self.Ms)
+        Ms = copy.deepcopy(self.Ms)
 
         # Remember all particle species we've already considered to avoid double-counting
         accounted_particles = set()
@@ -123,7 +123,8 @@ class Interaction:
                 # Skip already accounted species
                 continue
 
-            particle_Ms = copy.copy(Ms)
+            particle_Ms = copy.deepcopy(Ms)
+
             for M in particle_Ms:
                 M.order = M.order[i:i+1] + M.order[:i] + M.order[i+1:]
 
