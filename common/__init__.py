@@ -46,7 +46,7 @@ class CONST:
     g_L = sin_theta_w_2 + 0.5
 
 
-class PARAMS:
+class Params(object):
 
     """ == Parameters ==
         Master object carrying the cosmological state of the system and initial conditions """
@@ -66,35 +66,40 @@ class PARAMS:
     # Total energy density
     rho = 0.
 
-    @classmethod
-    def infer(cls):
+    def __init__(self, **kw):
+        self.kw = kw
+        self.__dict__.update(kw)
+        self.infer()
+
+    def copy(self):
+        return Params(**self.kw)
+
+    def infer(self):
+        """ Set initial cosmological parameters based on the value of `T_initial` """
         # Initial scale factor - arbitrary
-        PARAMS.a_initial = 1. / (PARAMS.T_initial / UNITS.MeV)
-        # PARAMS.a_initial = 1.
+        self.a_initial = 1. / (self.T_initial / UNITS.MeV)
+        # self.a_initial = 1.
 
         # Compute present-state parameters that can be inferred from the base ones
-        PARAMS.a = PARAMS.a_initial
-        PARAMS.x = PARAMS.a * PARAMS.m
-        PARAMS.T = PARAMS.T_initial
-        PARAMS.aT = PARAMS.a * PARAMS.T
+        self.a = self.a_initial
+        self.x = self.a * self.m
+        self.T = self.T_initial
+        self.aT = self.a * self.T
 
-        GRID.init()
-
-    @classmethod
-    def update(cls, rho):
+    def update(self, rho):
         """ Hubble expansion parameter defined by a Friedmann equation:
 
             \begin{equation}
                 H = \sqrt{\frac{8 \pi}{3} G \rho}
             \end{equation}
         """
-        PARAMS.rho = rho
-        PARAMS.H = numpy.sqrt(8./3.*numpy.pi * CONST.G * rho)
+        self.rho = rho
+        self.H = numpy.sqrt(8./3.*numpy.pi * CONST.G * rho)
 
-        old_a = PARAMS.a
+        old_a = self.a
         """ Physical scale factor and temperature for convenience """
-        PARAMS.a = PARAMS.x / PARAMS.m
-        PARAMS.T = PARAMS.aT / PARAMS.a
+        self.a = self.x / self.m
+        self.T = self.aT / self.a
 
         """ Time step size is inferred from the approximation of the scale factor `a` \
             derivative and a definition of the Hubble parameter `H`:
@@ -108,11 +113,11 @@ class PARAMS:
                 \Delta t = \frac{1}{H} (\frac{a_i}{a_{i-1}} - 1)
             \end{equation}
         """
-        dt = (PARAMS.a / old_a - 1) / PARAMS.H
-        PARAMS.t += dt
+        dt = (self.a / old_a - 1) / self.H
+        self.t += dt
 
 
-class GRID:
+class Grid(object):
 
     """ === Distribution functions grid ===
 
@@ -128,19 +133,20 @@ class GRID:
         and errors).
         """
 
-    @classmethod
-    def init(cls):
-        GRID.MIN_MOMENTUM = 1. * UNITS.eV
-        GRID.MAX_MOMENTUM = GRID.MIN_MOMENTUM + 20 * UNITS.MeV
-        GRID.MOMENTUM_SAMPLES = 50
+    def __init__(self):
+        self.MIN_MOMENTUM = 1. * UNITS.eV
+        self.MAX_MOMENTUM = self.MIN_MOMENTUM + 20 * UNITS.MeV
+        self.MOMENTUM_SAMPLES = 50
 
         # Grid template can be copied when defining a new distribution function
-        GRID.TEMPLATE = numpy.linspace(GRID.MIN_MOMENTUM, GRID.MAX_MOMENTUM,
-                                       num=GRID.MOMENTUM_SAMPLES, endpoint=True)
+        self.TEMPLATE = numpy.linspace(self.MIN_MOMENTUM, self.MAX_MOMENTUM,
+                                       num=self.MOMENTUM_SAMPLES, endpoint=True)
 
-        GRID.MOMENTUM_STEP = GRID.TEMPLATE[1] - GRID.TEMPLATE[0]
+        self.MOMENTUM_STEP = self.TEMPLATE[1] - self.TEMPLATE[0]
 
-PARAMS.infer()
+
+PARAMS = Params()
+GRID = Grid()
 
 
 def theta(f):
