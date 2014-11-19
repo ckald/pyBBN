@@ -161,12 +161,9 @@ class Universe:
 
         return numerator / denominator
 
-    def control_step_size(self):
+    def control_step_size(self, maximum_change=0.2, fallback_change=0.1):
         """
         Scale factor step size controller.
-
-        TODO: not usable now, need to orchestrate between many collision integrations - \
-              i.e., select smallest suggested
         """
 
         if not self.adaptive_step_size:
@@ -179,8 +176,8 @@ class Universe:
                 continue
             relative_delta = numpy.absolute(particle.collision_integral * dx
                                             / particle._distribution).max()
-            if relative_delta > 0.2:
-                multipliers.append(0.1 / relative_delta)
+            if relative_delta > maximum_change:
+                multipliers.append(fallback_change / relative_delta)
             else:
                 multipliers.append(1.25)
 
