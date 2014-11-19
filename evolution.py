@@ -113,12 +113,12 @@ class Universe:
 
         """
 
-        from common import PARAMS
-        old_PARAMS = copy.copy(PARAMS)
-        old_particles = copy.copy(self.particles)
-        PARAMS.aT = y
-        PARAMS.x = t
-        PARAMS.update(self.total_energy_density())
+        # from common import PARAMS
+        # old_PARAMS = PARAMS.copy()
+        # old_particles = copy.copy(self.particles)
+        # PARAMS.aT = y
+        # PARAMS.x = t
+        # PARAMS.update(self.total_energy_density())
 
         """ Update particle species distribution functions, check for regime switching,\
             update precalculated variables like energy density and pressure. """
@@ -156,8 +156,8 @@ class Universe:
             numerator += particle.numerator()
             denominator += particle.denominator()
 
-        PARAMS = old_PARAMS
-        self.particles = old_particles
+        # PARAMS = old_PARAMS
+        # self.particles = old_particles
 
         return numerator / denominator
 
