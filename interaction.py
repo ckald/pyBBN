@@ -41,6 +41,10 @@ class M(object):
         for key in kwargs:
             setattr(self, key, kwargs[key])
 
+        if len(set(self.order)) != len(self.order):
+            raise Exception("Meaningless order of momenta of the matrix element: {}"
+                            .format(self.order))
+
     def __str__(self):
         return "K1={: .2e}, K2={: .2e}, {}".format(self.K1, self.K2, self.order)
 
