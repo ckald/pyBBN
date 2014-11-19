@@ -195,7 +195,7 @@ class Integral:
 
             self.particles[0].collision_integrands.append(self)
 
-    def calculate_impulses(self, p=[]):
+    def calculate_kinematics(self, p=[]):
         """ Helper procedure that caches energies and normalized masses of particles """
         p = (p + [0., 0., 0., 0.])[:4]
         E = []
@@ -210,7 +210,7 @@ class Integral:
     def integrand(self, p=[], F_A=True, F_B=True, F_1=False, F_f=False):
         """ Total collision integral interior with performance optimizations """
 
-        p, E, m = self.calculate_impulses(p)
+        p, E, m = self.calculate_kinematics(p)
         if not self.in_bounds(p, E, m):
             return 0.
 
@@ -248,7 +248,7 @@ class Integral:
 
     def in_bounds(self, p=[], E=None, m=None):
         if not E or not m:
-            p, E, m = self.calculate_impulses(p)
+            p, E, m = self.calculate_kinematics(p)
 
         q1, q2 = (p[0], p[1]) if p[0] > p[1] else (p[1], p[0])
         q3, q4 = (p[2], p[3]) if p[2] > p[3] else (p[3], p[2])
