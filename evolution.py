@@ -138,7 +138,7 @@ class Universe:
                 if self.PARALLELIZE:
                     particle.collision_integral = \
                         numpy.array(parallelization.parmap(particle.integrate_collisions,
-                                                           GRID.TEMPLATE, workers=7))
+                                                           GRID.TEMPLATE))
                 else:
                     particle.collision_integral = \
                         numpy.vectorize(particle.integrate_collisions,
