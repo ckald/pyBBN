@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 import copy
 import numpy
-from common import PARAMS, theta, GRID, CONST
-from common.utils import benchmark
+from common import PARAMS, GRID, CONST
 from ds import D, Db1, Db2
 
 
@@ -217,10 +216,11 @@ class Integral:
         integrand = 1./64. / numpy.pi**3 * PARAMS.m**5 / PARAMS.x**6 / PARAMS.H
 
         ds = 0.
-        for M in self.Ms:
-            if p[0] != 0:
+        if p[0] != 0:
+            for M in self.Ms:
                 ds += D(p=p, E=E, m=m, K1=M.K1, K2=M.K2, order=M.order) / p[0] / E[0]
-            else:
+        else:
+            for M in self.Ms:
                 ds += Db1(*p[1:]) + m[1] * (E[2] * E[3] + Db2(*p[1:]))
 
         integrand *= ds
@@ -270,7 +270,7 @@ class Integral:
     def lower_bound(self, p0, p1):
 
         index = 0
-        while index < GRID.MOMENTUM_SAMPLES and not self.in_bounds([p0, p1, GRID.TEMPLATE[index], 0]):
+        while index < GRID.MOMENTUM_SAMPLES and not self.in_bounds([p0, p1, GRID.TEMPLATE[index]]):
             index += 1
 
         if index == GRID.MOMENTUM_SAMPLES:
@@ -282,7 +282,7 @@ class Integral:
 
         index = int((min(p0 + p1, GRID.MAX_MOMENTUM) - GRID.MIN_MOMENTUM) / GRID.MOMENTUM_STEP)
 
-        while index >= 0 and not self.in_bounds([p0, p1, GRID.TEMPLATE[index], 0]):
+        while index >= 0 and not self.in_bounds([p0, p1, GRID.TEMPLATE[index]]):
             index -= 1
 
         if index == -1:

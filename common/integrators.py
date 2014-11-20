@@ -60,7 +60,7 @@ def implicit_euler(y, t, A, B, h):
         \frac{d y(t)}{dt} \approx \frac{y(t+h) - y(t)}{h} = A(t+h) + B(t+h) y(t+h)
     \end{equation}
     \begin{equation}
-        y(t+h) = \frac{y(t) + A(t) h}{1 - B(t) h}
+        y(t+h) = \frac{y(t) + A(t+h) h}{1 - B(t+h) h}
     \end{equation}
     """
 

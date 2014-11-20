@@ -46,17 +46,6 @@ class benchmark(object):
         return False
 
 
-def smoothe_function(array, length):
-    for i in range(length):
-        if i == 0:
-            array[i] = (2. * array[i] + array[i+1]) / 3.
-        elif i == length - 1:
-            array[i] = (2. * array[i] + array[i-1]) / 3.
-        else:
-            array[i] = (2. * array[i] + array[i-1] + array[i+1]) / 4.
-    return array
-
-
 def echo(func):
     @wraps(func)
     def wrapper(*args, **kw):
