@@ -153,12 +153,6 @@ class Plotting:
                         / UNITS.MeV
                     )
 
-                    for line in self.particles_plots[i][1].get_axes().lines:
-                        alpha = line.get_alpha() or 1.
-                        if alpha < 0.1:
-                            line.remove()
-                        else:
-                            line.set_alpha((line.get_alpha() or 1.) * 0.8)
 
                     self.particles_plots[i][1].plot(
                         GRID.TEMPLATE / UNITS.MeV,
@@ -178,6 +172,7 @@ class Plotting:
     #         if not self.pipe.poll(None):
     #             print 'not'
     #             break
+                self.age_lines(self.particles_plots[i][1].get_axes().lines)
 
     #         command = self.pipe.recv()
     #         print command
@@ -194,6 +189,13 @@ class Plotting:
     #     print 'Called'
     #     # self.gid = gobject.timeout_add(100, self.poll_draw())
     #     self.poll_draw()
+    def age_lines(self, lines):
+        for line in lines:
+            alpha = line.get_alpha() or 1.
+            if alpha < 0.1:
+                line.remove()
+            else:
+                line.set_alpha((line.get_alpha() or 1.) * 0.8)
 
 
 def plot_integrand(integrand, name, p0):
