@@ -135,20 +135,20 @@ class Plotting:
 
         if self.particles:
             for i, particle in enumerate(self.particles):
-                if not particle.in_equilibrium:
-                    self.particles_plots[i][0].plot(PARAMS.a,
-                                                    particle.energy_density() / UNITS.eV**4)
+                self.particles_plots[i][0].scatter(PARAMS.a,
+                                                   particle.energy_density() / UNITS.eV**4, s=1)
 
-                    feq = particle.distribution_function(
-                        numpy.vectorize(particle.energy_normalized)(GRID.TEMPLATE)
-                        / UNITS.MeV
-                    )
+                feq = particle.distribution_function(
+                    numpy.vectorize(particle.energy_normalized)(GRID.TEMPLATE)
+                    / particle.aT
+                )
 
+                self.age_lines(self.particles_plots[i][1].get_axes().lines)
 
-                    self.particles_plots[i][1].plot(
-                        GRID.TEMPLATE / UNITS.MeV,
-                        particle._distribution / feq - 1
-                    )
+                self.particles_plots[i][1].plot(
+                    GRID.TEMPLATE / UNITS.MeV,
+                    numpy.vectorize(particle.distribution)(GRID.TEMPLATE) / feq
+                )
 
             plt.figure(2)
             plt.draw()
