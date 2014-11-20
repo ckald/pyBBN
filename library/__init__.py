@@ -88,8 +88,8 @@ class StandardModelInteractions:
             out_particles=[neutrino, neutrino],
             decoupling_temperature=0 * UNITS.MeV,
             Ms=[
-                WeakM(K1=2., K2=0., order=(0, 1, 2, 3)),
-                WeakM(K1=4., K2=0., order=(0, 3, 1, 2))
+                WeakM(K1=2., order=(0, 1, 2, 3)),
+                WeakM(K1=4., order=(0, 3, 1, 2))
             ]
         )
 
@@ -105,8 +105,8 @@ class StandardModelInteractions:
             out_particles=[neutrino_a, neutrino_b],
             decoupling_temperature=0 * UNITS.MeV,
             Ms=[
-                WeakM(K1=1., K2=0., order=(0, 1, 2, 3)),
-                WeakM(K1=1., K2=0., order=(0, 3, 1, 2)),
+                WeakM(K1=1., order=(0, 1, 2, 3)),
+                WeakM(K1=1., order=(0, 3, 1, 2)),
             ]
         )
 
@@ -120,7 +120,7 @@ class StandardModelInteractions:
             in_particles=[neutrino_a, neutrino_a],
             out_particles=[neutrino_b, neutrino_b],
             decoupling_temperature=0 * UNITS.MeV,
-            Ms=[WeakM(K1=1., K2=0., order=(0, 3, 1, 2))]
+            Ms=[WeakM(K1=1., order=(0, 3, 1, 2))]
         )
 
     @staticmethod
@@ -136,7 +136,7 @@ class StandardModelInteractions:
             Ms=[
                 WeakM(K1=4 * g_L**2, order=(0, 3, 1, 2)),
                 WeakM(K1=4 * CONST.g_R**2, order=(0, 2, 1, 3)),
-                WeakM(K2=-4 * g_L * CONST.g_R, order=(2, 3, 0, 1)),
+                WeakM(K2=4 * g_L * CONST.g_R, order=(2, 3, 0, 1)),
             ]
         )
 
@@ -155,6 +155,6 @@ class StandardModelInteractions:
             Ms=[
                 WeakM(K1=4 * g_L**2, order=(0, 1, 2, 3)),
                 WeakM(K1=4 * g_L**2, order=(0, 3, 1, 2)),
-                WeakM(K2= -2 * 4 * g_L * CONST.g_R, order=(1, 3, 0, 2)),
+                WeakM(K2=-4 * g_L * CONST.g_R, order=(1, 3, 0, 2)),
             ]
         )
