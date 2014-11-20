@@ -19,8 +19,8 @@ class UNITS:
         As we use natural units in the project, all units from `numericalunits` except energy units\
         are useless. Here some useful units are defined in terms of `GeV`s. """
 
-    # eV = nu.eV
-    eV = 1e-9
+    eV = nu.eV
+    # eV = 1e-9
 
     @classmethod
     def reset_units(cls):
