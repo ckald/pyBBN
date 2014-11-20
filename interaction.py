@@ -70,6 +70,9 @@ class Interaction:
     in_particles = []  # Incoming particles
     out_particles = []  # Outgoing particles
     particles = []  # All particles involved
+
+    signs = [1, 1, -1, -1]  # Energy conservation law of the interaction
+
     # Temperature when the typical interaction time exceeds the Hubble expansion time
     decoupling_temperature = 0.
     # Interaction symmetry factor
@@ -132,7 +135,8 @@ class Interaction:
                 in_particles=in_particles[i:i+1] + in_particles[:i] + in_particles[i+1:],
                 out_particles=out_particles,
                 decoupling_temperature=self.decoupling_temperature,
-                Ms=particle_Ms
+                Ms=particle_Ms,
+                signs=self.signs
             ))
             accounted_particles.add(particle)
         return accounted_particles
@@ -168,7 +172,7 @@ class Integral:
     Ms = []
     """ 2-to-2 interactions and 1-to-3 decays can be generalized by introducing a multiplier `s` \
         for the momentum of the second particle: $p_1 + s p_2 = p_3 + p_4 $ """
-    s = 1.
+    signs = [1, 1, -1, -1]
 
     def __init__(self, *args, **kwargs):
         """ Init """
@@ -176,7 +180,6 @@ class Integral:
             setattr(self, key, kwargs[key])
 
         self.particles = self.in_particles + self.out_particles
-        self.s = 1. if len(self.in_particles) == 2 else -1.
 
     def __str__(self):
         return " + ".join([p.symbol for p in self.in_particles]) \
@@ -202,6 +205,7 @@ class Integral:
         for i, particle in enumerate(self.particles):
             E.append(particle.energy_normalized(p[i]))
             m.append(particle.mass_normalized)
+        # E[3] = - sum([self.signs[i] * E[i] for i in range(3)]) / self.signs[3]
         E[3] = sum(self.in_values(E)) - sum(self.out_values(E))
         p[3] = numpy.sqrt(numpy.abs(E[3]**2 - m[3]**2))
         return p, E, m
@@ -324,14 +328,15 @@ class Integral:
 
         :param skip_index: Particle to skip in the expression
         """
-        in_p = self.in_values(p)
-        out_p = self.out_values(p)
         temp = 1.
-        for i, particle in enumerate(self.in_particles):
+
+        for i, particle in enumerate(self.particles):
             if skip_index is None or i != skip_index:
-                temp *= particle.distribution(in_p[i])
-        for i, particle in enumerate(self.out_particles):
-            temp *= 1. - particle.eta * particle.distribution(out_p[i])
+                if self.signs[i] == 1:
+                    temp *= particle.distribution(p[i])
+                else:
+                    temp *= 1. - particle.eta * particle.distribution(p[i])
+
         return temp
 
     def F_B(self, p=[], skip_index=None):
@@ -344,14 +349,15 @@ class Integral:
 
         :param skip_index: Particle to skip in the expression
         """
-        in_p = self.in_values(p)
-        out_p = self.out_values(p)
         temp = 1.
-        for i, particle in enumerate(self.out_particles):
-            temp *= particle.distribution(out_p[i])
-        for i, particle in enumerate(self.in_particles):
+
+        for i, particle in enumerate(self.particles):
             if skip_index is None or i != skip_index:
-                temp *= 1. - particle.eta * particle.distribution(in_p[i])
+                if self.signs[i] == -1:
+                    temp *= particle.distribution(p[i])
+                else:
+                    temp *= 1. - particle.eta * particle.distribution(p[i])
+
         return temp
 
     def in_values(self, p=[]):
