@@ -169,15 +169,11 @@ class Particle():
         # Clear collision integrands for the next computation step
         self.collision_integrands = []
 
-    def benchmarked_integration(self, p0, integrand, name):
+    def benchmarked_integration(self, p0, integrand, name, bounds):
         with benchmark("\t"):
             integral, error = integrate_2D(
                 lambda (p1, p2): integrand([p0, p1, p2, 0]),
-                bounds=(
-                    (GRID.MIN_MOMENTUM, GRID.MAX_MOMENTUM),
-                    (lambda p1: GRID.MIN_MOMENTUM,
-                     lambda p1: min(p0 + p1, GRID.MAX_MOMENTUM)),
-                ),
+                bounds=bounds,
                 method=self.COLLISION_INTEGRATION_METHOD)
 
             print '{name:}\t\tI( {p0:5.2f} ) = {integral: .5e}\t'\
@@ -216,15 +212,24 @@ class Particle():
             for i in self.collision_integrands:
                 # plot_integrand(lambda (p1, p2): i.integrand([p0, p1, p2, 0]), self.name, p0)
 
+                bounds = (
+                    (max(GRID.MIN_MOMENTUM, i.particles[2].mass_normalized
+                         + i.particles[3].mass_normalized - p0),
+                     GRID.MAX_MOMENTUM),
+                    (lambda p1: max(GRID.MIN_MOMENTUM, p0 + p1 - i.particles[3].mass_normalized
+                                    - i.particles[2].mass_normalized),
+                     lambda p1: min(p0 + p1, GRID.MAX_MOMENTUM)),
+                )
+
                 integral_1, _ = self.benchmarked_integration(
                     p0, lambda ps: i.integrand(ps, F_A=False, F_B=False, F_1=True, F_f=False),
-                    name=str(i)
+                    name=str(i), bounds=bounds
                 )
                 As.append(integral_1)
 
                 integral_f, _ = self.benchmarked_integration(
                     p0, lambda ps: i.integrand(ps, F_A=False, F_B=False, F_1=False, F_f=True),
-                    name=str(i)
+                    name=str(i), bounds=bounds
                 )
                 Bs.append(integral_f)
 
