@@ -141,7 +141,7 @@ class Particle():
         self._pressure = None
 
         # Update particle internal params only while it is in equilibrium
-        if self.in_equilibrium:
+        if self.in_equilibrium or self.in_equilibrium != oldeq:
             # Particle species has temperature only when it is in equilibrium
             self.T = PARAMS.T
             self.aT = PARAMS.aT
@@ -168,6 +168,7 @@ class Particle():
 
         # Clear collision integrands for the next computation step
         self.collision_integrands = []
+        self.collision_integral *= 0
 
     def benchmarked_integration(self, p0, integrand, name, bounds):
         with benchmark("\t"):
@@ -177,9 +178,9 @@ class Particle():
                 method=self.COLLISION_INTEGRATION_METHOD)
 
             print '{name:}\t\tI( {p0:5.2f} ) = {integral: .5e}\t'\
-                .format(name=name, integral=integral / UNITS.MeV, p0=p0 / UNITS.MeV),
+                .format(name=name, integral=integral * UNITS.MeV, p0=p0 / UNITS.MeV),
 
-        return integral, error
+            return integral, error
 
     def integrate_collisions(self, p0):
         """ == Particle collisions integration == """
