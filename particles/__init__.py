@@ -157,9 +157,6 @@ class Particle():
         if self.in_equilibrium:
             return
 
-        # Smooth the collision integral a bit to eliminate the Monte Carlo errors
-        # self.collision_integral = smoothe_function(self.collision_integral, GRID.MOMENTUM_SAMPLES)
-
         delta = self.collision_integral * PARAMS.dx
 
         prediction = self._distribution + delta
