@@ -72,7 +72,7 @@ class Plotting:
         self.plots[3].set_title("Total energy density")
         self.plots[3].set_yscale("log")
         self.plots[3].set_xlabel("time, s")
-        self.plots[3].set_ylabel("rho, eV**4")
+        self.plots[3].set_ylabel(u"ρ, eV**4")
         self.plots[0].set_ylim(1, 10)
 
         self.lines = []
@@ -101,7 +101,7 @@ class Plotting:
             for i, particle in enumerate(self.particles):
                 self.particles_plots[i][0].set_title(particle.name)
                 self.particles_plots[i][0].set_xlabel("a")
-                self.particles_plots[i][0].set_ylabel("ρ, eV**4")
+                self.particles_plots[i][0].set_ylabel(u"ρ, eV**4")
 
                 self.particles_plots[i][1].set_xlabel("y, MeV")
                 self.particles_plots[i][1].set_ylabel("f/f_eq")
