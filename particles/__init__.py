@@ -214,11 +214,13 @@ class Particle():
                 # plot_integrand(lambda (p1, p2): i.integrand([p0, p1, p2, 0]), self.name, p0)
 
                 bounds = (
-                    (max(GRID.MIN_MOMENTUM, i.particles[2].mass_normalized
-                         + i.particles[3].mass_normalized - p0),
+                    # (max(GRID.MIN_MOMENTUM, i.particles[2].mass_normalized
+                         # + i.particles[3].mass_normalized - p0),
+                    (GRID.MIN_MOMENTUM,
                      GRID.MAX_MOMENTUM),
-                    (lambda p1: max(GRID.MIN_MOMENTUM, p0 + p1 - i.particles[3].mass_normalized
-                                    - i.particles[2].mass_normalized),
+                    (lambda p1: GRID.MIN_MOMENTUM,
+                     # max(GRID.MIN_MOMENTUM, p0 + p1 - i.particles[3].mass_normalized
+                                    # - i.particles[2].mass_normalized),
                      lambda p1: min(p0 + p1, GRID.MAX_MOMENTUM)),
                 )
 
