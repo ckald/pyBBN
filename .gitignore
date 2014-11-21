@@ -2,5 +2,6 @@
 *.sublime-*
 docs/*
 build/*
+logs/*.txt
 *.o
 *.so
