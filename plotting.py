@@ -135,8 +135,13 @@ class Plotting:
 
         if self.particles:
             for i, particle in enumerate(self.particles):
-                self.particles_plots[i][0].scatter(PARAMS.a,
-                                                   particle.energy_density() / UNITS.eV**4, s=1)
+                self.particles_plots[i][0].scatter(
+                    PARAMS.a,
+                    particle.energy_density() / (
+                        7 * numpy.pi**2 * PARAMS.T**4 / 120
+                    ),
+                    s=1
+                )
 
                 feq = particle.distribution_function(
                     numpy.vectorize(particle.energy_normalized)(GRID.TEMPLATE)
