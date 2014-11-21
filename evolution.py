@@ -97,11 +97,12 @@ class Universe:
             print particle
 
         print "Data saved to file {}".format(self.logger.log.name)
-        return self.data
 
         if self.postmortem_debugger:
             import pdb
             pdb.set_trace()
+
+        return self.data
 
     def integrand(self, t, y):
         """ Master equation for the temperature looks like
