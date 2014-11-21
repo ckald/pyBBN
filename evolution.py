@@ -22,7 +22,9 @@ class Universe:
 
     def __init__(self, particles=[], interactions=[],
                  logfile='logs/' + str(datetime.now()) + '.txt',
-                 plotting=True, adaptive_step_size=True):
+                 plotting=True,
+                 adaptive_step_size=True,
+                 postmortem_debugger=True):
         """
         :param particles: List of `particle.Particle` objects - set of particles to model
         :param interactions: List of `interaction.Interaction` objects - quantum interactions \
@@ -33,6 +35,7 @@ class Universe:
 
         self.graphics = Plotting() if plotting else None
         self.adaptive_step_size = adaptive_step_size
+        self.postmortem_debugger = postmortem_debugger
 
         sys.stdout = utils.Logger(logfile)
         self.logger = sys.stdout
@@ -95,6 +98,10 @@ class Universe:
 
         print "Data saved to file {}".format(self.logger.log.name)
         return self.data
+
+        if self.postmortem_debugger:
+            import pdb
+            pdb.set_trace()
 
     def integrand(self, t, y):
         """ Master equation for the temperature looks like
