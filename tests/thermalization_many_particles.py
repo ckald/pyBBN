@@ -19,6 +19,9 @@ neutrino_e = Particle(**SMP.neutrino_e)
 neutrino_mu = Particle(**SMP.neutrino_mu)
 neutrino_tau = Particle(**SMP.neutrino_tau)
 
+# Massive tau neutrino model
+neutrino_tau.mass = 20 * UNITS.MeV
+
 Particles += [
     photon,
     electron,
