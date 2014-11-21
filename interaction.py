@@ -205,8 +205,8 @@ class Integral:
         for i, particle in enumerate(self.particles):
             E.append(particle.energy_normalized(p[i]))
             m.append(particle.mass_normalized)
-        # E[3] = - sum([self.signs[i] * E[i] for i in range(3)]) / self.signs[3]
-        E[3] = sum(self.in_values(E)) - sum(self.out_values(E))
+
+        E[3] = - sum([self.signs[i] * E[i] for i in range(3)]) / self.signs[3]
         p[3] = numpy.sqrt(numpy.abs(E[3]**2 - m[3]**2))
         return p, E, m
 
