@@ -3,7 +3,6 @@
 import sys
 import copy
 import numpy
-import numericalunits as nu
 import array
 from datetime import datetime
 
@@ -14,10 +13,15 @@ from plotting import Plotting
 
 class Universe:
 
-    """ The master object that governs the calculation. """
+    """ == Universe ==
+        The master object that governs the calculation. """
 
+    # System state is rendered to the log file each `log_freq` steps
     log_freq = 1
+    """ Temperature equation integration method: explicit Euler or two-step Heun's method """
     INTEGRATION_METHOD = ['euler', 'heun'][0]
+
+    # Controls parallelization of the collision integrals calculations
     PARALLELIZE = True
 
     def __init__(self, particles=[], interactions=[],
@@ -26,9 +30,13 @@ class Universe:
                  adaptive_step_size=True,
                  postmortem_debugger=True):
         """
-        :param particles: List of `particle.Particle` objects - set of particles to model
-        :param interactions: List of `interaction.Interaction` objects - quantum interactions \
+        :param particles: Set of `particle.Particle` to model
+        :param interactions: Set of `interaction.Interaction` - quantum interactions \
                              between particle species
+        :param logfile: Log file path (current `datetime` by default)
+        :param adaptive_step_size: Boolean, whether to control the step size or not
+        :param postmortem_debugger: Boolean, whether to invoke the `pdb` debugger at the end of\
+                                    computation
         """
         self.particles = particles
         self.interactions = interactions
@@ -48,11 +56,11 @@ class Universe:
         by a single parameter: the initial temperature.
 
         Initial temperature (e.g. 10 MeV) corresponds to a point in the history of the Universe \
-        long before BBN when most particle species are in the thermodynamical equilibrium
+        long before then BBN. Then most particle species are in the thermodynamical equilibrium.
 
         """
 
-        print "dx =", PARAMS.dx
+        print "dx = {} MeV".format(PARAMS.dx / UNITS.MeV)
 
         self.step = 0
 
@@ -98,6 +106,12 @@ class Universe:
 
         print "Data saved to file {}".format(self.logger.log.name)
 
+        """
+        == Postmortem debugger ==
+        Invoking `pdb` debugger after the computation is finished allows to do final adjustments \
+        and export the missing data without restarting the whole simulation.
+        """
+
         if self.postmortem_debugger:
             import pdb
             pdb.set_trace()
@@ -105,7 +119,9 @@ class Universe:
         return self.data
 
     def integrand(self, t, y):
-        """ Master equation for the temperature looks like
+        """ == Temperature equation integrand ==
+
+            Master equation for the temperature looks like
 
             \begin{equation}
                 \frac{d (aT)}{dx} = \frac{\sum_i{N_i}}{\sum_i{D_i}}
@@ -118,7 +134,6 @@ class Universe:
               * [[Intermediate|particles/IntermediateParticle.py#master-equation-terms]]
               * [[Dust|particles/DustParticle.py#master-equation-terms]]
               * [[Non-equilibrium|particles/NonEqParticle.py#master-equation-terms]]
-
         """
 
         # from common import PARAMS
@@ -128,20 +143,27 @@ class Universe:
         # PARAMS.x = t
         # PARAMS.update(self.total_energy_density())
 
-        """ Update particle species distribution functions, check for regime switching,\
+        """ === 1. Update particles state ===
+            Update particle species distribution functions, check for regime switching,\
             update precalculated variables like energy density and pressure. """
         for particle in self.particles:
             particle.update()
 
-        """ Non equilibrium interactions of different particle species are treated by a\
-            numerical integration of the Boltzman equation for distribution functions in\
-            the expanding spacetime.
+        """ === 2. Initialize non-equilibrium interactions ===
+            Non-equilibrium interactions of different particle species are treated by a\
+            numerical integration of the Boltzmann equation for distribution functions in\
+            the expanding space-time.
+
+            Depending on the regime of the particle species involved and cosmological parameters, \
+            each `Interaction` object populates `Particle.collision_integrands` array with \
+            currently active `Integral` objects.
         """
         for interaction in self.interactions:
             interaction.calculate()
 
+        """ === 3. Calculate collision integrals === """
+
         for particle in self.particles:
-            # For non-equilibrium particle calculate the collision integrals
             if particle.collision_integrands:
                 if self.PARALLELIZE:
                     particle.collision_integral = \
@@ -152,10 +174,16 @@ class Universe:
                         numpy.vectorize(particle.integrate_collisions,
                                         otypes=[numpy.float_])(GRID.TEMPLATE)
 
+        """ === 4. Control integration step size === """
+
         self.control_step_size()
+
+        """ === 5. Update particles distributions === """
 
         for particle in self.particles:
             particle.update_distribution()
+
+        """ === 6. Calculate temperature equation terms === """
 
         numerator = 0
         denominator = 0
@@ -169,9 +197,22 @@ class Universe:
 
         return numerator / denominator
 
-    def control_step_size(self, maximum_change=0.2, fallback_change=0.1):
+    def control_step_size(self, maximum_change=0.2, fallback_change=0.1, exponent=1.1):
         """
-        Scale factor step size controller.
+        == Step size controller ==
+
+        :param maximum_change: Maximal allowed relative difference in the distribution functions\
+                               value after Boltzmann equation integration. Generally, master\
+                               equation of the temperature can be solved with arbitrarily large\
+                               step size without significant loss in accuracy. The main problem is\
+                               the truncation error of the Boltzmann equation integration.
+
+        :param fallback_change: In the case when distribution functions change too fast, step size\
+                                is urgently decreased to compensate this effect. `fallback_change`\
+                                smaller than `maximum_change` enhances the integration stability.
+
+        :param exponent: If distribution functions change is insignificant, step size can be\
+                         increased by a factor of `exponent`.
         """
 
         if not self.adaptive_step_size:
@@ -187,7 +228,7 @@ class Universe:
             if relative_delta > maximum_change:
                 multipliers.append(fallback_change / relative_delta)
             else:
-                multipliers.append(1.25)
+                multipliers.append(exponent)
 
         multiplier = min(multipliers) if multipliers else 1.
 

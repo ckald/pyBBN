@@ -49,6 +49,10 @@ class M(object):
 
 
 class WeakM(M):
+
+    """ == Weak interactions matrix element ==
+        Weak processes usually include a common factor of $32 G_F^2$ """
+
     def __init__(self, *args, **kwargs):
         super(WeakM, self).__init__(*args, **kwargs)
 
@@ -63,6 +67,7 @@ class Interaction:
         interaction.
     """
 
+    # Human-friendly interaction identifier
     name = "Particle interaction"
 
     integrals = []
@@ -71,7 +76,13 @@ class Interaction:
     out_particles = []  # Outgoing particles
     particles = []  # All particles involved
 
-    signs = [1, 1, -1, -1]  # Energy conservation law of the interaction
+    """ === Energy conservation law of the interaction ===
+
+        \begin{equation}
+            0 = \vec{s} \cdot \vec{E} = \sum_i s_i E_i \sim E_0 + E_1 - E_2 - E_3
+        \end{equation}
+    """
+    signs = [1, 1, -1, -1]
 
     # Temperature when the typical interaction time exceeds the Hubble expansion time
     decoupling_temperature = 0.
@@ -80,10 +91,6 @@ class Interaction:
 
     # Matrix elements of the interaction
     Ms = []
-
-    """ 2-to-2 interactions and 1-to-3 decays can be generalized by introducing a multiplier `s` \
-        for the momentum of the second particle: $p_1 + s p_2 = p_3 + p_4 $ """
-    s = 1.
 
     def __init__(self, *args, **kwargs):
         """ Init """
@@ -99,17 +106,17 @@ class Interaction:
         # Remember all particle species we've already considered to avoid double-counting
         accounted_particles = set()
 
-        # Step 1. Permute all in_particles
+        # === 1. Permute all in_particles ===
         in_particles = self.in_particles
         out_particles = self.out_particles
         accounted_particles = self.init_integrals(in_particles, out_particles,
                                                   Ms, accounted_particles)
 
-        # Step 2. Turn to the backward process
+        # === 2. Turn to the backward process ===
         for M in Ms:
             M.order = M.order[len(self.in_particles):] + M.order[:len(self.in_particles)]
 
-        # Step 3. Permute all new in_particles (former out_particle)
+        # === 3. Permute all new `in_particles` (former `out_particles`) ===
         accounted_particles = self.init_integrals(out_particles, in_particles,
                                                   Ms, accounted_particles)
 
@@ -121,8 +128,8 @@ class Interaction:
     def init_integrals(self, in_particles, out_particles, Ms, accounted_particles):
         for i, particle in enumerate(in_particles):
 
+            # Skip already accounted species
             if particle in accounted_particles:
-                # Skip already accounted species
                 continue
 
             particle_Ms = copy.deepcopy(Ms)
@@ -142,9 +149,7 @@ class Interaction:
         return accounted_particles
 
     def calculate(self):
-        """
-        Calculate collision integral constants and save them to the first involved particle
-        """
+        """ Proxy method """
 
         for integral in self.integrals:
             integral.calculate()
@@ -152,11 +157,22 @@ class Interaction:
 
 class Integral:
 
-    """ Main class used for calculation of the non-equilibrium dynamics of the particles """
+    """ == Integral ==
+        Representation of the concrete collision integral for a specific particle \
+        `Integral.particles[0]` """
 
     in_particles = []  # Incoming particles
     out_particles = []  # Outgoing particles
     particles = []  # All particles involved
+
+    """ === Energy conservation law of the interaction ===
+
+        \begin{equation}
+            0 = \vec{s} \cdot \vec{E} = \sum_i s_i E_i \sim E_0 + E_1 - E_2 - E_3
+        \end{equation}
+    """
+    signs = [1, 1, -1, -1]
+
     # Temperature when the typical interaction time exceeds the Hubble expansion time
     decoupling_temperature = 0.
     # Interaction symmetry factor
@@ -170,9 +186,6 @@ class Integral:
         \end{equation} """
 
     Ms = []
-    """ 2-to-2 interactions and 1-to-3 decays can be generalized by introducing a multiplier `s` \
-        for the momentum of the second particle: $p_1 + s p_2 = p_3 + p_4 $ """
-    signs = [1, 1, -1, -1]
 
     def __init__(self, *args, **kwargs):
         """ Init """
@@ -206,6 +219,8 @@ class Integral:
             E.append(particle.energy_normalized(p[i]))
             m.append(particle.mass_normalized)
 
+        """ Parameters of one particle can be inferred from the energy conservation law
+            \begin{equation}E_3 = -\frac{1}{s_3} \sum_{i \neq 3} s_i E_i \end{equation} """
         E[3] = - sum([self.signs[i] * E[i] for i in range(3)]) / self.signs[3]
         p[3] = numpy.sqrt(numpy.abs(E[3]**2 - m[3]**2))
         return p, E, m
@@ -251,6 +266,11 @@ class Integral:
         return integrand
 
     def in_bounds(self, p=[], E=None, m=None):
+        """ $D$-functions involved in the interactions imply a cut-off region for the collision\
+            integrand. In the general case of arbitrary particle masses, this is a set of \
+            irrational inequalities that can hardly be solved (at least, Wolfram Mathematica does\
+            not succeed in this). To avoid excessive computations, it is convenient to do an early\
+            `return 0` when the particles kinematics lay out of the cut-off region """
         if not E or not m:
             p, E, m = self.calculate_kinematics(p)
 
