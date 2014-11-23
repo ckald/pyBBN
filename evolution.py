@@ -258,9 +258,6 @@ class Universe:
 
             if self.graphics:
                 self.graphics.plot(self.data)
-                # self.graphics.plot_pipe.send([self.data, False])
 
     def total_energy_density(self):
-        # return sum(parallelization.parmap(lambda particle: particle.energy_density(),
-        #                                   self.particles))
         return sum(particle.energy_density() for particle in self.particles)

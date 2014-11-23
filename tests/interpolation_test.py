@@ -23,8 +23,7 @@ neutrino_scattering = Interaction(
     in_particles=[neutrino, neutrino],
     out_particles=[neutrino, neutrino],
     decoupling_temperature=0 * UNITS.MeV,
-    Ms=[M(K1=128 * CONST.G_F**2, order=(0, 1, 2, 3))],
-    symmetry_factor=0.5
+    Ms=[M(K1=64 * CONST.G_F**2, order=(0, 1, 2, 3))]
 )
 Interactions.append(neutrino_scattering)
 

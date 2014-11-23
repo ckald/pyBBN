@@ -62,9 +62,9 @@ class WeakM(M):
 
 class Interaction:
 
-    """ == Interaction ==
-        Helper class that takes care of creating all necessary `Integral`s for the actual\
-        interaction.
+    """
+    == Interaction ==
+    Helper class that takes care of creating all necessary `Integral`s for the actual interaction.
     """
 
     # Human-friendly interaction identifier
@@ -76,24 +76,22 @@ class Interaction:
     out_particles = []  # Outgoing particles
     particles = []  # All particles involved
 
-    """ === Energy conservation law of the interaction ===
-
-        \begin{equation}
-            0 = \vec{s} \cdot \vec{E} = \sum_i s_i E_i \sim E_0 + E_1 - E_2 - E_3
-        \end{equation}
-    """
-    signs = [1, 1, -1, -1]
-
     # Temperature when the typical interaction time exceeds the Hubble expansion time
     decoupling_temperature = 0.
-    # Interaction symmetry factor
-    symmetry_factor = 1.
 
     # Matrix elements of the interaction
     Ms = []
 
     def __init__(self, *args, **kwargs):
-        """ Init """
+        """ Create an `Integral` object for all particle species involved in the interaction.
+
+            Precise expressions for all integrals can be derived by permuting all particle-related\
+            functions in the distribution functions, matrix elements, momenta, energy and mass\
+            arrays.
+
+            To avoid double-counting, one should create an integral for each particle specie only \
+            once.
+        """
 
         for key in kwargs:
             setattr(self, key, kwargs[key])
@@ -113,6 +111,7 @@ class Interaction:
                                                   Ms, accounted_particles)
 
         # === 2. Turn to the backward process ===
+        # `(0, 1, 2, 3) -> (2, 3, 0, 1)
         for M in Ms:
             M.order = M.order[len(self.in_particles):] + M.order[:len(self.in_particles)]
 
@@ -142,8 +141,7 @@ class Interaction:
                 in_particles=in_particles[i:i+1] + in_particles[:i] + in_particles[i+1:],
                 out_particles=out_particles,
                 decoupling_temperature=self.decoupling_temperature,
-                Ms=particle_Ms,
-                signs=self.signs
+                Ms=particle_Ms
             ))
             accounted_particles.add(particle)
         return accounted_particles
@@ -175,8 +173,6 @@ class Integral:
 
     # Temperature when the typical interaction time exceeds the Hubble expansion time
     decoupling_temperature = 0.
-    # Interaction symmetry factor
-    symmetry_factor = 1.
 
     """ Four-particle interactions of the interest can all be rewritten in a form
 
@@ -193,6 +189,7 @@ class Integral:
             setattr(self, key, kwargs[key])
 
         self.particles = self.in_particles + self.out_particles
+        self.signs = [1] * len(self.in_particles) + [-1] * len(self.out_particles)
 
     def __str__(self):
         return " + ".join([p.symbol for p in self.in_particles]) \
@@ -255,7 +252,7 @@ class Integral:
         if F_B:
             fau += self.F_B(p)
         if F_A:
-            fau -= self.F_A(p)
+            fau += self.F_A(p)
         if F_1:
             fau += self.F_1(p)
         if F_f:
@@ -314,14 +311,15 @@ class Integral:
 
         return GRID.TEMPLATE[index]
 
-    """ == $\mathcal{F}(f_\alpha)$ functional ==
+    """
+    == $\mathcal{F}(f_\alpha)$ functional ==
 
-        === Naive form ===
+    === Naive form ===
 
-        \begin{align}
-            \mathcal{F} &= (1 \pm f_1)(1 \pm f_2) f_3 f_4 - f_1 f_2 (1 \pm f_3) (1 \pm f_4)
-            \\\\ &= \mathcal{F}_B - \mathcal{F}_A
-        \end{align}
+    \begin{align}
+        \mathcal{F} &= (1 \pm f_1)(1 \pm f_2) f_3 f_4 - f_1 f_2 (1 \pm f_3) (1 \pm f_4)
+        \\\\ &= \mathcal{F}_B + \mathcal{F}_A
+    \end{align}
     """
 
     def F_A(self, p=[], skip_index=None):
@@ -334,7 +332,7 @@ class Integral:
 
         :param skip_index: Particle to skip in the expression
         """
-        temp = 1.
+        temp = -1.
 
         for i, particle in enumerate(self.particles):
             if skip_index is None or i != skip_index:
@@ -394,9 +392,3 @@ class Integral:
     def F_1(self, p=[]):
         """ Constant part of the distribution functional """
         return self.F_B(p=p, skip_index=0)
-
-    def in_values(self, p=[]):
-        return p[:len(self.in_particles)]
-
-    def out_values(self, p=[]):
-        return p[len(self.in_particles):]
