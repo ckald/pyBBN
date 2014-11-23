@@ -1,5 +1,5 @@
 """
-For intermediate regime equilibrium particles, density, energy density and pressure
+For intermediate regime equilibrium particles, density, energy density and pressure\
 are obtained through integration of distribution function
 """
 from scipy import integrate

@@ -299,19 +299,27 @@ class Particle():
           * linear interpolation
           * exponential interpolation
 
-        While linear interpolation is exceptionally simple, the exponential interpolation gives
-        exact results for the equilibrium functions - thus collision integral for them almost
-        exactly cancels unlike the case of linear interpolation.
+        While linear interpolation is exceptionally simple, the exponential interpolation gives\
+        exact results for the equilibrium functions - thus collision integral for them almost\
+        exactly cancels out unlike the case of linear interpolation.
+
+        Distribution functions are continuously evaluated each during the simulation, so to avoid\
+        excessive evaluation of the costly logarithms and exponentials, this function first checks\
+        if the current momenta value coincides with any of the grid points.
         """
-        # exponential_interpolation = False
+
         exponential_interpolation = True
         p = abs(p)
         if self.in_equilibrium or p > GRID.MAX_MOMENTUM:
             return self.distribution_function(self.conformal_energy(p) / self.aT)
 
+        # Cython implementation experiment
+        #
+        # ```python
         # return distribution_interpolation(GRID.TEMPLATE, self._distribution, p,
         #                                   conformal_energy=self.conformal_energy,
         #                                   eta=self.eta)
+        # ```
 
         remnant = (p - GRID.MIN_MOMENTUM) % GRID.MOMENTUM_STEP
         index = int((p - GRID.MIN_MOMENTUM) / GRID.MOMENTUM_STEP - remnant)
@@ -321,6 +329,8 @@ class Particle():
 
         if index >= GRID.MOMENTUM_SAMPLES - 1:
             return self._distribution[-1]
+
+        # Determine the closest grid points
 
         i_low = index
         p_low = GRID.TEMPLATE[i_low]
@@ -340,7 +350,8 @@ class Particle():
 
             """
             \begin{equation}
-                g = \frac{ (E_p - E_low) g_high + (E_high - E_p) g_low }{ (E_high - E_low) }
+                g = \frac{ (E_p - E_{low}) g_{high} + (E_{high} - E_p) g_{low} }\
+                { (E_{high} - E_{low}) }
             \end{equation}
             """
 
@@ -362,6 +373,7 @@ class Particle():
             return 1. / (numpy.exp(g) + self.eta)
 
         else:
+            """ === Linear interpolation === """
             return (
                 self._distribution[i_low] * (p_high - p) + self._distribution[i_high] * (p - p_low)
             ) / (p_high - p_low)

@@ -19,8 +19,8 @@ class UNITS:
         As we use natural units in the project, all units from `numericalunits` except energy units\
         are useless. Here some useful units are defined in terms of `GeV`s. """
 
-    eV = nu.eV
-    # eV = 1e-9
+    use_numericalunits = False
+    eV = nu.eV if use_numericalunits else 1e-9
 
     @classmethod
     def reset_units(cls):
@@ -76,9 +76,9 @@ class Params(object):
 
     def infer(self):
         """ Set initial cosmological parameters based on the value of `T_initial` """
-        # Initial scale factor - arbitrary
+        # As the initial scale factor is arbitrary, it can be use to ensure the initial $aT$ value\
+        # equal to 1
         self.a_initial = 1. / (self.T_initial / UNITS.MeV)
-        # self.a_initial = 1.
 
         # Compute present-state parameters that can be inferred from the base ones
         self.a = self.a_initial
@@ -122,6 +122,8 @@ class Grid(object):
     """ === Distribution functions grid ===
 
         TODO: try a log-spaced grid instead of equally-spaced
+        TODO: try an irregular grid based on the Gauss-Legendre quadrature roots to minimize \
+              the interpolation for the massless particles.
 
         To capture non-equilibrium effects in the Early Universe, we work with particle species \
         distribution functions $f(\vec{p}, \vec{r}, t)$. Assuming that the Universe is homogeneous\
@@ -138,7 +140,16 @@ class Grid(object):
         self.MAX_MOMENTUM = self.MIN_MOMENTUM + 20 * UNITS.MeV
         self.MOMENTUM_SAMPLES = 50
 
-        # Grid template can be copied when defining a new distribution function
+        """
+        Grid template can be copied when defining a new distribution function and is convenient to\
+        calculate any _vectorized_ function over the grid. For example,
+
+        ```python
+        numpy.vectorize(particle.conformal_energy)(GRID.TEMPLATE)
+        ```
+
+        yields an array of particle conformal energy mapped over the `GRID`
+        """
         self.TEMPLATE = numpy.linspace(self.MIN_MOMENTUM, self.MAX_MOMENTUM,
                                        num=self.MOMENTUM_SAMPLES, endpoint=True)
 
@@ -150,7 +161,7 @@ GRID = Grid()
 
 
 def theta(f):
-    """ Theta $\theta$ function """
+    """ Heaviside $\theta$ function """
     if f > 0:
         return 1.
     if f == 0:

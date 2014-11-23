@@ -75,13 +75,21 @@ class StandardModelParticles:
 
 
 class StandardModelInteractions:
+    """ Collection of Standard Model interactions double-triple-checked and used in all tests for\
+        consistency. """
 
     @staticmethod
     def neutrino_self_scattering(neutrino):
         """ \begin{align}
                 \nu_\alpha + \nu_\alpha &\to \nu_\alpha + \nu_\alpha
                 \\\\ \nu_\alpha + \overline{\nu_\alpha} &\to \nu_\alpha + \overline{\nu_\alpha}
-            \end{align} """
+            \end{align}
+
+            \begin{equation}
+                |\mathcal{M}|^2 = 32 G_F^2 \left( 2 (p_0 \cdot p_1) (p_2 \cdot p_3) +
+                    4 (p_0 \cdot p_3) (p_1 \cdot p_2) \right)
+            \end{equation}
+        """
         return Interaction(
             name="Neutrino self-scattering",
             in_particles=[neutrino, neutrino],
@@ -98,7 +106,13 @@ class StandardModelInteractions:
         """ \begin{align}
                 \nu_\alpha + \nu_\beta &\to \nu_\alpha + \nu_\beta
                 \\\\ \nu_\alpha + \overline{\nu_\beta} &\to \nu_\alpha + \overline{\nu_\beta}
-            \end{align} """
+            \end{align}
+
+            \begin{equation}
+                |\mathcal{M}|^2 = 32 G_F^2 \left( (p_0 \cdot p_1) (p_2 \cdot p_3) +
+                    (p_0 \cdot p_3) (p_1 \cdot p_2) \right)
+            \end{equation}
+        """
         return Interaction(
             name="Neutrino species-scattering",
             in_particles=[neutrino_a, neutrino_b],
@@ -114,7 +128,12 @@ class StandardModelInteractions:
     def neutrino_pair_flavour_change(neutrino_a, neutrino_b):
         """ \begin{align}
                 \nu_\alpha + \overline{\nu_\alpha} &\to \nu_\beta + \overline{\nu_\beta}
-            \end{align} """
+            \end{align}
+
+            \begin{equation}
+                |\mathcal{M}|^2 = 32 G_F^2 (p_0 \cdot p_3) (p_1 \cdot p_2)
+            \end{equation}
+        """
         return Interaction(
             name="Neutrino pair flavor change",
             in_particles=[neutrino_a, neutrino_a],
@@ -127,7 +146,19 @@ class StandardModelInteractions:
     def neutrinos_to_electrons(neutrino=None, electron=None, g_L=CONST.g_R + 0.5):
         """ \begin{align}
                 \nu_\alpha + \overline{\nu_\alpha} &\to e^- + e^+
-            \end{align} """
+            \end{align}
+
+            \begin{align}
+                |\mathcal{M}|^2 = 32 G_F^2 \left(
+                \\\\ 4 \, g_L^2 \, (p_0 \cdot p_3) (p_1 \cdot p_2) +
+                \\\\ +4 \, g_R^2 \, (p_0 \cdot p_2) (p_1 \cdot p_3) +
+                \\\\ +4 \, g_L g_R \, m_2 m_3 (p_0 \cdot p_1)
+                \\\\ \right)
+            \end{align}
+
+            Depending of the neutrino generations involved, $g_L$ can either be equal to \
+            $g_R + \frac12$ (for $\nu_e$) or $g_R - \frac12$ (for others).
+        """
         return Interaction(
             name="Neutrino-anti-neutrino annihilation to electron-positron pair",
             in_particles=[neutrino, neutrino],
@@ -144,9 +175,20 @@ class StandardModelInteractions:
     def neutrino_electron_scattering(neutrino=None, electron=None, g_L=CONST.g_R + 0.5):
         """ \begin{align}
                 \nu_\alpha + e^- &\to \nu_\alpha + e^-
-            \end{align} \begin{align}
-                \nu_\alpha + e^+ &\to \nu_\alpha + e^+
-            \end{align} """
+                \\\\ \nu_\alpha + e^+ &\to \nu_\alpha + e^+
+            \end{align}
+
+            \begin{align}
+                |\mathcal{M}|^2 = 32 G_F^2 \left(
+                \\\\ 4 \, g_L^2 \, (p_0 \cdot p_1) (p_2 \cdot p_3) +
+                \\\\ +4 \, g_L^2 \, (p_0 \cdot p_3) (p_1 \cdot p_2) -
+                \\\\ -4 \, g_L g_R \, m_1 m_3 (p_0 \cdot p_2)
+                \\\\ \right)
+            \end{align}
+
+            Depending of the neutrino generations involved, $g_L$ can either be equal to \
+            $g_R + \frac12$ (for $\nu_e$) or $g_R - \frac12$ (for others).
+        """
         return Interaction(
             name="Neutrino-electron scattering",
             in_particles=[neutrino, electron],

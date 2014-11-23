@@ -101,7 +101,7 @@ class Plotting:
             for i, particle in enumerate(self.particles):
                 self.particles_plots[i][0].set_title(particle.name)
                 self.particles_plots[i][0].set_xlabel("a")
-                self.particles_plots[i][0].set_ylabel(u"ρ, eV**4")
+                self.particles_plots[i][0].set_ylabel(u"ρ/ρ_eq")
 
                 self.particles_plots[i][1].set_xlabel("y, MeV")
                 self.particles_plots[i][1].set_ylabel("f/f_eq")
@@ -139,9 +139,7 @@ class Plotting:
                     PARAMS.a,
                     particle.energy_density() / (
                         7 * numpy.pi**2 * PARAMS.T**4 / 120
-                    ),
-                    s=1
-                )
+                    ), s=1)
 
                 feq = particle.distribution_function(
                     numpy.vectorize(particle.conformal_energy)(GRID.TEMPLATE)

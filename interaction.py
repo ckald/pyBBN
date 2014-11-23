@@ -314,30 +314,16 @@ class Integral:
 
         return GRID.TEMPLATE[index]
 
-    def F_f(self, p=[]):
-        """ Variable part of the collision integral ready for integration """
-        return -1. * (
-            self.F_A(p=p, skip_index=0) + self.in_particles[0].eta * self.F_B(p=p, skip_index=0)
-        )
+    """ == $\mathcal{F}(f_\alpha)$ functional ==
 
-    def F_1(self, p=[]):
-        """ Constant part of the collision integral ready for integration """
-        return self.F_B(p=p, skip_index=0)
+        === Naive form ===
 
+        \begin{align}
+            \mathcal{F} &= (1 \pm f_1)(1 \pm f_2) f_3 f_4 - f_1 f_2 (1 \pm f_3) (1 \pm f_4)
+            \\\\ &= \mathcal{F}_B - \mathcal{F}_A
+        \end{align}
     """
-    \begin{equation}
-        \mathcal{F}(f) = f_3 f_4 (1 \pm f_1) (1 \pm f_2) - f_1 f_2 (1 \pm f_3) (1 \pm f_4)
-    \end{equation}
 
-    \begin{equation}
-        \mathcal{F}(f) = f_1 (\mp f_3 f_4 (1 \pm f_2) - f_2 (1 \pm f_3) (1 \pm f_4)) \
-        + f_3 f_4 (1 \pm f_2)
-    \end{equation}
-
-    \begin{equation}
-        \mathcal{F}(f) = \mathcal{F}_B^{(1)} - f_1 (\mathcal{F}_A^{(1)} \mp \mathcal{F}_B^{(1)})
-    \end{equation}
-    """
     def F_A(self, p=[], skip_index=None):
         """
         Forward reaction distribution functional term
@@ -379,6 +365,35 @@ class Integral:
                     temp *= 1. - particle.eta * particle.distribution(p[i])
 
         return temp
+
+    """
+    === Linearized in $\, f_1$ form ===
+
+    \begin{equation}
+        \mathcal{F}(f) = f_3 f_4 (1 \pm f_1) (1 \pm f_2) - f_1 f_2 (1 \pm f_3) (1 \pm f_4)
+    \end{equation}
+
+    \begin{equation}
+        \mathcal{F}(f) = f_1 (\mp f_3 f_4 (1 \pm f_2) - f_2 (1 \pm f_3) (1 \pm f_4)) \
+        + f_3 f_4 (1 \pm f_2)
+    \end{equation}
+
+    \begin{equation}
+        \mathcal{F}(f) = \mathcal{F}_B^{(1)} - f_1 (\mathcal{F}_A^{(1)} \mp_1 \mathcal{F}_B^{(1)})
+    \end{equation}
+
+    $^{(i)}$ in $\mathcal{F}^{(i)}$ means that the distribution function $f_i$ was omitted in the\
+    corresponding expression. $\mp_j$ represents the $\eta$ value of the particle $j$.
+    """
+    def F_f(self, p=[]):
+        """ Variable part of the distribution functional """
+        return -1. * (
+            self.F_A(p=p, skip_index=0) + self.in_particles[0].eta * self.F_B(p=p, skip_index=0)
+        )
+
+    def F_1(self, p=[]):
+        """ Constant part of the distribution functional """
+        return self.F_B(p=p, skip_index=0)
 
     def in_values(self, p=[]):
         return p[:len(self.in_particles)]
