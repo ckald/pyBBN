@@ -3,18 +3,21 @@
 
 <img src="plots.png" width=100% />
 
-This test checks that in the photon universe:
+This test checks that in the electron universe:
 
   * $a \propto t^{2/3}$
 
 [Log file](log.txt)
 
-TODO: why is there a discrepancy $\sim 13\%$? Test if it is because of the electrons regime
-TODO: why is `aT` not conserved? Does it mean that fewer particles are moving faster?
+There is a discrepancy in the scaling law of about $13 \%$ related to the change of \
+the electron regime.
+
+TODO: why is `aT` not conserved?
 
 """
 
-from particles import Particle, STATISTICS
+from particles import Particle
+from library import StandardModelParticles as SMP
 from evolution import Universe
 from common import PARAMS, UNITS
 
@@ -26,10 +29,7 @@ PARAMS.infer()
 
 
 Particles = []
-electron = Particle(name='Electron',
-                    mass=0.511 * UNITS.MeV,
-                    statistics=STATISTICS.FERMION,
-                    dof=4)
+electron = Particle(**SMP.electron)
 Particles.append(electron)
 
 universe = Universe(Particles, logfile="tests/electron_universe/log.txt")

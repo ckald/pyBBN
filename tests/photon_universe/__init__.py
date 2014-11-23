@@ -20,6 +20,7 @@ from common import PARAMS, UNITS
 
 
 PARAMS.T_initial = 100 * UNITS.MeV
+PARAMS.T_final = 100 * UNITS.keV
 PARAMS.dx = 1e-2 * UNITS.MeV
 PARAMS.infer()
 
@@ -41,8 +42,7 @@ last_a = universe.data['a'][-1]
 last_t = universe.data['t'][-1] / UNITS.s
 
 print "a scaling discrepancy is: {:.2f}%"\
-    .format(100 * (last_a / initial_a - numpy.sqrt(last_t / initial_t))
-            / numpy.sqrt(last_t / initial_t))
+    .format(100 * (last_a / initial_a / numpy.sqrt(last_t / initial_t) - 1))
 
 universe.graphics.save(__file__)
 

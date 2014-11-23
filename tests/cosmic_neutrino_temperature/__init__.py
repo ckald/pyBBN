@@ -52,7 +52,7 @@ Particles += [
 ]
 
 universe = Universe(Particles, logfile='tests/cosmic_neutrino_temperature/log.txt',
-                    plotting=False, adaptive_step_size=False)
+                    adaptive_step_size=False)
 universe.evolve()
 
 print """

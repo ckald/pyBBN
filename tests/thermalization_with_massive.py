@@ -18,7 +18,6 @@ electron = Particle(**SMP.electron)
 neutrino_e = Particle(**SMP.neutrino_e)
 neutrino_mu = Particle(**SMP.neutrino_mu)
 
-electron.decoupling_temperature = PARAMS.T_initial
 neutrino_e.decoupling_temperature = PARAMS.T_initial
 
 Particles += [

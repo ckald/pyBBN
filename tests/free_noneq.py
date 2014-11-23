@@ -1,43 +1,31 @@
-from particles import Particle, STATISTICS
+from particles import Particle
+from library import StandardModelParticles as SMP
 from evolution import Universe
 from common import UNITS, PARAMS
 
 
 PARAMS.T_initial = 100 * UNITS.MeV
-PARAMS.T_final = 1e-1 * UNITS.MeV
-PARAMS.dx = 1e-2 * UNITS.MeV
+PARAMS.T_final = 10 * UNITS.keV
+PARAMS.dx = 1e-3 * UNITS.MeV
 PARAMS.infer()
 
 
-Particles = []
-photon = Particle(name='Photon',
-                  statistics=STATISTICS.BOSON)
-Particles.append(photon)
+photon = Particle(**SMP.photon)
+neutron = Particle(**SMP.neutron)
+proton = Particle(**SMP.proton)
+neutrino = Particle(**SMP.neutrino_e)
+electron = Particle(**SMP.electron)
 
-neutron = Particle(name='Neutron',
-                   statistics=STATISTICS.FERMION,
-                   mass=0.939 * UNITS.GeV)
-Particles.append(neutron)
-
-proton = Particle(name='Proton',
-                  statistics=STATISTICS.FERMION,
-                  mass=0.938 * UNITS.GeV)
-Particles.append(proton)
-
-neutrino = Particle(name='Neutrino',
-                    statistics=STATISTICS.FERMION,
-                    dof=4,
-                    decoupling_temperature=3 * UNITS.MeV)
-Particles.append(neutrino)
-
-electron = Particle(name='Electron',
-                    mass=0.511 * UNITS.MeV,
-                    statistics=STATISTICS.FERMION,
-                    dof=4)
-Particles.append(electron)
+Particles = [
+    photon,
+    neutron,
+    proton,
+    neutrino,
+    electron
+]
 
 universe = Universe(Particles)
-universe.graphics.monitor([neutrino])
+# universe.graphics.monitor(particles=[neutrino])
 universe.evolve()
 
 initial_aT = universe.data['aT'][0]
@@ -48,8 +36,7 @@ last_a = universe.data['a'][-1]
 last_t = universe.data['t'][-1] / UNITS.s
 
 print "a scaling discrepancy is: {:.2f}%"\
-    .format(100 * (last_a / initial_a - (last_t / initial_t) ** (2./3.))
-            / (last_t / initial_t) ** (2./3.))
+    .format(100 * (last_a / initial_a / (last_t / initial_t) ** (1./2.) - 1))
 
 universe.graphics.save(__file__)
 
