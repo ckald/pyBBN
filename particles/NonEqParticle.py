@@ -58,7 +58,7 @@ def energy_density(particle):
     """
     return numpy.vectorize(lambda y: (
         particle.distribution(y)
-        * y**2 * particle.energy_normalized(y)
+        * y**2 * particle.conformal_energy(y)
         * particle.dof / 2. / numpy.pi**2 / PARAMS.a**4
     ), otypes=[numpy.float_])
 
@@ -74,7 +74,7 @@ def pressure(particle):
     """
     return numpy.vectorize(lambda p: (
         particle.distribution(p) * p ** 4
-        / particle.energy_normalized(p)
+        / particle.conformal_energy(p)
         * particle.dof / 6. / numpy.pi**2 / PARAMS.a**4
     ), otypes=[numpy.float_])
 
@@ -95,7 +95,7 @@ def numerator(particle):
                                     kind='quadratic', assume_sorted=True, copy=False)
     return numpy.vectorize(lambda y: (
         -1. * particle.dof / 2. / numpy.pi**2
-        * y**2 * particle.energy_normalized(y)
+        * y**2 * particle.conformal_energy(y)
         * integral(y)
     ), otypes=[numpy.float_])
 

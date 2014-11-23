@@ -144,7 +144,7 @@ class Plotting:
                 )
 
                 feq = particle.distribution_function(
-                    numpy.vectorize(particle.energy_normalized)(GRID.TEMPLATE)
+                    numpy.vectorize(particle.conformal_energy)(GRID.TEMPLATE)
                     / particle.aT
                 )
 

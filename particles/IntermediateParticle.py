@@ -102,7 +102,7 @@ def denominator(particle):
             \frac{(I(4) + M_N^2 I(2))}{(a T)^2}
         \end{equation}
     """
-    return (I(particle, 4) + particle.mass_normalized**2 * I(particle)) / PARAMS.aT**2
+    return (I(particle, 4) + particle.conformal_mass**2 * I(particle)) / PARAMS.aT**2
 
 
 def I(particle, y_power=2):
@@ -113,7 +113,7 @@ def I(particle, y_power=2):
     """
     return particle.dof / 2 / numpy.pi**2 * integrate.quad(
         lambda y: (
-            y**y_power * numpy.exp(-particle.energy_normalized(y) / PARAMS.aT)
-            / (numpy.exp(-particle.energy_normalized(y) / PARAMS.aT) + particle.eta) ** 2
+            y**y_power * numpy.exp(-particle.conformal_energy(y) / PARAMS.aT)
+            / (numpy.exp(-particle.conformal_energy(y) / PARAMS.aT) + particle.eta) ** 2
         ), GRID.MIN_MOMENTUM, GRID.MAX_MOMENTUM, epsrel=1e-8, epsabs=0
     )[0]

@@ -211,13 +211,13 @@ class Integral:
             self.particles[0].collision_integrands.append(self)
 
     def calculate_kinematics(self, p=[]):
-        """ Helper procedure that caches energies and normalized masses of particles """
+        """ Helper procedure that caches energies and conformal masses of particles """
         p = (p + [0., 0., 0., 0.])[:4]
         E = []
         m = []
         for i, particle in enumerate(self.particles):
-            E.append(particle.energy_normalized(p[i]))
-            m.append(particle.mass_normalized)
+            E.append(particle.conformal_energy(p[i]))
+            m.append(particle.conformal_mass)
 
         """ Parameters of one particle can be inferred from the energy conservation law
             \begin{equation}E_3 = -\frac{1}{s_3} \sum_{i \neq 3} s_i E_i \end{equation} """

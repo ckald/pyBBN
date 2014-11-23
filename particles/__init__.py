@@ -214,13 +214,13 @@ class Particle():
                 # plot_integrand(lambda (p1, p2): i.integrand([p0, p1, p2, 0]), self.name, p0)
 
                 bounds = (
-                    # (max(GRID.MIN_MOMENTUM, i.particles[2].mass_normalized
-                         # + i.particles[3].mass_normalized - p0),
+                    # (max(GRID.MIN_MOMENTUM, i.particles[2].conformal_mass
+                         # + i.particles[3].conformal_mass - p0),
                     (GRID.MIN_MOMENTUM,
                      GRID.MAX_MOMENTUM),
                     (lambda p1: GRID.MIN_MOMENTUM,
-                     # max(GRID.MIN_MOMENTUM, p0 + p1 - i.particles[3].mass_normalized
-                                    # - i.particles[2].mass_normalized),
+                     # max(GRID.MIN_MOMENTUM, p0 + p1 - i.particles[3].conformal_mass
+                                    # - i.particles[2].conformal_mass),
                      lambda p1: min(p0 + p1, GRID.MAX_MOMENTUM)),
                 )
 
@@ -307,10 +307,10 @@ class Particle():
         exponential_interpolation = True
         p = abs(p)
         if self.in_equilibrium or p > GRID.MAX_MOMENTUM:
-            return self.distribution_function(self.energy_normalized(p) / self.aT)
+            return self.distribution_function(self.conformal_energy(p) / self.aT)
 
         # return distribution_interpolation(GRID.TEMPLATE, self._distribution, p,
-        #                                   # energy_normalized=self.energy_normalized,
+        #                                   conformal_energy=self.conformal_energy,
         #                                   eta=self.eta)
 
         remnant = (p - GRID.MIN_MOMENTUM) % GRID.MOMENTUM_STEP
@@ -333,9 +333,10 @@ class Particle():
                             .format(p, GRID.MIN_MOMENTUM, GRID.MAX_MOMENTUM))
 
         if exponential_interpolation:
-            E_p = self.energy_normalized(p)
-            E_low = self.energy_normalized(p_low)
-            E_high = self.energy_normalized(p_high)
+            """ === Exponential interpolation === """
+            E_p = self.conformal_energy(p)
+            E_low = self.conformal_energy(p_low)
+            E_high = self.conformal_energy(p_high)
 
             """
             \begin{equation}
@@ -367,7 +368,7 @@ class Particle():
 
     def init_distribution(self):
         self._distribution = self.distribution_function(
-            numpy.vectorize(self.energy_normalized)(GRID.TEMPLATE) / self.aT
+            numpy.vectorize(self.conformal_energy)(GRID.TEMPLATE) / self.aT
         )
         return self._distribution
 
@@ -388,18 +389,18 @@ class Particle():
         else:
             return abs(p)
 
-    def energy_normalized(self, y):
-        """ Normalized energy of the particle in comoving coordinates with evolving mass term
+    def conformal_energy(self, y):
+        """ Conformal energy of the particle in comoving coordinates with evolving mass term
 
             \begin{equation}
                 E_n = \sqrt{y^2 + (M a)^2}
             \end{equation}
         """
         if self.mass > 0:
-            return numpy.sqrt(y**2 + self.mass_normalized**2)
+            return numpy.sqrt(y**2 + self.conformal_mass**2)
         else:
             return abs(y)
 
     @property
-    def mass_normalized(self):
+    def conformal_mass(self):
         return self.mass * PARAMS.a
