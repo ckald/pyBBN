@@ -20,44 +20,56 @@ ctypedef numpy.float_t DTYPE_t
 
 cdef int exponential_interpolation = True
 
+cdef DTYPE_t energy(DTYPE_t p, DTYPE_t m):
+    return numpy.sqrt(p**2 + m**2)
+
 
 @cython.boundscheck(False)  # turn of bounds-checking for entire function
+@cython.wraparound(False)
+@cython.cdivision(True)
 def distribution_interpolation(numpy.ndarray[DTYPE_t, ndim=1] grid,
                                numpy.ndarray[DTYPE_t, ndim=1] distribution,
                                DTYPE_t p,
-                               # energy_normalized=lambda x: 0,
-                               DTYPE_t eta=1.):
-    cdef DTYPE_t p_low = -1, p_high = -1
+                               DTYPE_t m,
+                               int eta=1,
+                               DTYPE_t MIN_MOMENTUM=0., DTYPE_t MOMENTUM_STEP=0.):
+
+    cdef DTYPE_t p_low = -1, p_high = -1, remnant
 
     cdef unsigned int i = 0, i_low, i_high
-    for point in grid:
-        if point == p:
-            return distribution[i]
-        elif point < p:
-            p_low = point
-            i_low = i
-        elif point > p:
-            p_high = point
-            i_high = i
-            break
-        i += 1
 
-    if p_low == -1:
-        raise Exception("Outside of interpolated range: {}".format(p))
+    remnant = (p - MIN_MOMENTUM) % MOMENTUM_STEP
+    index = int((p - MIN_MOMENTUM) / MOMENTUM_STEP - remnant)
+
+    if remnant == 0:
+        return distribution[index]
+
+    if index < 0:
+        return distribution[0]
+
+    if index >= len(grid) - 1:
+        return distribution[len(grid) - 1]
+
+    # Determine the closest grid points
+
+    i_low = index
+    p_low = grid[i_low]
+
+    i_high = index + 1
+    p_high = grid[i_high]
 
     cdef DTYPE_t E_p, E_low, E_high, g_high, g_low, g
 
     if exponential_interpolation:
-        # E_p = energy_normalized(p)
-        # E_low = energy_normalized(p_low)
-        # E_high = energy_normalized(p_high)
-        E_p = p
-        E_low = p_low
-        E_high = p_high
+        """ === Exponential interpolation === """
+        E_p = energy(p, m)
+        E_low = energy(p_low, m)
+        E_high = energy(p_high, m)
 
         """
         \begin{equation}
-            g = \frac{ (E_p - E_{low}) g_{high} + (E_{high} - E_p) g_{low} }{ (E_{high} - E_{low}) }
+            g = \frac{ (E_p - E_{low}) g_{high} + (E_{high} - E_p) g_{low} }\
+            { (E_{high} - E_{low}) }
         \end{equation}
         """
 
@@ -79,6 +91,7 @@ def distribution_interpolation(numpy.ndarray[DTYPE_t, ndim=1] grid,
         return 1. / (numpy.exp(g) + eta)
 
     else:
+        """ === Linear interpolation === """
         return (
             distribution[i_low] * (p_high - p) + distribution[i_high] * (p - p_low)
         ) / (p_high - p_low)

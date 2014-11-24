@@ -16,7 +16,7 @@ from common.integrators import integrate_2D, implicit_euler
 from common.utils import benchmark
 
 from particles import DustParticle, RadiationParticle, IntermediateParticle, NonEqParticle
-# from particles.interpolation import distribution_interpolation
+from particles.interpolation.interpolation import distribution_interpolation
 
 
 class STATISTICS:
@@ -316,9 +316,10 @@ class Particle():
         # Cython implementation experiment
         #
         # ```python
-        # return distribution_interpolation(GRID.TEMPLATE, self._distribution, p,
-        #                                   conformal_energy=self.conformal_energy,
-        #                                   eta=self.eta)
+        # return distribution_interpolation(GRID.TEMPLATE, self._distribution,
+        #                                 p, self.conformal_mass,
+        #                                 self.eta,
+        #                                 GRID.MIN_MOMENTUM, GRID.MOMENTUM_STEP)
         # ```
 
         remnant = (p - GRID.MIN_MOMENTUM) % GRID.MOMENTUM_STEP
