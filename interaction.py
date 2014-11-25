@@ -327,7 +327,7 @@ class Integral:
         Forward reaction distribution functional term
 
         \begin{equation}
-            \mathcal{F}_A = f_1 f_2 (1 \pm f_3) (1 \pm f_4)
+            \mathcal{F}_A = - f_1 f_2 (1 \pm f_3) (1 \pm f_4)
         \end{equation}
 
         :param skip_index: Particle to skip in the expression
@@ -377,7 +377,7 @@ class Integral:
     \end{equation}
 
     \begin{equation}
-        \mathcal{F}(f) = \mathcal{F}_B^{(1)} - f_1 (\mathcal{F}_A^{(1)} \mp_1 \mathcal{F}_B^{(1)})
+        \mathcal{F}(f) = \mathcal{F}_B^{(1)} + f_1 (\mathcal{F}_A^{(1)} \pm_1 \mathcal{F}_B^{(1)})
     \end{equation}
 
     $^{(i)}$ in $\mathcal{F}^{(i)}$ means that the distribution function $f_i$ was omitted in the\
@@ -385,8 +385,8 @@ class Integral:
     """
     def F_f(self, p=[]):
         """ Variable part of the distribution functional """
-        return -1. * (
-            self.F_A(p=p, skip_index=0) + self.in_particles[0].eta * self.F_B(p=p, skip_index=0)
+        return (
+            self.F_A(p=p, skip_index=0) - self.in_particles[0].eta * self.F_B(p=p, skip_index=0)
         )
 
     def F_1(self, p=[]):
