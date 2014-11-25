@@ -17,16 +17,15 @@ def density(particle):
             g \int \frac{p^2 dp}{2 \pi^2} f\left( \frac{p}{T} \right)
         \end{equation}
     """
-    if not particle._density:
-        particle._density, _ = integrate.quad(
-            lambda p: (
-                particle.distribution_function(
-                    particle.energy(p) / particle.T
-                ) * p**2 * particle.dof / 2. / numpy.pi**2
-            ), GRID.MIN_MOMENTUM, GRID.MAX_MOMENTUM,
-            epsrel=1e-8, epsabs=0
-        )
-    return particle._density
+    density, _ = integrate.quad(
+        lambda p: (
+            particle.distribution_function(
+                particle.energy(p) / particle.T
+            ) * p**2 * particle.dof / 2. / numpy.pi**2
+        ), GRID.MIN_MOMENTUM, GRID.MAX_MOMENTUM,
+        epsrel=1e-8, epsabs=0
+    )
+    return density
 
 
 # == Particle energy density ==
@@ -49,13 +48,12 @@ def energy_density(particle):
             \rho = \int dp I_\rho
         \end{equation}
     """
-    if not particle._energy_density:
-        particle._energy_density, _ = integrate.quad(
-            lambda p: energy_density_integrand(p, particle),
-            GRID.MIN_MOMENTUM, GRID.MAX_MOMENTUM,
-            epsrel=1e-8, epsabs=0
-        )
-    return particle._energy_density
+    energy_density, _ = integrate.quad(
+        lambda p: energy_density_integrand(p, particle),
+        GRID.MIN_MOMENTUM, GRID.MAX_MOMENTUM,
+        epsrel=1e-8, epsabs=0
+    )
+    return energy_density
 
 
 # == Particle pressure ==
@@ -78,13 +76,12 @@ def pressure(particle):
             P = \int dp I_P
         \end{equation}
     """
-    if not particle._pressure:
-        particle._pressure, _ = integrate.quad(
-            lambda p: pressure_integrand(p, particle),
-            GRID.MIN_MOMENTUM, GRID.MAX_MOMENTUM,
-            epsrel=1e-8, epsabs=0
-        )
-    return particle._pressure
+    pressure, _ = integrate.quad(
+        lambda p: pressure_integrand(p, particle),
+        GRID.MIN_MOMENTUM, GRID.MAX_MOMENTUM,
+        epsrel=1e-8, epsabs=0
+    )
+    return pressure
 
 
 # == Master equation terms ==
@@ -111,7 +108,7 @@ def I(particle, y_power=2):
             { \left(e^{-\frac{E_N(y)}{a T}} + \eta \right)^2 }
         \end{equation}
     """
-    return particle.dof / 2 / numpy.pi**2 * integrate.quad(
+    return particle.dof / 2. / numpy.pi**2 * integrate.quad(
         lambda y: (
             y**y_power * numpy.exp(-particle.conformal_energy(y) / PARAMS.aT)
             / (numpy.exp(-particle.conformal_energy(y) / PARAMS.aT) + particle.eta) ** 2

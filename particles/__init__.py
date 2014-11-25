@@ -16,7 +16,7 @@ from common.integrators import integrate_2D, implicit_euler
 from common.utils import benchmark
 
 from particles import DustParticle, RadiationParticle, IntermediateParticle, NonEqParticle
-from particles.interpolation.interpolation import distribution_interpolation
+# from particles.interpolation.interpolation import distribution_interpolation
 
 
 class STATISTICS:
@@ -134,11 +134,6 @@ class Particle():
         """ Update the particle parameters according to the new state of the system """
         oldregime = self.regime
         oldeq = self.in_equilibrium
-
-        # Clear saved values of density, energy_density and pressure
-        self._density = None
-        self._energy_density = None
-        self._pressure = None
 
         # Update particle internal params only while it is in equilibrium
         if self.in_equilibrium or self.in_equilibrium != oldeq:
@@ -322,10 +317,10 @@ class Particle():
         #                                 GRID.MIN_MOMENTUM, GRID.MOMENTUM_STEP)
         # ```
 
-        remnant = (p - GRID.MIN_MOMENTUM) % GRID.MOMENTUM_STEP
-        index = int((p - GRID.MIN_MOMENTUM) / GRID.MOMENTUM_STEP - remnant)
+        greaters = numpy.where(GRID.TEMPLATE >= p)[0]
+        index = greaters[0]
 
-        if remnant == 0:
+        if p == GRID.TEMPLATE[index]:
             return self._distribution[index]
 
         if index >= GRID.MOMENTUM_SAMPLES - 1:
@@ -338,10 +333,6 @@ class Particle():
 
         i_high = index + 1
         p_high = GRID.TEMPLATE[i_high]
-
-        if index > GRID.MOMENTUM_SAMPLES - 1:
-            raise Exception("Outside of interpolated range: {} ({}..{})"
-                            .format(p, GRID.MIN_MOMENTUM, GRID.MAX_MOMENTUM))
 
         if exponential_interpolation:
             """ === Exponential interpolation === """
@@ -359,15 +350,13 @@ class Particle():
             g_high = self._distribution[i_high]
             g_low = self._distribution[i_low]
 
+            g_high = (1. / g_high - 1.)
             if g_high > 0:
-                g_high = (1. / g_high - 1.)
-                if g_high > 0:
-                    g_high = math.log(g_high)
+                g_high = numpy.log(g_high)
 
+            g_low = (1. / g_low - 1.)
             if g_low > 0:
-                g_low = (1. / g_low - 1.)
-                if g_low > 0:
-                    g_low = math.log(g_low)
+                g_low = numpy.log(g_low)
 
             g = ((E_p - E_low) * g_high + (E_high - E_p) * g_low) / (E_high - E_low)
 

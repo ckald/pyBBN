@@ -3,7 +3,7 @@ Ultra-relativistic simplifications of density, energy density and pressure calcu
 """
 import numpy
 from common import PARAMS
-import particles as ps
+import particles
 
 
 __path__ = "../.."
@@ -19,7 +19,7 @@ def density(particle):
         \end{equation}
     """
     density = particle.T**3 * particle.dof / numpy.pi**2 * 1.2
-    if particle.statistics == ps.STATISTICS.FERMION:
+    if particle.statistics == particles.STATISTICS.FERMION:
         # Multiplied by $\frac34$ for fermions
         density *= 3./4.
     return density
@@ -32,8 +32,8 @@ def energy_density(particle):
             \rho = \frac{\pi^2}{30} g T^4
         \end{equation}
     """
-    density = particle.T**4 * particle.dof * numpy.pi**2 / 30.
-    if particle.statistics == ps.STATISTICS.FERMION:
+    density = particle.dof * numpy.pi**2 / 30. * particle.T**4
+    if particle.statistics == particles.STATISTICS.FERMION:
         # Multiplied by $\frac78$ for fermions
         density *= 7./8.
     return density
@@ -61,4 +61,4 @@ def denominator(particle):
             \frac{2 \pi^2}{15} g (a T)^3
         \end{equation}
     """
-    return 2. * numpy.pi**2 / 15. * particle.dof * (PARAMS.aT)**3
+    return 2. * numpy.pi**2 / 15. * particle.dof * (particle.aT)**3

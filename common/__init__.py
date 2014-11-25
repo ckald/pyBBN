@@ -78,7 +78,7 @@ class Params(object):
         """ Set initial cosmological parameters based on the value of `T_initial` """
         # As the initial scale factor is arbitrary, it can be use to ensure the initial $aT$ value\
         # equal to 1
-        self.a_initial = 1. / (self.T_initial / UNITS.MeV)
+        self.a_initial = self.m / self.T_initial
 
         # Compute present-state parameters that can be inferred from the base ones
         self.a = self.a_initial
