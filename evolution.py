@@ -24,6 +24,9 @@ class Universe:
     # Controls parallelization of the collision integrals calculations
     PARALLELIZE = True
 
+    # Set size increasing multiplier
+    step_size_multiplier = 1.1
+
     def __init__(self, particles=[], interactions=[],
                  logfile='logs/' + str(datetime.now()) + '.txt',
                  plotting=True,
@@ -197,7 +200,7 @@ class Universe:
 
         return numerator / denominator
 
-    def control_step_size(self, maximum_change=0.2, fallback_change=0.1, exponent=1.1):
+    def control_step_size(self, maximum_change=0.2, fallback_change=0.1):
         """
         == Step size controller ==
 
@@ -217,6 +220,8 @@ class Universe:
 
         if not self.adaptive_step_size:
             return
+
+        exponent = self.step_size_multiplier
 
         dx = PARAMS.dx
         multipliers = []
