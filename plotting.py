@@ -138,7 +138,7 @@ class Plotting:
                 self.particles_plots[i][0].scatter(
                     PARAMS.a,
                     particle.energy_density() / (
-                        7 * numpy.pi**2 * PARAMS.T**4 / 120
+                        7. * numpy.pi**2 * PARAMS.T**4 / 120.
                     ), s=1)
 
                 feq = particle.distribution_function(
