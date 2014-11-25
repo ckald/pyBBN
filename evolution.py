@@ -113,8 +113,8 @@ class Universe:
         """
 
         if self.postmortem_debugger:
-            import pdb
-            pdb.set_trace()
+            import ipdb
+            ipdb.set_trace()
 
         return self.data
 
