@@ -93,7 +93,8 @@ def integrate_2D(integrand, bounds, method='mcquad'):
     return integral, error
 
 
-points, weights = polynomial.legendre.leggauss(40)
+GAUSS_LEGENDRE_ORDER = 40
+points, weights = polynomial.legendre.leggauss(GAUSS_LEGENDRE_ORDER)
 grid = numpy.meshgrid(points, points)
 
 
