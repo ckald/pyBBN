@@ -5,3 +5,4 @@ build/*
 logs/*.txt
 *.o
 *.so
+.coverage
