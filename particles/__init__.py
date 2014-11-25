@@ -368,10 +368,16 @@ class Particle():
                 self._distribution[i_low] * (p_high - p) + self._distribution[i_high] * (p - p_low)
             ) / (p_high - p_low)
 
+    def equilibrium_distribution(self, p=None):
+        if p is None:
+            return self.distribution_function(
+                numpy.vectorize(self.conformal_energy)(GRID.TEMPLATE) / self.aT
+            )
+        else:
+            return self.distribution_function(self.conformal_energy(p) / self.aT)
+
     def init_distribution(self):
-        self._distribution = self.distribution_function(
-            numpy.vectorize(self.conformal_energy)(GRID.TEMPLATE) / self.aT
-        )
+        self._distribution = self.equilibrium_distribution()
         return self._distribution
 
     @property

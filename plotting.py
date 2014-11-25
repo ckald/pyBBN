@@ -141,10 +141,7 @@ class Plotting:
                         7. * numpy.pi**2 * PARAMS.T**4 / 120.
                     ), s=1)
 
-                feq = particle.distribution_function(
-                    numpy.vectorize(particle.conformal_energy)(GRID.TEMPLATE)
-                    / particle.aT
-                )
+                feq = particle.equilibrium_distribution()
 
                 self.age_lines(self.particles_plots[i][1].get_axes().lines)
 
