@@ -1,7 +1,8 @@
 import os
 import numpy
+import matplotlib
 
-from plotting import plt, matplotlib
+from plotting import plt
 from particles import Particle
 from library import StandardModelParticles as SMP, StandardModelInteractions as SMI
 from evolution import Universe
