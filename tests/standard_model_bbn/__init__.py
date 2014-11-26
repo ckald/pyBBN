@@ -124,7 +124,7 @@ plt.draw()
 plt.show()
 plt.savefig(os.path.join(folder, 'figure_10.png'))
 
-plt.xlim(0, 20)
+plt.xlim(0, UNITS.MeV/PARAMS.T_final)
 plt.draw()
 plt.show()
 plt.savefig(os.path.join(folder, 'figure_10_full.png'))
