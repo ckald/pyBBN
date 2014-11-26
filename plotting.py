@@ -16,6 +16,7 @@ class Plotting:
     particles = None
 
     def __init__(self):
+        """ Initialize plots, setup basic styling """
 
         plt.rcParams['toolbar'] = 'None'
 
@@ -58,6 +59,9 @@ class Plotting:
         self.params_figure.show()
 
     def save(self, filename):
+        """ Save cosmological and monitored particles plots to the file in the same folder as \
+            `filename` """
+
         folder = os.path.split(filename)[0]
         plt.figure(1)
         plt.savefig(os.path.join(folder, 'plots.png'))
@@ -66,6 +70,9 @@ class Plotting:
             plt.savefig(os.path.join(folder, 'particles.png'))
 
     def monitor(self, particles=[]):
+        """ Setup the detailed distribution function and energy density plots for specific \
+            particle species """
+
         self.particles = particles
         if self.particles:
             self.particles_figure, self.particles_plots = plt.subplots(len(particles), 2, num=2)
@@ -82,6 +89,7 @@ class Plotting:
             self.particles_figure.show()
 
     def plot(self, data, full=False):
+        """ Plot cosmological parameters and monitored particles distribution functions """
 
         last_t = data['t'][-1] / UNITS.s
         self.times.append(last_t)
@@ -127,6 +135,8 @@ class Plotting:
             plt.draw()
 
     def age_lines(self, lines):
+        """ Slightly decrease the opacity of plotted lines until they are barely visible.\
+            Then, remove them. Saves up on memory and clears the view of the plots. """
         for line in lines:
             alpha = line.get_alpha() or 1.
             if alpha < 0.1:
@@ -157,6 +167,8 @@ def plot_integrand(integrand, name, p0, filename=__file__):
 
 
 def plot_points(points, name):
+    """ Draw a scatter plot for a number of `points` tuples `(x, y)` """
     plt.figure(4)
+    plt.title(name)
     plt.scatter(*zip(*points))
     plt.show()

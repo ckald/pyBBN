@@ -232,27 +232,40 @@ class Universe:
               * [[Non-equilibrium|particles/NonEqParticle.py#master-equation-terms]]
         """
 
-        # from common import PARAMS
-        # old_PARAMS = PARAMS.copy()
-        # old_particles = copy.copy(self.particles)
-        # PARAMS.aT = y
-        # PARAMS.x = t
-        # PARAMS.update(self.total_energy_density())
+        """
+        Save system state (unfinished, inactive)
 
+        ```python
+            from common import PARAMS
+            old_PARAMS = PARAMS.copy()
+            old_particles = copy.copy(self.particles)
+            PARAMS.aT = y
+            PARAMS.x = t
+            PARAMS.update(self.total_energy_density())
+        ```
+        """
+
+        # 1\. Update particles states
         self.update_particles()
-
+        # 2\. Initialize non-equilibrium interactions
         self.init_interactions()
-
+        # 3\. Calculate collision integrals
         self.calculate_collisions()
-
+        # 4\. Control integration step size
         self.control_step_size()
-
+        # 5\. Update particles distributions
         self.update_distributions()
-
+        # 6\. Calculate temperature equation terms
         numerator, denominator = self.calculate_temperature_terms()
 
-        # PARAMS = old_PARAMS
-        # self.particles = old_particles
+        """
+        Load system state (unfinished, inactive)
+
+        ```python
+        PARAMS = old_PARAMS
+        self.particles = old_particles
+        ```
+        """
 
         return numerator / denominator
 
