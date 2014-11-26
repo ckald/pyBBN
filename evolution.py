@@ -83,7 +83,7 @@ class Universe:
 
         while PARAMS.T > PARAMS.T_final:
             try:
-                self.step()
+                self.make_step()
             except KeyboardInterrupt:
                 print "Keyboard interrupt!"
                 break
@@ -106,7 +106,7 @@ class Universe:
 
         return self.data
 
-    def step(self):
+    def make_step(self):
         integrator = integrators.heun_correction if self.INTEGRATION_METHOD == 'heun' \
             else integrators.euler_correction
 
