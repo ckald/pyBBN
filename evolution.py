@@ -83,22 +83,7 @@ class Universe:
 
         while PARAMS.T > PARAMS.T_final:
             try:
-                if self.INTEGRATION_METHOD == 'heun':
-                    PARAMS.aT += integrators.heun_correction(y=PARAMS.aT, f=self.integrand,
-                                                             t=PARAMS.x, h=PARAMS.dx)
-
-                elif self.INTEGRATION_METHOD == 'euler':
-                    PARAMS.aT += integrators.euler_correction(y=PARAMS.aT, f=self.integrand,
-                                                              t=PARAMS.x, h=PARAMS.dx)
-
-                PARAMS.x += PARAMS.dx
-
-                PARAMS.update(self.total_energy_density())
-
-                self.save()
-
-                self.log()
-                self.step += 1
+                self.step()
             except KeyboardInterrupt:
                 print "Keyboard interrupt!"
                 break
@@ -121,37 +106,28 @@ class Universe:
 
         return self.data
 
-    def integrand(self, t, y):
-        """ == Temperature equation integrand ==
+    def step(self):
+        integrator = integrators.heun_correction if self.INTEGRATION_METHOD == 'heun' \
+            else integrators.euler_correction
 
-            Master equation for the temperature looks like
+        PARAMS.aT += integrator(y=PARAMS.aT, f=self.integrand, t=PARAMS.x, h=PARAMS.dx)
+        PARAMS.x += PARAMS.dx
 
-            \begin{equation}
-                \frac{d (aT)}{dx} = \frac{\sum_i{N_i}}{\sum_i{D_i}}
-            \end{equation}
+        PARAMS.update(self.total_energy_density())
 
-            Where $N_i$ and $D_i$ represent contributions from different particle species.
+        self.save()
 
-            See definitions for different regimes:
-              * [[Radiation|particles/RadiationParticle.py#master-equation-terms]]
-              * [[Intermediate|particles/IntermediateParticle.py#master-equation-terms]]
-              * [[Dust|particles/DustParticle.py#master-equation-terms]]
-              * [[Non-equilibrium|particles/NonEqParticle.py#master-equation-terms]]
-        """
+        self.log()
+        self.step += 1
 
-        # from common import PARAMS
-        # old_PARAMS = PARAMS.copy()
-        # old_particles = copy.copy(self.particles)
-        # PARAMS.aT = y
-        # PARAMS.x = t
-        # PARAMS.update(self.total_energy_density())
-
+    def update_particles(self):
         """ === 1. Update particles state ===
             Update particle species distribution functions, check for regime switching,\
             update precalculated variables like energy density and pressure. """
         for particle in self.particles:
             particle.update()
 
+    def init_interactions(self):
         """ === 2. Initialize non-equilibrium interactions ===
             Non-equilibrium interactions of different particle species are treated by a\
             numerical integration of the Boltzmann equation for distribution functions in\
@@ -164,45 +140,24 @@ class Universe:
         for interaction in self.interactions:
             interaction.calculate()
 
+    def calculate_collisions(self):
         """ === 3. Calculate collision integrals === """
-
         for particle in self.particles:
-            if particle.collision_integrands:
-                if self.PARALLELIZE:
-                    particle.collision_integral = \
-                        numpy.array(parallelization.parmap(particle.integrate_collisions,
-                                                           GRID.TEMPLATE))
-                else:
-                    particle.collision_integral = \
-                        numpy.vectorize(particle.integrate_collisions,
-                                        otypes=[numpy.float_])(GRID.TEMPLATE)
+            if not particle.collision_integrands:
+                continue
 
-        """ === 4. Control integration step size === """
-
-        self.control_step_size()
-
-        """ === 5. Update particles distributions === """
-
-        for particle in self.particles:
-            particle.update_distribution()
-
-        """ === 6. Calculate temperature equation terms === """
-
-        numerator = 0
-        denominator = 0
-
-        for particle in self.particles:
-            numerator += particle.numerator()
-            denominator += particle.denominator()
-
-        # PARAMS = old_PARAMS
-        # self.particles = old_particles
-
-        return numerator / denominator
+            if self.PARALLELIZE:
+                particle.collision_integral = \
+                    numpy.array(parallelization.parmap(particle.integrate_collisions,
+                                                       GRID.TEMPLATE))
+            else:
+                particle.collision_integral = \
+                    numpy.vectorize(particle.integrate_collisions,
+                                    otypes=[numpy.float_])(GRID.TEMPLATE)
 
     def control_step_size(self, maximum_change=0.2, fallback_change=0.1):
         """
-        == Step size controller ==
+        === 4. Control integration step size ===
 
         :param maximum_change: Maximal allowed relative difference in the distribution functions\
                                value after Boltzmann equation integration. Generally, master\
@@ -240,6 +195,64 @@ class Universe:
         if multiplier != 1.:
             PARAMS.dx *= multiplier
             print "//// Step size changed to dx =", PARAMS.dx / UNITS.MeV
+
+    def update_distributions(self):
+        """ === 5. Update particles distributions === """
+
+        for particle in self.particles:
+            particle.update_distribution()
+
+    def calculate_temperature_terms(self):
+        """ === 6. Calculate temperature equation terms === """
+
+        numerator = 0
+        denominator = 0
+
+        for particle in self.particles:
+            numerator += particle.numerator()
+            denominator += particle.denominator()
+
+        return numerator, denominator
+
+    def integrand(self, t, y):
+        """ == Temperature equation integrand ==
+
+            Master equation for the temperature looks like
+
+            \begin{equation}
+                \frac{d (aT)}{dx} = \frac{\sum_i{N_i}}{\sum_i{D_i}}
+            \end{equation}
+
+            Where $N_i$ and $D_i$ represent contributions from different particle species.
+
+            See definitions for different regimes:
+              * [[Radiation|particles/RadiationParticle.py#master-equation-terms]]
+              * [[Intermediate|particles/IntermediateParticle.py#master-equation-terms]]
+              * [[Dust|particles/DustParticle.py#master-equation-terms]]
+              * [[Non-equilibrium|particles/NonEqParticle.py#master-equation-terms]]
+        """
+
+        # from common import PARAMS
+        # old_PARAMS = PARAMS.copy()
+        # old_particles = copy.copy(self.particles)
+        # PARAMS.aT = y
+        # PARAMS.x = t
+        # PARAMS.update(self.total_energy_density())
+
+        self.update_particles()
+
+        self.calculate_collisions()
+
+        self.control_step_size()
+
+        self.update_distributions()
+
+        numerator, denominator = self.calculate_temperature_terms()
+
+        # PARAMS = old_PARAMS
+        # self.particles = old_particles
+
+        return numerator / denominator
 
     def save(self):
         """ Save current Universe parameters into the data arrays or output files """
