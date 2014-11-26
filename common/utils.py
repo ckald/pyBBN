@@ -17,7 +17,8 @@ class Logger(object):
             self.log.write(message.decode('utf8'))
 
     def __del__(self):
-        sys.stdout = self.terminal
+        if sys:
+            sys.stdout = self.terminal
 
     def __getattr__(self, attr):
         return getattr(self.terminal, attr)
