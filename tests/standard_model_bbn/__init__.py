@@ -109,15 +109,15 @@ plt.xlim(0, 10)
 
 f_e = neutrino_e._distribution
 feq_e = neutrino_e.equilibrium_distribution()
-plt.plot(GRID.TEMPLATE, f_e/feq_e, label="nu_e")
+plt.plot(GRID.TEMPLATE/UNITS.MeV, f_e/feq_e, label="nu_e")
 
 f_mu = neutrino_mu._distribution
 feq_mu = neutrino_mu.equilibrium_distribution()
-plt.plot(GRID.TEMPLATE, f_mu/feq_mu, label="nu_mu")
+plt.plot(GRID.TEMPLATE/UNITS.MeV, f_mu/feq_mu, label="nu_mu")
 
 f_tau = neutrino_tau._distribution
 feq_tau = neutrino_tau.equilibrium_distribution()
-plt.plot(GRID.TEMPLATE, f_tau/feq_tau, label="nu_tau")
+plt.plot(GRID.TEMPLATE/UNITS.MeV, f_tau/feq_tau, label="nu_tau")
 
 plt.legend()
 plt.draw()
