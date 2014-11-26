@@ -37,6 +37,7 @@ class M(object):
     order = (0, 1, 2, 3)
 
     def __init__(self, *args, **kwargs):
+        """ Configure matrix element, check that it makes sense """
         for key in kwargs:
             setattr(self, key, kwargs[key])
 
@@ -45,6 +46,7 @@ class M(object):
                             .format(self.order))
 
     def __str__(self):
+        """ String-like representation of the matrix element """
         return "K1={: .2e}, K2={: .2e}, {}".format(self.K1, self.K2, self.order)
 
 
@@ -104,24 +106,27 @@ class Interaction:
         # Remember all particle species we've already considered to avoid double-counting
         accounted_particles = set()
 
-        # === 1. Permute all in_particles ===
+        # === Interaction integrals initialization strategy ===
+
+        # ==== 1. Permute all in_particles ====
         in_particles = self.in_particles
         out_particles = self.out_particles
         accounted_particles = self.init_integrals(in_particles, out_particles,
                                                   Ms, accounted_particles)
 
-        # === 2. Turn to the backward process ===
-        # `(0, 1, 2, 3) -> (2, 3, 0, 1)
+        # ==== 2. Turn to the backward process ====
+        # `(0, 1, 2, 3) -> (2, 3, 0, 1)`
         for M in Ms:
             M.order = M.order[len(self.in_particles):] + M.order[:len(self.in_particles)]
 
-        # === 3. Permute all new `in_particles` (former `out_particles`) ===
+        # ==== 3. Permute all new `in_particles` (former `out_particles`) ====
         accounted_particles = self.init_integrals(out_particles, in_particles,
                                                   Ms, accounted_particles)
 
         print self
 
     def __str__(self):
+        """ String-like representation of the interaction and all its integral """
         return self.name + "\n\t" + "\n\t".join([str(integral) for integral in self.integrals])
 
     def init_integrals(self, in_particles, out_particles, Ms, accounted_particles):
@@ -163,7 +168,7 @@ class Integral:
     out_particles = []  # Outgoing particles
     particles = []  # All particles involved
 
-    """ === Energy conservation law of the interaction ===
+    """ === Energy conservation law of the integral ===
 
         \begin{equation}
             0 = \vec{s} \cdot \vec{E} = \sum_i s_i E_i \sim E_0 + E_1 - E_2 - E_3
@@ -184,7 +189,8 @@ class Integral:
     Ms = []
 
     def __init__(self, *args, **kwargs):
-        """ Init """
+        """ Update self with configuration `kwargs`, construct particles list and \
+            energy conservation law of the integral. """
         for key in kwargs:
             setattr(self, key, kwargs[key])
 
@@ -192,6 +198,7 @@ class Integral:
         self.signs = [1] * len(self.in_particles) + [-1] * len(self.out_particles)
 
     def __str__(self):
+        """ String-like representation of the integral. Corresponds to the first particle """
         return " + ".join([p.symbol for p in self.in_particles]) \
             + " ⟶  " + " + ".join([p.symbol for p in self.out_particles]) \
             + "\t({})".format(len(self.Ms))
@@ -223,7 +230,15 @@ class Integral:
         return p, E, m
 
     def integrand(self, p=[], F_A=True, F_B=True, F_1=False, F_f=False):
-        """ Total collision integral interior with performance optimizations """
+
+        """
+        Total collision integral interior with performance optimizations.
+
+        :param F_A, F_B: `bool`. Include/skip naive form terms of the distribution functional
+        :param F_1, F_f: `bool`. Include/skip terms of the linearized distribution functional
+
+        WARNING: $F_1 + F_f \neq F_A + F_B = F_1 + f(p_0) F_f$
+        """
 
         p, E, m = self.calculate_kinematics(p)
         if not self.in_bounds(p, E, m):
@@ -241,6 +256,7 @@ class Integral:
 
         integrand *= ds
 
+        # Avoid rounding errors and division by zero
         for i in [1, 2, 3]:
             if m[i] != 0:
                 integrand *= p[i] / E[i]
@@ -266,6 +282,8 @@ class Integral:
 
         return integrand
 
+    """ === Integration region bounds methods === """
+
     def in_bounds(self, p=[], E=None, m=None):
         """ $D$-functions involved in the interactions imply a cut-off region for the collision\
             integrand. In the general case of arbitrary particle masses, this is a set of \
@@ -285,6 +303,8 @@ class Integral:
         return is_in
 
     def bounds(self, p0):
+        """ Coarse integration region based on the `GRID` points. Assumes that integration region\
+            is connected. """
         points = []
         for p1 in GRID.TEMPLATE:
             points.append((p1, self.lower_bound(p0, p1),))
@@ -293,6 +313,7 @@ class Integral:
         return points
 
     def lower_bound(self, p0, p1):
+        """ Find the first `GRID` point in the integration region """
 
         index = 0
         while index < GRID.MOMENTUM_SAMPLES and not self.in_bounds([p0, p1, GRID.TEMPLATE[index]]):
@@ -304,6 +325,7 @@ class Integral:
         return GRID.TEMPLATE[index]
 
     def upper_bound(self, p0, p1):
+        """ Find the last `GRID` point in the integration region """
 
         index = int((min(p0 + p1, GRID.MAX_MOMENTUM) - GRID.MIN_MOMENTUM) / GRID.MOMENTUM_STEP)
 
@@ -315,15 +337,14 @@ class Integral:
 
         return GRID.TEMPLATE[index]
 
-    """
-    == $\mathcal{F}(f_\alpha)$ functional ==
+    """ == $\mathcal{F}(f_\alpha)$ functional == """
 
-    === Naive form ===
+    """ === Naive form ===
 
-    \begin{align}
-        \mathcal{F} &= (1 \pm f_1)(1 \pm f_2) f_3 f_4 - f_1 f_2 (1 \pm f_3) (1 \pm f_4)
-        \\\\ &= \mathcal{F}_B + \mathcal{F}_A
-    \end{align}
+        \begin{align}
+            \mathcal{F} &= (1 \pm f_1)(1 \pm f_2) f_3 f_4 - f_1 f_2 (1 \pm f_3) (1 \pm f_4)
+            \\\\ &= \mathcal{F}_B + \mathcal{F}_A
+        \end{align}
     """
 
     def F_A(self, p=[], skip_index=None):
@@ -385,7 +406,7 @@ class Integral:
     \end{equation}
 
     $^{(i)}$ in $\mathcal{F}^{(i)}$ means that the distribution function $f_i$ was omitted in the\
-    corresponding expression. $\mp_j$ represents the $\eta$ value of the particle $j$.
+    corresponding expression. $\pm_j$ represents the $\eta$ value of the particle $j$.
     """
     def F_f(self, p=[]):
         """ Variable part of the distribution functional """
