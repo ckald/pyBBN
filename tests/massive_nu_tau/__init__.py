@@ -41,7 +41,7 @@ neutrino_e = Particle(**SMP.neutrino_e)
 neutrino_mu = Particle(**SMP.neutrino_mu)
 
 massive_tau = SMP.neutrino_tau
-massive_tau.mass = 20 * UNITS.MeV
+massive_tau['mass'] = 20 * UNITS.MeV
 neutrino_tau = Particle(**massive_tau)
 
 Particles += [
