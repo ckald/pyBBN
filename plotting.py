@@ -8,35 +8,8 @@ import matplotlib.pyplot as plt
 from matplotlib import cm
 from mpl_toolkits.mplot3d import Axes3D
 
-from collections import deque
-
 from common import UNITS, GRID, PARAMS
-
-
-class ring_deque(deque):
-    max = 0
-    min = 0
-
-    def __init__(self, data, length):
-        self.length = length
-        super(ring_deque, self).__init__(data)
-
-    def append_more(self, data):
-
-        if len(self) > self.length:
-            self.popleft()
-
-        self.max = max(data, self.max)
-        self.min = min(data, self.min)
-        super(ring_deque, self).append(data)
-
-    def append(self, data):
-        self.max = data
-        self.min = data
-
-        self.append = self.append_more
-
-        super(ring_deque, self).append(data)
+from common.utils import ring_deque
 
 
 class Plotting:
