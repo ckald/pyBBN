@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta http-equiv="content-type" content="text/html;charset=utf-8">
-  <title>pyBBN v0.1.0: interaction.py</title>
+  <title>pyBBN v0.1.0: docs/interaction.py</title>
   <link rel="stylesheet" href="./pyccoon.css">
   <script type="text/x-mathjax-config">
   MathJax.Hub.Config({
@@ -23,6 +23,16 @@
     <div id="jump_wrapper">
       <div id="jump_page">
           <a class="source source-2" href="#section-2"> Boltzmann collision integral </a>
+          <a class="source source-2" href="#section-3"> Matrix element </a>
+          <a class="source source-2" href="#section-7"> Weak interactions matrix element </a>
+          <a class="source source-2" href="#section-8"> Interaction </a>
+          <a class="source source-3" href="#section-14"> 1. Permute all in_particles </a>
+          <a class="source source-3" href="#section-15"> 2. Turn to the backward process </a>
+          <a class="source source-3" href="#section-16"><span class="header" href="3.-permute-all-new-in_particles-(former-out_particles)"> 3. Permute all new in_particles (former out_particles) <a id="3.-permute-all-new-in_particles-(former-out_particles)" class="header-anchor"></a>
+          <a class="source source-2" href="#section-23"> Integral </a>
+          <a class="source source-3" href="#section-24"> Energy conservation law of the interaction </a>
+          <a class="source source-2" href="#section-38"> $\mathcal{F}(f_\alpha)$ functional </a>
+          <a class="source source-3" href="#section-41"> Linearized in $\, f_1$ form </a>
       </div>
     </div>
     </div>
@@ -30,7 +40,7 @@
         Generated at
         <a target="_blank" href="http://ckald.github.io/pyccoon/" title="Pyccoon: side-to-side documentation generator">
             <img id="pyccoon-icon" src="./pyccoon_icon.svg" alt="Pyccoon: side-to-side documentation generator" /></a>
-        <code>2014-09-25 03:36:35.697775</code>/
+        <code>2014-11-26 01:10:22.412525</code>/
         by a diligent
         <a target="_blank" href="http://ckald.github.io/pyccoon/" title="Pyccoon: side-to-side documentation generator">pyccoon</a>
     </div>
@@ -52,8 +62,9 @@
           <p>-<em>- coding: utf-8 -</em>-</p>
         </div>
         <div class='code'>
-          <div class="highlight"><pre><span class="kn">import</span> <span class="nn">numpy</span>
-<span class="kn">from</span> <span class="nn">common</span> <span class="kn">import</span> <span class="n">PARAMS</span><span class="p">,</span> <span class="n">theta</span>
+          <div class="highlight"><pre><span class="kn">import</span> <span class="nn">copy</span>
+<span class="kn">import</span> <span class="nn">numpy</span>
+<span class="kn">from</span> <span class="nn">common</span> <span class="kn">import</span> <span class="n">PARAMS</span><span class="p">,</span> <span class="n">GRID</span><span class="p">,</span> <span class="n">CONST</span>
 <span class="kn">from</span> <span class="nn">ds</span> <span class="kn">import</span> <span class="n">D</span><span class="p">,</span> <span class="n">Db1</span><span class="p">,</span> <span class="n">Db2</span></pre></div>
         </div>
         <div class='clearall'></div>
@@ -102,10 +113,17 @@
           <div class='octowrap'>
             <a class='octothorpe' href='#section-3'>#</a>
           </div>
-          <p>Main class used for calculation of the non-equilibrium dynamics of the particles </p>
+          <h2><span class="header" href="matrix-element"> Matrix element </span><a id="matrix-element" class="header-anchor"></a></h2>
+<p>All four-particle interactions of the interest can be rewritten in a form</p>
+<p>\begin{equation}
+       |\mathcal{M}|^2 = \sum_{{i \neq j \neq k \neq l}} K_1 (p_i \cdot p_j) (p_k \cdot p_l) + K_2 m_i m_j (p_k \cdot p_l)
+   \end{equation} </p>
         </div>
         <div class='code'>
-          <div class="highlight"><pre><span class="k">class</span> <span class="nc">Interaction</span><span class="p">:</span></pre></div>
+          <div class="highlight"><pre><span class="k">class</span> <span class="nc">M</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+
+    <span class="n">K1</span> <span class="o">=</span> <span class="mf">0.</span>
+    <span class="n">K2</span> <span class="o">=</span> <span class="mf">0.</span></pre></div>
         </div>
         <div class='clearall'></div>
     </section>
@@ -117,10 +135,10 @@
           <div class='octowrap'>
             <a class='octothorpe' href='#section-4'>#</a>
           </div>
-          <p>Incoming particles</p>
+          <p>Order defines the values of the $(i, j, k, l)$ indices</p>
         </div>
         <div class='code'>
-          <div class="highlight"><pre>    <span class="n">in_particles</span> <span class="o">=</span> <span class="p">[]</span></pre></div>
+          <div class="highlight"><pre>    <span class="n">order</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span></pre></div>
         </div>
         <div class='clearall'></div>
     </section>
@@ -132,10 +150,16 @@
           <div class='octowrap'>
             <a class='octothorpe' href='#section-5'>#</a>
           </div>
-          <p>Outgoing particles</p>
+          
         </div>
         <div class='code'>
-          <div class="highlight"><pre>    <span class="n">out_particles</span> <span class="o">=</span> <span class="p">[]</span></pre></div>
+          <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+            <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">order</span><span class="p">))</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">order</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&quot;Meaningless order of momenta of the matrix element: {}&quot;</span>
+                            <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">order</span><span class="p">))</span></pre></div>
         </div>
         <div class='clearall'></div>
     </section>
@@ -147,10 +171,11 @@
           <div class='octowrap'>
             <a class='octothorpe' href='#section-6'>#</a>
           </div>
-          <p>All particles involved</p>
+          
         </div>
         <div class='code'>
-          <div class="highlight"><pre>    <span class="n">particles</span> <span class="o">=</span> <span class="p">[]</span></pre></div>
+          <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s">&quot;K1={: .2e}, K2={: .2e}, {}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">K1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">K2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">order</span><span class="p">)</span></pre></div>
         </div>
         <div class='clearall'></div>
     </section>
@@ -162,10 +187,17 @@
           <div class='octowrap'>
             <a class='octothorpe' href='#section-7'>#</a>
           </div>
-          <p>Temperature when the typical interaction time exceeds the Hubble expansion time</p>
+          <h2><span class="header" href="weak-interactions-matrix-element"> Weak interactions matrix element </span><a id="weak-interactions-matrix-element" class="header-anchor"></a></h2>
+<p>Weak processes usually include a common factor of $32 G_F^2$ </p>
         </div>
         <div class='code'>
-          <div class="highlight"><pre>    <span class="n">decoupling_temperature</span> <span class="o">=</span> <span class="mf">0.</span></pre></div>
+          <div class="highlight"><pre><span class="k">class</span> <span class="nc">WeakM</span><span class="p">(</span><span class="n">M</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">WeakM</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">K1</span> <span class="o">*=</span> <span class="mi">32</span> <span class="o">*</span> <span class="n">CONST</span><span class="o">.</span><span class="n">G_F</span><span class="o">**</span><span class="mi">2</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">K2</span> <span class="o">*=</span> <span class="mi">32</span> <span class="o">*</span> <span class="n">CONST</span><span class="o">.</span><span class="n">G_F</span><span class="o">**</span><span class="mi">2</span></pre></div>
         </div>
         <div class='clearall'></div>
     </section>
@@ -177,10 +209,11 @@
           <div class='octowrap'>
             <a class='octothorpe' href='#section-8'>#</a>
           </div>
-          <p>Interaction symmetry factor</p>
+          <h2><span class="header" href="interaction"> Interaction </span><a id="interaction" class="header-anchor"></a></h2>
+<p>Helper class that takes care of creating all necessary <code>Integral</code>s for the actual interaction.</p>
         </div>
         <div class='code'>
-          <div class="highlight"><pre>    <span class="n">symmetry_factor</span> <span class="o">=</span> <span class="mf">1.</span></pre></div>
+          <div class="highlight"><pre><span class="k">class</span> <span class="nc">Interaction</span><span class="p">:</span></pre></div>
         </div>
         <div class='clearall'></div>
     </section>
@@ -192,15 +225,16 @@
           <div class='octowrap'>
             <a class='octothorpe' href='#section-9'>#</a>
           </div>
-          <p>Four-particle interactions of the interest can all be rewritten in a form</p>
-<p>\begin{equation}
-       |\mathcal{M}|^2 = \sum_{{i \neq j \neq k \neq l}} K_1 (p_i \cdot p_j) + K_2 m_i m_j (p_k \cdot p_l)
-   \end{equation} </p>
+          <p>Human-friendly interaction identifier</p>
         </div>
         <div class='code'>
-          <div class="highlight"><pre>    <span class="n">K1</span> <span class="o">=</span> <span class="mf">0.</span>
-    <span class="n">K2</span> <span class="o">=</span> <span class="mf">0.</span>
-    <span class="n">order</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span></pre></div>
+          <div class="highlight"><pre>    <span class="n">name</span> <span class="o">=</span> <span class="s">&quot;Particle interaction&quot;</span>
+
+    <span class="n">integrals</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="n">in_particles</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c"># Incoming particles</span>
+    <span class="n">out_particles</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c"># Outgoing particles</span>
+    <span class="n">particles</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c"># All particles involved</span></pre></div>
         </div>
         <div class='clearall'></div>
     </section>
@@ -212,10 +246,10 @@
           <div class='octowrap'>
             <a class='octothorpe' href='#section-10'>#</a>
           </div>
-          <p>2-to-2 interactions and 1-to-3 decays can be generalized by introducing a multiplier <code>s</code> for the momentum of the second particle: $p_1 + s p_2 = p_3 + p_4 $ </p>
+          <p>Temperature when the typical interaction time exceeds the Hubble expansion time</p>
         </div>
         <div class='code'>
-          <div class="highlight"><pre>    <span class="n">s</span> <span class="o">=</span> <span class="mf">1.</span></pre></div>
+          <div class="highlight"><pre>    <span class="n">decoupling_temperature</span> <span class="o">=</span> <span class="mf">0.</span></pre></div>
         </div>
         <div class='clearall'></div>
     </section>
@@ -227,16 +261,10 @@
           <div class='octowrap'>
             <a class='octothorpe' href='#section-11'>#</a>
           </div>
-          <p>Init </p>
+          <p>Matrix elements of the interaction</p>
         </div>
         <div class='code'>
-          <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-
-        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
-            <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">particles</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">in_particles</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">out_particles</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">s</span> <span class="o">=</span> <span class="mf">1.</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">in_particles</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span> <span class="k">else</span> <span class="o">-</span><span class="mf">1.</span></pre></div>
+          <div class="highlight"><pre>    <span class="n">Ms</span> <span class="o">=</span> <span class="p">[]</span></pre></div>
         </div>
         <div class='clearall'></div>
     </section>
@@ -248,16 +276,20 @@
           <div class='octowrap'>
             <a class='octothorpe' href='#section-12'>#</a>
           </div>
-          <p>Calculate collision integral constants and save them to the first involved particle</p>
+          <p>Create an <code>Integral</code> object for all particle species involved in the interaction.</p>
+<p>Precise expressions for all integrals can be derived by permuting all particle-related functions in the distribution functions, matrix elements, momenta, energy and mass arrays.</p>
+<p>To avoid double-counting, one should create an integral for each particle specie only once.</p>
         </div>
         <div class='code'>
-          <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">calculate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+          <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 
-        <span class="k">if</span> <span class="n">PARAMS</span><span class="o">.</span><span class="n">T</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">decoupling_temperature</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">in_particles</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">in_equilibrium</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+            <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
 
-            <span class="bp">self</span><span class="o">.</span><span class="n">particles</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">collision_integrands</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-                <span class="k">lambda</span> <span class="n">p0</span><span class="p">,</span> <span class="n">p1</span><span class="p">,</span> <span class="n">p2</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">integrand</span><span class="p">(</span><span class="n">p</span><span class="o">=</span><span class="p">[</span><span class="n">p0</span><span class="p">,</span> <span class="n">p1</span><span class="p">,</span> <span class="n">p2</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">order</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
-            <span class="p">)</span></pre></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">integrals</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">particles</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">in_particles</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">out_particles</span>
+
+        <span class="n">Ms</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Ms</span><span class="p">)</span></pre></div>
         </div>
         <div class='clearall'></div>
     </section>
@@ -269,13 +301,10 @@
           <div class='octowrap'>
             <a class='octothorpe' href='#section-13'>#</a>
           </div>
-          <p>if self.particles[0] != self.particles[1]:
-    self.particles[1].collision_integrands.append(
-        lambda p0, p1, p2: self.integrand(p=[p0, p1, p2, 0], order=(1, 0, 2, 3))
-    )</p>
+          <p>Remember all particle species we've already considered to avoid double-counting</p>
         </div>
         <div class='code'>
-          
+          <div class="highlight"><pre>        <span class="n">accounted_particles</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span></pre></div>
         </div>
         <div class='clearall'></div>
     </section>
@@ -287,17 +316,13 @@
           <div class='octowrap'>
             <a class='octothorpe' href='#section-14'>#</a>
           </div>
-          <p>Helper procedure that caches energies and normalized masses of particles </p>
+          <h3><span class="header" href="1.-permute-all-in_particles"> 1. Permute all in_particles </span><a id="1.-permute-all-in_particles" class="header-anchor"></a></h3>
         </div>
         <div class='code'>
-          <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">calculate_impulses</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="p">[]):</span>
-
-        <span class="n">E</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">m</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">particle</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">particles</span><span class="p">):</span>
-            <span class="n">E</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">particle</span><span class="o">.</span><span class="n">energy_normalized</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span>
-            <span class="n">m</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">particle</span><span class="o">.</span><span class="n">mass_normalized</span><span class="p">)</span>
-        <span class="n">E</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">in_values</span><span class="p">(</span><span class="n">E</span><span class="p">))</span> <span class="o">-</span> <span class="nb">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">out_values</span><span class="p">(</span><span class="n">E</span><span class="p">))</span></pre></div>
+          <div class="highlight"><pre>        <span class="n">in_particles</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">in_particles</span>
+        <span class="n">out_particles</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">out_particles</span>
+        <span class="n">accounted_particles</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">init_integrals</span><span class="p">(</span><span class="n">in_particles</span><span class="p">,</span> <span class="n">out_particles</span><span class="p">,</span>
+                                                  <span class="n">Ms</span><span class="p">,</span> <span class="n">accounted_particles</span><span class="p">)</span></pre></div>
         </div>
         <div class='clearall'></div>
     </section>
@@ -309,11 +334,12 @@
           <div class='octowrap'>
             <a class='octothorpe' href='#section-15'>#</a>
           </div>
-          <p>E[3] = E[0] + self.s * E[1] - E[2]</p>
+          <h3><span class="header" href="2.-turn-to-the-backward-process"> 2. Turn to the backward process </span><a id="2.-turn-to-the-backward-process" class="header-anchor"></a></h3>
+<p>`(0, 1, 2, 3) -&gt; (2, 3, 0, 1)</p>
         </div>
         <div class='code'>
-          <div class="highlight"><pre>        <span class="n">p</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">E</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span> <span class="o">-</span> <span class="n">m</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span>
-        <span class="k">return</span> <span class="n">p</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">m</span></pre></div>
+          <div class="highlight"><pre>        <span class="k">for</span> <span class="n">M</span> <span class="ow">in</span> <span class="n">Ms</span><span class="p">:</span>
+            <span class="n">M</span><span class="o">.</span><span class="n">order</span> <span class="o">=</span> <span class="n">M</span><span class="o">.</span><span class="n">order</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">in_particles</span><span class="p">):]</span> <span class="o">+</span> <span class="n">M</span><span class="o">.</span><span class="n">order</span><span class="p">[:</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">in_particles</span><span class="p">)]</span></pre></div>
         </div>
         <div class='clearall'></div>
     </section>
@@ -325,20 +351,13 @@
           <div class='octowrap'>
             <a class='octothorpe' href='#section-16'>#</a>
           </div>
-          <p>Total collision integral interior with performance optimizations </p>
+          <h3><span class="header" href="3.-permute-all-new-<code>in_particles</code>-(former-<code>out_particles</code>)"> 3. Permute all new <code>in_particles</code> (former <code>out_particles</code>) </span><a id="3.-permute-all-new-<code>in_particles</code>-(former-<code>out_particles</code>)" class="header-anchor"></a></h3>
         </div>
         <div class='code'>
-          <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">integrand</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="p">[],</span> <span class="n">order</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">)):</span>
+          <div class="highlight"><pre>        <span class="n">accounted_particles</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">init_integrals</span><span class="p">(</span><span class="n">out_particles</span><span class="p">,</span> <span class="n">in_particles</span><span class="p">,</span>
+                                                  <span class="n">Ms</span><span class="p">,</span> <span class="n">accounted_particles</span><span class="p">)</span>
 
-        <span class="n">p</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">m</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">calculate_impulses</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
-        <span class="n">integrand</span> <span class="o">=</span> <span class="n">theta</span><span class="p">(</span><span class="n">E</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">-</span> <span class="n">m</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">symmetry_factor</span>
-
-        <span class="k">if</span> <span class="n">integrand</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">return</span> <span class="mi">0</span>
-
-        <span class="k">if</span> <span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">integrand</span> <span class="o">*=</span> <span class="n">D</span><span class="p">(</span><span class="n">p</span><span class="o">=</span><span class="n">p</span><span class="p">,</span> <span class="n">E</span><span class="o">=</span><span class="n">E</span><span class="p">,</span> <span class="n">m</span><span class="o">=</span><span class="n">m</span><span class="p">,</span> <span class="n">K1</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">K1</span><span class="p">,</span> <span class="n">K2</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">K2</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="n">order</span><span class="p">)</span> <span class="o">/</span> <span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="n">E</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="k">else</span><span class="p">:</span></pre></div>
+        <span class="k">print</span> <span class="bp">self</span></pre></div>
         </div>
         <div class='clearall'></div>
     </section>
@@ -350,10 +369,11 @@
           <div class='octowrap'>
             <a class='octothorpe' href='#section-17'>#</a>
           </div>
-          <p>raise Exception("how did i get here?!")</p>
+          
         </div>
         <div class='code'>
-          <div class="highlight"><pre>            <span class="n">integrand</span> <span class="o">*=</span> <span class="n">Db1</span><span class="p">(</span><span class="o">*</span><span class="n">p</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span> <span class="o">*</span> <span class="n">m</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">E</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">*</span> <span class="n">E</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">+</span> <span class="n">Db2</span><span class="p">(</span><span class="o">*</span><span class="n">p</span><span class="p">[</span><span class="mi">1</span><span class="p">:]))</span></pre></div>
+          <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">+</span> <span class="s">&quot;</span><span class="se">\n\t</span><span class="s">&quot;</span> <span class="o">+</span> <span class="s">&quot;</span><span class="se">\n\t</span><span class="s">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">integral</span><span class="p">)</span> <span class="k">for</span> <span class="n">integral</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">integrals</span><span class="p">])</span></pre></div>
         </div>
         <div class='clearall'></div>
     </section>
@@ -368,16 +388,8 @@
           
         </div>
         <div class='code'>
-          <div class="highlight"><pre>        <span class="k">if</span> <span class="n">integrand</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">return</span> <span class="mi">0</span>
-
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]:</span>
-            <span class="k">if</span> <span class="n">m</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="n">integrand</span> <span class="o">*=</span> <span class="n">p</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">/</span> <span class="n">E</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
-
-        <span class="n">integrand</span> <span class="o">*=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">F_B</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">F_A</span><span class="p">(</span><span class="n">p</span><span class="p">))</span>
-
-        <span class="k">return</span> <span class="n">integrand</span></pre></div>
+          <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">init_integrals</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">in_particles</span><span class="p">,</span> <span class="n">out_particles</span><span class="p">,</span> <span class="n">Ms</span><span class="p">,</span> <span class="n">accounted_particles</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">particle</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">in_particles</span><span class="p">):</span></pre></div>
         </div>
         <div class='clearall'></div>
     </section>
@@ -389,13 +401,16 @@
           <div class='octowrap'>
             <a class='octothorpe' href='#section-19'>#</a>
           </div>
-          <p>Variable part of the collision integral ready for integration </p>
+          <p>Skip already accounted species</p>
         </div>
         <div class='code'>
-          <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">F_f</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="p">[]):</span>
+          <div class="highlight"><pre>            <span class="k">if</span> <span class="n">particle</span> <span class="ow">in</span> <span class="n">accounted_particles</span><span class="p">:</span>
+                <span class="k">continue</span>
 
-        <span class="k">return</span> \
-            <span class="bp">self</span><span class="o">.</span><span class="n">F_A</span><span class="p">(</span><span class="n">p</span><span class="o">=</span><span class="n">p</span><span class="p">,</span> <span class="n">skip_index</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">in_particles</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">eta</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">F_B</span><span class="p">(</span><span class="n">p</span><span class="o">=</span><span class="n">p</span><span class="p">,</span> <span class="n">skip_index</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span></pre></div>
+            <span class="n">particle_Ms</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">Ms</span><span class="p">)</span>
+
+            <span class="k">for</span> <span class="n">M</span> <span class="ow">in</span> <span class="n">particle_Ms</span><span class="p">:</span>
+                <span class="n">M</span><span class="o">.</span><span class="n">order</span> <span class="o">=</span> <span class="n">M</span><span class="o">.</span><span class="n">order</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">M</span><span class="o">.</span><span class="n">order</span><span class="p">[:</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">M</span><span class="o">.</span><span class="n">order</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">:]</span></pre></div>
         </div>
         <div class='clearall'></div>
     </section>
@@ -407,12 +422,16 @@
           <div class='octowrap'>
             <a class='octothorpe' href='#section-20'>#</a>
           </div>
-          <p>Constant part of the collision integral ready for integration </p>
+          <p>Add interaction integrals by putting each incoming particle as the first one</p>
         </div>
         <div class='code'>
-          <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">F_1</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="p">[]):</span>
-
-        <span class="k">return</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">F_B</span><span class="p">(</span><span class="n">p</span><span class="o">=</span><span class="n">p</span><span class="p">,</span> <span class="n">skip_index</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span></pre></div>
+          <div class="highlight"><pre>            <span class="bp">self</span><span class="o">.</span><span class="n">integrals</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Integral</span><span class="p">(</span>
+                <span class="n">in_particles</span><span class="o">=</span><span class="n">in_particles</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">in_particles</span><span class="p">[:</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">in_particles</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">:],</span>
+                <span class="n">out_particles</span><span class="o">=</span><span class="n">out_particles</span><span class="p">,</span>
+                <span class="n">decoupling_temperature</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">decoupling_temperature</span><span class="p">,</span>
+                <span class="n">Ms</span><span class="o">=</span><span class="n">particle_Ms</span>
+            <span class="p">))</span>
+            <span class="n">accounted_particles</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">particle</span><span class="p">)</span></pre></div>
         </div>
         <div class='clearall'></div>
     </section>
@@ -424,18 +443,10 @@
           <div class='octowrap'>
             <a class='octothorpe' href='#section-21'>#</a>
           </div>
-          <p>\begin{equation}
-    \mathcal{F}(f) = f_3 f_4 (1 \pm f_1) (1 \pm f_2) - f_1 f_2 (1 \pm f_3) (1 \pm f_4)
-\end{equation}</p>
-<p>\begin{equation}
-    \mathcal{F}(f) = f_1 (\mp f_3 f_4 (1 \pm f_2) - f_2 (1 \pm f_3) (1 \pm f_4)) + f_3 f_4 (1 \pm f_2)
-\end{equation}</p>
-<p>\begin{equation}
-    \mathcal{F}(f) = \mathcal{F}_B - f_1 (\mathcal{F}_A \mp \mathcal{F}_B)
-\end{equation}</p>
+          
         </div>
         <div class='code'>
-          
+          <div class="highlight"><pre>        <span class="k">return</span> <span class="n">accounted_particles</span></pre></div>
         </div>
         <div class='clearall'></div>
     </section>
@@ -447,23 +458,13 @@
           <div class='octowrap'>
             <a class='octothorpe' href='#section-22'>#</a>
           </div>
-          <p>Forward reaction distribution functional term without the <code>index</code>-th particle</p>
-<p>\begin{equation}
-    \mathcal{F}_A = f_2 (1 \pm f_3) (1 \pm f_4)
-\end{equation}</p>
+          <p>Proxy method </p>
         </div>
         <div class='code'>
-          <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">F_A</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="p">[],</span> <span class="n">skip_index</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+          <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">calculate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 
-        <span class="n">in_p</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">in_values</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
-        <span class="n">out_p</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">out_values</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
-        <span class="n">temp</span> <span class="o">=</span> <span class="mf">1.</span>
-        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">particle</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">in_particles</span><span class="p">):</span>
-            <span class="k">if</span> <span class="n">i</span> <span class="o">!=</span> <span class="n">skip_index</span><span class="p">:</span>
-                <span class="n">temp</span> <span class="o">*=</span> <span class="n">particle</span><span class="o">.</span><span class="n">distribution</span><span class="p">(</span><span class="n">in_p</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
-        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">particle</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">out_particles</span><span class="p">):</span>
-            <span class="n">temp</span> <span class="o">*=</span> <span class="mf">1.</span> <span class="o">-</span> <span class="n">particle</span><span class="o">.</span><span class="n">eta</span> <span class="o">*</span> <span class="n">particle</span><span class="o">.</span><span class="n">distribution</span><span class="p">(</span><span class="n">out_p</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
-        <span class="k">return</span> <span class="n">temp</span></pre></div>
+        <span class="k">for</span> <span class="n">integral</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">integrals</span><span class="p">:</span>
+            <span class="n">integral</span><span class="o">.</span><span class="n">calculate</span><span class="p">()</span></pre></div>
         </div>
         <div class='clearall'></div>
     </section>
@@ -475,23 +476,15 @@
           <div class='octowrap'>
             <a class='octothorpe' href='#section-23'>#</a>
           </div>
-          <p>Backward reaction distribution functional term without the <code>index</code>-th particle</p>
-<p>\begin{equation}
-    \mathcal{F}_B = f_3 f_4 (1 \pm f_2)
-\end{equation}</p>
+          <h2><span class="header" href="integral"> Integral </span><a id="integral" class="header-anchor"></a></h2>
+<p>Representation of the concrete collision integral for a specific particle <code>Integral.particles[0]</code> </p>
         </div>
         <div class='code'>
-          <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">F_B</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="p">[],</span> <span class="n">skip_index</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+          <div class="highlight"><pre><span class="k">class</span> <span class="nc">Integral</span><span class="p">:</span>
 
-        <span class="n">in_p</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">in_values</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
-        <span class="n">out_p</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">out_values</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
-        <span class="n">temp</span> <span class="o">=</span> <span class="mf">1.</span>
-        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">particle</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">out_particles</span><span class="p">):</span>
-            <span class="n">temp</span> <span class="o">*=</span> <span class="n">particle</span><span class="o">.</span><span class="n">distribution</span><span class="p">(</span><span class="n">out_p</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
-        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">particle</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">in_particles</span><span class="p">):</span>
-            <span class="k">if</span> <span class="n">skip_index</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">or</span> <span class="n">i</span> <span class="o">!=</span> <span class="n">skip_index</span><span class="p">:</span>
-                <span class="n">temp</span> <span class="o">*=</span> <span class="mf">1.</span> <span class="o">-</span> <span class="n">particle</span><span class="o">.</span><span class="n">eta</span> <span class="o">*</span> <span class="n">particle</span><span class="o">.</span><span class="n">distribution</span><span class="p">(</span><span class="n">in_p</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
-        <span class="k">return</span> <span class="n">temp</span></pre></div>
+    <span class="n">in_particles</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c"># Incoming particles</span>
+    <span class="n">out_particles</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c"># Outgoing particles</span>
+    <span class="n">particles</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c"># All particles involved</span></pre></div>
         </div>
         <div class='clearall'></div>
     </section>
@@ -503,11 +496,13 @@
           <div class='octowrap'>
             <a class='octothorpe' href='#section-24'>#</a>
           </div>
-          
+          <h3><span class="header" href="energy-conservation-law-of-the-interaction"> Energy conservation law of the interaction </span><a id="energy-conservation-law-of-the-interaction" class="header-anchor"></a></h3>
+<p>\begin{equation}
+       0 = \vec{s} \cdot \vec{E} = \sum_i s_i E_i \sim E_0 + E_1 - E_2 - E_3
+   \end{equation}</p>
         </div>
         <div class='code'>
-          <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">in_values</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="p">[]):</span>
-        <span class="k">return</span> <span class="n">p</span><span class="p">[:</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">in_particles</span><span class="p">)]</span></pre></div>
+          <div class="highlight"><pre>    <span class="n">signs</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span></pre></div>
         </div>
         <div class='clearall'></div>
     </section>
@@ -519,11 +514,432 @@
           <div class='octowrap'>
             <a class='octothorpe' href='#section-25'>#</a>
           </div>
+          <p>Temperature when the typical interaction time exceeds the Hubble expansion time</p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>    <span class="n">decoupling_temperature</span> <span class="o">=</span> <span class="mf">0.</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+  </div>
+  <div class='section'>
+    <a id="section-26" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-26'>#</a>
+          </div>
+          <p>Four-particle interactions of the interest can all be rewritten in a form</p>
+<p>\begin{equation}
+       |\mathcal{M}|^2 = \sum_{{i \neq j \neq k \neq l}} K_1 (p_i \cdot p_j) (p_k \cdot p_l) + K_2 m_i m_j (p_k \cdot p_l)
+   \end{equation} </p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>    <span class="n">Ms</span> <span class="o">=</span> <span class="p">[]</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+  </div>
+  <div class='section'>
+    <a id="section-27" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-27'>#</a>
+          </div>
+          <p>Init </p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+            <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">particles</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">in_particles</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">out_particles</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">signs</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">in_particles</span><span class="p">)</span> <span class="o">+</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">out_particles</span><span class="p">)</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+  </div>
+  <div class='section'>
+    <a id="section-28" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-28'>#</a>
+          </div>
           
         </div>
         <div class='code'>
-          <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">out_values</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="p">[]):</span>
-        <span class="k">return</span> <span class="n">p</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">in_particles</span><span class="p">):]</span>
+          <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s">&quot; + &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">p</span><span class="o">.</span><span class="n">symbol</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">in_particles</span><span class="p">])</span> \
+            <span class="o">+</span> <span class="s">&quot; ⟶  &quot;</span> <span class="o">+</span> <span class="s">&quot; + &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">p</span><span class="o">.</span><span class="n">symbol</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">out_particles</span><span class="p">])</span> \
+            <span class="o">+</span> <span class="s">&quot;</span><span class="se">\t</span><span class="s">({})&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Ms</span><span class="p">))</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+  </div>
+  <div class='section'>
+    <a id="section-29" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-29'>#</a>
+          </div>
+          
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__str__</span><span class="p">()</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+  </div>
+  <div class='section'>
+    <a id="section-30" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-30'>#</a>
+          </div>
+          <p>Calculate collision integral constants and save them to the first involved particle</p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">calculate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="k">if</span> <span class="n">PARAMS</span><span class="o">.</span><span class="n">T</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">decoupling_temperature</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">in_particles</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">in_equilibrium</span><span class="p">:</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">particles</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">collision_integrands</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+  </div>
+  <div class='section'>
+    <a id="section-31" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-31'>#</a>
+          </div>
+          <p>Helper procedure that caches energies and conformal masses of particles </p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">calculate_kinematics</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="p">[]):</span>
+
+        <span class="n">p</span> <span class="o">=</span> <span class="p">(</span><span class="n">p</span> <span class="o">+</span> <span class="p">[</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">])[:</span><span class="mi">4</span><span class="p">]</span>
+        <span class="n">E</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">m</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">particle</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">particles</span><span class="p">):</span>
+            <span class="n">E</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">particle</span><span class="o">.</span><span class="n">conformal_energy</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span>
+            <span class="n">m</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">particle</span><span class="o">.</span><span class="n">conformal_mass</span><span class="p">)</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+  </div>
+  <div class='section'>
+    <a id="section-32" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-32'>#</a>
+          </div>
+          <p>Parameters of one particle can be inferred from the energy conservation law
+   \begin{equation}E_3 = -\frac{1}{s_3} \sum_{i \neq 3} s_i E_i \end{equation} </p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>        <span class="n">E</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span> <span class="nb">sum</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">signs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">E</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">)])</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">signs</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
+        <span class="n">p</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">E</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span> <span class="o">-</span> <span class="n">m</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">p</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">m</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+  </div>
+  <div class='section'>
+    <a id="section-33" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-33'>#</a>
+          </div>
+          <p>Total collision integral interior with performance optimizations </p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">integrand</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="p">[],</span> <span class="n">F_A</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">F_B</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">F_1</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">F_f</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+
+        <span class="n">p</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">m</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">calculate_kinematics</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">in_bounds</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">m</span><span class="p">):</span>
+            <span class="k">return</span> <span class="mf">0.</span>
+
+        <span class="n">integrand</span> <span class="o">=</span> <span class="mf">1.</span><span class="o">/</span><span class="mf">64.</span> <span class="o">/</span> <span class="n">numpy</span><span class="o">.</span><span class="n">pi</span><span class="o">**</span><span class="mi">3</span> <span class="o">*</span> <span class="n">PARAMS</span><span class="o">.</span><span class="n">m</span><span class="o">**</span><span class="mi">5</span> <span class="o">/</span> <span class="n">PARAMS</span><span class="o">.</span><span class="n">x</span><span class="o">**</span><span class="mi">6</span> <span class="o">/</span> <span class="n">PARAMS</span><span class="o">.</span><span class="n">H</span>
+
+        <span class="n">ds</span> <span class="o">=</span> <span class="mf">0.</span>
+        <span class="k">if</span> <span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">M</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">Ms</span><span class="p">:</span>
+                <span class="n">ds</span> <span class="o">+=</span> <span class="n">D</span><span class="p">(</span><span class="n">p</span><span class="o">=</span><span class="n">p</span><span class="p">,</span> <span class="n">E</span><span class="o">=</span><span class="n">E</span><span class="p">,</span> <span class="n">m</span><span class="o">=</span><span class="n">m</span><span class="p">,</span> <span class="n">K1</span><span class="o">=</span><span class="n">M</span><span class="o">.</span><span class="n">K1</span><span class="p">,</span> <span class="n">K2</span><span class="o">=</span><span class="n">M</span><span class="o">.</span><span class="n">K2</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="n">M</span><span class="o">.</span><span class="n">order</span><span class="p">)</span> <span class="o">/</span> <span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="n">E</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">M</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">Ms</span><span class="p">:</span>
+                <span class="n">ds</span> <span class="o">+=</span> <span class="n">Db1</span><span class="p">(</span><span class="o">*</span><span class="n">p</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span> <span class="o">+</span> <span class="n">m</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">E</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">*</span> <span class="n">E</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">+</span> <span class="n">Db2</span><span class="p">(</span><span class="o">*</span><span class="n">p</span><span class="p">[</span><span class="mi">1</span><span class="p">:]))</span>
+
+        <span class="n">integrand</span> <span class="o">*=</span> <span class="n">ds</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="n">m</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">integrand</span> <span class="o">*=</span> <span class="n">p</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">/</span> <span class="n">E</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="n">integrand</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">0</span>
+
+        <span class="n">fau</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">if</span> <span class="n">F_B</span><span class="p">:</span>
+            <span class="n">fau</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">F_B</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">F_A</span><span class="p">:</span>
+            <span class="n">fau</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">F_A</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">F_1</span><span class="p">:</span>
+            <span class="n">fau</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">F_1</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">F_f</span><span class="p">:</span>
+            <span class="n">fau</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">F_f</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+
+        <span class="n">integrand</span> <span class="o">*=</span> <span class="n">fau</span>
+
+        <span class="k">return</span> <span class="n">integrand</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+  </div>
+  <div class='section'>
+    <a id="section-34" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-34'>#</a>
+          </div>
+          <p>$D$-functions involved in the interactions imply a cut-off region for the collision integrand. In the general case of arbitrary particle masses, this is a set of irrational inequalities that can hardly be solved (at least, Wolfram Mathematica does not succeed in this). To avoid excessive computations, it is convenient to do an early <code>return 0</code> when the particles kinematics lay out of the cut-off region </p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">in_bounds</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="p">[],</span> <span class="n">E</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">m</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">E</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">m</span><span class="p">:</span>
+            <span class="n">p</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">m</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">calculate_kinematics</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+
+        <span class="n">q1</span><span class="p">,</span> <span class="n">q2</span> <span class="o">=</span> <span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">p</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="k">if</span> <span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">p</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">else</span> <span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">q3</span><span class="p">,</span> <span class="n">q4</span> <span class="o">=</span> <span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">p</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span> <span class="k">if</span> <span class="n">p</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">p</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="k">else</span> <span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="n">p</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+
+        <span class="n">is_in</span> <span class="o">=</span> <span class="n">E</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">m</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> \
+            <span class="ow">and</span> <span class="n">q1</span> <span class="o">&lt;=</span> <span class="n">q2</span> <span class="o">+</span> <span class="n">q3</span> <span class="o">+</span> <span class="n">q4</span> \
+            <span class="ow">and</span> <span class="n">q3</span> <span class="o">&lt;=</span> <span class="n">q1</span> <span class="o">+</span> <span class="n">q2</span> <span class="o">+</span> <span class="n">q4</span>
+
+        <span class="k">return</span> <span class="n">is_in</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+  </div>
+  <div class='section'>
+    <a id="section-35" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-35'>#</a>
+          </div>
+          
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">bounds</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p0</span><span class="p">):</span>
+        <span class="n">points</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">p1</span> <span class="ow">in</span> <span class="n">GRID</span><span class="o">.</span><span class="n">TEMPLATE</span><span class="p">:</span>
+            <span class="n">points</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">p1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">lower_bound</span><span class="p">(</span><span class="n">p0</span><span class="p">,</span> <span class="n">p1</span><span class="p">),))</span>
+            <span class="n">points</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">p1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">upper_bound</span><span class="p">(</span><span class="n">p0</span><span class="p">,</span> <span class="n">p1</span><span class="p">),))</span>
+
+        <span class="k">return</span> <span class="n">points</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+  </div>
+  <div class='section'>
+    <a id="section-36" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-36'>#</a>
+          </div>
+          
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">lower_bound</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p0</span><span class="p">,</span> <span class="n">p1</span><span class="p">):</span>
+
+        <span class="n">index</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">while</span> <span class="n">index</span> <span class="o">&lt;</span> <span class="n">GRID</span><span class="o">.</span><span class="n">MOMENTUM_SAMPLES</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">in_bounds</span><span class="p">([</span><span class="n">p0</span><span class="p">,</span> <span class="n">p1</span><span class="p">,</span> <span class="n">GRID</span><span class="o">.</span><span class="n">TEMPLATE</span><span class="p">[</span><span class="n">index</span><span class="p">]]):</span>
+            <span class="n">index</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="k">if</span> <span class="n">index</span> <span class="o">==</span> <span class="n">GRID</span><span class="o">.</span><span class="n">MOMENTUM_SAMPLES</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">GRID</span><span class="o">.</span><span class="n">MIN_MOMENTUM</span>
+
+        <span class="k">return</span> <span class="n">GRID</span><span class="o">.</span><span class="n">TEMPLATE</span><span class="p">[</span><span class="n">index</span><span class="p">]</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+  </div>
+  <div class='section'>
+    <a id="section-37" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-37'>#</a>
+          </div>
+          
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">upper_bound</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p0</span><span class="p">,</span> <span class="n">p1</span><span class="p">):</span>
+
+        <span class="n">index</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="nb">min</span><span class="p">(</span><span class="n">p0</span> <span class="o">+</span> <span class="n">p1</span><span class="p">,</span> <span class="n">GRID</span><span class="o">.</span><span class="n">MAX_MOMENTUM</span><span class="p">)</span> <span class="o">-</span> <span class="n">GRID</span><span class="o">.</span><span class="n">MIN_MOMENTUM</span><span class="p">)</span> <span class="o">/</span> <span class="n">GRID</span><span class="o">.</span><span class="n">MOMENTUM_STEP</span><span class="p">)</span>
+
+        <span class="k">while</span> <span class="n">index</span> <span class="o">&gt;=</span> <span class="mi">0</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">in_bounds</span><span class="p">([</span><span class="n">p0</span><span class="p">,</span> <span class="n">p1</span><span class="p">,</span> <span class="n">GRID</span><span class="o">.</span><span class="n">TEMPLATE</span><span class="p">[</span><span class="n">index</span><span class="p">]]):</span>
+            <span class="n">index</span> <span class="o">-=</span> <span class="mi">1</span>
+
+        <span class="k">if</span> <span class="n">index</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">GRID</span><span class="o">.</span><span class="n">MIN_MOMENTUM</span>
+
+        <span class="k">return</span> <span class="n">GRID</span><span class="o">.</span><span class="n">TEMPLATE</span><span class="p">[</span><span class="n">index</span><span class="p">]</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+  </div>
+  <div class='section'>
+    <a id="section-38" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-38'>#</a>
+          </div>
+          <h2><span class="header" href="$\mathcal{f}(f_\alpha)$-functional"> $\mathcal{F}(f_\alpha)$ functional </span><a id="$\mathcal{f}(f_\alpha)$-functional" class="header-anchor"></a></h2>
+<h3><span class="header" href="naive-form"> Naive form </span><a id="naive-form" class="header-anchor"></a></h3>
+<p>\begin{align}
+    \mathcal{F} &amp;= (1 \pm f_1)(1 \pm f_2) f_3 f_4 - f_1 f_2 (1 \pm f_3) (1 \pm f_4)
+    \\ &amp;= \mathcal{F}_B + \mathcal{F}_A
+\end{align}</p>
+        </div>
+        <div class='code'>
+          
+        </div>
+        <div class='clearall'></div>
+    </section>
+  </div>
+  <div class='section'>
+    <a id="section-39" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-39'>#</a>
+          </div>
+          <p>Forward reaction distribution functional term</p>
+<p>\begin{equation}
+    \mathcal{F}_A = - f_1 f_2 (1 \pm f_3) (1 \pm f_4)
+\end{equation}</p>
+<p><span class="pydoc pydoc-param"><span>param</span> <code>skip_index</code></span> Particle to skip in the expression</p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">F_A</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="p">[],</span> <span class="n">skip_index</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+
+        <span class="n">temp</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1.</span>
+
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">particle</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">particles</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">skip_index</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">or</span> <span class="n">i</span> <span class="o">!=</span> <span class="n">skip_index</span><span class="p">:</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">signs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="n">temp</span> <span class="o">*=</span> <span class="n">particle</span><span class="o">.</span><span class="n">distribution</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">temp</span> <span class="o">*=</span> <span class="mf">1.</span> <span class="o">-</span> <span class="n">particle</span><span class="o">.</span><span class="n">eta</span> <span class="o">*</span> <span class="n">particle</span><span class="o">.</span><span class="n">distribution</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+
+        <span class="k">return</span> <span class="n">temp</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+  </div>
+  <div class='section'>
+    <a id="section-40" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-40'>#</a>
+          </div>
+          <p>Backward reaction distribution functional term</p>
+<p>\begin{equation}
+    \mathcal{F}_B = f_3 f_4 (1 \pm f_1) (1 \pm f_2)
+\end{equation}</p>
+<p><span class="pydoc pydoc-param"><span>param</span> <code>skip_index</code></span> Particle to skip in the expression</p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">F_B</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="p">[],</span> <span class="n">skip_index</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+
+        <span class="n">temp</span> <span class="o">=</span> <span class="mf">1.</span>
+
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">particle</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">particles</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">skip_index</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">or</span> <span class="n">i</span> <span class="o">!=</span> <span class="n">skip_index</span><span class="p">:</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">signs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+                    <span class="n">temp</span> <span class="o">*=</span> <span class="n">particle</span><span class="o">.</span><span class="n">distribution</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">temp</span> <span class="o">*=</span> <span class="mf">1.</span> <span class="o">-</span> <span class="n">particle</span><span class="o">.</span><span class="n">eta</span> <span class="o">*</span> <span class="n">particle</span><span class="o">.</span><span class="n">distribution</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+
+        <span class="k">return</span> <span class="n">temp</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+  </div>
+  <div class='section'>
+    <a id="section-41" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-41'>#</a>
+          </div>
+          <h3><span class="header" href="linearized-in-$\,-f_1$-form"> Linearized in $\, f_1$ form </span><a id="linearized-in-$\,-f_1$-form" class="header-anchor"></a></h3>
+<p>\begin{equation}
+    \mathcal{F}(f) = f_3 f_4 (1 \pm f_1) (1 \pm f_2) - f_1 f_2 (1 \pm f_3) (1 \pm f_4)
+\end{equation}</p>
+<p>\begin{equation}
+    \mathcal{F}(f) = f_1 (\mp f_3 f_4 (1 \pm f_2) - f_2 (1 \pm f_3) (1 \pm f_4)) + f_3 f_4 (1 \pm f_2)
+\end{equation}</p>
+<p>\begin{equation}
+    \mathcal{F}(f) = \mathcal{F}_B^{(1)} + f_1 (\mathcal{F}_A^{(1)} \pm_1 \mathcal{F}_B^{(1)})
+\end{equation}</p>
+<p>$^{(i)}$ in $\mathcal{F}^{(i)}$ means that the distribution function $f_i$ was omitted in the corresponding expression. $\mp_j$ represents the $\eta$ value of the particle $j$.</p>
+        </div>
+        <div class='code'>
+          
+        </div>
+        <div class='clearall'></div>
+    </section>
+  </div>
+  <div class='section'>
+    <a id="section-42" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-42'>#</a>
+          </div>
+          <p>Variable part of the distribution functional </p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">F_f</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="p">[]):</span>
+
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">F_A</span><span class="p">(</span><span class="n">p</span><span class="o">=</span><span class="n">p</span><span class="p">,</span> <span class="n">skip_index</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">in_particles</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">eta</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">F_B</span><span class="p">(</span><span class="n">p</span><span class="o">=</span><span class="n">p</span><span class="p">,</span> <span class="n">skip_index</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="p">)</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+  </div>
+  <div class='section'>
+    <a id="section-43" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-43'>#</a>
+          </div>
+          <p>Constant part of the distribution functional </p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">F_1</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="p">[]):</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">F_B</span><span class="p">(</span><span class="n">p</span><span class="o">=</span><span class="n">p</span><span class="p">,</span> <span class="n">skip_index</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 
 </pre></div>
         </div>

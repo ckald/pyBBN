@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>pyBBN v0.1.0: docs/tests/unit/__init__.py</title>
+  <link rel="stylesheet" href="../../pyccoon.css">
+  <script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+  });
+  </script>
+  <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</head>
+<body>
+<div id='container'>
+  <a id="top"></a>
+  <div id="background"></div>
+  <div id="footer">
+    <a class="btn" id="project-name" href="../../index.html">pyBBN v0.1.0</a>
+    <a class="btn" class="source source-1" href="#top">Back to top</a>
+    <div class="generation-time">
+        Generated at
+        <a target="_blank" href="http://ckald.github.io/pyccoon/" title="Pyccoon: side-to-side documentation generator">
+            <img id="pyccoon-icon" src="../../pyccoon_icon.svg" alt="Pyccoon: side-to-side documentation generator" /></a>
+        <code>2014-11-26 01:10:25.883611</code>/
+        by a diligent
+        <a target="_blank" href="http://ckald.github.io/pyccoon/" title="Pyccoon: side-to-side documentation generator">pyccoon</a>
+    </div>
+  </div>
+  <div class='section'>
+    <div class='docs'>
+      <h1 id="breadcrumbs">/ <a href="index.html/../../../index.html">.</a> / <a href="index.html/../../index.html">tests</a> / <a href="index.html/../index.html">unit</a> / <a href="index.html">__init__.py</a> </h1>
+      <ul id="children"><li><a href="index.html">__init__.py</a></li><li><a href="integrators_test.py.html">integrators_test.py</a></li><li><a href="interpolation_test.py.html">interpolation_test.py</a></li><li><a href="non_equilibrium_test.py.html">non_equilibrium_test.py</a></li><li><a href="regimes_test.py.html">regimes_test.py</a></li></ul>
+    </div>
+  </div>
+  <div class='clearall'>
+  <div class='section'>
+    <a id="section-0" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-0'>#</a>
+          </div>
+          
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre><span class="kn">from</span> <span class="nn">common</span> <span class="kn">import</span> <span class="n">PARAMS</span><span class="p">,</span> <span class="n">UNITS</span>
+<span class="kn">from</span> <span class="nn">library</span> <span class="kn">import</span> <span class="n">StandardModelParticles</span> <span class="k">as</span> <span class="n">SMP</span>
+
+
+<span class="n">eps</span> <span class="o">=</span> <span class="mf">1e-5</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+  </div>
+  <div class='section'>
+    <a id="section-1" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-1'>#</a>
+          </div>
+          
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre><span class="k">def</span> <span class="nf">setup</span><span class="p">():</span>
+    <span class="n">PARAMS</span><span class="o">.</span><span class="n">T_initial</span> <span class="o">=</span> <span class="n">SMP</span><span class="o">.</span><span class="n">neutrino_e</span><span class="p">[</span><span class="s">&#39;decoupling_temperature&#39;</span><span class="p">]</span>
+    <span class="n">PARAMS</span><span class="o">.</span><span class="n">T_final</span> <span class="o">=</span> <span class="mf">0.075</span> <span class="o">*</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">MeV</span>
+    <span class="n">PARAMS</span><span class="o">.</span><span class="n">dx</span> <span class="o">=</span> <span class="mf">1e-4</span> <span class="o">*</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">MeV</span>
+    <span class="n">PARAMS</span><span class="o">.</span><span class="n">infer</span><span class="p">()</span>
+
+</pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+  </div>
+</div>
+</body>

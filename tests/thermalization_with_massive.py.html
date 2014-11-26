@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>pyBBN v0.1.0: docs/tests/thermalization_with_massive.py</title>
+  <link rel="stylesheet" href="../pyccoon.css">
+  <script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+  });
+  </script>
+  <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</head>
+<body>
+<div id='container'>
+  <a id="top"></a>
+  <div id="background"></div>
+  <div id="footer">
+    <a class="btn" id="project-name" href="../index.html">pyBBN v0.1.0</a>
+    <a class="btn" class="source source-1" href="#top">Back to top</a>
+    <div class="generation-time">
+        Generated at
+        <a target="_blank" href="http://ckald.github.io/pyccoon/" title="Pyccoon: side-to-side documentation generator">
+            <img id="pyccoon-icon" src="../pyccoon_icon.svg" alt="Pyccoon: side-to-side documentation generator" /></a>
+        <code>2014-11-26 01:10:25.877737</code>/
+        by a diligent
+        <a target="_blank" href="http://ckald.github.io/pyccoon/" title="Pyccoon: side-to-side documentation generator">pyccoon</a>
+    </div>
+  </div>
+  <div class='section'>
+    <div class='docs'>
+      <h1 id="breadcrumbs">/ <a href="thermalization_with_massive.py.html/../../index.html">.</a> / <a href="thermalization_with_massive.py.html/../index.html">tests</a> / <a href="thermalization_with_massive.py.html">thermalization_with_massive.py</a> </h1>
+      <ul id="children"></ul>
+    </div>
+  </div>
+  <div class='clearall'>
+  <div class='section'>
+    <a id="section-0" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-0'>#</a>
+          </div>
+          
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre><span class="kn">from</span> <span class="nn">particles</span> <span class="kn">import</span> <span class="n">Particle</span>
+<span class="kn">from</span> <span class="nn">library</span> <span class="kn">import</span> <span class="n">StandardModelParticles</span> <span class="k">as</span> <span class="n">SMP</span><span class="p">,</span> <span class="n">StandardModelInteractions</span> <span class="k">as</span> <span class="n">SMI</span>
+<span class="kn">from</span> <span class="nn">evolution</span> <span class="kn">import</span> <span class="n">Universe</span>
+<span class="kn">from</span> <span class="nn">common</span> <span class="kn">import</span> <span class="n">CONST</span><span class="p">,</span> <span class="n">UNITS</span><span class="p">,</span> <span class="n">PARAMS</span>
+
+
+<span class="n">PARAMS</span><span class="o">.</span><span class="n">T_initial</span> <span class="o">=</span> <span class="mf">10.</span> <span class="o">*</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">MeV</span>
+<span class="n">PARAMS</span><span class="o">.</span><span class="n">T_final</span> <span class="o">=</span> <span class="mf">0.050</span> <span class="o">*</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">MeV</span>
+<span class="n">PARAMS</span><span class="o">.</span><span class="n">dx</span> <span class="o">=</span> <span class="mf">1e-6</span> <span class="o">*</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">MeV</span>
+<span class="n">PARAMS</span><span class="o">.</span><span class="n">infer</span><span class="p">()</span>
+
+
+<span class="n">Particles</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">Interactions</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="n">photon</span> <span class="o">=</span> <span class="n">Particle</span><span class="p">(</span><span class="o">**</span><span class="n">SMP</span><span class="o">.</span><span class="n">photon</span><span class="p">)</span>
+<span class="n">electron</span> <span class="o">=</span> <span class="n">Particle</span><span class="p">(</span><span class="o">**</span><span class="n">SMP</span><span class="o">.</span><span class="n">electron</span><span class="p">)</span>
+<span class="n">neutrino_e</span> <span class="o">=</span> <span class="n">Particle</span><span class="p">(</span><span class="o">**</span><span class="n">SMP</span><span class="o">.</span><span class="n">neutrino_e</span><span class="p">)</span>
+<span class="n">neutrino_mu</span> <span class="o">=</span> <span class="n">Particle</span><span class="p">(</span><span class="o">**</span><span class="n">SMP</span><span class="o">.</span><span class="n">neutrino_mu</span><span class="p">)</span>
+
+<span class="n">neutrino_e</span><span class="o">.</span><span class="n">decoupling_temperature</span> <span class="o">=</span> <span class="n">PARAMS</span><span class="o">.</span><span class="n">T_initial</span>
+
+<span class="n">Particles</span> <span class="o">+=</span> <span class="p">[</span>
+    <span class="n">photon</span><span class="p">,</span>
+    <span class="n">electron</span><span class="p">,</span>
+    <span class="n">neutrino_e</span><span class="p">,</span>
+    <span class="n">neutrino_mu</span><span class="p">,</span>
+<span class="p">]</span>
+
+<span class="n">Interactions</span> <span class="o">+=</span> <span class="p">[</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+  </div>
+  <div class='section'>
+    <a id="section-1" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-1'>#</a>
+          </div>
+          <p>SMI.neutrino_self_scattering(neutrino_e),
+SMI.neutrino_self_scattering(neutrino_mu),
+SMI.neutrino_inter_scattering(neutrino_e, neutrino_mu),</p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>    <span class="n">SMI</span><span class="o">.</span><span class="n">neutrinos_to_electrons</span><span class="p">(</span><span class="n">neutrino</span><span class="o">=</span><span class="n">neutrino_e</span><span class="p">,</span> <span class="n">electron</span><span class="o">=</span><span class="n">electron</span><span class="p">,</span> <span class="n">g_L</span><span class="o">=</span><span class="n">CONST</span><span class="o">.</span><span class="n">g_R</span><span class="o">+</span><span class="mf">0.5</span><span class="p">),</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+  </div>
+  <div class='section'>
+    <a id="section-2" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-2'>#</a>
+          </div>
+          <p>SMI.neutrinos_to_electrons(neutrino=neutrino_mu, electron=electron, g_L=CONST.g_R-0.5),
+SMI.neutrino_electron_scattering(neutrino=neutrino_e, electron=electron, g_L=CONST.g_R+0.5),
+SMI.neutrino_electron_scattering(neutrino=neutrino_mu, electron=electron, g_L=CONST.g_R-0.5),</p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre><span class="p">]</span>
+
+<span class="n">universe</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="n">Particles</span><span class="p">,</span> <span class="n">Interactions</span><span class="p">)</span>
+<span class="n">universe</span><span class="o">.</span><span class="n">graphics</span><span class="o">.</span><span class="n">monitor</span><span class="p">(</span><span class="n">particles</span><span class="o">=</span><span class="p">[</span>
+    <span class="n">neutrino_e</span><span class="p">,</span>
+    <span class="n">neutrino_mu</span><span class="p">,</span>
+    <span class="n">electron</span><span class="p">,</span>
+    <span class="n">photon</span>
+<span class="p">])</span>
+
+
+<span class="n">universe</span><span class="o">.</span><span class="n">evolve</span><span class="p">()</span>
+
+<span class="nb">raw_input</span><span class="p">(</span><span class="s">&quot;...&quot;</span><span class="p">)</span>
+
+</pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+  </div>
+</div>
+</body>

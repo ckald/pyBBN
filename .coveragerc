@@ -1,0 +1,9 @@
+# To create coverage report, run the following command
+# nosetests -v --with-cov --cov-report html --cov . tests/unit
+
+[run]
+branch = True
+omit = tests/*
+
+[html]
+directory = ../coverage

@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>pyBBN v0.1.0: docs/tests/integrations.py</title>
+  <link rel="stylesheet" href="../pyccoon.css">
+  <script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+  });
+  </script>
+  <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</head>
+<body>
+<div id='container'>
+  <a id="top"></a>
+  <div id="background"></div>
+  <div id="footer">
+    <a class="btn" id="project-name" href="../index.html">pyBBN v0.1.0</a>
+    <a class="btn" class="source source-1" href="#top">Back to top</a>
+    <div class="generation-time">
+        Generated at
+        <a target="_blank" href="http://ckald.github.io/pyccoon/" title="Pyccoon: side-to-side documentation generator">
+            <img id="pyccoon-icon" src="../pyccoon_icon.svg" alt="Pyccoon: side-to-side documentation generator" /></a>
+        <code>2014-11-26 01:10:25.536282</code>/
+        by a diligent
+        <a target="_blank" href="http://ckald.github.io/pyccoon/" title="Pyccoon: side-to-side documentation generator">pyccoon</a>
+    </div>
+  </div>
+  <div class='section'>
+    <div class='docs'>
+      <h1 id="breadcrumbs">/ <a href="integrations.py.html/../../index.html">.</a> / <a href="integrations.py.html/../index.html">tests</a> / <a href="integrations.py.html">integrations.py</a> </h1>
+      <ul id="children"></ul>
+    </div>
+  </div>
+  <div class='clearall'>
+  <div class='section'>
+    <a id="section-0" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-0'>#</a>
+          </div>
+          
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre><span class="kn">import</span> <span class="nn">numpy</span>
+
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+<span class="kn">from</span> <span class="nn">mpl_toolkits.mplot3d</span> <span class="kn">import</span> <span class="n">Axes3D</span>
+
+<span class="kn">from</span> <span class="nn">common</span> <span class="kn">import</span> <span class="n">theta</span>
+<span class="kn">from</span> <span class="nn">common.utils</span> <span class="kn">import</span> <span class="n">benchmark</span>
+
+<span class="kn">from</span> <span class="nn">skmonaco</span> <span class="kn">import</span> <span class="n">mcquad</span>
+<span class="kn">from</span> <span class="nn">scipy.integrate</span> <span class="kn">import</span> <span class="n">quad</span><span class="p">,</span> <span class="n">dblquad</span><span class="p">,</span> <span class="n">simps</span>
+
+
+<span class="n">plt</span><span class="o">.</span><span class="n">ion</span><span class="p">()</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+  </div>
+  <div class='section'>
+    <a id="section-1" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-1'>#</a>
+          </div>
+          
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre><span class="k">def</span> <span class="nf">f</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="k">return</span> <span class="p">((</span><span class="n">x</span><span class="o">/</span><span class="mf">10.</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">numpy</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="p">(</span><span class="n">x</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span> <span class="o">*</span> <span class="n">theta</span><span class="p">(</span><span class="mi">7</span> <span class="o">-</span> <span class="n">x</span><span class="p">)</span> <span class="o">*</span> <span class="mf">1e-20</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+  </div>
+  <div class='section'>
+    <a id="section-2" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-2'>#</a>
+          </div>
+          
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre><span class="k">def</span> <span class="nf">g</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">f</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">x</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">y</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span>
+
+<span class="k">print</span> <span class="s">&quot;1d integration&quot;</span>
+
+<span class="n">x</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="n">num</span><span class="o">=</span><span class="mi">10000</span><span class="p">,</span> <span class="n">endpoint</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="n">f</span><span class="p">)(</span><span class="n">x</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span>
+
+
+<span class="k">for</span> <span class="n">order</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">6</span><span class="p">):</span>
+    <span class="k">with</span> <span class="n">benchmark</span><span class="p">(</span><span class="s">&quot;Monte-Carlo {} points&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="mi">10</span><span class="o">**</span><span class="n">order</span><span class="p">)):</span>
+        <span class="n">integral</span><span class="p">,</span> <span class="n">error</span> <span class="o">=</span> <span class="n">mcquad</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">xl</span><span class="o">=</span><span class="p">[</span><span class="mf">0.</span><span class="p">],</span> <span class="n">xu</span><span class="o">=</span><span class="p">[</span><span class="mf">10.</span><span class="p">],</span> <span class="n">npoints</span><span class="o">=</span><span class="mi">10</span><span class="o">**</span><span class="n">order</span><span class="p">)</span>
+        <span class="k">print</span> <span class="n">integral</span><span class="p">,</span> <span class="n">error</span><span class="p">,</span>
+
+
+<span class="k">with</span> <span class="n">benchmark</span><span class="p">(</span><span class="s">&quot;QUADPACK full&quot;</span><span class="p">):</span>
+    <span class="n">integral</span><span class="p">,</span> <span class="n">error</span> <span class="o">=</span> <span class="n">quad</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="n">epsabs</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">epsrel</span><span class="o">=</span><span class="mf">1e-8</span><span class="p">)</span>
+    <span class="k">print</span> <span class="n">integral</span><span class="p">,</span> <span class="n">error</span><span class="p">,</span>
+
+<span class="k">with</span> <span class="n">benchmark</span><span class="p">(</span><span class="s">&quot;QUADPACK full&quot;</span><span class="p">):</span>
+    <span class="n">integral</span><span class="p">,</span> <span class="n">error</span> <span class="o">=</span> <span class="n">quad</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="n">epsabs</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">epsrel</span><span class="o">=</span><span class="mf">1e-8</span><span class="p">)</span>
+    <span class="k">print</span> <span class="n">integral</span><span class="p">,</span> <span class="n">error</span><span class="p">,</span>
+
+<span class="k">with</span> <span class="n">benchmark</span><span class="p">(</span><span class="s">&quot;QUADPACK full&quot;</span><span class="p">):</span>
+    <span class="n">integral</span><span class="p">,</span> <span class="n">error</span> <span class="o">=</span> <span class="n">quad</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="n">epsabs</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">epsrel</span><span class="o">=</span><span class="mf">1e-8</span><span class="p">)</span>
+    <span class="k">print</span> <span class="n">integral</span><span class="p">,</span> <span class="n">error</span><span class="p">,</span>
+
+<span class="k">with</span> <span class="n">benchmark</span><span class="p">(</span><span class="s">&quot;QUADPACK full&quot;</span><span class="p">):</span>
+    <span class="n">integral</span><span class="p">,</span> <span class="n">error</span> <span class="o">=</span> <span class="n">quad</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">7.5</span><span class="p">,</span> <span class="n">epsabs</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">epsrel</span><span class="o">=</span><span class="mf">1e-8</span><span class="p">)</span>
+    <span class="k">print</span> <span class="n">integral</span><span class="p">,</span> <span class="n">error</span><span class="p">,</span>
+
+<span class="k">with</span> <span class="n">benchmark</span><span class="p">(</span><span class="s">&quot;QUADPACK full&quot;</span><span class="p">):</span>
+    <span class="n">integral</span><span class="p">,</span> <span class="n">error</span> <span class="o">=</span> <span class="n">quad</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">7.25</span><span class="p">,</span> <span class="n">epsabs</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">epsrel</span><span class="o">=</span><span class="mf">1e-8</span><span class="p">)</span>
+    <span class="k">print</span> <span class="n">integral</span><span class="p">,</span> <span class="n">error</span><span class="p">,</span>
+
+<span class="k">with</span> <span class="n">benchmark</span><span class="p">(</span><span class="s">&quot;QUADPACK full&quot;</span><span class="p">):</span>
+    <span class="n">integral</span><span class="p">,</span> <span class="n">error</span> <span class="o">=</span> <span class="n">quad</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">7.1</span><span class="p">,</span> <span class="n">epsabs</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">epsrel</span><span class="o">=</span><span class="mf">1e-8</span><span class="p">)</span>
+    <span class="k">print</span> <span class="n">integral</span><span class="p">,</span> <span class="n">error</span><span class="p">,</span>
+
+<span class="k">with</span> <span class="n">benchmark</span><span class="p">(</span><span class="s">&quot;QUADPACK full&quot;</span><span class="p">):</span>
+    <span class="n">integral</span><span class="p">,</span> <span class="n">error</span> <span class="o">=</span> <span class="n">quad</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">7.05</span><span class="p">,</span> <span class="n">epsabs</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">epsrel</span><span class="o">=</span><span class="mf">1e-8</span><span class="p">)</span>
+    <span class="k">print</span> <span class="n">integral</span><span class="p">,</span> <span class="n">error</span><span class="p">,</span>
+
+<span class="k">with</span> <span class="n">benchmark</span><span class="p">(</span><span class="s">&quot;QUADPACK full&quot;</span><span class="p">):</span>
+    <span class="n">integral</span><span class="p">,</span> <span class="n">error</span> <span class="o">=</span> <span class="n">quad</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">7.01</span><span class="p">,</span> <span class="n">epsabs</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">epsrel</span><span class="o">=</span><span class="mf">1e-8</span><span class="p">)</span>
+    <span class="k">print</span> <span class="n">integral</span><span class="p">,</span> <span class="n">error</span><span class="p">,</span>
+
+<span class="k">with</span> <span class="n">benchmark</span><span class="p">(</span><span class="s">&quot;QUADPACK specific&quot;</span><span class="p">):</span>
+    <span class="n">integral</span><span class="p">,</span> <span class="n">error</span> <span class="o">=</span> <span class="n">quad</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="n">epsabs</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">epsrel</span><span class="o">=</span><span class="mf">1e-8</span><span class="p">)</span>
+    <span class="k">print</span> <span class="n">integral</span><span class="p">,</span> <span class="n">error</span><span class="p">,</span>
+
+<span class="k">with</span> <span class="n">benchmark</span><span class="p">(</span><span class="s">&quot;QUADPACK simpson&quot;</span><span class="p">):</span>
+    <span class="n">integral</span> <span class="o">=</span> <span class="n">simps</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+    <span class="k">print</span> <span class="n">integral</span><span class="p">,</span>
+
+
+<span class="k">print</span> <span class="s">&quot;2d integration&quot;</span>
+
+<span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+<span class="n">ax</span> <span class="o">=</span> <span class="n">Axes3D</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
+
+<span class="n">x</span> <span class="o">=</span> <span class="n">y</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="n">num</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">endpoint</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="n">X</span><span class="p">,</span> <span class="n">Y</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+<span class="n">zs</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">g</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">ravel</span><span class="p">(</span><span class="n">X</span><span class="p">),</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ravel</span><span class="p">(</span><span class="n">Y</span><span class="p">))])</span>
+<span class="n">Z</span> <span class="o">=</span> <span class="n">zs</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+
+<span class="n">ax</span><span class="o">.</span><span class="n">plot_surface</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">Z</span><span class="p">,</span> <span class="n">rstride</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">cstride</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span>
+
+
+<span class="k">for</span> <span class="n">order</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">6</span><span class="p">):</span>
+    <span class="k">with</span> <span class="n">benchmark</span><span class="p">(</span><span class="s">&quot;Monte-Carlo {} points&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="mi">10</span><span class="o">**</span><span class="n">order</span><span class="p">)):</span>
+        <span class="n">integral</span><span class="p">,</span> <span class="n">error</span> <span class="o">=</span> <span class="n">mcquad</span><span class="p">(</span><span class="k">lambda</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span> <span class="n">g</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">),</span>
+                                 <span class="n">xl</span><span class="o">=</span><span class="p">[</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">],</span> <span class="n">xu</span><span class="o">=</span><span class="p">[</span><span class="mf">10.</span><span class="p">,</span> <span class="mf">10.</span><span class="p">],</span> <span class="n">npoints</span><span class="o">=</span><span class="mi">10</span><span class="o">**</span><span class="n">order</span><span class="p">)</span>
+        <span class="k">print</span> <span class="n">integral</span><span class="p">,</span> <span class="n">error</span><span class="p">,</span>
+
+
+<span class="k">with</span> <span class="n">benchmark</span><span class="p">(</span><span class="s">&quot;QUADPACK full plane&quot;</span><span class="p">):</span>
+    <span class="n">integral</span><span class="p">,</span> <span class="n">error</span> <span class="o">=</span> <span class="n">dblquad</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span> <span class="n">epsrel</span><span class="o">=</span><span class="mf">1e-8</span><span class="p">,</span> <span class="n">epsabs</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="k">print</span> <span class="n">integral</span><span class="p">,</span> <span class="n">error</span><span class="p">,</span>
+
+
+<span class="k">with</span> <span class="n">benchmark</span><span class="p">(</span><span class="s">&quot;QUADPACK specific&quot;</span><span class="p">):</span>
+    <span class="n">integral</span><span class="p">,</span> <span class="n">error</span> <span class="o">=</span> <span class="n">dblquad</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">49</span><span class="o">-</span><span class="n">x</span><span class="o">**</span><span class="mi">2</span><span class="p">),</span>
+                              <span class="n">epsrel</span><span class="o">=</span><span class="mf">1e-8</span><span class="p">,</span> <span class="n">epsabs</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="k">print</span> <span class="n">integral</span><span class="p">,</span> <span class="n">error</span><span class="p">,</span>
+
+
+<span class="k">for</span> <span class="n">order</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">5</span><span class="p">):</span>
+
+    <span class="n">x</span> <span class="o">=</span> <span class="n">y</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="n">num</span><span class="o">=</span><span class="mi">10</span><span class="o">**</span><span class="n">order</span><span class="p">,</span> <span class="n">endpoint</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">X</span><span class="p">,</span> <span class="n">Y</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+    <span class="n">zs</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">g</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">ravel</span><span class="p">(</span><span class="n">X</span><span class="p">),</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ravel</span><span class="p">(</span><span class="n">Y</span><span class="p">))])</span>
+    <span class="n">Z</span> <span class="o">=</span> <span class="n">zs</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">y</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="n">num</span><span class="o">=</span><span class="mi">10</span><span class="o">**</span><span class="n">order</span><span class="p">,</span> <span class="n">endpoint</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+
+    <span class="k">with</span> <span class="n">benchmark</span><span class="p">(</span><span class="s">&quot;QUADPACK simpson with {} points&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="mi">100</span><span class="o">**</span><span class="n">order</span><span class="p">)):</span>
+
+        <span class="n">integrals</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+            <span class="n">integrals</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">simps</span><span class="p">(</span><span class="n">Z</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">y</span><span class="p">))</span>
+
+        <span class="n">integral</span> <span class="o">=</span> <span class="n">simps</span><span class="p">(</span><span class="n">integrals</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+        <span class="k">print</span> <span class="n">integral</span><span class="p">,</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+</pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+  </div>
+</div>
+</body>

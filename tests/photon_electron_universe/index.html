@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta http-equiv="content-type" content="text/html;charset=utf-8">
-  <title>pyBBN v0.1.0: tests/photon_electron_universe/__init__.py</title>
+  <title>pyBBN v0.1.0: docs/tests/photon_electron_universe/__init__.py</title>
   <link rel="stylesheet" href="../../pyccoon.css">
   <script type="text/x-mathjax-config">
   MathJax.Hub.Config({
@@ -30,7 +30,7 @@
         Generated at
         <a target="_blank" href="http://ckald.github.io/pyccoon/" title="Pyccoon: side-to-side documentation generator">
             <img id="pyccoon-icon" src="../../pyccoon_icon.svg" alt="Pyccoon: side-to-side documentation generator" /></a>
-        <code>2014-09-25 03:36:38.394117</code>/
+        <code>2014-11-26 01:10:25.608619</code>/
         by a diligent
         <a target="_blank" href="http://ckald.github.io/pyccoon/" title="Pyccoon: side-to-side documentation generator">pyccoon</a>
     </div>
@@ -84,7 +84,7 @@
 <span class="n">Particles</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">electron</span><span class="p">)</span>
 
 <span class="n">universe</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="n">Particles</span><span class="p">,</span> <span class="n">logfile</span><span class="o">=</span><span class="s">&quot;tests/photon_electron_universe/log.txt&quot;</span><span class="p">)</span>
-<span class="n">universe</span><span class="o">.</span><span class="n">evolve</span><span class="p">(</span><span class="n">dx</span><span class="o">=</span><span class="n">PARAMS</span><span class="o">.</span><span class="n">dx</span><span class="p">)</span>
+<span class="n">universe</span><span class="o">.</span><span class="n">evolve</span><span class="p">()</span>
 
 <span class="n">initial_aT</span> <span class="o">=</span> <span class="n">universe</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s">&#39;aT&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
 <span class="k">print</span> <span class="s">&quot;a * T is not conserved: {}&quot;</span>\

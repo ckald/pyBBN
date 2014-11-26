@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta http-equiv="content-type" content="text/html;charset=utf-8">
-  <title>pyBBN v0.1.0: tests/electron_universe/__init__.py</title>
+  <title>pyBBN v0.1.0: docs/tests/electron_universe/__init__.py</title>
   <link rel="stylesheet" href="../../pyccoon.css">
   <script type="text/x-mathjax-config">
   MathJax.Hub.Config({
@@ -30,7 +30,7 @@
         Generated at
         <a target="_blank" href="http://ckald.github.io/pyccoon/" title="Pyccoon: side-to-side documentation generator">
             <img id="pyccoon-icon" src="../../pyccoon_icon.svg" alt="Pyccoon: side-to-side documentation generator" /></a>
-        <code>2014-09-25 03:36:38.269855</code>/
+        <code>2014-11-26 01:10:25.360382</code>/
         by a diligent
         <a target="_blank" href="http://ckald.github.io/pyccoon/" title="Pyccoon: side-to-side documentation generator">pyccoon</a>
     </div>
@@ -51,16 +51,17 @@
           </div>
           <h2><span class="header" href="electron-universe-test"> Electron universe test </span><a id="electron-universe-test" class="header-anchor"></a></h2>
 <p><img src="plots.png" width=100% /></p>
-<p>This test checks that in the photon universe:</p>
+<p>This test checks that in the electron universe:</p>
 <ul>
 <li>$a \propto t^{2/3}$</li>
 </ul>
 <p><a href="log.txt">Log file</a></p>
-<p><span class=todo><strong>TODO</strong>: why is there a discrepancy $\sim 13\%$? Test if it is because of the electrons regime</span>
-<span class=todo><strong>TODO</strong>: why is <code>aT</code> not conserved? Does it mean that fewer particles are moving faster?</span></p>
+<p>There is a discrepancy in the scaling law of about $13 \%$ related to the change of the electron regime.</p>
+<p><span class=todo><strong>TODO</strong>: why is <code>aT</code> not conserved?</span></p>
         </div>
         <div class='code'>
-          <div class="highlight"><pre><span class="kn">from</span> <span class="nn">particles</span> <span class="kn">import</span> <span class="n">Particle</span><span class="p">,</span> <span class="n">STATISTICS</span>
+          <div class="highlight"><pre><span class="kn">from</span> <span class="nn">particles</span> <span class="kn">import</span> <span class="n">Particle</span>
+<span class="kn">from</span> <span class="nn">library</span> <span class="kn">import</span> <span class="n">StandardModelParticles</span> <span class="k">as</span> <span class="n">SMP</span>
 <span class="kn">from</span> <span class="nn">evolution</span> <span class="kn">import</span> <span class="n">Universe</span>
 <span class="kn">from</span> <span class="nn">common</span> <span class="kn">import</span> <span class="n">PARAMS</span><span class="p">,</span> <span class="n">UNITS</span>
 
@@ -72,14 +73,11 @@
 
 
 <span class="n">Particles</span> <span class="o">=</span> <span class="p">[]</span>
-<span class="n">electron</span> <span class="o">=</span> <span class="n">Particle</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s">&#39;Electron&#39;</span><span class="p">,</span>
-                    <span class="n">mass</span><span class="o">=</span><span class="mf">0.511</span> <span class="o">*</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">MeV</span><span class="p">,</span>
-                    <span class="n">statistics</span><span class="o">=</span><span class="n">STATISTICS</span><span class="o">.</span><span class="n">FERMION</span><span class="p">,</span>
-                    <span class="n">dof</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+<span class="n">electron</span> <span class="o">=</span> <span class="n">Particle</span><span class="p">(</span><span class="o">**</span><span class="n">SMP</span><span class="o">.</span><span class="n">electron</span><span class="p">)</span>
 <span class="n">Particles</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">electron</span><span class="p">)</span>
 
 <span class="n">universe</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="n">Particles</span><span class="p">,</span> <span class="n">logfile</span><span class="o">=</span><span class="s">&quot;tests/electron_universe/log.txt&quot;</span><span class="p">)</span>
-<span class="n">universe</span><span class="o">.</span><span class="n">evolve</span><span class="p">(</span><span class="n">dx</span><span class="o">=</span><span class="n">PARAMS</span><span class="o">.</span><span class="n">dx</span><span class="p">,</span> <span class="n">T_final</span><span class="o">=</span><span class="n">PARAMS</span><span class="o">.</span><span class="n">T_final</span><span class="p">)</span>
+<span class="n">universe</span><span class="o">.</span><span class="n">evolve</span><span class="p">()</span>
 
 <span class="n">initial_aT</span> <span class="o">=</span> <span class="n">universe</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s">&#39;aT&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
 <span class="k">print</span> <span class="s">&quot;a * T is conserved: {}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">all</span><span class="p">([</span><span class="n">initial_aT</span> <span class="o">==</span> <span class="n">value</span> <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">universe</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s">&#39;aT&#39;</span><span class="p">]]))</span>

@@ -30,7 +30,7 @@
         Generated at
         <a target="_blank" href="http://ckald.github.io/pyccoon/" title="Pyccoon: side-to-side documentation generator">
             <img id="pyccoon-icon" src="../../pyccoon_icon.svg" alt="Pyccoon: side-to-side documentation generator" /></a>
-        <code>2014-09-25 03:36:38.372156</code>/
+        <code>2014-11-22 23:05:15.822793</code>/
         by a diligent
         <a target="_blank" href="http://ckald.github.io/pyccoon/" title="Pyccoon: side-to-side documentation generator">pyccoon</a>
     </div>
@@ -38,7 +38,7 @@
   <div class='section'>
     <div class='docs'>
       <h1 id="breadcrumbs">/ <a href="index.html/../../../index.html">.</a> / <a href="index.html/../../index.html">tests</a> / <a href="index.html/../index.html">neutron_universe</a> / <a href="index.html">__init__.py</a> </h1>
-      <ul id="children"><li><a href="index.html">__init__.py</a></li><li><a href="log.txt.html">log.txt</a></li><li><a href="plots.png">plots.png</a></li></ul>
+      <ul id="children"><li><a href="index.html">__init__.py</a></li><li><a href="log.txt">log.txt</a></li><li><a href="plots.png">plots.png</a></li></ul>
     </div>
   </div>
   <div class='clearall'>
@@ -73,6 +73,7 @@
 
 
 <span class="n">Particles</span> <span class="o">=</span> <span class="p">[]</span>
+
 <span class="n">neutron</span> <span class="o">=</span> <span class="n">Particle</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s">&#39;Neutron&#39;</span><span class="p">,</span>
                    <span class="n">statistics</span><span class="o">=</span><span class="n">STATISTICS</span><span class="o">.</span><span class="n">FERMION</span><span class="p">,</span>
                    <span class="n">mass</span><span class="o">=</span><span class="mf">0.939</span> <span class="o">*</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">GeV</span><span class="p">,</span>
@@ -80,7 +81,7 @@
 <span class="n">Particles</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">neutron</span><span class="p">)</span>
 
 <span class="n">universe</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="n">Particles</span><span class="p">,</span> <span class="n">logfile</span><span class="o">=</span><span class="s">&quot;tests/neutron_universe/log.txt&quot;</span><span class="p">)</span>
-<span class="n">universe</span><span class="o">.</span><span class="n">evolve</span><span class="p">(</span><span class="n">dx</span><span class="o">=</span><span class="n">PARAMS</span><span class="o">.</span><span class="n">dx</span><span class="p">,</span> <span class="n">T_final</span><span class="o">=</span><span class="n">PARAMS</span><span class="o">.</span><span class="n">T_final</span><span class="p">)</span>
+<span class="n">universe</span><span class="o">.</span><span class="n">evolve</span><span class="p">()</span>
 
 <span class="n">initial_aT</span> <span class="o">=</span> <span class="n">universe</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s">&#39;aT&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
 <span class="k">print</span> <span class="s">&quot;a * T is conserved: {}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">all</span><span class="p">([</span><span class="n">initial_aT</span> <span class="o">==</span> <span class="n">value</span> <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">universe</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s">&#39;aT&#39;</span><span class="p">]]))</span>
