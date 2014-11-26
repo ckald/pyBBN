@@ -253,10 +253,14 @@ class Integral:
             fau += self.F_B(p)
         if F_A:
             fau += self.F_A(p)
-        if F_1:
+
+        # Be on the safe side
+        if F_1 and not F_f:
             fau += self.F_1(p)
-        if F_f:
+        elif F_f and not F_1:
             fau += self.F_f(p)
+        elif F_1 and F_f:
+            raise Exception("F_1 and F_f can't be used at the same time")
 
         integrand *= fau
 
