@@ -130,7 +130,7 @@ plt.show()
 plt.savefig(os.path.join(folder, 'figure_10_full.png'))
 
 # Distribution functions arrays
-distributions_file = open(os.path.join(folder, 'distributions.txt'))
+distributions_file = open(os.path.join(folder, 'distributions.txt'), "w")
 numpy.savetxt(distributions_file, (f_e, feq_e, f_e/feq_e), header=str(neutrino_e),
               footer='-'*80, fmt="%1.5e")
 numpy.savetxt(distributions_file, (f_mu, feq_mu, f_mu/feq_mu), header=str(neutrino_mu),
