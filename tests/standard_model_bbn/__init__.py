@@ -80,6 +80,7 @@ universe.graphics.save(__file__)
 """ == Plots for comparison with articles == """
 
 folder = os.path.split(__file__)[0]
+plt.ion()
 
 """ === JCAP10(2012)014, Figure 9 ===
     <img src="figure_9.png" width=100% /> """
