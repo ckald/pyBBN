@@ -3,6 +3,7 @@
 
 [run]
 branch = True
+omit = tests/*
 
 [html]
 directory = ../coverage
