@@ -135,7 +135,8 @@ class Plotting:
                 line.set_alpha((line.get_alpha() or 1.) * 0.8)
 
 
-def plot_integrand(integrand, name, p0):
+def plot_integrand(integrand, name, p0, filename=__file__):
+    """ Save a 3D plot of the distribution function integrand into a file. """
     fig = plt.figure(3)
     ax = fig.gca(projection='3d')
     plt.cla()
@@ -152,7 +153,7 @@ def plot_integrand(integrand, name, p0):
     ax.set_ylabel('p2')
     ax.set_title('{} p0 = {}'.format(name, p0 / UNITS.MeV))
 
-    plt.savefig(os.path.join(os.path.split(__file__)[0], 'logs/plt_{}.png'.format(p0 / UNITS.MeV)))
+    plt.savefig(os.path.join(os.path.split(filename)[0], 'logs/plt_{}.png'.format(p0 / UNITS.MeV)))
 
 
 def plot_points(points, name):
