@@ -1,19 +1,10 @@
-import numpy
 from nose import with_setup
 
-from common import PARAMS, UNITS, GRID
+from common import PARAMS, UNITS
 from particles import Particle, REGIMES
 from library import StandardModelParticles as SMP
 
-
-eps = 1e-5
-
-
-def setup():
-    PARAMS.T_initial = SMP.neutrino_e['decoupling_temperature']
-    PARAMS.T_final = 0.075 * UNITS.MeV
-    PARAMS.dx = 1e-4 * UNITS.MeV
-    PARAMS.infer()
+from . import eps, setup
 
 
 @with_setup(setup)
@@ -174,38 +165,3 @@ def smooth_decoupling_test():
         and neutrino.pressure() - pressure < eps \
         and neutrino.numerator() - numerator < eps \
         and neutrino.denominator() - denominator < eps
-
-
-@with_setup(setup)
-def init_distribution_test():
-
-    photon = Particle(**SMP.photon)
-    neutrino = Particle(**SMP.neutrino_e)
-
-    print neutrino._distribution - numpy.vectorize(neutrino.distribution)(GRID.TEMPLATE)
-
-    assert all(photon._distribution == numpy.vectorize(photon.distribution)(GRID.TEMPLATE))
-    assert all(neutrino._distribution == numpy.vectorize(neutrino.distribution)(GRID.TEMPLATE))
-
-
-@with_setup(setup)
-def distribution_interpolation_accuracy_test():
-
-    neutrino = Particle(**SMP.neutrino_e)
-
-    detailed_grid = numpy.linspace(GRID.MIN_MOMENTUM, GRID.MAX_MOMENTUM*2,
-                                   num=GRID.MOMENTUM_SAMPLES*10, endpoint=True)
-
-    print numpy.abs(
-        neutrino.distribution_function(detailed_grid / neutrino.aT)
-        - numpy.vectorize(neutrino.distribution)(detailed_grid)
-    )
-
-    assert all(numpy.abs(
-        neutrino.distribution_function(detailed_grid / neutrino.aT)
-        - numpy.vectorize(neutrino.distribution)(detailed_grid)
-    ) < 1e-9)
-
-
-# @with_setup(setup)
-# def
