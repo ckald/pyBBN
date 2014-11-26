@@ -27,7 +27,7 @@ from common import CONST, UNITS, PARAMS, GRID
 
 
 PARAMS.T_initial = 5. * UNITS.MeV
-PARAMS.T_final = 0.075 * UNITS.MeV
+PARAMS.T_final = 0.01 * UNITS.MeV
 PARAMS.dx = 1e-5 * UNITS.MeV
 PARAMS.infer()
 
