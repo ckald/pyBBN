@@ -44,7 +44,7 @@ def heun_correction(y, t, f, h):
                               f=f,
                               h=h)
 
-    return (euler_y + heun_y)
+    return (euler_y + heun_y) / 2.
 
 
 def implicit_euler(y, t, A, B, h):
