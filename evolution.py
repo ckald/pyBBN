@@ -241,6 +241,8 @@ class Universe:
 
         self.update_particles()
 
+        self.init_interactions()
+
         self.calculate_collisions()
 
         self.control_step_size()
