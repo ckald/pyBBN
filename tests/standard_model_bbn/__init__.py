@@ -1,3 +1,20 @@
+"""
+== Standard Model BBN test ==
+
+<img src="plots.png" width=100% />
+<img src="particles.png" width=100% />
+
+This test checks that in the universe filled with photons, electrons and neutrinos:
+
+  * $a * T$ is not conserved by a factor around `1.401` and precise details of this process
+  * neutrino non-equilibrium corrections reproduce the results of the Dolgov-Hansen-Semikoz papers
+
+[Log file](log.txt)
+[Distribution functions](distributions.txt)
+
+
+"""
+
 import os
 import numpy
 import matplotlib
@@ -64,7 +81,8 @@ universe.graphics.save(__file__)
 
 folder = os.path.split(__file__)[0]
 
-""" == JCAP10(2012)014, Figure 9 == """
+""" === JCAP10(2012)014, Figure 9 ===
+    <img src="figure_9.png" width=100% /> """
 
 plt.figure(9)
 plt.title('Figure 9')
@@ -78,7 +96,9 @@ plt.plot(UNITS.MeV / numpy.array(universe.data['T']), numpy.array(universe.data[
 plt.show()
 plt.savefig(os.path.join(folder, 'figure_9.png'))
 
-""" == JCAP10(2012)014, Figure 10 == """
+""" === JCAP10(2012)014, Figure 10 ===
+    <img src="figure_10.png" width=100% />
+    <img src="figure_10_full.png" width=100% /> """
 
 plt.figure(10)
 plt.title('Figure 10')
