@@ -123,8 +123,6 @@ class Interaction:
         accounted_particles = self.init_integrals(out_particles, in_particles,
                                                   Ms, accounted_particles)
 
-        print self
-
     def __str__(self):
         """ String-like representation of the interaction and all its integral """
         return self.name + "\n\t" + "\n\t".join([str(integral) for integral in self.integrals])

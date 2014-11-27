@@ -110,8 +110,6 @@ class Particle():
         self.aT = PARAMS.aT
         self.init_distribution()
 
-        print self
-
     def __str__(self):
         """ String-like representation of particle species it's regime and parameters """
         return "%s (%s, %s)\nn = %s, rho = %s\n" % (

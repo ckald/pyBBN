@@ -63,6 +63,12 @@ class Universe:
 
         """
 
+        for particle in self.particles:
+            print particle
+
+        for interaction in self.interactions:
+            print interaction
+
         print "dx = {} MeV".format(PARAMS.dx / UNITS.MeV)
 
         self.step = 0
