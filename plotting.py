@@ -8,41 +8,15 @@ import matplotlib.pyplot as plt
 from matplotlib import cm
 from mpl_toolkits.mplot3d import Axes3D
 
-from collections import deque
-
 from common import UNITS, GRID, PARAMS
-
-
-class ring_deque(deque):
-    max = 0
-    min = 0
-
-    def __init__(self, data, length):
-        self.length = length
-        super(ring_deque, self).__init__(data)
-
-    def append_more(self, data):
-
-        if len(self) > self.length:
-            self.popleft()
-
-        self.max = max(data, self.max)
-        self.min = min(data, self.min)
-        super(ring_deque, self).append(data)
-
-    def append(self, data):
-        self.max = data
-        self.min = data
-
-        self.append = self.append_more
-
-        super(ring_deque, self).append(data)
+from common.utils import ring_deque
 
 
 class Plotting:
     particles = None
 
     def __init__(self):
+        """ Initialize plots, setup basic styling """
 
         plt.rcParams['toolbar'] = 'None'
 
@@ -85,6 +59,9 @@ class Plotting:
         self.params_figure.show()
 
     def save(self, filename):
+        """ Save cosmological and monitored particles plots to the file in the same folder as \
+            `filename` """
+
         folder = os.path.split(filename)[0]
         plt.figure(1)
         plt.savefig(os.path.join(folder, 'plots.png'))
@@ -93,6 +70,9 @@ class Plotting:
             plt.savefig(os.path.join(folder, 'particles.png'))
 
     def monitor(self, particles=[]):
+        """ Setup the detailed distribution function and energy density plots for specific \
+            particle species """
+
         self.particles = particles
         if self.particles:
             self.particles_figure, self.particles_plots = plt.subplots(len(particles), 2, num=2)
@@ -109,6 +89,7 @@ class Plotting:
             self.particles_figure.show()
 
     def plot(self, data, full=False):
+        """ Plot cosmological parameters and monitored particles distribution functions """
 
         last_t = data['t'][-1] / UNITS.s
         self.times.append(last_t)
@@ -138,7 +119,7 @@ class Plotting:
                 self.particles_plots[i][0].scatter(
                     PARAMS.a,
                     particle.energy_density() / (
-                        7. * numpy.pi**2 * PARAMS.T**4 / 120.
+                        7. * numpy.pi**2 * (PARAMS.m / PARAMS.a)**4 / 120.
                     ), s=1)
 
                 feq = particle.equilibrium_distribution()
@@ -154,6 +135,8 @@ class Plotting:
             plt.draw()
 
     def age_lines(self, lines):
+        """ Slightly decrease the opacity of plotted lines until they are barely visible.\
+            Then, remove them. Saves up on memory and clears the view of the plots. """
         for line in lines:
             alpha = line.get_alpha() or 1.
             if alpha < 0.1:
@@ -162,7 +145,8 @@ class Plotting:
                 line.set_alpha((line.get_alpha() or 1.) * 0.8)
 
 
-def plot_integrand(integrand, name, p0):
+def plot_integrand(integrand, name, p0, filename=__file__):
+    """ Save a 3D plot of the distribution function integrand into a file. """
     fig = plt.figure(3)
     ax = fig.gca(projection='3d')
     plt.cla()
@@ -179,10 +163,12 @@ def plot_integrand(integrand, name, p0):
     ax.set_ylabel('p2')
     ax.set_title('{} p0 = {}'.format(name, p0 / UNITS.MeV))
 
-    plt.savefig(os.path.join(os.path.split(__file__)[0], 'logs/plt_{}.png'.format(p0 / UNITS.MeV)))
+    plt.savefig(os.path.join(os.path.split(filename)[0], 'logs/plt_{}.png'.format(p0 / UNITS.MeV)))
 
 
 def plot_points(points, name):
+    """ Draw a scatter plot for a number of `points` tuples `(x, y)` """
     plt.figure(4)
+    plt.title(name)
     plt.scatter(*zip(*points))
     plt.show()

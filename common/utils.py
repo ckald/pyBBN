@@ -2,6 +2,7 @@ import sys
 import time
 import codecs
 from functools import wraps
+from collections import deque
 
 
 class Logger(object):
@@ -24,13 +25,32 @@ class Logger(object):
         return getattr(self.terminal, attr)
 
 
-def memodict(f):
-    """ Memoization decorator for a function taking a single argument """
-    class memodict(dict):
-        def __missing__(self, key):
-            ret = self[key] = f(key)
-            return ret
-    return memodict().__getitem__
+class ring_deque(deque):
+    """ Circular deque implementation """
+
+    max = 0
+    min = 0
+
+    def __init__(self, data, length):
+        self.length = length
+        super(ring_deque, self).__init__(data)
+
+    def append_more(self, data):
+
+        if len(self) > self.length:
+            self.popleft()
+
+        self.max = max(data, self.max)
+        self.min = min(data, self.min)
+        super(ring_deque, self).append(data)
+
+    def append(self, data):
+        self.max = data
+        self.min = data
+
+        self.append = self.append_more
+
+        super(ring_deque, self).append(data)
 
 
 class benchmark(object):
@@ -48,6 +68,7 @@ class benchmark(object):
 
 
 def echo(func):
+    """ Print the return value of the function """
     @wraps(func)
     def wrapper(*args, **kw):
         val = func(*args, **kw)
@@ -56,7 +77,17 @@ def echo(func):
     return wrapper
 
 
+def memodict(f):
+    """ Memoization decorator for a function taking a single argument """
+    class memodict(dict):
+        def __missing__(self, key):
+            ret = self[key] = f(key)
+            return ret
+    return memodict().__getitem__
+
+
 class MemoizeMutable:
+    """ Multiple arguments implementation of the memoization decorator """
     def __init__(self, fn):
         self.fn = fn
         self.memo = {}

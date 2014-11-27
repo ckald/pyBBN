@@ -123,8 +123,6 @@ class Interaction:
         accounted_particles = self.init_integrals(out_particles, in_particles,
                                                   Ms, accounted_particles)
 
-        print self
-
     def __str__(self):
         """ String-like representation of the interaction and all its integral """
         return self.name + "\n\t" + "\n\t".join([str(integral) for integral in self.integrals])
@@ -215,7 +213,7 @@ class Integral:
             self.particles[0].collision_integrands.append(self)
 
     def calculate_kinematics(self, p=[]):
-        """ Helper procedure that caches energies and conformal masses of particles """
+        """ Helper procedure that caches conformal energies and masses of the particles """
         p = (p + [0., 0., 0., 0.])[:4]
         E = []
         m = []
@@ -232,7 +230,7 @@ class Integral:
     def integrand(self, p=[], F_A=True, F_B=True, F_1=False, F_f=False):
 
         """
-        Total collision integral interior with performance optimizations.
+        Collision integral interior.
 
         :param F_A, F_B: `bool`. Include/skip naive form terms of the distribution functional
         :param F_1, F_f: `bool`. Include/skip terms of the linearized distribution functional

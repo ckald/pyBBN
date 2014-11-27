@@ -20,7 +20,7 @@ from particles import DustParticle, RadiationParticle, IntermediateParticle, Non
 
 
 class STATISTICS:
-    """ === Particle species statistics === """
+    """ == Particle species statistics == """
 
     @staticmethod
     @numpy.vectorize
@@ -47,7 +47,7 @@ class STATISTICS:
 
 
 class REGIMES(dict):
-    """ === Particle dynamical regimes ===
+    """ == Particle dynamical regimes ==
         Radiation (ultra-relativistic) `RADIATION`
         :   particle mass is neglected, all values obtained analytically
         Dust (non-relativistic) `DUST`
@@ -110,8 +110,6 @@ class Particle():
         self.aT = PARAMS.aT
         self.init_distribution()
 
-        print self
-
     def __str__(self):
         """ String-like representation of particle species it's regime and parameters """
         return "%s (%s, %s)\nn = %s, rho = %s\n" % (
@@ -149,6 +147,7 @@ class Particle():
             print self
 
     def update_distribution(self):
+        """ Apply collision integral to modify the distribution function """
         if self.in_equilibrium:
             return
 
@@ -178,7 +177,7 @@ class Particle():
             return integral, error
 
     def integrate_collisions(self, p0):
-        """ == Particle collisions integration == """
+        """ === Particle collisions integration === """
 
         if not self.collision_integrands:
             return 0
@@ -369,6 +368,7 @@ class Particle():
             ) / (p_high - p_low)
 
     def equilibrium_distribution(self, p=None):
+        """ Equilibrium distribution that corresponds to the particle internal temperature """
         if p is None:
             return self.distribution_function(
                 numpy.vectorize(self.conformal_energy)(GRID.TEMPLATE) / self.aT
@@ -401,7 +401,7 @@ class Particle():
         """ Conformal energy of the particle in comoving coordinates with evolving mass term
 
             \begin{equation}
-                E_n = \sqrt{y^2 + (M a)^2}
+                E_N = \sqrt{y^2 + (M a)^2}
             \end{equation}
         """
         if self.mass > 0:
@@ -411,4 +411,6 @@ class Particle():
 
     @property
     def conformal_mass(self):
+        """ In the expanding Universe, distribution function of the massive particle in the\
+            conformal coordinates changes because of the evolving mass term $M a$ """
         return self.mass * PARAMS.a
