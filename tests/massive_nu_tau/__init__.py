@@ -67,7 +67,7 @@ Interactions += [
     SMI.neutrino_electron_scattering(neutrino=neutrino_tau, electron=electron, g_L=CONST.g_R-0.5),
 ]
 
-universe = Universe(Particles, Interactions, logfile='tests/standard_model_bbn/log.txt')
+universe = Universe(Particles, Interactions, logfile='tests/massive_nu_tau/log.txt')
 universe.graphics.monitor(particles=[
     neutrino_e,
     neutrino_mu,
