@@ -6,7 +6,7 @@ import numpy
 import array
 from datetime import datetime
 
-from common import UNITS, PARAMS, GRID
+from common import UNITS, PARAMS, GRID, CONST
 from common import integrators, parallelization, utils
 from plotting import Plotting
 
@@ -182,25 +182,32 @@ class Universe:
         if not self.adaptive_step_size:
             return
 
-        exponent = self.step_size_multiplier
+        # exponent = self.step_size_multiplier
 
-        dx = PARAMS.dx
-        multipliers = []
-        for particle in self.particles:
-            if particle.in_equilibrium:
-                continue
-            relative_delta = numpy.absolute(particle.collision_integral * dx
-                                            / particle._distribution).max()
-            if relative_delta > maximum_change:
-                multipliers.append(fallback_change / relative_delta)
-            else:
-                multipliers.append(exponent)
+        weak_decay_width = PARAMS.x * PARAMS.H / (CONST.G_F**2 * PARAMS.T**5)
 
-        multiplier = min(multipliers) if multipliers else 1.
+        PARAMS.dx = weak_decay_width / 10
 
-        if multiplier != 1.:
-            PARAMS.dx *= multiplier
-            print "//// Step size changed to dx =", PARAMS.dx / UNITS.MeV
+        # print PARAMS.dx, "<", 1 / (CONST.G_F**2 * PARAMS.T**5 / PARAMS.x / PARAMS.H),\
+        #     PARAMS.dx * (CONST.G_F**2 * PARAMS.T**5 / PARAMS.x / PARAMS.H)
+
+        # dx = PARAMS.dx
+        # multipliers = []
+        # for particle in self.particles:
+        #     if particle.in_equilibrium:
+        #         continue
+        #     relative_delta = numpy.absolute(particle.collision_integral * dx
+        #                                     / particle._distribution).max()
+        #     if relative_delta > maximum_change:
+        #         multipliers.append(fallback_change / relative_delta)
+        #     else:
+        #         multipliers.append(exponent)
+
+        # multiplier = min(multipliers) if multipliers else 1.
+
+        # if multiplier != 1.:
+        #     PARAMS.dx *= multiplier
+        #     print "//// Step size changed to dx =", PARAMS.dx / UNITS.MeV
 
     def update_distributions(self):
         """ === 5. Update particles distributions === """
