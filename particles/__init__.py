@@ -164,10 +164,10 @@ class Particle():
         self.collision_integrands = []
         self.collision_integral *= 0
 
-    def benchmarked_integration(self, p0, integrand, name, bounds):
+    def benchmarked_integration(self, p0, integrand, name, bounds, kwargs={}):
         with benchmark("\t"):
             integral, error = integrate_2D(
-                lambda (p1, p2): integrand([p0, p1, p2, 0]),
+                lambda p1, p2: integrand(p0, p1, p2, 0, **kwargs),
                 bounds=bounds,
                 method=self.COLLISION_INTEGRATION_METHOD)
 
@@ -188,16 +188,16 @@ class Particle():
         if self.COLLECTIVE_INTEGRATION:
 
             integral_1, _ = self.benchmarked_integration(
-                p0, lambda ps: sum([
-                    i.integrand(ps, F_A=False, F_B=False, F_1=True, F_f=False)
+                p0, lambda p0, p1, p2, p3: sum([
+                    i.integrand(p0, p1, p2, p3, F_A=False, F_B=False, F_1=True, F_f=False)
                     for i in self.collision_integrands
                 ]), name='{} ~1 interactions'.format(self.symbol)
             )
             As.append(integral_1)
 
             integral_f, _ = self.benchmarked_integration(
-                p0, lambda ps: sum([
-                    i.integrand(ps, F_A=False, F_B=False, F_1=False, F_f=True)
+                p0, lambda p0, p1, p2, p3: sum([
+                    i.integrand(p0, p1, p2, p3, F_A=False, F_B=False, F_1=False, F_f=True)
                     for i in self.collision_integrands
                 ]), name='{} ~f interactions'.format(self.symbol)
             )
@@ -208,24 +208,22 @@ class Particle():
                 # plot_integrand(lambda (p1, p2): i.integrand([p0, p1, p2, 0]), self.name, p0)
 
                 bounds = (
-                    # (max(GRID.MIN_MOMENTUM, i.particles[2].conformal_mass
-                         # + i.particles[3].conformal_mass - p0),
                     (GRID.MIN_MOMENTUM,
                      GRID.MAX_MOMENTUM),
                     (lambda p1: GRID.MIN_MOMENTUM,
-                     # max(GRID.MIN_MOMENTUM, p0 + p1 - i.particles[3].conformal_mass
-                                    # - i.particles[2].conformal_mass),
                      lambda p1: min(p0 + p1, GRID.MAX_MOMENTUM)),
                 )
 
                 integral_1, _ = self.benchmarked_integration(
-                    p0, lambda ps: i.integrand(ps, F_A=False, F_B=False, F_1=True, F_f=False),
+                    p0, i.integrand,
+                    kwargs={'F_A': False, 'F_B': False, 'F_1': True, 'F_f': False},
                     name=str(i), bounds=bounds
                 )
                 As.append(integral_1)
 
                 integral_f, _ = self.benchmarked_integration(
-                    p0, lambda ps: i.integrand(ps, F_A=False, F_B=False, F_1=False, F_f=True),
+                    p0, i.integrand,
+                    kwargs={'F_A': False, 'F_B': False, 'F_1': False, 'F_f': True},
                     name=str(i), bounds=bounds
                 )
                 Bs.append(integral_f)

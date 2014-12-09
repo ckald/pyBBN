@@ -195,6 +195,8 @@ class Integral:
         self.particles = self.in_particles + self.out_particles
         self.signs = [1] * len(self.in_particles) + [-1] * len(self.out_particles)
 
+        self.integrand = numpy.vectorize(self.integrand, otypes=[numpy.float_])
+
     def __str__(self):
         """ String-like representation of the integral. Corresponds to the first particle """
         return " + ".join([p.symbol for p in self.in_particles]) \
@@ -227,7 +229,7 @@ class Integral:
         p[3] = numpy.sqrt(numpy.abs(E[3]**2 - m[3]**2))
         return p, E, m
 
-    def integrand(self, p=[], F_A=True, F_B=True, F_1=False, F_f=False):
+    def integrand(self, p0, p1, p2, p3, F_A=True, F_B=True, F_1=False, F_f=False):
 
         """
         Collision integral interior.
@@ -238,6 +240,7 @@ class Integral:
         WARNING: $F_1 + F_f \neq F_A + F_B = F_1 + f(p_0) F_f$
         """
 
+        p = [p0, p1, p2, p3]
         p, E, m = self.calculate_kinematics(p)
         if not self.in_bounds(p, E, m):
             return 0.
