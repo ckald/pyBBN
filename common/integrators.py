@@ -64,7 +64,6 @@ def implicit_euler(y, t, A, B, h):
     \end{equation}
     """
 
-    return (y + A(t + h) * h) / (1 - B(t + h) * h)
 
 
 def integrate_2D(integrand, bounds, method='mcquad'):
@@ -89,6 +88,7 @@ def integrate_2D(integrand, bounds, method='mcquad'):
             bounds[1][0], bounds[1][1]
         )
         error = numpy.nan
+    return (y + A * h) / (1 - B * h)
 
     return integral, error
 

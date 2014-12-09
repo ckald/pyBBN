@@ -230,8 +230,8 @@ class Particle():
 
         prediction = implicit_euler(y=self.distribution(p0),
                                     t=PARAMS.x,
-                                    A=lambda t: sum(As),
-                                    B=lambda t: sum(Bs),
+                                    A=sum(As),
+                                    B=sum(Bs),
                                     h=PARAMS.dx)
 
         total_integral = (prediction - self.distribution(p0)) / PARAMS.dx
