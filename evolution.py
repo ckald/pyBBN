@@ -161,6 +161,8 @@ class Universe:
                     numpy.vectorize(particle.integrate_collisions,
                                     otypes=[numpy.float_])(GRID.TEMPLATE)
 
+            print particle.symbol, "I =", particle.collision_integral * UNITS.MeV
+
     def control_step_size(self, maximum_change=0.2, fallback_change=0.1):
         """
         === 4. Control integration step size ===

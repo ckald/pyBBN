@@ -243,9 +243,6 @@ class Particle():
 
         total_integral = (prediction - self.distribution(p0)) / PARAMS.dx
 
-        if not self.DETAILED_OUTPUT:
-            print self.symbol, "I =", total_integral * UNITS.MeV
-
         return total_integral
 
     @property
