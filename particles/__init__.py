@@ -74,7 +74,6 @@ class Particle():
         particle `decoupling_temperature`
     """
 
-    COLLISION_INTEGRATION_METHOD = ['mcquad', 'dblquad', 'fixed'][2]
     COLLECTIVE_INTEGRATION = False
 
     def __init__(self, *args, **kwargs):
@@ -168,8 +167,8 @@ class Particle():
         with benchmark("\t"):
             integral, error = integrate_2D(
                 lambda p1, p2: integrand(p0, p1, p2, 0, **kwargs),
-                bounds=bounds,
-                method=self.COLLISION_INTEGRATION_METHOD)
+                bounds=bounds
+            )
 
             print '{name:}\t\tI( {p0:5.2f} ) = {integral: .5e}\t'\
                 .format(name=name, integral=integral * UNITS.MeV, p0=p0 / UNITS.MeV),

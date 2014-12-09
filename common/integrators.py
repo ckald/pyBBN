@@ -1,9 +1,6 @@
 import numpy
 from numpy import polynomial
 
-from scipy import integrate
-from skmonaco import mcquad
-
 from common import GRID
 
 
@@ -64,31 +61,16 @@ def implicit_euler(y, t, A, B, h):
     \end{equation}
     """
 
-
-
-def integrate_2D(integrand, bounds, method='mcquad'):
-    if method == 'dblquad':
-        integral, error = integrate.dblquad(
-            lambda p1, p2: integrand((p1, p2)),
-            bounds[0][0], bounds[0][1],
-            bounds[1][0], bounds[1][1],
-            epsrel=1e-1, epsabs=0
-        )
-    elif method == 'mcquad':
-        integral, error = mcquad(
-            integrand,
-            xl=[GRID.MIN_MOMENTUM, GRID.MIN_MOMENTUM],
-            xu=[GRID.MAX_MOMENTUM, GRID.MAX_MOMENTUM],
-            npoints=2*1e3
-        )
-    elif method == 'fixed':
-        integral = double_gaussian(
-            lambda p1, p2: integrand((p1, p2)),
-            bounds[0][0], bounds[0][1],
-            bounds[1][0], bounds[1][1]
-        )
-        error = numpy.nan
     return (y + A * h) / (1 - B * h)
+
+
+def integrate_2D(integrand, bounds):
+    integral = double_gaussian(
+        integrand,
+        bounds[0][0], bounds[0][1],
+        bounds[1][0], bounds[1][1]
+    )
+    error = numpy.nan
 
     return integral, error
 
