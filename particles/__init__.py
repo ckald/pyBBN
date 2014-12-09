@@ -74,6 +74,7 @@ class Particle():
         particle `decoupling_temperature`
     """
 
+    DETAILED_OUTPUT = False
     COLLECTIVE_INTEGRATION = False
 
     def __init__(self, *args, **kwargs):
@@ -164,16 +165,23 @@ class Particle():
         self.collision_integral *= 0
 
     def benchmarked_integration(self, p0, integrand, name, bounds, kwargs={}):
-        with benchmark("\t"):
+        if self.DETAILED_OUTPUT:
+            with benchmark("\t"):
+                integral, error = integrate_2D(
+                    lambda p1, p2: integrand(p0, p1, p2, 0, **kwargs),
+                    bounds=bounds
+                )
+
+                print '{name:}\t\tI( {p0:5.2f} ) = {integral: .5e}\t'\
+                    .format(name=name, integral=integral * UNITS.MeV, p0=p0 / UNITS.MeV),
+
+        else:
             integral, error = integrate_2D(
                 lambda p1, p2: integrand(p0, p1, p2, 0, **kwargs),
                 bounds=bounds
             )
 
-            print '{name:}\t\tI( {p0:5.2f} ) = {integral: .5e}\t'\
-                .format(name=name, integral=integral * UNITS.MeV, p0=p0 / UNITS.MeV),
-
-            return integral, error
+        return integral, error
 
     def integrate_collisions(self, p0):
         """ === Particle collisions integration === """
@@ -234,6 +242,9 @@ class Particle():
                                     h=PARAMS.dx)
 
         total_integral = (prediction - self.distribution(p0)) / PARAMS.dx
+
+        if not self.DETAILED_OUTPUT:
+            print self.symbol, "I =", total_integral * UNITS.MeV
 
         return total_integral
 
