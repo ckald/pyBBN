@@ -225,7 +225,7 @@ class Integral:
 
         """ Parameters of one particle can be inferred from the energy conservation law
             \begin{equation}E_3 = -\frac{1}{s_3} \sum_{i \neq 3} s_i E_i \end{equation} """
-        E[3] = - sum([self.signs[i] * E[i] for i in range(3)]) / self.signs[3]
+        E[3] = -self.signs[3] * sum([self.signs[i] * E[i] for i in range(3)])
         p[3] = numpy.sqrt(numpy.abs(E[3]**2 - m[3]**2))
         return p, E, m
 
