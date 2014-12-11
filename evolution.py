@@ -116,7 +116,7 @@ class Universe:
         return self.data
 
     def make_step(self):
-        PARAMS.dx = self.dy * PARAMS.x
+        PARAMS.dx = PARAMS.x * (numpy.exp(self.dy) - 1.)
         self.integrand(PARAMS.x, PARAMS.aT)
 
         order = min(self.step + 1, 5)
