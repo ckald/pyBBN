@@ -81,8 +81,6 @@ class Universe:
             'x': array.array('f', [PARAMS.x]),
             't': array.array('f', [PARAMS.t]),
             'rho': array.array('f', [PARAMS.rho]),
-            'numerator': array.array('f', [0]),
-            'denominator': array.array('f', [1]),
             'fraction': array.array('f', [0]),
         }
 
@@ -284,7 +282,8 @@ class Universe:
         # 5\. Update particles distributions
         self.update_distributions()
         # 6\. Calculate temperature equation terms
-        self.numerator, self.denominator = self.calculate_temperature_terms()
+        numerator, denominator = self.calculate_temperature_terms()
+        self.fraction = numerator / denominator
 
         """
         Load system state (unfinished, inactive)
@@ -295,7 +294,7 @@ class Universe:
         ```
         """
 
-        return self.numerator / self.denominator
+        return self.fraction
 
     def save(self):
         """ Save current Universe parameters into the data arrays or output files """
@@ -305,9 +304,7 @@ class Universe:
         self.data['x'].append(PARAMS.x)
         self.data['rho'].append(PARAMS.rho)
         self.data['t'].append(PARAMS.t)
-        self.data['numerator'].append(self.numerator)
-        self.data['denominator'].append(self.denominator)
-        self.data['fraction'].append(self.numerator / self.denominator)
+        self.data['fraction'].append(self.fraction)
 
     def init_log(self):
         sys.stdout = utils.Logger(self.logfile)
