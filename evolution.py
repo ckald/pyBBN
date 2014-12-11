@@ -80,7 +80,10 @@ class Universe:
             'a': array.array('f', [PARAMS.a]),
             'x': array.array('f', [PARAMS.x]),
             't': array.array('f', [PARAMS.t]),
-            'rho': array.array('f', [PARAMS.rho])
+            'rho': array.array('f', [PARAMS.rho]),
+            'numerator': array.array('f', [0]),
+            'denominator': array.array('f', [1]),
+            'fraction': array.array('f', [0]),
         }
 
         print '#step\tTime, s\taT, MeV\tT, MeV\tscale factor\tρ energy density, eV^4\tH, GeV'
@@ -113,11 +116,25 @@ class Universe:
         return self.data
 
     def make_step(self):
-        integrator = integrators.heun_correction if self.INTEGRATION_METHOD == 'heun' \
-            else integrators.euler_correction
+            # integrator = integrators.heun_correction if self.INTEGRATION_METHOD == 'heun' \
+                # else integrators.euler_correction
 
-        PARAMS.aT += integrator(y=PARAMS.aT, f=self.integrand, t=PARAMS.x, h=PARAMS.dx)
-        PARAMS.x += PARAMS.dx
+        if self.step == 0:
+            fraction = self.integrand(PARAMS.x, PARAMS.aT)
+
+            PARAMS.aT += fraction * PARAMS.dx
+            PARAMS.x += PARAMS.dx
+
+        else:
+            adams_bashforth_order = min(self.step, 5)
+
+            PARAMS.aT += integrators.adams_bashforth_correction(fs=self.data['fraction'],
+                                                                h=PARAMS.dx,
+                                                                order=adams_bashforth_order)
+            PARAMS.x += PARAMS.dx
+
+        # PARAMS.aT += integrator(y=PARAMS.aT, f=self.integrand, t=PARAMS.x, h=PARAMS.dx)
+        # PARAMS.x += PARAMS.dx
 
         PARAMS.update(self.total_energy_density())
 
@@ -265,7 +282,7 @@ class Universe:
         # 5\. Update particles distributions
         self.update_distributions()
         # 6\. Calculate temperature equation terms
-        numerator, denominator = self.calculate_temperature_terms()
+        self.numerator, self.denominator = self.calculate_temperature_terms()
 
         """
         Load system state (unfinished, inactive)
@@ -276,7 +293,7 @@ class Universe:
         ```
         """
 
-        return numerator / denominator
+        return self.numerator / self.denominator
 
     def save(self):
         """ Save current Universe parameters into the data arrays or output files """
@@ -286,6 +303,9 @@ class Universe:
         self.data['x'].append(PARAMS.x)
         self.data['rho'].append(PARAMS.rho)
         self.data['t'].append(PARAMS.t)
+        self.data['numerator'].append(self.numerator)
+        self.data['denominator'].append(self.denominator)
+        self.data['fraction'].append(self.numerator / self.denominator)
 
     def init_log(self):
         sys.stdout = utils.Logger(self.logfile)
