@@ -122,17 +122,15 @@ class Universe:
         PARAMS.dx = self.dy * PARAMS.x
         self.integrand(PARAMS.x, PARAMS.aT)
 
-        if self.step == 0:
-            PARAMS.aT += self.fraction * PARAMS.dy
+        order = min(self.step + 1, 5)
+        fs = self.data['fraction'][-order+1:]
+        fs.append(self.fraction)
 
-        else:
-            adams_bashforth_order = min(self.step + 1, 5)
-
-            PARAMS.aT += integrators.adams_bashforth_correction(
-                fs=self.data['fraction'],
-                h=PARAMS.dy,
-                order=adams_bashforth_order
-            )
+        PARAMS.aT += integrators.adams_bashforth_correction(
+            fs=fs,
+            h=PARAMS.dy,
+            order=order
+        )
 
         PARAMS.x += PARAMS.dx
 
