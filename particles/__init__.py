@@ -12,8 +12,8 @@ import numpy
 
 from plotting import plot_integrand
 from common import GRID, PARAMS, UNITS
-from common.integrators import integrate_2D, implicit_euler
 from common.utils import benchmark
+from common.integrators import integrate_2D, implicit_euler, adams_moulton_solver
 
 from particles import DustParticle, RadiationParticle, IntermediateParticle, NonEqParticle
 # from particles.interpolation.interpolation import distribution_interpolation
@@ -104,6 +104,9 @@ class Particle():
         self.collision_integral = numpy.zeros(GRID.MOMENTUM_SAMPLES, dtype=numpy.float_)
 
         self.collision_integrands = []
+        self.data = {
+            'collision_integral': []
+        }
 
         self.update()
         self.T = PARAMS.T
@@ -162,7 +165,7 @@ class Particle():
 
         # Clear collision integrands for the next computation step
         self.collision_integrands = []
-        self.collision_integral *= 0
+        self.data['collision_integral'].append(self.collision_integral)
 
     def benchmarked_integration(self, p0, integrand, name, bounds, kwargs={}):
         if self.DETAILED_OUTPUT:
@@ -212,7 +215,6 @@ class Particle():
 
         else:
             for i in self.collision_integrands:
-                # plot_integrand(lambda (p1, p2): i.integrand([p0, p1, p2, 0]), self.name, p0)
 
                 bounds = (
                     (GRID.MIN_MOMENTUM,
@@ -235,11 +237,22 @@ class Particle():
                 )
                 Bs.append(integral_f)
 
-        prediction = implicit_euler(y=self.distribution(p0),
-                                    t=PARAMS.x,
-                                    A=sum(As),
-                                    B=sum(Bs),
-                                    h=PARAMS.dx)
+        order = len(self.data['collision_integral']) + 1
+
+        fs = [i[p0] for i in self.data['collision_integral']]
+
+        prediction = adams_moulton_solver(y=self.distribution(p0),
+                                          fs=fs,
+                                          A=sum(As),
+                                          B=sum(Bs),
+                                          h=PARAMS.dx,
+                                          order=order)
+
+        # prediction = implicit_euler(y=self.distribution(p0),
+        #                             t=PARAMS.x,
+        #                             A=sum(As),
+        #                             B=sum(Bs),
+        #                             h=PARAMS.dx)
 
         total_integral = (prediction - self.distribution(p0)) / PARAMS.dx
 

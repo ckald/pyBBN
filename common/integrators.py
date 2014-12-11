@@ -65,7 +65,7 @@ def implicit_euler(y, t, A, B, h):
 
 
 ADAMS_BASHFORTH_COEFFICIENTS = {
-    1: ([1.], 1),
+    1: ([1.], 1.),
     2: ([-1., 3.], 2.),
     3: ([5., -16., 23.], 12.),
     4: ([-9., 37., -59., 55.], 24.),
@@ -74,9 +74,25 @@ ADAMS_BASHFORTH_COEFFICIENTS = {
 
 
 def adams_bashforth_correction(fs, h, order=3):
-    coefficients, divider = ADAMS_BASHFORTH_COEFFICIENTS[order]
+    bs, divider = ADAMS_BASHFORTH_COEFFICIENTS[order]
 
-    return h * sum(c * f for c, f in zip(coefficients, fs[-order:])) / divider
+    return h * sum(b * f for b, f in zip(bs, fs[-order:])) / divider
+
+
+ADAMS_MOULTON_COEFFICIENTS = {
+    1: ([1.], 1.),
+    2: ([1., 1.], 2.),
+    3: ([-1., 8., 5.], 12.),
+    4: ([1., -5., 19., 9.], 24.),
+    5: ([-19., 106., -264., 646., 251.], 720.)
+}
+
+
+def adams_moulton_solver(y, fs, A, B, h, order=3):
+    bs, divider = ADAMS_MOULTON_COEFFICIENTS[order]
+
+    return (y + h * sum(b * f for b, f in zip(bs, fs[-order+1] + [A])) / divider) /\
+        (1 - h * B * bs[-1] / divider)
 
 
 def integrate_2D(integrand, bounds):
