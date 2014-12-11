@@ -91,7 +91,7 @@ ADAMS_MOULTON_COEFFICIENTS = {
 def adams_moulton_solver(y, fs, A, B, h, order=3):
     bs, divider = ADAMS_MOULTON_COEFFICIENTS[order]
 
-    return (y + h * sum(b * f for b, f in zip(bs, fs[-order+1] + [A])) / divider) /\
+    return (y + h * sum(b * f for b, f in zip(bs, fs[-order+1:] + [A])) / divider) /\
         (1 - h * B * bs[-1] / divider)
 
 
