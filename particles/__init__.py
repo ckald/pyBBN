@@ -154,7 +154,7 @@ class Particle():
         if self.in_equilibrium:
             return
 
-        delta = self.collision_integral * PARAMS.dx
+        delta = self.collision_integral * PARAMS.dy
 
         prediction = self._distribution + delta
         if numpy.any(prediction < 0):
@@ -244,9 +244,9 @@ class Particle():
 
         prediction = adams_moulton_solver(y=self.distribution(p0),
                                           fs=fs,
-                                          A=sum(As),
-                                          B=sum(Bs),
-                                          h=PARAMS.dx,
+                                          A=PARAMS.x * sum(As),
+                                          B=PARAMS.x * sum(Bs),
+                                          h=PARAMS.dy,
                                           order=order)
 
         # prediction = implicit_euler(y=self.distribution(p0),
@@ -255,7 +255,7 @@ class Particle():
         #                             B=sum(Bs),
         #                             h=PARAMS.dx)
 
-        total_integral = (prediction - self.distribution(p0)) / PARAMS.dx
+        total_integral = (prediction - self.distribution(p0)) / PARAMS.dy
 
         return total_integral
 

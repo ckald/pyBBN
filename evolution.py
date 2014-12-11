@@ -24,11 +24,6 @@ class Universe:
     # Controls parallelization of the collision integrals calculations
     PARALLELIZE = True
 
-    dy = 0.1
-
-    # Set size increasing multiplier
-    step_size_multiplier = 1.1
-
     def __init__(self, particles=[], interactions=[],
                  logfile='logs/' + str(datetime.now()) + '.txt',
                  plotting=True,
@@ -116,14 +111,14 @@ class Universe:
         return self.data
 
     def make_step(self):
-        PARAMS.dx = PARAMS.x * (numpy.exp(self.dy) - 1.)
+        PARAMS.dx = PARAMS.x * (numpy.exp(PARAMS.dy) - 1.)
         self.integrand(PARAMS.x, PARAMS.aT)
 
         order = min(self.step + 1, 5)
         fs = self.data['fraction'][-order+1:]
         fs.append(self.fraction)
 
-        PARAMS.aT += integrators.adams_bashforth_correction(fs=fs, h=self.dy, order=order)
+        PARAMS.aT += integrators.adams_bashforth_correction(fs=fs, h=PARAMS.dy, order=order)
         PARAMS.x += PARAMS.dx
 
         PARAMS.update(self.total_energy_density())

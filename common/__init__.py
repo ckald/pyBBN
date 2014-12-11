@@ -58,7 +58,7 @@ class Params(object):
     # Arbitrary normalization of the conformal scale factor
     m = 1. * UNITS.MeV
     # Conformal scale factor step size during computations
-    dx = 1e-2 * UNITS.MeV
+    dy = 0.1
     # Initial time
     t = 0. * UNITS.s
     # Hubble rate
@@ -83,6 +83,8 @@ class Params(object):
         # Compute present-state parameters that can be inferred from the base ones
         self.a = self.a_initial
         self.x = self.a * self.m
+        self.y = numpy.log(self.x)
+        self.dx = self.x * (numpy.exp(self.dy) - 1.)
         self.T = self.T_initial
         self.aT = self.a * self.T
 
