@@ -170,56 +170,14 @@ class Universe:
 
             print particle.symbol, "I =", particle.collision_integral * UNITS.MeV
 
-    def control_step_size(self, maximum_change=0.2, fallback_change=0.1):
-        """
-        === 4. Control integration step size ===
-
-        :param maximum_change: Maximal allowed relative difference in the distribution functions\
-                               value after Boltzmann equation integration. Generally, master\
-                               equation of the temperature can be solved with arbitrarily large\
-                               step size without significant loss in accuracy. The main problem is\
-                               the truncation error of the Boltzmann equation integration.
-
-        :param fallback_change: In the case when distribution functions change too fast, step size\
-                                is urgently decreased to compensate this effect. `fallback_change`\
-                                smaller than `maximum_change` enhances the integration stability.
-
-        :param exponent: If distribution functions change is insignificant, step size can be\
-                         increased by a factor of `exponent`.
-        """
-
-        if not self.adaptive_step_size:
-            return
-
-        exponent = self.step_size_multiplier
-
-        # weak_decay_width = PARAMS.x * PARAMS.H / (CONST.G_F**2 * PARAMS.T**5)
-
-        dx = PARAMS.dx
-        multipliers = []
-        for particle in self.particles:
-            if particle.in_equilibrium:
-                continue
-            relative_delta = numpy.absolute(particle.collision_integral * dx
-                                            / particle._distribution).max()
-            if relative_delta > maximum_change:
-                multipliers.append(fallback_change / relative_delta)
-            else:
-                multipliers.append(exponent)
-
-        multiplier = min(multipliers) if multipliers else 1.
-
-        if multiplier != 1.:
-            PARAMS.dx *= multiplier
-
     def update_distributions(self):
-        """ === 5. Update particles distributions === """
+        """ === 4. Update particles distributions === """
 
         for particle in self.particles:
             particle.update_distribution()
 
     def calculate_temperature_terms(self):
-        """ === 6. Calculate temperature equation terms === """
+        """ === 5. Calculate temperature equation terms === """
 
         numerator = 0
         denominator = 0
@@ -267,11 +225,9 @@ class Universe:
         self.init_interactions()
         # 3\. Calculate collision integrals
         self.calculate_collisions()
-        # 4\. Control integration step size
-        self.control_step_size()
-        # 5\. Update particles distributions
+        # 4\. Update particles distributions
         self.update_distributions()
-        # 6\. Calculate temperature equation terms
+        # 5\. Calculate temperature equation terms
         numerator, denominator = self.calculate_temperature_terms()
         self.fraction = PARAMS.x * numerator / denominator
 
