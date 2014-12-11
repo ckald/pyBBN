@@ -126,11 +126,7 @@ class Universe:
         fs = self.data['fraction'][-order+1:]
         fs.append(self.fraction)
 
-        PARAMS.aT += integrators.adams_bashforth_correction(
-            fs=fs,
-            h=PARAMS.dy,
-            order=order
-        )
+        PARAMS.aT += integrators.adams_bashforth_correction(fs=fs, h=self.dy, order=order)
 
         PARAMS.x += PARAMS.dx
 
