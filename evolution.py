@@ -48,8 +48,8 @@ class Universe:
         self.adaptive_step_size = adaptive_step_size
         self.postmortem_debugger = postmortem_debugger
 
-        sys.stdout = utils.Logger(logfile)
-        self.logger = sys.stdout
+        self.logfile = logfile
+        self.init_log()
 
     def evolve(self):
         """
@@ -98,7 +98,7 @@ class Universe:
         for particle in self.particles:
             print particle
 
-        print "Data saved to file {}".format(self.logger.log.name)
+        print "Data saved to file {}".format(self.logfile)
 
         """
         == Postmortem debugger ==
@@ -286,6 +286,9 @@ class Universe:
         self.data['x'].append(PARAMS.x)
         self.data['rho'].append(PARAMS.rho)
         self.data['t'].append(PARAMS.t)
+
+    def init_log(self):
+        sys.stdout = utils.Logger(self.logfile)
 
     def log(self):
         """ Runtime log output """
