@@ -24,6 +24,8 @@ class Universe:
     # Controls parallelization of the collision integrals calculations
     PARALLELIZE = True
 
+    dy = 0.1
+
     # Set size increasing multiplier
     step_size_multiplier = 1.1
 
@@ -117,18 +119,22 @@ class Universe:
             # integrator = integrators.heun_correction if self.INTEGRATION_METHOD == 'heun' \
                 # else integrators.euler_correction
 
+        PARAMS.dx = self.dy * PARAMS.x
+
         if self.step == 0:
             fraction = self.integrand(PARAMS.x, PARAMS.aT)
 
-            PARAMS.aT += fraction * PARAMS.dx
+            PARAMS.aT += PARAMS.x * fraction * PARAMS.dx
             PARAMS.x += PARAMS.dx
 
         else:
             adams_bashforth_order = min(self.step, 5)
 
-            PARAMS.aT += integrators.adams_bashforth_correction(fs=self.data['fraction'],
-                                                                h=PARAMS.dx,
-                                                                order=adams_bashforth_order)
+            PARAMS.aT += PARAMS.x * integrators.adams_bashforth_correction(
+                fs=self.data['fraction'],
+                h=PARAMS.dx,
+                order=adams_bashforth_order
+            )
             PARAMS.x += PARAMS.dx
 
             self.integrand(PARAMS.x, PARAMS.aT)
