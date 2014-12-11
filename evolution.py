@@ -116,9 +116,6 @@ class Universe:
         return self.data
 
     def make_step(self):
-            # integrator = integrators.heun_correction if self.INTEGRATION_METHOD == 'heun' \
-                # else integrators.euler_correction
-
         PARAMS.dx = self.dy * PARAMS.x
         self.integrand(PARAMS.x, PARAMS.aT)
 
@@ -127,11 +124,7 @@ class Universe:
         fs.append(self.fraction)
 
         PARAMS.aT += integrators.adams_bashforth_correction(fs=fs, h=self.dy, order=order)
-
         PARAMS.x += PARAMS.dx
-
-        # PARAMS.aT += integrator(y=PARAMS.aT, f=self.integrand, t=PARAMS.x, h=PARAMS.dx)
-        # PARAMS.x += PARAMS.dx
 
         PARAMS.update(self.total_energy_density())
 
@@ -280,7 +273,7 @@ class Universe:
         self.update_distributions()
         # 6\. Calculate temperature equation terms
         numerator, denominator = self.calculate_temperature_terms()
-        self.fraction = numerator / denominator
+        self.fraction = PARAMS.x * numerator / denominator
 
         """
         Load system state (unfinished, inactive)
@@ -291,7 +284,7 @@ class Universe:
         ```
         """
 
-        return PARAMS.x * self.fraction
+        return self.fraction
 
     def save(self):
         """ Save current Universe parameters into the data arrays or output files """
