@@ -120,24 +120,21 @@ class Universe:
                 # else integrators.euler_correction
 
         PARAMS.dx = self.dy * PARAMS.x
+        self.integrand(PARAMS.x, PARAMS.aT)
 
         if self.step == 0:
-            fraction = self.integrand(PARAMS.x, PARAMS.aT)
-
-            PARAMS.aT += PARAMS.x * fraction * PARAMS.dx
-            PARAMS.x += PARAMS.dx
+            PARAMS.aT += self.fraction * PARAMS.dy
 
         else:
-            adams_bashforth_order = min(self.step, 5)
+            adams_bashforth_order = min(self.step + 1, 5)
 
-            PARAMS.aT += PARAMS.x * integrators.adams_bashforth_correction(
+            PARAMS.aT += integrators.adams_bashforth_correction(
                 fs=self.data['fraction'],
-                h=PARAMS.dx,
+                h=PARAMS.dy,
                 order=adams_bashforth_order
             )
-            PARAMS.x += PARAMS.dx
 
-            self.integrand(PARAMS.x, PARAMS.aT)
+        PARAMS.x += PARAMS.dx
 
         # PARAMS.aT += integrator(y=PARAMS.aT, f=self.integrand, t=PARAMS.x, h=PARAMS.dx)
         # PARAMS.x += PARAMS.dx
@@ -300,7 +297,7 @@ class Universe:
         ```
         """
 
-        return self.fraction
+        return PARAMS.x * self.fraction
 
     def save(self):
         """ Save current Universe parameters into the data arrays or output files """

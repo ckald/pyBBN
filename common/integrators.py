@@ -65,18 +65,18 @@ def implicit_euler(y, t, A, B, h):
 
 
 ADAMS_BASHFORTH_COEFFICIENTS = {
-    1: [1],
-    2: [3./2., -1./2.],
-    3: [23./12., -4./3., 5./12.],
-    4: [55./24., -59./24., 37./24., -3./8.],
-    5: [1901./720., -1387./360., 109./30., -637./360., 251./720.]
+    1: ([1.], 1),
+    2: ([-1., 3.], 2.),
+    3: ([5., -16., 23.], 12.),
+    4: ([-9., 37., -59., 55.], 24.),
+    5: ([251., -1274., 2616., -2774., 1901.], 720.)
 }
 
 
 def adams_bashforth_correction(fs, h, order=3):
-    coefficients = ADAMS_BASHFORTH_COEFFICIENTS[order]
+    coefficients, divider = ADAMS_BASHFORTH_COEFFICIENTS[order][::-1]
 
-    return h * sum(c * f for c, f in zip(coefficients, fs[-order:]))
+    return h * sum(c * f for c, f in zip(coefficients, fs[-order:])) / divider
 
 
 def integrate_2D(integrand, bounds):
