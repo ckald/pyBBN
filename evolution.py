@@ -133,6 +133,8 @@ class Universe:
                                                                 order=adams_bashforth_order)
             PARAMS.x += PARAMS.dx
 
+            self.integrand(PARAMS.x, PARAMS.aT)
+
         # PARAMS.aT += integrator(y=PARAMS.aT, f=self.integrand, t=PARAMS.x, h=PARAMS.dx)
         # PARAMS.x += PARAMS.dx
 
