@@ -237,7 +237,7 @@ class Particle():
                 )
                 Bs.append(integral_f)
 
-        order = len(self.data['collision_integral']) + 1
+        order = min(len(self.data['collision_integral']) + 1, 5)
 
         fs = [i[p0] for i in self.data['collision_integral']]
 
