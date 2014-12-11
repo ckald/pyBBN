@@ -74,7 +74,7 @@ ADAMS_BASHFORTH_COEFFICIENTS = {
 
 
 def adams_bashforth_correction(fs, h, order=3):
-    coefficients, divider = ADAMS_BASHFORTH_COEFFICIENTS[order][::-1]
+    coefficients, divider = ADAMS_BASHFORTH_COEFFICIENTS[order]
 
     return h * sum(c * f for c, f in zip(coefficients, fs[-order:])) / divider
 
