@@ -239,7 +239,7 @@ class Particle():
 
         order = min(len(self.data['collision_integral']) + 1, 5)
 
-        fs = [i[p0] for i in self.data['collision_integral']]
+        fs = [i[p0] for i in zip(GRID.TEMPLATE, self.data['collision_integral'])]
 
         prediction = adams_moulton_solver(y=self.distribution(p0),
                                           fs=fs,
