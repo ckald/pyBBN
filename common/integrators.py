@@ -73,7 +73,7 @@ ADAMS_BASHFORTH_COEFFICIENTS = {
 }
 
 
-def adams_bashforth_correction(fs, h, order=3):
+def adams_bashforth_correction(fs, h, order):
     bs, divider = ADAMS_BASHFORTH_COEFFICIENTS[order]
 
     return h * sum(b * f for b, f in zip(bs, fs[-order:])) / divider
@@ -88,7 +88,7 @@ ADAMS_MOULTON_COEFFICIENTS = {
 }
 
 
-def adams_moulton_solver(y, fs, A, B, h, order=3):
+def adams_moulton_solver(y, fs, A, B, h, order):
     bs, divider = ADAMS_MOULTON_COEFFICIENTS[order]
 
     return (y + h * sum(b * f for b, f in zip(bs, fs[-order+1:] + [A])) / divider) /\
