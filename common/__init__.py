@@ -55,7 +55,7 @@ class Params(PicklableObject):
     # Arbitrary normalization of the conformal scale factor
     m = 1. * UNITS.MeV
     # Conformal scale factor step size during computations
-    dy = 0.1
+    dy = 0.05
     # Initial time
     t = 0. * UNITS.s
     # Hubble rate
