@@ -142,16 +142,16 @@ class Universe:
             the expanding space-time.
 
             Depending on the regime of the particle species involved and cosmological parameters, \
-            each `Interaction` object populates `Particle.collision_integrands` array with \
+            each `Interaction` object populates `Particle.collision_integrals` array with \
             currently active `Integral` objects.
         """
         for interaction in self.interactions:
-            interaction.calculate()
+            interaction.initialize()
 
     def calculate_collisions(self):
         """ === 3. Calculate collision integrals === """
         for particle in self.particles:
-            if not particle.collision_integrands:
+            if not particle.collision_integrals:
                 continue
 
             if self.PARALLELIZE:

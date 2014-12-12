@@ -149,11 +149,11 @@ class Interaction:
             accounted_particles.add(particle)
         return accounted_particles
 
-    def calculate(self):
+    def initialize(self):
         """ Proxy method """
 
         for integral in self.integrals:
-            integral.calculate()
+            integral.initialize()
 
 
 class Integral:
@@ -206,13 +206,12 @@ class Integral:
     def __repr__(self):
         return self.__str__()
 
-    def calculate(self):
+    def initialize(self):
         """
-        Calculate collision integral constants and save them to the first involved particle
+        Initialize collision integral constants and save them to the first involved particle
         """
         if PARAMS.T > self.decoupling_temperature and not self.in_particles[0].in_equilibrium:
-
-            self.particles[0].collision_integrands.append(self)
+            self.particles[0].collision_integrals.append(self)
 
     def calculate_kinematics(self, p=[]):
         """ Helper procedure that caches conformal energies and masses of the particles """

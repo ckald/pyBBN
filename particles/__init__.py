@@ -103,7 +103,7 @@ class Particle():
         """ Particle collision integral is not effective in the equilibrium as well """
         self.collision_integral = numpy.zeros(GRID.MOMENTUM_SAMPLES, dtype=numpy.float_)
 
-        self.collision_integrands = []
+        self.collision_integrals = []
         self.data = {
             'collision_integral': []
         }
@@ -164,7 +164,7 @@ class Particle():
         self._distribution = numpy.maximum(prediction, 0)
 
         # Clear collision integrands for the next computation step
-        self.collision_integrands = []
+        self.collision_integrals = []
         self.data['collision_integral'].append(self.collision_integral)
 
     def benchmarked_integration(self, p0, integrand, name, bounds, kwargs={}):
@@ -189,7 +189,7 @@ class Particle():
     def integrate_collisions(self, p0):
         """ === Particle collisions integration === """
 
-        if not self.collision_integrands:
+        if not self.collision_integrals:
             return 0
 
         As = []
