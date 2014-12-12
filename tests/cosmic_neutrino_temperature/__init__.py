@@ -51,8 +51,7 @@ Particles += [
     tau
 ]
 
-universe = Universe(Particles, logfile='tests/cosmic_neutrino_temperature/log.txt',
-                    adaptive_step_size=False)
+universe = Universe(Particles, logfile='tests/cosmic_neutrino_temperature/log.txt')
 universe.evolve()
 
 print """

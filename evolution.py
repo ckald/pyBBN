@@ -27,15 +27,12 @@ class Universe:
 
     def __init__(self, particles=[], interactions=[],
                  logfile='logs/' + str(datetime.now()) + '.txt',
-                 plotting=True,
-                 adaptive_step_size=True,
-                 postmortem_debugger=True):
+                 plotting=True, postmortem_debugger=True):
         """
         :param particles: Set of `particle.Particle` to model
         :param interactions: Set of `interaction.Interaction` - quantum interactions \
                              between particle species
         :param logfile: Log file path (current `datetime` by default)
-        :param adaptive_step_size: Boolean, whether to control the step size or not
         :param postmortem_debugger: Boolean, whether to invoke the `pdb` debugger at the end of\
                                     computation
         """
@@ -43,7 +40,6 @@ class Universe:
         self.interactions = interactions
 
         self.graphics = Plotting() if plotting else None
-        self.adaptive_step_size = adaptive_step_size
         self.postmortem_debugger = postmortem_debugger
 
         self.logfile = logfile
