@@ -7,10 +7,7 @@ This file contains constants and utilities shared by all other modules in the pr
 """
 import numpy
 import numericalunits as nu
-
-
-# Numpy error handling behavior. Uncomment to see a notice each time you get an overflow.
-# numpy.seterr(all='print')
+from utils import PicklableObject
 
 
 class UNITS:
@@ -46,7 +43,7 @@ class CONST:
     g_L = sin_theta_w_2 + 0.5
 
 
-class Params(object):
+class Params(PicklableObject):
 
     """ == Parameters ==
         Master object carrying the cosmological state of the system and initial conditions """
@@ -66,9 +63,7 @@ class Params(object):
     # Total energy density
     rho = 0.
 
-    def __init__(self, **kw):
-        self.kw = kw
-        self.__dict__.update(kw)
+    def __init__(self):
         self.infer()
 
     def copy(self):
@@ -119,7 +114,7 @@ class Params(object):
         self.t += dt
 
 
-class Grid(object):
+class Grid(PicklableObject):
 
     """ === Distribution functions grid ===
 

@@ -5,6 +5,23 @@ from functools import wraps
 from collections import deque
 
 
+class PicklableObject(object):
+
+    _saveable_fields = None
+
+    def __getstate__(self):
+        if self._saveable_fields:
+            return {key: value for key, value in self.__dict__.items()
+                    if key in self._saveable_fields}
+        return self.__dict__
+
+    def __setstate__(self, data):
+        if self._saveable_fields:
+            data = {key: value for key, value in data.items()
+                    if key in self._saveable_fields}
+        self.__dict__.update(data)
+
+
 class Logger(object):
     """ Convenient double logger that redirects `stdout` and save the output also to the file """
     def __init__(self, filename):

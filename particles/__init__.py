@@ -14,6 +14,7 @@ from plotting import plot_integrand
 from common import GRID, PARAMS, UNITS
 from common.utils import benchmark
 from common.integrators import integrate_2D, implicit_euler, adams_moulton_solver
+from common.utils import PicklableObject
 
 from particles import DustParticle, RadiationParticle, IntermediateParticle, NonEqParticle
 # from particles.interpolation.interpolation import distribution_interpolation
@@ -66,7 +67,7 @@ class REGIMES(dict):
     NONEQ = NonEqParticle
 
 
-class Particle():
+class Particle(PicklableObject):
 
     """ == Particle ==
         Master-class for particle species. Realized as finite state machine that switches to\
@@ -76,6 +77,13 @@ class Particle():
 
     DETAILED_OUTPUT = False
     COLLECTIVE_INTEGRATION = False
+    _saveable_fields = [
+        'name', 'symbol',
+        'mass', 'decoupling_temperature',
+        'dof', 'eta',
+        '_distribution', 'collision_integral',
+        'T', 'aT'
+    ]
 
     def __init__(self, *args, **kwargs):
 

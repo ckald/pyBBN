@@ -6,8 +6,9 @@ import numpy
 import array
 from datetime import datetime
 
-from common import UNITS, PARAMS, GRID, CONST
+from common import UNITS, PARAMS, GRID
 from common import integrators, parallelization, utils
+# from common.utils import PicklableObject
 from plotting import Plotting
 
 

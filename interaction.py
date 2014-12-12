@@ -2,6 +2,7 @@
 import copy
 import numpy
 from common import PARAMS, GRID, CONST
+from common.utils import PicklableObject, benchmark
 from ds import D, Db1, Db2
 
 
@@ -62,7 +63,7 @@ class WeakM(M):
         self.K2 *= 32 * CONST.G_F**2
 
 
-class Interaction:
+class Interaction(object):
 
     """
     == Interaction ==
