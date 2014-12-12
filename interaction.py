@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import copy
 import numpy
-from common import PARAMS, GRID, CONST
+from common import PARAMS, GRID, CONST, UNITS, integrators
 from common.utils import PicklableObject, benchmark
 from ds import D, Db1, Db2
 
@@ -187,6 +187,9 @@ class Integral:
 
     Ms = []
 
+    DETAILED_OUTPUT = False
+    COLLECTIVE_INTEGRATION = False
+
     def __init__(self, *args, **kwargs):
         """ Update self with configuration `kwargs`, construct particles list and \
             energy conservation law of the integral. """
@@ -229,6 +232,70 @@ class Integral:
         p[3] = numpy.sqrt(numpy.abs(E[3]**2 - m[3]**2))
         return p, E, m
 
+    def benchmarked_integration(self, p0, integrand, name, bounds=None, kwargs={}):
+        if bounds is None:
+            bounds = (
+                (GRID.MIN_MOMENTUM,
+                 GRID.MAX_MOMENTUM),
+                (lambda p1: GRID.MIN_MOMENTUM,
+                 lambda p1: min(p0 + p1, GRID.MAX_MOMENTUM)),
+            )
+
+        if self.DETAILED_OUTPUT:
+            with benchmark("\t"):
+                integral, error = integrators.integrate_2D(
+                    lambda p1, p2: integrand(p0, p1, p2, 0, **kwargs),
+                    bounds=bounds
+                )
+
+                print '{name:}\t\tI( {p0:5.2f} ) = {integral: .5e}\t'\
+                    .format(name=name, integral=integral * UNITS.MeV, p0=p0 / UNITS.MeV),
+
+        else:
+            integral, error = integrators.integrate_2D(
+                lambda p1, p2: integrand(p0, p1, p2, 0, **kwargs),
+                bounds=bounds
+            )
+
+        return integral, error
+
+    def integrate(self, p0):
+        """ === Particle collisions integration === """
+
+        particle = self.particles[0]
+
+        integral_1, _ = self.integral_1(p0)
+        integral_f, _ = self.integral_f(p0)
+
+        order = min(len(self.data['collision_integral']) + 1, 5)
+
+        index = numpy.argwhere(GRID.TEMPLATE == p0)[0][0]
+        fs = [i[index] for i in particle.data['collision_integral'][-order:]]
+
+        prediction = integrators.adams_moulton_solver(
+            y=particle.distribution(p0), fs=fs,
+            A=integral_1, B=integral_f,
+            h=PARAMS.dy, order=order
+        )
+
+        total_integral = (prediction - particle.distribution(p0)) / PARAMS.dy
+
+        return total_integral
+
+    def integral_1(self, p0, bounds=None):
+        return self.benchmarked_integration(
+            p0, self.integrand,
+            kwargs={'F_A': False, 'F_B': False, 'F_1': True, 'F_f': False},
+            name=str(self), bounds=bounds
+        )
+
+    def integral_f(self, p0, bounds=None):
+        return self.benchmarked_integration(
+            p0, self.integrand,
+            kwargs={'F_A': False, 'F_B': False, 'F_1': False, 'F_f': True},
+            name=str(self), bounds=bounds
+        )
+
     def integrand(self, p0, p1, p2, p3, F_A=True, F_B=True, F_1=False, F_f=False):
 
         """
@@ -245,7 +312,7 @@ class Integral:
         if not self.in_bounds(p, E, m):
             return 0.
 
-        integrand = 1./64. / numpy.pi**3 * PARAMS.m**5 / PARAMS.x**6 / PARAMS.H
+        integrand = 1./64. / numpy.pi**3 * PARAMS.m**5 / PARAMS.x**5 / PARAMS.H
 
         ds = 0.
         if p[0] != 0:

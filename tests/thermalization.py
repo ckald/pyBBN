@@ -26,12 +26,13 @@ neutrino_e._distribution += numpy.vectorize(lambda x: 0.01 * numpy.exp(-(x/UNITS
                                             otypes=[numpy.float_])(GRID.TEMPLATE)
 
 universe = Universe(Particles, Interactions)
-universe.graphics.monitor(particles=[neutrino_e, neutrino_mu])
+if universe.graphics:
+    universe.graphics.monitor(particles=[neutrino_e, neutrino_mu])
 
 # from plotting import plot_points
 # for p0 in GRID.TEMPLATE:
-#     Interactions[0].calculate()
-#     i = neutrino_e.collision_integrands[0]
+#     Interactions[0].initialize()
+#     i = neutrino_e.collision_integrals[0]
 #     plot_points(i.bounds(p0), p0)
 
 universe.evolve()

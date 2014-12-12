@@ -6,14 +6,11 @@ This file contains `Particle` class definition and code governing the switching 
 regimes
 """
 from __future__ import division
-import math
 
 import numpy
 
-from plotting import plot_integrand
 from common import GRID, PARAMS, UNITS
-from common.utils import benchmark
-from common.integrators import integrate_2D, implicit_euler, adams_moulton_solver
+from common.integrators import adams_moulton_solver
 from common.utils import PicklableObject
 
 from particles import DustParticle, RadiationParticle, IntermediateParticle, NonEqParticle
@@ -75,8 +72,6 @@ class Particle(PicklableObject):
         particle `decoupling_temperature`
     """
 
-    DETAILED_OUTPUT = False
-    COLLECTIVE_INTEGRATION = False
     _saveable_fields = [
         'name', 'symbol',
         'mass', 'decoupling_temperature',
@@ -175,25 +170,6 @@ class Particle(PicklableObject):
         self.collision_integrals = []
         self.data['collision_integral'].append(self.collision_integral)
 
-    def benchmarked_integration(self, p0, integrand, name, bounds, kwargs={}):
-        if self.DETAILED_OUTPUT:
-            with benchmark("\t"):
-                integral, error = integrate_2D(
-                    lambda p1, p2: integrand(p0, p1, p2, 0, **kwargs),
-                    bounds=bounds
-                )
-
-                print '{name:}\t\tI( {p0:5.2f} ) = {integral: .5e}\t'\
-                    .format(name=name, integral=integral * UNITS.MeV, p0=p0 / UNITS.MeV),
-
-        else:
-            integral, error = integrate_2D(
-                lambda p1, p2: integrand(p0, p1, p2, 0, **kwargs),
-                bounds=bounds
-            )
-
-        return integral, error
-
     def integrate_collisions(self, p0):
         """ === Particle collisions integration === """
 
@@ -203,65 +179,22 @@ class Particle(PicklableObject):
         As = []
         Bs = []
 
-        if self.COLLECTIVE_INTEGRATION:
+        for i in self.collision_integrals:
 
-            integral_1, _ = self.benchmarked_integration(
-                p0, lambda p0, p1, p2, p3: sum([
-                    i.integrand(p0, p1, p2, p3, F_A=False, F_B=False, F_1=True, F_f=False)
-                    for i in self.collision_integrands
-                ]), name='{} ~1 interactions'.format(self.symbol)
-            )
+            integral_1, _ = i.integral_1(p0)
             As.append(integral_1)
 
-            integral_f, _ = self.benchmarked_integration(
-                p0, lambda p0, p1, p2, p3: sum([
-                    i.integrand(p0, p1, p2, p3, F_A=False, F_B=False, F_1=False, F_f=True)
-                    for i in self.collision_integrands
-                ]), name='{} ~f interactions'.format(self.symbol)
-            )
+            integral_f, _ = i.integral_f(p0)
             Bs.append(integral_f)
-
-        else:
-            for i in self.collision_integrands:
-
-                bounds = (
-                    (GRID.MIN_MOMENTUM,
-                     GRID.MAX_MOMENTUM),
-                    (lambda p1: GRID.MIN_MOMENTUM,
-                     lambda p1: min(p0 + p1, GRID.MAX_MOMENTUM)),
-                )
-
-                integral_1, _ = self.benchmarked_integration(
-                    p0, i.integrand,
-                    kwargs={'F_A': False, 'F_B': False, 'F_1': True, 'F_f': False},
-                    name=str(i), bounds=bounds
-                )
-                As.append(integral_1)
-
-                integral_f, _ = self.benchmarked_integration(
-                    p0, i.integrand,
-                    kwargs={'F_A': False, 'F_B': False, 'F_1': False, 'F_f': True},
-                    name=str(i), bounds=bounds
-                )
-                Bs.append(integral_f)
 
         order = min(len(self.data['collision_integral']) + 1, 5)
 
         index = numpy.argwhere(GRID.TEMPLATE == p0)[0][0]
-        fs = [i[index] for i in self.data['collision_integral']]
+        fs = [i[index] for i in self.data['collision_integral'][-order+1:]]
 
-        prediction = adams_moulton_solver(y=self.distribution(p0),
-                                          fs=fs,
-                                          A=PARAMS.x * sum(As),
-                                          B=PARAMS.x * sum(Bs),
-                                          h=PARAMS.dy,
-                                          order=order)
-
-        # prediction = implicit_euler(y=self.distribution(p0),
-        #                             t=PARAMS.x,
-        #                             A=sum(As),
-        #                             B=sum(Bs),
-        #                             h=PARAMS.dx)
+        prediction = adams_moulton_solver(y=self.distribution(p0), fs=fs,
+                                          A=sum(As), B=sum(Bs),
+                                          h=PARAMS.dy, order=order)
 
         total_integral = (prediction - self.distribution(p0)) / PARAMS.dy
 
