@@ -177,6 +177,7 @@ class Integral:
 
     # Temperature when the typical interaction time exceeds the Hubble expansion time
     decoupling_temperature = 0.
+    constant = 0.
 
     """ Four-particle interactions of the interest can all be rewritten in a form
 
@@ -215,6 +216,7 @@ class Integral:
         Initialize collision integral constants and save them to the first involved particle
         """
         if PARAMS.T > self.decoupling_temperature and not self.in_particles[0].in_equilibrium:
+            self.constant = 1./64. / numpy.pi**3 * PARAMS.m**5 / PARAMS.x**5 / PARAMS.H
             self.particles[0].collision_integrals.append(self)
 
     def calculate_kinematics(self, p=[]):
@@ -244,16 +246,16 @@ class Integral:
         if self.DETAILED_OUTPUT:
             with benchmark("\t"):
                 integral, error = integrators.integrate_2D(
-                    lambda p1, p2: integrand(p0, p1, p2, 0, **kwargs),
+                    lambda p1, p2: integrand(p0, p1, p2, **kwargs),
                     bounds=bounds
                 )
 
                 print '{name:}\t\tI( {p0:5.2f} ) = {integral: .5e}\t'\
-                    .format(name=name, integral=integral * UNITS.MeV, p0=p0 / UNITS.MeV),
+                    .format(name=name, integral=integral, p0=p0 / UNITS.MeV),
 
         else:
             integral, error = integrators.integrate_2D(
-                lambda p1, p2: integrand(p0, p1, p2, 0, **kwargs),
+                lambda p1, p2: integrand(p0, p1, p2, **kwargs),
                 bounds=bounds
             )
 
@@ -296,7 +298,7 @@ class Integral:
             name=str(self), bounds=bounds
         )
 
-    def integrand(self, p0, p1, p2, p3, F_A=True, F_B=True, F_1=False, F_f=False):
+    def integrand(self, p0, p1, p2, F_A=True, F_B=True, F_1=False, F_f=False):
 
         """
         Collision integral interior.
@@ -307,12 +309,12 @@ class Integral:
         WARNING: $F_1 + F_f \neq F_A + F_B = F_1 + f(p_0) F_f$
         """
 
-        p = [p0, p1, p2, p3]
+        p = [p0, p1, p2, 0]
         p, E, m = self.calculate_kinematics(p)
         if not self.in_bounds(p, E, m):
             return 0.
 
-        integrand = 1./64. / numpy.pi**3 * PARAMS.m**5 / PARAMS.x**5 / PARAMS.H
+        integrand = self.constant
 
         ds = 0.
         if p[0] != 0:

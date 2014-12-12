@@ -157,14 +157,7 @@ class Particle(PicklableObject):
         if self.in_equilibrium:
             return
 
-        delta = self.collision_integral * PARAMS.dy
-
-        prediction = self._distribution + delta
-        if numpy.any(prediction < 0):
-            print("Holy cow, negative distribution!")
-
-        # Force minimal distribution function value to 0
-        self._distribution = numpy.maximum(prediction, 0)
+        self._distribution += self.collision_integral * PARAMS.dy
 
         # Clear collision integrands for the next computation step
         self.collision_integrals = []
