@@ -77,7 +77,7 @@ class Universe:
             'fraction': array.array('f', [0]),
         }
 
-        print '#step\tTime, s\taT, MeV\tT, MeV\tscale factor\tρ energy density, eV^4\tH, GeV'
+        print '#step\tTime, s\taT, MeV\tT, MeV\tscale factor\tdx, MeV'
         self.log()
         self.step += 1
 
@@ -159,7 +159,7 @@ class Universe:
                     numpy.vectorize(particle.integrate_collisions,
                                     otypes=[numpy.float_])(GRID.TEMPLATE)
 
-            print particle.symbol, "I =", particle.collision_integral * UNITS.MeV
+            print particle.symbol, "I =", particle.collision_integral
 
     def update_distributions(self):
         """ === 4. Update particles distributions === """
