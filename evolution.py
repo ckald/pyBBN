@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 import sys
-import copy
 import numpy
 import array
 from datetime import datetime
@@ -25,7 +24,7 @@ class Universe:
     # Controls parallelization of the collision integrals calculations
     PARALLELIZE = True
 
-    def __init__(self, particles=[], interactions=[],
+    def __init__(self, particles=None, interactions=None,
                  logfile='logs/' + str(datetime.now()) + '.txt',
                  plotting=True, postmortem_debugger=True):
         """
@@ -36,8 +35,8 @@ class Universe:
         :param postmortem_debugger: Boolean, whether to invoke the `pdb` debugger at the end of\
                                     computation
         """
-        self.particles = particles
-        self.interactions = interactions
+        self.particles = particles if particles else []
+        self.interactions = interactions if interactions else []
 
         self.graphics = Plotting() if plotting else None
         self.postmortem_debugger = postmortem_debugger

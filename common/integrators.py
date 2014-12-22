@@ -112,7 +112,6 @@ grid = numpy.meshgrid(points, points)
 
 
 def gaussian(f, a, b):
-    global points, weights
 
     sub = (b - a) / 2.
     add = (b + a) / 2.
@@ -142,7 +141,6 @@ def remap_interval(f, x, y, bounds):
 
 
 def double_gaussian(f, a, b, g, h):
-    global grid, weights
 
     x, y = grid
     mesh = remap_interval(f, x, y, bounds=(a, b, g, h))

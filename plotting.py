@@ -69,11 +69,11 @@ class Plotting:
             plt.figure(2)
             plt.savefig(os.path.join(folder, 'particles.png'))
 
-    def monitor(self, particles=[]):
+    def monitor(self, particles=None):
         """ Setup the detailed distribution function and energy density plots for specific \
             particle species """
 
-        self.particles = particles
+        self.particles = particles if particles else []
         if self.particles:
             self.particles_figure, self.particles_plots = plt.subplots(len(particles), 2, num=2)
             self.particles_figure.subplots_adjust(hspace=0.5, wspace=0.5)

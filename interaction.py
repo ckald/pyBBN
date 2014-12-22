@@ -219,7 +219,7 @@ class Integral:
             self.constant = 1./64. / numpy.pi**3 * PARAMS.m**5 / PARAMS.x**5 / PARAMS.H
             self.particles[0].collision_integrals.append(self)
 
-    def calculate_kinematics(self, p=[]):
+    def calculate_kinematics(self, p):
         """ Helper procedure that caches conformal energies and masses of the particles """
         p = (p + [0., 0., 0., 0.])[:4]
         E = []
@@ -234,7 +234,9 @@ class Integral:
         p[3] = numpy.sqrt(numpy.abs(E[3]**2 - m[3]**2))
         return p, E, m
 
-    def benchmarked_integration(self, p0, integrand, name, bounds=None, kwargs={}):
+    def benchmarked_integration(self, p0, integrand, name, bounds=None, kwargs=None):
+        kwargs = kwargs if kwargs else {}
+
         if bounds is None:
             bounds = (
                 (GRID.MIN_MOMENTUM,
@@ -269,7 +271,7 @@ class Integral:
         integral_1, _ = self.integral_1(p0)
         integral_f, _ = self.integral_f(p0)
 
-        order = min(len(self.data['collision_integral']) + 1, 5)
+        order = min(len(particle.data['collision_integral']) + 1, 5)
 
         index = numpy.argwhere(GRID.TEMPLATE == p0)[0][0]
         fs = [i[index] for i in particle.data['collision_integral'][-order:]]
@@ -354,7 +356,7 @@ class Integral:
 
     """ === Integration region bounds methods === """
 
-    def in_bounds(self, p=[], E=None, m=None):
+    def in_bounds(self, p, E=None, m=None):
         """ $D$-functions involved in the interactions imply a cut-off region for the collision\
             integrand. In the general case of arbitrary particle masses, this is a set of \
             irrational inequalities that can hardly be solved (at least, Wolfram Mathematica does\
@@ -417,7 +419,7 @@ class Integral:
         \end{align}
     """
 
-    def F_A(self, p=[], skip_index=None):
+    def F_A(self, p, skip_index=None):
         """
         Forward reaction distribution functional term
 
@@ -438,7 +440,7 @@ class Integral:
 
         return temp
 
-    def F_B(self, p=[], skip_index=None):
+    def F_B(self, p, skip_index=None):
         """
         Backward reaction distribution functional term
 
@@ -478,12 +480,12 @@ class Integral:
     $^{(i)}$ in $\mathcal{F}^{(i)}$ means that the distribution function $f_i$ was omitted in the\
     corresponding expression. $\pm_j$ represents the $\eta$ value of the particle $j$.
     """
-    def F_f(self, p=[]):
+    def F_f(self, p):
         """ Variable part of the distribution functional """
         return (
             self.F_A(p=p, skip_index=0) - self.in_particles[0].eta * self.F_B(p=p, skip_index=0)
         )
 
-    def F_1(self, p=[]):
+    def F_1(self, p):
         """ Constant part of the distribution functional """
         return self.F_B(p=p, skip_index=0)

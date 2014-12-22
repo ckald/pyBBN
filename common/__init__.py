@@ -66,9 +66,6 @@ class Params(PicklableObject):
     def __init__(self):
         self.infer()
 
-    def copy(self):
-        return Params(**self.kw)
-
     def infer(self):
         """ Set initial cosmological parameters based on the value of `T_initial` """
         # As the initial scale factor is arbitrary, it can be use to ensure the initial $aT$ value\
