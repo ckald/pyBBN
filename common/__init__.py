@@ -37,6 +37,7 @@ class CONST:
     """ === Physical constants === """
 
     G = 6.67 * 1e-11 * (UNITS.N / UNITS.kg**2 * UNITS.m**2)
+    M_p = 1.2209 * 1e19 * UNITS.GeV
     G_F = 1.166 * 1e-5 / UNITS.GeV**2
     sin_theta_w_2 = 0.23
     g_R = sin_theta_w_2
@@ -88,7 +89,7 @@ class Params(PicklableObject):
             \end{equation}
         """
         self.rho = rho
-        self.H = numpy.sqrt(8./3.*numpy.pi * CONST.G * rho)
+        self.H = numpy.sqrt(8./3.*numpy.pi * rho) / CONST.M_p
 
         old_a = self.a
         """ Physical scale factor and temperature for convenience """
