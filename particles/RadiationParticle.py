@@ -2,8 +2,6 @@
 Ultra-relativistic simplifications of density, energy density and pressure calculations
 """
 import numpy
-from common import PARAMS
-import particles
 
 
 __path__ = "../.."
@@ -19,7 +17,7 @@ def density(particle):
         \end{equation}
     """
     density = particle.T**3 * particle.dof / numpy.pi**2 * 1.2
-    if particle.statistics == particles.STATISTICS.FERMION:
+    if particle.eta == 1:
         # Multiplied by $\frac34$ for fermions
         density *= 3./4.
     return density
@@ -33,7 +31,7 @@ def energy_density(particle):
         \end{equation}
     """
     density = particle.dof * numpy.pi**2 / 30. * particle.T**4
-    if particle.statistics == particles.STATISTICS.FERMION:
+    if particle.eta == 1:
         # Multiplied by $\frac78$ for fermions
         density *= 7./8.
     return density
