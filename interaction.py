@@ -63,7 +63,7 @@ class WeakM(M):
         self.K2 *= 32 * CONST.G_F**2
 
 
-class Interaction(object):
+class Interaction(PicklableObject):
 
     """
     == Interaction ==
@@ -157,7 +157,13 @@ class Interaction(object):
             integral.initialize()
 
 
-class Integral:
+class Integral(PicklableObject):
+
+    _saveable_fields = [
+        'particles', 'in_particles', 'out_particles',
+        'signs', 'decoupling_temperature', 'constant',
+        'Ms', 'DETAILED_OUTPUT',
+    ]
 
     """ == Integral ==
         Representation of the concrete collision integral for a specific particle \
@@ -189,7 +195,6 @@ class Integral:
     Ms = []
 
     DETAILED_OUTPUT = False
-    COLLECTIVE_INTEGRATION = False
 
     def __init__(self, *args, **kwargs):
         """ Update self with configuration `kwargs`, construct particles list and \
@@ -313,6 +318,7 @@ class Integral:
 
         p = [p0, p1, p2, 0]
         p, E, m = self.calculate_kinematics(p)
+
         if not self.in_bounds(p, E, m):
             return 0.
 
@@ -325,7 +331,6 @@ class Integral:
         else:
             for M in self.Ms:
                 ds += Db1(*p[1:]) + m[1] * (E[2] * E[3] + Db2(*p[1:]))
-
         integrand *= ds
 
         # Avoid rounding errors and division by zero

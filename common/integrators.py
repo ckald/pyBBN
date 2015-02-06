@@ -137,7 +137,7 @@ def remap_interval(f, x, y, bounds):
 
     return sub_x * sub_y * f(norm_x, norm_y)
 
-# remap_interval = numpy.vectorize(remap_interval, otypes=[numpy.float_], excluded=['f', 'bounds'])
+remap_interval = numpy.vectorize(remap_interval, otypes=[numpy.float_], excluded=['f', 'bounds'])
 
 
 def double_gaussian(f, a, b, g, h):

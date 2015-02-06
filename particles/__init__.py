@@ -76,7 +76,9 @@ class Particle(PicklableObject):
         'name', 'symbol',
         'mass', 'decoupling_temperature',
         'dof', 'eta',
-        '_distribution', 'collision_integral',
+        'data',
+        '_distribution', 'distribution_function',
+        'collision_integral', 'collision_integrals',
         'T', 'aT'
     ]
 
@@ -95,10 +97,8 @@ class Particle(PicklableObject):
         self.statistics = kwargs.get('statistics', STATISTICS.FERMION)
         if self.statistics == STATISTICS.FERMION:
             self.eta = 1.
-            self.distribution_function = STATISTICS.Fermi
         else:
             self.eta = -1.
-            self.distribution_function = STATISTICS.Bose
 
         """ For equilibrium particles distribution function is by definition given by its\
             statistics and will not be used until species comes into non-equilibrium regime """
@@ -173,7 +173,6 @@ class Particle(PicklableObject):
         Bs = []
 
         for i in self.collision_integrals:
-
             integral_1, _ = i.integral_1(p0)
             As.append(integral_1)
 
@@ -236,6 +235,13 @@ class Particle(PicklableObject):
 
     def denominator(self):
         return self.regime.denominator(self)
+
+    @property
+    def distribution_function(self):
+        if self.eta == -1:
+            return STATISTICS.Bose
+        else:
+            return STATISTICS.Fermi
 
     def distribution(self, p):
         """

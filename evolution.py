@@ -11,7 +11,7 @@ from common import integrators, parallelization, utils
 from plotting import Plotting
 
 
-class Universe:
+class Universe(object):
 
     """ == Universe ==
         The master object that governs the calculation. """
@@ -152,8 +152,9 @@ class Universe:
 
             if self.PARALLELIZE:
                 particle.collision_integral = \
-                    numpy.array(parallelization.parmap(particle.integrate_collisions,
-                                                       GRID.TEMPLATE))
+                    numpy.array(parallelization.poolmap(particle, 'integrate_collisions',
+                                                        GRID.TEMPLATE))
+
             else:
                 particle.collision_integral = \
                     numpy.vectorize(particle.integrate_collisions,
