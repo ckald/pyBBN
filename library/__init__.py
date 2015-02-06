@@ -181,7 +181,7 @@ class StandardModelInteractions:
             \begin{align}
                 |\mathcal{M}|^2 = 32 G_F^2 \left(
                 \\\\ 4 \, g_L^2 \, (p_0 \cdot p_1) (p_2 \cdot p_3) +
-                \\\\ +4 \, g_L^2 \, (p_0 \cdot p_3) (p_1 \cdot p_2) -
+                \\\\ +4 \, g_R^2 \, (p_0 \cdot p_3) (p_1 \cdot p_2) -
                 \\\\ -4 \, g_L g_R \, m_1 m_3 (p_0 \cdot p_2)
                 \\\\ \right)
             \end{align}
@@ -196,7 +196,7 @@ class StandardModelInteractions:
             decoupling_temperature=0 * UNITS.MeV,
             Ms=[
                 WeakM(K1=4 * g_L**2, order=(0, 1, 2, 3)),
-                WeakM(K1=4 * g_L**2, order=(0, 3, 1, 2)),
+                WeakM(K1=4 * CONST.g_R**2, order=(0, 3, 1, 2)),
                 WeakM(K2=-4 * g_L * CONST.g_R, order=(1, 3, 0, 2)),
             ]
         )
