@@ -10,7 +10,7 @@ import numericalunits as nu
 from utils import PicklableObject
 
 
-class UNITS:
+class UNITS(object):
 
     """ == Units ==
         As we use natural units in the project, all units from `numericalunits` except energy units\
@@ -33,7 +33,7 @@ class UNITS:
 UNITS.reset_units()
 
 
-class CONST:
+class CONST(object):
     """ === Physical constants === """
 
     G = 6.67 * 1e-11 * (UNITS.N / UNITS.kg**2 * UNITS.m**2)

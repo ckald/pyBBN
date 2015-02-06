@@ -17,7 +17,7 @@ from particles import DustParticle, RadiationParticle, IntermediateParticle, Non
 # from particles.interpolation.interpolation import distribution_interpolation
 
 
-class STATISTICS:
+class STATISTICS(object):
     """ == Particle species statistics == """
 
     @staticmethod
@@ -82,7 +82,7 @@ class Particle(PicklableObject):
         'T', 'aT'
     ]
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, **kwargs):
 
         """ Set internal parameters using arguments or default values """
         self.T = PARAMS.T

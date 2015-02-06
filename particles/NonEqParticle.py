@@ -31,8 +31,8 @@ def lambda_integrate(func):
         @functools.wraps(func)
         def wrapper(*args, **kw):
             fpp = func(*args, **kw)
-            result, err = integrate.quad(fpp, GRID.MIN_MOMENTUM, GRID.MAX_MOMENTUM,
-                                         epsrel=1e-5, epsabs=0)
+            result, _ = integrate.quad(fpp, GRID.MIN_MOMENTUM, GRID.MAX_MOMENTUM,
+                                       epsrel=1e-5, epsabs=0)
 
             return result
 

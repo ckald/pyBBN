@@ -5,7 +5,7 @@ from particles import STATISTICS
 from interaction import Interaction, WeakM
 
 
-class StandardModelParticles:
+class StandardModelParticles(object):
     """ A collection of Standard Model particles templates to be used as a reference and to avoid\
         typical mistakes such as wrong degree of freedom for the neutrinos (2, not 4 - there are\
         no right-handed neutrinos and left-handed antineutrinos). """
@@ -74,7 +74,7 @@ class StandardModelParticles:
     }
 
 
-class StandardModelInteractions:
+class StandardModelInteractions(object):
     """ Collection of Standard Model interactions double-triple-checked and used in all tests for\
         consistency. """
 

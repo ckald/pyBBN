@@ -2,21 +2,14 @@ import multiprocessing
 from multiprocessing import Process, Pipe, Pool
 from itertools import izip
 
-target_func = None
-
-
-def initializer(target_func):
-    global target
-    target = target_func
-
 
 def target(args, **kw):
-    object, method_name = args[0], args[1]
+    obj, method_name = args[0], args[1]
     args = args[2:]
-    result = getattr(object, method_name)(*args)
+    result = getattr(obj, method_name)(*args, **kw)
     return result
 
-pool = Pool(processes=7, initializer=initializer, initargs=(target,))
+pool = Pool(processes=7)
 
 
 def spawn(f):
@@ -28,7 +21,7 @@ def spawn(f):
 
 def parmap(f, X, workers=multiprocessing.cpu_count()-1):
     pipe = [Pipe() for x in X]
-    processes = [Process(target=spawn(f), args=(c, x)) for x, (p, c) in izip(X, pipe)]
+    processes = [Process(target=spawn(f), args=(c, x)) for x, (_, c) in izip(X, pipe)]
     numProcesses = len(processes)
     processNum = 0
     outputList = []

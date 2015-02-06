@@ -1,8 +1,6 @@
 import numpy
 from numpy import polynomial
 
-from common import GRID
-
 
 def euler_correction(y, t, f, h):
     """

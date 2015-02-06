@@ -6,7 +6,7 @@ from common.utils import PicklableObject, benchmark
 from ds import D, Db1, Db2
 
 
-class INTERACTIONS:
+class INTERACTIONS(object):
     DECAY = 'decay'
 
 
@@ -37,7 +37,7 @@ class M(object):
     # Order defines the values of the $(i, j, k, l)$ indices
     order = (0, 1, 2, 3)
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, **kwargs):
         """ Configure matrix element, check that it makes sense """
         for key in kwargs:
             setattr(self, key, kwargs[key])
@@ -85,7 +85,7 @@ class Interaction(PicklableObject):
     # Matrix elements of the interaction
     Ms = []
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, **kwargs):
         """ Create an `Integral` object for all particle species involved in the interaction.
 
             Precise expressions for all integrals can be derived by permuting all particle-related\
@@ -196,7 +196,7 @@ class Integral(PicklableObject):
 
     DETAILED_OUTPUT = False
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, **kwargs):
         """ Update self with configuration `kwargs`, construct particles list and \
             energy conservation law of the integral. """
         for key in kwargs:

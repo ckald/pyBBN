@@ -12,7 +12,7 @@ from common import UNITS, GRID, PARAMS
 from common.utils import ring_deque
 
 
-class Plotting:
+class Plotting(object):
     particles = None
 
     def __init__(self):
@@ -88,14 +88,14 @@ class Plotting:
 
             self.particles_figure.show()
 
-    def plot(self, data, full=False):
+    def plot(self, data):
         """ Plot cosmological parameters and monitored particles distribution functions """
 
         last_t = data['t'][-1] / UNITS.s
         self.times.append(last_t)
 
         for i, plot in enumerate(self.plots):
-            xmin, xmax = plot.get_xlim()
+            _, xmax = plot.get_xlim()
             ymin, ymax = plot.get_ylim()
 
             if last_t >= xmax:
