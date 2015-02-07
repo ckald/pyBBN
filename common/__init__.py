@@ -39,7 +39,7 @@ class CONST(object):
     G = 6.67 * 1e-11 * (UNITS.N / UNITS.kg**2 * UNITS.m**2)
     M_p = 1.2209 * 1e19 * UNITS.GeV
     G_F = 1.166 * 1e-5 / UNITS.GeV**2
-    sin_theta_w_2 = 0.23
+    sin_theta_w_2 = 0.2312
     g_R = sin_theta_w_2
     g_L = sin_theta_w_2 + 0.5
 
