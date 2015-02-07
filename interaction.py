@@ -129,6 +129,8 @@ class Interaction(PicklableObject):
         return self.name + "\n\t" + "\n\t".join([str(integral) for integral in self.integrals])
 
     def init_integrals(self, in_particles, out_particles, Ms, accounted_particles):
+        """ Starting from the single representation of the interaction, create integrals objects\
+            to be computed for every particle specie involved """
         for i, particle in enumerate(in_particles):
 
             # Skip already accounted species
