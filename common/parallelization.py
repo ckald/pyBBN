@@ -9,7 +9,7 @@ def target(args, **kw):
     result = getattr(obj, method_name)(*args, **kw)
     return result
 
-pool = Pool(processes=7)
+pool = Pool(processes=multiprocessing.cpu_count()-1)
 
 
 def spawn(f):
