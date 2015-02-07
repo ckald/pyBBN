@@ -6,10 +6,6 @@ from common.utils import PicklableObject, benchmark
 from ds import D, Db1, Db2
 
 
-class INTERACTIONS(object):
-    DECAY = 'decay'
-
-
 """
 == Boltzmann collision integral ==
 
