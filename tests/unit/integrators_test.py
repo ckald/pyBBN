@@ -57,11 +57,11 @@ def explicit_euler_test():
 
 def implicit_euler_test():
 
-    y_implicit = solve_implicit(lambda t: 0, lambda t: -2.3, 1, 1, 0., 5.)
+    y_implicit = solve_implicit(0, -2.3, 1, 1, 0., 5.)
     assert y_implicit >= 0, "Implicit Euler method be positive"
     assert all(numpy.diff(numpy.abs(y_implicit)) <= 0), "Implicit Euler method should be stable"
 
-    y_implicit_coarse = solve_implicit(lambda t: 0, lambda t: -2.3, 1, 2, 0., 5.)
+    y_implicit_coarse = solve_implicit(0, -2.3, 1, 2, 0., 5.)
     print y_implicit_coarse
     assert y_implicit_coarse >= 0, "Implicit Euler method solution be positive"
     assert all(numpy.diff(numpy.abs(y_implicit_coarse)) <= 0), \

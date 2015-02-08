@@ -15,12 +15,12 @@ def params_inferrence_test():
     assert PARAMS.x - PARAMS.m * PARAMS.aT / PARAMS.T < eps
 
 
-@with_setup(setup)
-def params_copy_test():
-    other_params = PARAMS.copy()
-    assert id(other_params) != id(PARAMS), "PARAMS were not copied"
-    other_params.dx *= 1000
-    assert other_params.dx != PARAMS.dx
+# @with_setup(setup)
+# def params_copy_test():
+#     other_params = PARAMS.copy()
+#     assert id(other_params) != id(PARAMS), "PARAMS were not copied"
+#     other_params.dx *= 1000
+#     assert other_params.dx != PARAMS.dx
 
 
 @with_setup(setup)

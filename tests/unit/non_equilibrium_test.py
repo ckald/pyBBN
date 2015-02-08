@@ -48,6 +48,7 @@ def free_non_equilibrium_test():
 
     universe.update_distributions()
 
+    print photon.collision_integral, neutrino_e.collision_integral, neutrino_mu.collision_integral
     assert all(photon.collision_integral
                + neutrino_e.collision_integral
                + neutrino_mu.collision_integral == 0), "Collision integrals were not cleared"
