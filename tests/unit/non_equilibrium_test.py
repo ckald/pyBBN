@@ -1,12 +1,8 @@
-import numpy
-from nose import with_setup
-
-from common import GRID, PARAMS
 from evolution import Universe
 from particles import Particle
 from library import StandardModelParticles as SMP, StandardModelInteractions as SMI
 
-from . import eps, setup
+from . import eps, setup, with_setup_args
 
 
 universe = None
@@ -14,23 +10,26 @@ universe = None
 
 def non_equilibium_setup():
     global universe
-    setup()
+    args, kwargs = setup()
+    params = args[0]
 
-    photon = Particle(**SMP.photon)
-    neutrino_e = Particle(**SMP.neutrino_e)
-    neutrino_mu = Particle(**SMP.neutrino_mu)
+    photon = Particle(params=params, **SMP.photon)
+    neutrino_e = Particle(params=params, **SMP.neutrino_e)
+    neutrino_mu = Particle(params=params, **SMP.neutrino_mu)
 
     neutrino_self_scattering = SMI.neutrino_self_scattering(neutrino=neutrino_e)
 
-    universe = Universe(particles=[photon, neutrino_e, neutrino_mu],
-                        interactions=[neutrino_self_scattering],
-                        plotting=False)
+    universe = Universe(params=params, plotting=False)
+    universe.particles += [photon, neutrino_e, neutrino_mu]
+    universe.interactions += [neutrino_self_scattering]
+
+    return args, kwargs
 
 
-@with_setup(non_equilibium_setup)
-def free_non_equilibrium_test():
+@with_setup_args(non_equilibium_setup)
+def free_non_equilibrium_test(params):
 
-    PARAMS.update(universe.total_energy_density())
+    params.update(universe.total_energy_density())
 
     photon, neutrino_e, neutrino_mu = universe.particles
 
@@ -43,15 +42,10 @@ def free_non_equilibrium_test():
     universe.calculate_collisions()
 
     assert all(photon.collision_integral == 0), "Equilibrium particle integral is non-zero"
-    assert all(neutrino_e.collision_integral * PARAMS.dx < eps), "Integral do not cancel"
+    assert all(neutrino_e.collision_integral * params.dx < eps), "Integral do not cancel"
     assert all(neutrino_mu.collision_integral == 0), "Free particle integral is non-zero"
 
     universe.update_distributions()
-
-    print photon.collision_integral, neutrino_e.collision_integral, neutrino_mu.collision_integral
-    assert all(photon.collision_integral
-               + neutrino_e.collision_integral
-               + neutrino_mu.collision_integral == 0), "Collision integrals were not cleared"
 
     assert all(photon._distribution == photon_distribution),\
         "Equilibrium particle distribution changed"

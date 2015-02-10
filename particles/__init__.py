@@ -9,7 +9,7 @@ from __future__ import division
 
 import numpy
 
-from common import GRID, PARAMS, UNITS
+from common import GRID, UNITS, Params
 from common.integrators import adams_moulton_solver
 from common.utils import PicklableObject
 
@@ -77,16 +77,17 @@ class Particle(PicklableObject):
         'mass', 'decoupling_temperature',
         'dof', 'eta',
         'data',
-        '_distribution', 'distribution_function',
+        '_distribution',
         'collision_integral', 'collision_integrals',
-        'T', 'aT'
+        'T', 'aT', 'params'
     ]
 
-    def __init__(self, **kwargs):
+    def __init__(self, params, **kwargs):
 
         """ Set internal parameters using arguments or default values """
-        self.T = PARAMS.T
-        self.aT = PARAMS.aT
+        self.params = params
+        self.T = self.params.T
+        self.aT = self.params.aT
         self.mass = kwargs.get('mass', 0 * UNITS.eV)
         self.decoupling_temperature = kwargs.get('decoupling_temperature', 0 * UNITS.eV)
         self.name = kwargs.get('name', 'Particle')
@@ -95,10 +96,7 @@ class Particle(PicklableObject):
         self.dof = kwargs.get('dof', 2)  # particle species degeneracy (e.g., spin-degeneracy)
 
         self.statistics = kwargs.get('statistics', STATISTICS.FERMION)
-        if self.statistics == STATISTICS.FERMION:
-            self.eta = 1.
-        else:
-            self.eta = -1.
+        self.eta = 1. if self.statistics == STATISTICS.FERMION else -1.
 
         """ For equilibrium particles distribution function is by definition given by its\
             statistics and will not be used until species comes into non-equilibrium regime """
@@ -112,8 +110,6 @@ class Particle(PicklableObject):
         }
 
         self.update()
-        self.T = PARAMS.T
-        self.aT = PARAMS.aT
         self.init_distribution()
 
     def __str__(self):
@@ -129,11 +125,6 @@ class Particle(PicklableObject):
     def __repr__(self):
         return self.symbol
 
-    def __copy__(self):
-        newone = type(self)()
-        newone.__dict__.update(self.__dict__)
-        return newone
-
     def update(self, force_print=False):
         """ Update the particle parameters according to the new state of the system """
         oldregime = self.regime
@@ -142,8 +133,8 @@ class Particle(PicklableObject):
         # Update particle internal params only while it is in equilibrium
         if self.in_equilibrium or self.in_equilibrium != oldeq:
             # Particle species has temperature only when it is in equilibrium
-            self.T = PARAMS.T
-            self.aT = PARAMS.aT
+            self.T = self.params.T
+            self.aT = self.params.aT
 
         if self.in_equilibrium != oldeq and not self.in_equilibrium:
             # Particle decouples, have to init the distribution function array for kinetics
@@ -157,13 +148,16 @@ class Particle(PicklableObject):
         if self.in_equilibrium:
             return
 
-        self._distribution += self.collision_integral * PARAMS.dy
+        self._distribution += self.collision_integral * self.params.dy
 
         # Clear collision integrands for the next computation step
         self.collision_integrals = []
         self.data['collision_integral'].append(self.collision_integral)
 
-    def integrate_collisions(self, p0):
+    def integrate_collisions(self):
+        return numpy.vectorize(self.calculate_collision_integral)(GRID.TEMPLATE)
+
+    def calculate_collision_integral(self, p0):
         """ === Particle collisions integration === """
 
         if not self.collision_integrals:
@@ -186,9 +180,9 @@ class Particle(PicklableObject):
 
         prediction = adams_moulton_solver(y=self.distribution(p0), fs=fs,
                                           A=sum(As), B=sum(Bs),
-                                          h=PARAMS.dy, order=order)
+                                          h=self.params.dy, order=order)
 
-        total_integral = (prediction - self.distribution(p0)) / PARAMS.dy
+        total_integral = (prediction - self.distribution(p0)) / self.params.dy
 
         return total_integral
 
@@ -236,13 +230,6 @@ class Particle(PicklableObject):
     def denominator(self):
         return self.regime.denominator(self)
 
-    @property
-    def distribution_function(self):
-        if self.eta == -1:
-            return STATISTICS.Bose
-        else:
-            return STATISTICS.Fermi
-
     def distribution(self, p):
         """
         == Distribution function interpolation ==
@@ -264,7 +251,7 @@ class Particle(PicklableObject):
         exponential_interpolation = True
         p = abs(p)
         if self.in_equilibrium or p > GRID.MAX_MOMENTUM:
-            return self.distribution_function(self.conformal_energy(p) / self.aT)
+            return self.equilibrium_distribution(p)
 
         # Cython implementation experiment
         #
@@ -326,14 +313,21 @@ class Particle(PicklableObject):
                 self._distribution[i_low] * (p_high - p) + self._distribution[i_high] * (p - p_low)
             ) / (p_high - p_low)
 
-    def equilibrium_distribution(self, p=None):
+    def equilibrium_distribution(self, y=None):
         """ Equilibrium distribution that corresponds to the particle internal temperature """
-        if p is None:
-            return self.distribution_function(
+        if y is None:
+            return self.equilibrium_distribution_function(
                 numpy.vectorize(self.conformal_energy)(GRID.TEMPLATE) / self.aT
             )
         else:
-            return self.distribution_function(self.conformal_energy(p) / self.aT)
+            return self.equilibrium_distribution_function(self.conformal_energy(y) / self.aT)
+
+    @property
+    def equilibrium_distribution_function(self):
+        if self.eta == -1:
+            return STATISTICS.Bose
+        else:
+            return STATISTICS.Fermi
 
     def init_distribution(self):
         self._distribution = self.equilibrium_distribution()
@@ -372,4 +366,4 @@ class Particle(PicklableObject):
     def conformal_mass(self):
         """ In the expanding Universe, distribution function of the massive particle in the\
             conformal coordinates changes because of the evolving mass term $M a$ """
-        return self.mass * PARAMS.a
+        return self.mass * self.params.a

@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 from matplotlib import cm
 from mpl_toolkits.mplot3d import Axes3D
 
-from common import UNITS, GRID, PARAMS
+from common import UNITS, GRID
 from common.utils import ring_deque
 
 
@@ -117,9 +117,9 @@ class Plotting(object):
         if self.particles:
             for i, particle in enumerate(self.particles):
                 self.particles_plots[i][0].scatter(
-                    PARAMS.a,
+                    particle.params.a,
                     particle.energy_density() / (
-                        7. * numpy.pi**2 * (PARAMS.m / PARAMS.a)**4 / 120.
+                        7. * numpy.pi**2 * (particle.params.m / particle.params.a)**4 / 120.
                     ), s=1)
 
                 feq = particle.equilibrium_distribution()

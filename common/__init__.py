@@ -64,7 +64,10 @@ class Params(PicklableObject):
     # Total energy density
     rho = 0.
 
-    def __init__(self):
+    def __init__(self, **kwargs):
+        for key in kwargs:
+            setattr(self, key, kwargs[key])
+
         self.infer()
 
     def infer(self):
@@ -151,7 +154,6 @@ class Grid(PicklableObject):
         self.MOMENTUM_STEP = self.TEMPLATE[1] - self.TEMPLATE[0]
 
 
-PARAMS = Params()
 GRID = Grid()
 
 

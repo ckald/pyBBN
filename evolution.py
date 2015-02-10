@@ -5,7 +5,7 @@ import numpy
 import array
 from datetime import datetime
 
-from common import UNITS, PARAMS, GRID
+from common import UNITS, Params, Grid
 from common import integrators, parallelization, utils
 # from common.utils import PicklableObject
 from plotting import Plotting
@@ -24,9 +24,12 @@ class Universe(object):
     # Controls parallelization of the collision integrals calculations
     PARALLELIZE = True
 
-    def __init__(self, particles=None, interactions=None,
-                 logfile='logs/' + str(datetime.now()) + '.txt',
-                 plotting=True, postmortem_debugger=True):
+    particles = []
+    interactions = []
+
+    def __init__(self, logfile='logs/' + str(datetime.now()) + '.txt',
+                 plotting=True, postmortem_debugger=True,
+                 params=None, grid=None):
         """
         :param particles: Set of `particle.Particle` to model
         :param interactions: Set of `interaction.Interaction` - quantum interactions \
@@ -35,8 +38,8 @@ class Universe(object):
         :param postmortem_debugger: Boolean, whether to invoke the `pdb` debugger at the end of\
                                     computation
         """
-        self.particles = particles if particles else []
-        self.interactions = interactions if interactions else []
+        self.params = Params() if not params else params
+        self.grid = Grid() if not grid else grid
 
         self.graphics = Plotting() if plotting else None
         self.postmortem_debugger = postmortem_debugger
@@ -62,18 +65,18 @@ class Universe(object):
         for interaction in self.interactions:
             print interaction
 
-        print "dx = {} MeV".format(PARAMS.dx / UNITS.MeV)
+        print "dx = {} MeV".format(self.params.dx / UNITS.MeV)
 
         self.step = 0
 
-        PARAMS.update(self.total_energy_density())
+        self.params.update(self.total_energy_density())
         self.data = {
-            'aT': array.array('f', [PARAMS.aT]),
-            'T': array.array('f', [PARAMS.T]),
-            'a': array.array('f', [PARAMS.a]),
-            'x': array.array('f', [PARAMS.x]),
-            't': array.array('f', [PARAMS.t]),
-            'rho': array.array('f', [PARAMS.rho]),
+            'aT': array.array('f', [self.params.aT]),
+            'T': array.array('f', [self.params.T]),
+            'a': array.array('f', [self.params.a]),
+            'x': array.array('f', [self.params.x]),
+            't': array.array('f', [self.params.t]),
+            'rho': array.array('f', [self.params.rho]),
             'fraction': array.array('f', [0]),
         }
 
@@ -81,7 +84,7 @@ class Universe(object):
         self.log()
         self.step += 1
 
-        while PARAMS.T > PARAMS.T_final:
+        while self.params.T > self.params.T_final:
             try:
                 self.make_step()
             except KeyboardInterrupt:
@@ -107,17 +110,18 @@ class Universe(object):
         return self.data
 
     def make_step(self):
-        PARAMS.dx = PARAMS.x * (numpy.exp(PARAMS.dy) - 1.)
-        self.integrand(PARAMS.x, PARAMS.aT)
+        self.params.dx = self.params.x * (numpy.exp(self.params.dy) - 1.)
+        self.integrand(self.params.x, self.params.aT)
 
         order = min(self.step + 1, 5)
         fs = self.data['fraction'][-order+1:]
         fs.append(self.fraction)
 
-        PARAMS.aT += integrators.adams_bashforth_correction(fs=fs, h=PARAMS.dy, order=order)
-        PARAMS.x += PARAMS.dx
+        self.params.aT +=\
+            integrators.adams_bashforth_correction(fs=fs, h=self.params.dy, order=order)
+        self.params.x += self.params.dx
 
-        PARAMS.update(self.total_energy_density())
+        self.params.update(self.total_energy_density())
 
         self.save()
 
@@ -152,13 +156,13 @@ class Universe(object):
 
             if self.PARALLELIZE:
                 particle.collision_integral = \
-                    numpy.array(parallelization.poolmap(particle, 'integrate_collisions',
-                                                        GRID.TEMPLATE))
+                    numpy.array(parallelization.poolmap(particle, 'calculate_collision_integral',
+                                                        self.grid.TEMPLATE))
 
             else:
                 particle.collision_integral = \
                     numpy.vectorize(particle.integrate_collisions,
-                                    otypes=[numpy.float_])(GRID.TEMPLATE)
+                                    otypes=[numpy.float_])(self.grid.TEMPLATE)
 
             print particle.symbol, "I =", particle.collision_integral
 
@@ -198,19 +202,6 @@ class Universe(object):
               * [[Non-equilibrium|particles/NonEqParticle.py#master-equation-terms]]
         """
 
-        """
-        Save system state (unfinished, inactive)
-
-        ```python
-            from common import PARAMS
-            old_PARAMS = PARAMS.copy()
-            old_particles = copy.copy(self.particles)
-            PARAMS.aT = y
-            PARAMS.x = t
-            PARAMS.update(self.total_energy_density())
-        ```
-        """
-
         # 1\. Update particles states
         self.update_particles()
         # 2\. Initialize non-equilibrium interactions
@@ -221,27 +212,18 @@ class Universe(object):
         self.update_distributions()
         # 5\. Calculate temperature equation terms
         numerator, denominator = self.calculate_temperature_terms()
-        self.fraction = PARAMS.x * numerator / denominator
-
-        """
-        Load system state (unfinished, inactive)
-
-        ```python
-        PARAMS = old_PARAMS
-        self.particles = old_particles
-        ```
-        """
+        self.fraction = self.params.x * numerator / denominator
 
         return self.fraction
 
     def save(self):
         """ Save current Universe parameters into the data arrays or output files """
-        self.data['aT'].append(PARAMS.aT)
-        self.data['T'].append(PARAMS.T)
-        self.data['a'].append(PARAMS.a)
-        self.data['x'].append(PARAMS.x)
-        self.data['rho'].append(PARAMS.rho)
-        self.data['t'].append(PARAMS.t)
+        self.data['aT'].append(self.params.aT)
+        self.data['T'].append(self.params.T)
+        self.data['a'].append(self.params.a)
+        self.data['x'].append(self.params.x)
+        self.data['rho'].append(self.params.rho)
+        self.data['t'].append(self.params.t)
         self.data['fraction'].append(self.fraction)
 
     def init_log(self):
@@ -253,11 +235,11 @@ class Universe(object):
         # Print parameters every now and then
         if self.step % self.log_freq == 0:
             print '#' + str(self.step), \
-                '\tt =', PARAMS.t / UNITS.s, \
-                '\taT =', PARAMS.aT / UNITS.MeV, \
-                '\tT =', PARAMS.T / UNITS.MeV, \
-                '\ta =', PARAMS.a, \
-                '\tdx =', PARAMS.dx / UNITS.MeV
+                '\tt =', self.params.t / UNITS.s, \
+                '\taT =', self.params.aT / UNITS.MeV, \
+                '\tT =', self.params.T / UNITS.MeV, \
+                '\ta =', self.params.a, \
+                '\tdx =', self.params.dx / UNITS.MeV
 
             if self.graphics:
                 self.graphics.plot(self.data)

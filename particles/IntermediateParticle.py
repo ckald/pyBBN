@@ -4,7 +4,7 @@ are obtained through integration of distribution function
 """
 from scipy import integrate
 import numpy
-from common import GRID, PARAMS
+from common import GRID
 
 
 name = 'intermediate'
@@ -19,10 +19,10 @@ def density(particle):
     """
     density, _ = integrate.quad(
         lambda p: (
-            particle.distribution_function(
+            particle.equilibrium_distribution_function(
                 particle.energy(p) / particle.T
             ) * p**2 * particle.dof / 2. / numpy.pi**2
-        ), GRID.MIN_MOMENTUM, GRID.MAX_MOMENTUM,
+        ), GRID.MIN_MOMENTUM / particle.params.a, GRID.MAX_MOMENTUM / particle.params.a,
         epsrel=1e-8, epsabs=0
     )
     return density
@@ -37,7 +37,7 @@ def energy_density_integrand(p, particle):
     """
     E = particle.energy(p)
     return (
-        particle.distribution_function(E / particle.T)
+        particle.equilibrium_distribution_function(E / particle.T)
         * p**2 * E
         * particle.dof / 2. / numpy.pi**2
     )
@@ -50,7 +50,7 @@ def energy_density(particle):
     """
     energy_density, _ = integrate.quad(
         lambda p: energy_density_integrand(p, particle),
-        GRID.MIN_MOMENTUM, GRID.MAX_MOMENTUM,
+        GRID.MIN_MOMENTUM / particle.params.a, GRID.MAX_MOMENTUM / particle.params.a,
         epsrel=1e-8, epsabs=0
     )
     return energy_density
@@ -65,7 +65,7 @@ def pressure_integrand(p, particle):
     """
     E = particle.energy(p)
     return (
-        particle.distribution_function(E / particle.T)
+        particle.equilibrium_distribution_function(E / particle.T)
         * p**4 / E
         * particle.dof / 6. / numpy.pi**2
     )
@@ -78,7 +78,7 @@ def pressure(particle):
     """
     pressure, _ = integrate.quad(
         lambda p: pressure_integrand(p, particle),
-        GRID.MIN_MOMENTUM, GRID.MAX_MOMENTUM,
+        GRID.MIN_MOMENTUM / particle.params.a, GRID.MAX_MOMENTUM / particle.params.a,
         epsrel=1e-8, epsabs=0
     )
     return pressure
@@ -91,7 +91,8 @@ def numerator(particle):
             \frac{M^2 x}{m^2 a T} * I(2)
         \end{equation}
     """
-    return particle.mass**2 * PARAMS.x / PARAMS.m**2 / PARAMS.aT * I(particle, 2)
+    return particle.mass**2 * particle.params.x / particle.params.m**2 \
+        / particle.aT * I(particle, 2)
 
 
 def denominator(particle):
@@ -99,7 +100,7 @@ def denominator(particle):
             \frac{(I(4) + M_N^2 I(2))}{(a T)^2}
         \end{equation}
     """
-    return (I(particle, 4) + particle.conformal_mass**2 * I(particle)) / PARAMS.aT**2
+    return (I(particle, 4) + particle.conformal_mass**2 * I(particle)) / particle.aT**2
 
 
 def I(particle, y_power=2):
@@ -110,7 +111,9 @@ def I(particle, y_power=2):
     """
     return particle.dof / 2. / numpy.pi**2 * integrate.quad(
         lambda y: (
-            y**y_power * numpy.exp(-particle.conformal_energy(y) / PARAMS.aT)
-            / (numpy.exp(-particle.conformal_energy(y) / PARAMS.aT) + particle.eta) ** 2
-        ), GRID.MIN_MOMENTUM, GRID.MAX_MOMENTUM, epsrel=1e-8, epsabs=0
+            y**y_power * numpy.exp(-particle.conformal_energy(y) / particle.aT)
+            / (numpy.exp(-particle.conformal_energy(y) / particle.aT) + particle.eta) ** 2
+        ),
+        GRID.MIN_MOMENTUM, GRID.MAX_MOMENTUM,
+        epsrel=1e-8, epsabs=0
     )[0]

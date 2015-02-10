@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import copy
 import numpy
-from common import PARAMS, GRID, CONST, UNITS, integrators
+from common import GRID, CONST, UNITS, integrators
 from common.utils import PicklableObject, benchmark
 from ds import D, Db1, Db2
 
@@ -218,8 +218,9 @@ class Integral(PicklableObject):
         """
         Initialize collision integral constants and save them to the first involved particle
         """
-        if PARAMS.T > self.decoupling_temperature and not self.in_particles[0].in_equilibrium:
-            self.constant = 1./64. / numpy.pi**3 * PARAMS.m**5 / PARAMS.x**5 / PARAMS.H
+        params = self.in_particles[0].params
+        if params.T > self.decoupling_temperature and not self.in_particles[0].in_equilibrium:
+            self.constant = 1./64. / numpy.pi**3 * params.m**5 / params.x**5 / params.H
             self.particles[0].collision_integrals.append(self)
 
     def calculate_kinematics(self, p):
@@ -282,10 +283,10 @@ class Integral(PicklableObject):
         prediction = integrators.adams_moulton_solver(
             y=particle.distribution(p0), fs=fs,
             A=integral_1, B=integral_f,
-            h=PARAMS.dy, order=order
+            h=particle.params.dy, order=order
         )
 
-        total_integral = (prediction - particle.distribution(p0)) / PARAMS.dy
+        total_integral = (prediction - particle.distribution(p0)) / particle.params.dy
 
         return total_integral
 

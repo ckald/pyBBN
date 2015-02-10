@@ -14,29 +14,20 @@ This test checks that in the photon-electron universe:
 
 import numpy
 
-from particles import Particle, STATISTICS
+from particles import Particle
 from evolution import Universe
-from common import PARAMS, UNITS
+from library import StandardModelParticles as SMP
+from common import Params, UNITS
 
 
-PARAMS.T_initial = 100 * UNITS.MeV
-PARAMS.dx = 1e-1 * UNITS.MeV
-PARAMS.infer()
+params = Params(T_initial=100 * UNITS.MeV,
+                dx=1e-1 * UNITS.MeV)
 
+photon = Particle(params=params, **SMP.photon)
+electron = Particle(params=params, **SMP.electron)
 
-Particles = []
-photon = Particle(name='Photon',
-                  statistics=STATISTICS.BOSON,
-                  dof=2)
-Particles.append(photon)
-
-electron = Particle(name='Electron',
-                    mass=0.511 * UNITS.MeV,
-                    statistics=STATISTICS.FERMION,
-                    dof=4)
-Particles.append(electron)
-
-universe = Universe(Particles, logfile="tests/photon_electron_universe/log.txt")
+universe = Universe(params=params, logfile="tests/photon_electron_universe/log.txt")
+universe.particles += [photon, electron]
 universe.evolve()
 
 initial_aT = universe.data['aT'][0]
@@ -54,8 +45,8 @@ print """
 
 print """
     Cosmic photon background temperature is {:.3f} times bigger than cosmic neutrinos temperature.
-    Relative error is {:.3f} %""".format(PARAMS.aT / UNITS.MeV,
-                                         (PARAMS.aT / UNITS.MeV - 1.401) / 1.401 * 100)
+    Relative error is {:.3f} %""".format(universe.params.aT / UNITS.MeV,
+                                         (universe.params.aT / UNITS.MeV - 1.401) / 1.401 * 100)
 
 universe.graphics.save(__file__)
 

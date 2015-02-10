@@ -14,24 +14,20 @@ This test checks that in the photon universe:
 
 import numpy
 
-from particles import Particle, STATISTICS
+from particles import Particle
 from evolution import Universe
-from common import PARAMS, UNITS
+from library import StandardModelParticles as SMP
+from common import Params, UNITS
 
 
-PARAMS.T_initial = 100 * UNITS.MeV
-PARAMS.T_final = 100 * UNITS.keV
-PARAMS.dx = 1e-2 * UNITS.MeV
-PARAMS.infer()
+params = Params(T_initial=100 * UNITS.MeV,
+                T_final=100 * UNITS.keV,
+                dx=1e-2 * UNITS.MeV)
 
+photon = Particle(params=params, **SMP.photon)
 
-Particles = []
-photon = Particle(name='Photon',
-                  statistics=STATISTICS.BOSON,
-                  dof=2)
-Particles.append(photon)
-
-universe = Universe(Particles, logfile="tests/photon_universe/log.txt")
+universe = Universe(params=params, logfile="tests/photon_universe/log.txt")
+universe.particles.append(photon)
 universe.evolve()
 
 initial_aT = universe.data['aT'][0]

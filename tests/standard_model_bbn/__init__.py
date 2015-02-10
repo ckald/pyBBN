@@ -23,25 +23,23 @@ from plotting import plt
 from particles import Particle
 from library import StandardModelParticles as SMP, StandardModelInteractions as SMI
 from evolution import Universe
-from common import CONST, UNITS, PARAMS, GRID
+from common import CONST, UNITS, Params, GRID
 
 
-PARAMS.T_initial = 5. * UNITS.MeV
-PARAMS.T_final = 0.01 * UNITS.MeV
-PARAMS.dx = 1e-5 * UNITS.MeV
-PARAMS.infer()
+params = Params(T_initial=5. * UNITS.MeV,
+                T_final=0.15 * UNITS.MeV,
+                dx=1e-5 * UNITS.MeV)
 
+universe = Universe(params=params,
+                    logfile='tests/standard_model_bbn/log.txt')
 
-Particles = []
-Interactions = []
+photon = Particle(params=params, **SMP.photon)
+electron = Particle(params=params, **SMP.electron)
+neutrino_e = Particle(params=params, **SMP.neutrino_e)
+neutrino_mu = Particle(params=params, **SMP.neutrino_mu)
+neutrino_tau = Particle(params=params, **SMP.neutrino_tau)
 
-photon = Particle(**SMP.photon)
-electron = Particle(**SMP.electron)
-neutrino_e = Particle(**SMP.neutrino_e)
-neutrino_mu = Particle(**SMP.neutrino_mu)
-neutrino_tau = Particle(**SMP.neutrino_tau)
-
-Particles += [
+universe.particles += [
     photon,
     electron,
     neutrino_e,
@@ -49,7 +47,7 @@ Particles += [
     neutrino_tau,
 ]
 
-Interactions += [
+universe.interactions += [
     SMI.neutrino_self_scattering(neutrino_e),
     SMI.neutrino_self_scattering(neutrino_mu),
     SMI.neutrino_self_scattering(neutrino_tau),
@@ -59,15 +57,14 @@ Interactions += [
     SMI.neutrino_pair_flavour_change(neutrino_e, neutrino_mu),
     SMI.neutrino_pair_flavour_change(neutrino_mu, neutrino_tau),
     SMI.neutrino_pair_flavour_change(neutrino_tau, neutrino_e),
-    SMI.neutrinos_to_electrons(neutrino=neutrino_e, electron=electron, g_L=CONST.g_R+0.5),
-    SMI.neutrinos_to_electrons(neutrino=neutrino_mu, electron=electron, g_L=CONST.g_R-0.5),
-    SMI.neutrinos_to_electrons(neutrino=neutrino_tau, electron=electron, g_L=CONST.g_R-0.5),
-    SMI.neutrino_electron_scattering(neutrino=neutrino_e, electron=electron, g_L=CONST.g_R+0.5),
-    SMI.neutrino_electron_scattering(neutrino=neutrino_mu, electron=electron, g_L=CONST.g_R-0.5),
-    SMI.neutrino_electron_scattering(neutrino=neutrino_tau, electron=electron, g_L=CONST.g_R-0.5),
+    SMI.neutrinos_to_electrons(g_L=CONST.g_R+0.5, electron=electron, neutrino=neutrino_e),
+    SMI.neutrinos_to_electrons(g_L=CONST.g_R-0.5, electron=electron, neutrino=neutrino_mu),
+    SMI.neutrinos_to_electrons(g_L=CONST.g_R-0.5, electron=electron, neutrino=neutrino_tau),
+    SMI.neutrino_electron_scattering(g_L=CONST.g_R+0.5, electron=electron, neutrino=neutrino_e),
+    SMI.neutrino_electron_scattering(g_L=CONST.g_R-0.5, electron=electron, neutrino=neutrino_mu),
+    SMI.neutrino_electron_scattering(g_L=CONST.g_R-0.5, electron=electron, neutrino=neutrino_tau),
 ]
 
-universe = Universe(Particles, Interactions, logfile='tests/standard_model_bbn/log.txt')
 universe.graphics.monitor(particles=[
     neutrino_e,
     neutrino_mu,
@@ -93,7 +90,7 @@ plt.title('Figure 9')
 plt.xlabel('MeV/T')
 plt.ylabel(u'aT')
 plt.xscale('log')
-plt.xlim(0.5, UNITS.MeV/PARAMS.T_final)
+plt.xlim(0.5, UNITS.MeV/universe.params.T_final)
 plt.xticks([1, 2, 3, 5, 10, 20])
 plt.axes().get_xaxis().set_major_formatter(matplotlib.ticker.ScalarFormatter())
 plt.plot(UNITS.MeV / numpy.array(universe.data['T']), numpy.array(universe.data['aT']) / UNITS.MeV)
@@ -108,7 +105,7 @@ plt.figure(10)
 plt.title('Figure 10')
 plt.xlabel('Conformal momentum y = pa')
 plt.ylabel('f/f_eq')
-plt.xlim(0, 10)
+plt.xlim(0, 20)
 
 f_e = neutrino_e._distribution
 feq_e = neutrino_e.equilibrium_distribution()
@@ -125,12 +122,13 @@ plt.plot(GRID.TEMPLATE/UNITS.MeV, f_tau/feq_tau, label="nu_tau")
 plt.legend()
 plt.draw()
 plt.show()
-plt.savefig(os.path.join(folder, 'figure_10.png'))
+plt.savefig(os.path.join(folder, 'figure_10_full.png'))
 
-plt.xlim(0, 20)
+plt.xlim(0, 10)
+plt.ylim(0.99, 1.06)
 plt.draw()
 plt.show()
-plt.savefig(os.path.join(folder, 'figure_10_full.png'))
+plt.savefig(os.path.join(folder, 'figure_10.png'))
 
 # Distribution functions arrays
 distributions_file = open(os.path.join(folder, 'distributions.txt'), "w")

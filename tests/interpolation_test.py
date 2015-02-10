@@ -2,22 +2,15 @@ from library import StandardModelParticles as SMP
 from interaction import Interaction, M
 from particles import Particle
 from evolution import Universe
-from common import CONST, UNITS, PARAMS, GRID
+from common import CONST, UNITS, Params, GRID
 
 
-PARAMS.T_initial = 2 * UNITS.MeV
-PARAMS.T_final = 0.075 * UNITS.MeV
-PARAMS.dx = 1e-1 * UNITS.MeV
-PARAMS.infer()
+params = Params(T_initial=2 * UNITS.MeV,
+                T_final=0.075 * UNITS.MeV,
+                dx=1e-1 * UNITS.MeV)
 
-
-Particles = []
-Interactions = []
-photon = Particle(**SMP.photon)
-Particles.append(photon)
-
-neutrino = Particle(**SMP.neutrino_e)
-Particles.append(neutrino)
+photon = Particle(params=params, **SMP.photon)
+neutrino = Particle(params=params, **SMP.neutrino_e)
 
 neutrino_scattering = Interaction(
     in_particles=[neutrino, neutrino],
@@ -25,9 +18,11 @@ neutrino_scattering = Interaction(
     decoupling_temperature=0 * UNITS.MeV,
     Ms=[M(K1=64 * CONST.G_F**2, order=(0, 1, 2, 3))]
 )
-Interactions.append(neutrino_scattering)
 
-universe = Universe(Particles, Interactions, plotting=False)
+universe = Universe(params=params, plotting=False)
+universe.particles += [photon, neutrino]
+universe.interactions += [neutrino_scattering]
+
 
 import numpy
 addition = numpy.vectorize(lambda x: 0.1 * numpy.exp(-(x/UNITS.MeV-5)**2),
@@ -48,7 +43,7 @@ import matplotlib.pyplot as plt
 x = numpy.linspace(GRID.MIN_MOMENTUM, GRID.MAX_MOMENTUM*2,
                    num=GRID.MOMENTUM_SAMPLES*10, endpoint=True)
 y = numpy.vectorize(neutrino.distribution)(x)
-z = numpy.vectorize(neutrino.distribution_function)(x / PARAMS.aT)
+z = numpy.vectorize(neutrino.equilibrium_distribution_function)(x / universe.params.aT)
 w = z + addition(x)
 plt.plot(x, y)
 # plt.plot(x, z)

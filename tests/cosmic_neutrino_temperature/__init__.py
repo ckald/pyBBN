@@ -18,26 +18,23 @@ plasma. This leads to increasing of the entropy and plasma temperature approxima
 
 from particles import Particle
 from evolution import Universe
-from common import PARAMS, UNITS
+from common import Params, UNITS
 from library import StandardModelParticles as SMP
 
-
-PARAMS.T_initial = 10 * UNITS.MeV
-PARAMS.T_final = 0.05 * UNITS.MeV
-PARAMS.dx = 1e-2 * UNITS.MeV
-PARAMS.infer()
-
+params = Params(T_initial=10 * UNITS.MeV,
+                T_final=0.05 * UNITS.MeV,
+                dx=1e-2 * UNITS.MeV)
 
 Particles = []
-photon = Particle(**SMP.photon)
-neutron = Particle(**SMP.neutron)
-proton = Particle(**SMP.proton)
-neutrino_e = Particle(**SMP.neutrino_e)
-neutrino_mu = Particle(**SMP.neutrino_mu)
-neutrino_tau = Particle(**SMP.neutrino_tau)
-electron = Particle(**SMP.electron)
-muon = Particle(**SMP.muon)
-tau = Particle(**SMP.tau)
+photon = Particle(params=params, **SMP.photon)
+neutron = Particle(params=params, **SMP.neutron)
+proton = Particle(params=params, **SMP.proton)
+neutrino_e = Particle(params=params, **SMP.neutrino_e)
+neutrino_mu = Particle(params=params, **SMP.neutrino_mu)
+neutrino_tau = Particle(params=params, **SMP.neutrino_tau)
+electron = Particle(params=params, **SMP.electron)
+muon = Particle(params=params, **SMP.muon)
+tau = Particle(params=params, **SMP.tau)
 
 Particles += [
     photon,
@@ -51,13 +48,15 @@ Particles += [
     tau
 ]
 
-universe = Universe(Particles, logfile='tests/cosmic_neutrino_temperature/log.txt')
+universe = Universe(params=params, logfile='tests/cosmic_neutrino_temperature/log.txt')
+universe.particles += Particles
 universe.evolve()
 
 print """
     Cosmic photon background temperature is {:.3f} times bigger than cosmic neutrinos temperature.
     Relative error is {:.3f} %
-    """.format(PARAMS.aT / UNITS.MeV, (PARAMS.aT / UNITS.MeV - 1.401) / 1.401 * 100)
+    """.format(universe.params.aT / UNITS.MeV,
+               (universe.params.aT / UNITS.MeV - 1.401) / 1.401 * 100)
 
 if universe.graphics:
     universe.graphics.save(__file__)

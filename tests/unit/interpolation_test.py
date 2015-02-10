@@ -29,11 +29,11 @@ def distribution_interpolation_accuracy_test():
                                    num=GRID.MOMENTUM_SAMPLES*10, endpoint=True)
 
     print numpy.abs(
-        neutrino.distribution_function(detailed_grid / neutrino.aT)
+        neutrino.equilibrium_distribution_function(detailed_grid / neutrino.aT)
         - numpy.vectorize(neutrino.distribution)(detailed_grid)
     )
 
     assert all(numpy.abs(
-        neutrino.distribution_function(detailed_grid / neutrino.aT)
+        neutrino.equilibrium_distribution_function(detailed_grid / neutrino.aT)
         - numpy.vectorize(neutrino.distribution)(detailed_grid)
     ) < 1e-9)
