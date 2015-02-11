@@ -1,5 +1,5 @@
 from library import StandardModelParticles as SMP
-from interaction import Interaction, M
+from interactions import Interaction, M
 from particles import Particle
 from evolution import Universe
 from common import CONST, UNITS, Params, GRID

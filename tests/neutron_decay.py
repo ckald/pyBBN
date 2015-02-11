@@ -1,4 +1,4 @@
-from interaction import Interaction
+from interactions import Interaction
 from particle import Particle
 from evolution import Universe
 from common import STATISTICS, CONST, UNITS
