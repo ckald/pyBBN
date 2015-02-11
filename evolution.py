@@ -115,6 +115,8 @@ class Universe(object):
         self.params.dx = self.params.x * (numpy.exp(self.params.dy) - 1.)
         self.integrand(self.params.x, self.params.aT)
 
+        self.log()
+
         order = min(self.step + 1, 5)
         fs = self.data['fraction'][-order+1:]
         fs.append(self.fraction)
@@ -127,7 +129,6 @@ class Universe(object):
 
         self.save()
 
-        self.log()
         self.step += 1
 
     def update_particles(self):
