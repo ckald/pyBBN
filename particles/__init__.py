@@ -82,10 +82,11 @@ class Particle(PicklableObject):
         'T', 'aT', 'params'
     ]
 
-    def __init__(self, params, **kwargs):
+    def __init__(self, params=None, **kwargs):
 
         """ Set internal parameters using arguments or default values """
-        self.params = params
+        self.params = params if params else Params()
+
         self.T = self.params.T
         self.aT = self.params.aT
         self.mass = kwargs.get('mass', 0 * UNITS.eV)
