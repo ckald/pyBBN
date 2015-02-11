@@ -107,6 +107,8 @@ class Universe(object):
             import ipdb
             ipdb.set_trace()
 
+        parallelization.pool.close()
+
         return self.data
 
     def make_step(self):
