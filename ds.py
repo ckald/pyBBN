@@ -1,18 +1,20 @@
-def D(p=None, E=None, m=None, K1=0., K2=0., order=(0, 1, 2, 3)):
+def D(p=None, E=None, m=None, K1=0., K2=0., signs=None, order=(0, 1, 2, 3)):
     """ Dimensionality: energy """
 
     i, j, k, l = order
+    sksl = signs[k] * signs[l]
+    sisjsksl = signs[i] * signs[j] * signs[k] * signs[l]
 
     result = 0.
 
     if K1 != 0:
-        result += K1 * (E[0]*E[1]*E[2]*E[3] * D1(*p) + D3(*p))
+        result += K1 * (E[0]*E[1]*E[2]*E[3] * D1(*p) + sisjsksl * D3(*p))
 
-        result += K1 * (E[i]*E[j] * D2(p[i], p[j], p[k], p[l])
-                        + E[k]*E[l] * D2(p[k], p[l], p[i], p[j]))
+        result += K1 * (E[i]*E[j] * sksl * D2(p[i], p[j], p[k], p[l])
+                        + E[k]*E[l] * sksl * D2(p[k], p[l], p[i], p[j]))
 
     if K2 != 0:
-        result += K2 * m[i]*m[j] * (E[k]*E[l] * D1(*p) + D2(p[i], p[j], p[k], p[l]))
+        result += K2 * m[i]*m[j] * (E[k]*E[l] * D1(*p) + sksl * D2(p[i], p[j], p[k], p[l]))
 
     return result
 
