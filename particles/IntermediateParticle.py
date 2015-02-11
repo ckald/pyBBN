@@ -97,7 +97,7 @@ def numerator(particle):
 
 def denominator(particle):
     """ \begin{equation}
-            \frac{(I(4) + M_N^2 I(2))}{(a T)^2}
+            \frac{I(4) + M_N^2 I(2)}{(a T)^2}
         \end{equation}
     """
     return (I(particle, 4) + particle.conformal_mass**2 * I(particle)) / particle.aT**2
