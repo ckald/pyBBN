@@ -99,6 +99,16 @@ def adams_moulton_solver(y, fs, A, B, h, order=None):
         (1 - h * B * bs[-1] / divider)
 
 
+def integrate_1D(integrand, bounds):
+    integral = gaussian(
+        integrand,
+        bounds[0], bounds[1]
+    )
+    error = numpy.nan
+
+    return integral, error
+
+
 def integrate_2D(integrand, bounds):
     integral = double_gaussian(
         integrand,
