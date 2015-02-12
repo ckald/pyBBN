@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 import copy
-from common import CONST
+import numpy
+from common import GRID, integrators
 from common.utils import PicklableObject
-from interactions.scattering import Integral
+from interactions.four_particle import FourParticleIntegral
 
 
 """
@@ -16,46 +17,6 @@ from interactions.scattering import Integral
         \delta^4(\sum_{m} p_{in,m}^\mu - \sum_{n} p_{out,n}^\mu)
 \end{multline}
 """
-
-
-class M(object):
-
-    """ == Matrix element ==
-        All four-particle interactions of the interest can be rewritten in a form
-
-        \begin{equation}
-            |\mathcal{M}|^2 = \sum_{\{i \neq j \neq k \neq l\}} K_1 (p_i \cdot p_j) (p_k \cdot p_l)\
-                 + K_2 m_i m_j (p_k \cdot p_l)
-        \end{equation} """
-    K1 = 0.
-    K2 = 0.
-    # Order defines the values of the $(i, j, k, l)$ indices
-    order = (0, 1, 2, 3)
-
-    def __init__(self, **kwargs):
-        """ Configure matrix element, check that it makes sense """
-        for key in kwargs:
-            setattr(self, key, kwargs[key])
-
-        if len(set(self.order)) != len(self.order):
-            raise Exception("Meaningless order of momenta of the matrix element: {}"
-                            .format(self.order))
-
-    def __str__(self):
-        """ String-like representation of the matrix element """
-        return "K1={: .2e}, K2={: .2e}, {}".format(self.K1, self.K2, self.order)
-
-
-class WeakM(M):
-
-    """ == Weak interactions matrix element ==
-        Weak processes usually include a common factor of $32 G_F^2$ """
-
-    def __init__(self, *args, **kwargs):
-        super(WeakM, self).__init__(*args, **kwargs)
-
-        self.K1 *= 32 * CONST.G_F**2
-        self.K2 *= 32 * CONST.G_F**2
 
 
 class Interaction(PicklableObject):
@@ -138,7 +99,7 @@ class Interaction(PicklableObject):
                 M.order = M.order[i:i+1] + M.order[:i] + M.order[i+1:]
 
             # Add interaction integrals by putting each incoming particle as the first one
-            self.integrals.append(Integral(
+            self.integrals.append(FourParticleIntegral(
                 in_particles=in_particles[i:i+1] + in_particles[:i] + in_particles[i+1:],
                 out_particles=out_particles,
                 decoupling_temperature=self.decoupling_temperature,

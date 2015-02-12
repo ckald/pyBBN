@@ -2,7 +2,8 @@
 
 from common import UNITS, CONST
 from particles import STATISTICS
-from interactions import Interaction, WeakM
+from interactions import Interaction
+from interactions.four_particle import WeakM
 
 
 class StandardModelParticles(object):
