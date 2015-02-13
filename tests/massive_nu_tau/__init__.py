@@ -38,7 +38,7 @@ electron = Particle(params, **SMP.electron)
 neutrino_e = Particle(params, **SMP.neutrino_e)
 neutrino_mu = Particle(params, **SMP.neutrino_mu)
 neutrino_tau = Particle(params, **SMP.neutrino_tau)
-neutrino_tau['mass'] = 20 * UNITS.MeV
+neutrino_tau.mass = 20 * UNITS.MeV
 
 
 universe.particles += [
