@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta http-equiv="content-type" content="text/html;charset=utf-8">
-  <title>pyBBN v0.1.0: docs/plotting.py</title>
+  <title>pyBBN v0.1.0: plotting.py</title>
   <link rel="stylesheet" href="./pyccoon.css">
   <script type="text/x-mathjax-config">
   MathJax.Hub.Config({
@@ -22,7 +22,7 @@
         Generated at
         <a target="_blank" href="http://ckald.github.io/pyccoon/" title="Pyccoon: side-to-side documentation generator">
             <img id="pyccoon-icon" src="./pyccoon_icon.svg" alt="Pyccoon: side-to-side documentation generator" /></a>
-        <code>2014-11-26 01:10:25.135098</code>/
+        <code>2015-02-13 14:07:59.013448</code>/
         by a diligent
         <a target="_blank" href="http://ckald.github.io/pyccoon/" title="Pyccoon: side-to-side documentation generator">pyccoon</a>
     </div>
@@ -52,9 +52,8 @@
 <span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">cm</span>
 <span class="kn">from</span> <span class="nn">mpl_toolkits.mplot3d</span> <span class="kn">import</span> <span class="n">Axes3D</span>
 
-<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">deque</span>
-
-<span class="kn">from</span> <span class="nn">common</span> <span class="kn">import</span> <span class="n">UNITS</span><span class="p">,</span> <span class="n">GRID</span><span class="p">,</span> <span class="n">PARAMS</span></pre></div>
+<span class="kn">from</span> <span class="nn">common</span> <span class="kn">import</span> <span class="n">UNITS</span><span class="p">,</span> <span class="n">GRID</span>
+<span class="kn">from</span> <span class="nn">common.utils</span> <span class="kn">import</span> <span class="n">ring_deque</span></pre></div>
         </div>
         <div class='clearall'></div>
     </section>
@@ -69,13 +68,8 @@
           
         </div>
         <div class='code'>
-          <div class="highlight"><pre><span class="k">class</span> <span class="nc">ring_deque</span><span class="p">(</span><span class="n">deque</span><span class="p">):</span>
-    <span class="nb">max</span> <span class="o">=</span> <span class="mi">0</span>
-    <span class="nb">min</span> <span class="o">=</span> <span class="mi">0</span>
-
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">length</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">length</span> <span class="o">=</span> <span class="n">length</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">ring_deque</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">data</span><span class="p">)</span></pre></div>
+          <div class="highlight"><pre><span class="k">class</span> <span class="nc">Plotting</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="n">particles</span> <span class="o">=</span> <span class="bp">None</span></pre></div>
         </div>
         <div class='clearall'></div>
     </section>
@@ -87,56 +81,10 @@
           <div class='octowrap'>
             <a class='octothorpe' href='#section-2'>#</a>
           </div>
-          
+          <p>Initialize plots, setup basic styling </p>
         </div>
         <div class='code'>
-          <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">append_more</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
-
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">length</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">popleft</span><span class="p">()</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">max</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">max</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">min</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">min</span><span class="p">)</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">ring_deque</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">data</span><span class="p">)</span></pre></div>
-        </div>
-        <div class='clearall'></div>
-    </section>
-  </div>
-  <div class='section'>
-    <a id="section-3" class="section-anchor"></a>
-    <section>
-        <div class='docs'>
-          <div class='octowrap'>
-            <a class='octothorpe' href='#section-3'>#</a>
-          </div>
-          
-        </div>
-        <div class='code'>
-          <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">append</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">max</span> <span class="o">=</span> <span class="n">data</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">min</span> <span class="o">=</span> <span class="n">data</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">append</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">append_more</span>
-
-        <span class="nb">super</span><span class="p">(</span><span class="n">ring_deque</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">data</span><span class="p">)</span></pre></div>
-        </div>
-        <div class='clearall'></div>
-    </section>
-  </div>
-  <div class='section'>
-    <a id="section-4" class="section-anchor"></a>
-    <section>
-        <div class='docs'>
-          <div class='octowrap'>
-            <a class='octothorpe' href='#section-4'>#</a>
-          </div>
-          
-        </div>
-        <div class='code'>
-          <div class="highlight"><pre><span class="k">class</span> <span class="nc">Plotting</span><span class="p">:</span>
-    <span class="n">particles</span> <span class="o">=</span> <span class="bp">None</span>
-
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+          <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 
         <span class="n">plt</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s">&#39;toolbar&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39;None&#39;</span>
 
@@ -182,16 +130,17 @@
     </section>
   </div>
   <div class='section'>
-    <a id="section-5" class="section-anchor"></a>
+    <a id="section-3" class="section-anchor"></a>
     <section>
         <div class='docs'>
           <div class='octowrap'>
-            <a class='octothorpe' href='#section-5'>#</a>
+            <a class='octothorpe' href='#section-3'>#</a>
           </div>
-          
+          <p>Save cosmological and monitored particles plots to the file in the same folder as <code>filename</code> </p>
         </div>
         <div class='code'>
           <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
+
         <span class="n">folder</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">filename</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
         <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
         <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">folder</span><span class="p">,</span> <span class="s">&#39;plots.png&#39;</span><span class="p">))</span>
@@ -203,17 +152,18 @@
     </section>
   </div>
   <div class='section'>
-    <a id="section-6" class="section-anchor"></a>
+    <a id="section-4" class="section-anchor"></a>
     <section>
         <div class='docs'>
           <div class='octowrap'>
-            <a class='octothorpe' href='#section-6'>#</a>
+            <a class='octothorpe' href='#section-4'>#</a>
           </div>
-          
+          <p>Setup the detailed distribution function and energy density plots for specific particle species </p>
         </div>
         <div class='code'>
-          <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">monitor</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">particles</span><span class="o">=</span><span class="p">[]):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">particles</span> <span class="o">=</span> <span class="n">particles</span>
+          <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">monitor</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">particles</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">particles</span> <span class="o">=</span> <span class="n">particles</span> <span class="k">if</span> <span class="n">particles</span> <span class="k">else</span> <span class="p">[]</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">particles</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">particles_figure</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">particles_plots</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">particles</span><span class="p">),</span> <span class="mi">2</span><span class="p">,</span> <span class="n">num</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">particles_figure</span><span class="o">.</span><span class="n">subplots_adjust</span><span class="p">(</span><span class="n">hspace</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">wspace</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
@@ -232,22 +182,22 @@
     </section>
   </div>
   <div class='section'>
-    <a id="section-7" class="section-anchor"></a>
+    <a id="section-5" class="section-anchor"></a>
     <section>
         <div class='docs'>
           <div class='octowrap'>
-            <a class='octothorpe' href='#section-7'>#</a>
+            <a class='octothorpe' href='#section-5'>#</a>
           </div>
-          
+          <p>Plot cosmological parameters and monitored particles distribution functions </p>
         </div>
         <div class='code'>
-          <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">full</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+          <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
 
         <span class="n">last_t</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s">&#39;t&#39;</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">s</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">times</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">last_t</span><span class="p">)</span>
 
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">plot</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">plots</span><span class="p">):</span>
-            <span class="n">xmin</span><span class="p">,</span> <span class="n">xmax</span> <span class="o">=</span> <span class="n">plot</span><span class="o">.</span><span class="n">get_xlim</span><span class="p">()</span>
+            <span class="n">_</span><span class="p">,</span> <span class="n">xmax</span> <span class="o">=</span> <span class="n">plot</span><span class="o">.</span><span class="n">get_xlim</span><span class="p">()</span>
             <span class="n">ymin</span><span class="p">,</span> <span class="n">ymax</span> <span class="o">=</span> <span class="n">plot</span><span class="o">.</span><span class="n">get_ylim</span><span class="p">()</span>
 
             <span class="k">if</span> <span class="n">last_t</span> <span class="o">&gt;=</span> <span class="n">xmax</span><span class="p">:</span>
@@ -269,9 +219,9 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">particles</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">particle</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">particles</span><span class="p">):</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">particles_plots</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span>
-                    <span class="n">PARAMS</span><span class="o">.</span><span class="n">a</span><span class="p">,</span>
+                    <span class="n">particle</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">a</span><span class="p">,</span>
                     <span class="n">particle</span><span class="o">.</span><span class="n">energy_density</span><span class="p">()</span> <span class="o">/</span> <span class="p">(</span>
-                        <span class="mf">7.</span> <span class="o">*</span> <span class="n">numpy</span><span class="o">.</span><span class="n">pi</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="n">PARAMS</span><span class="o">.</span><span class="n">T</span><span class="o">**</span><span class="mi">4</span> <span class="o">/</span> <span class="mf">120.</span>
+                        <span class="mf">7.</span> <span class="o">*</span> <span class="n">particle</span><span class="o">.</span><span class="n">dof</span> <span class="o">*</span> <span class="n">numpy</span><span class="o">.</span><span class="n">pi</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="n">particle</span><span class="o">.</span><span class="n">T</span><span class="p">)</span><span class="o">**</span><span class="mi">4</span> <span class="o">/</span> <span class="mf">240.</span>
                     <span class="p">),</span> <span class="n">s</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 
                 <span class="n">feq</span> <span class="o">=</span> <span class="n">particle</span><span class="o">.</span><span class="n">equilibrium_distribution</span><span class="p">()</span>
@@ -290,16 +240,17 @@
     </section>
   </div>
   <div class='section'>
-    <a id="section-8" class="section-anchor"></a>
+    <a id="section-6" class="section-anchor"></a>
     <section>
         <div class='docs'>
           <div class='octowrap'>
-            <a class='octothorpe' href='#section-8'>#</a>
+            <a class='octothorpe' href='#section-6'>#</a>
           </div>
-          
+          <p>Slightly decrease the opacity of plotted lines until they are barely visible. Then, remove them. Saves up on memory and clears the view of the plots. </p>
         </div>
         <div class='code'>
           <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">age_lines</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lines</span><span class="p">):</span>
+
         <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">:</span>
             <span class="n">alpha</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">get_alpha</span><span class="p">()</span> <span class="ow">or</span> <span class="mf">1.</span>
             <span class="k">if</span> <span class="n">alpha</span> <span class="o">&lt;</span> <span class="mf">0.1</span><span class="p">:</span>
@@ -311,16 +262,17 @@
     </section>
   </div>
   <div class='section'>
-    <a id="section-9" class="section-anchor"></a>
+    <a id="section-7" class="section-anchor"></a>
     <section>
         <div class='docs'>
           <div class='octowrap'>
-            <a class='octothorpe' href='#section-9'>#</a>
+            <a class='octothorpe' href='#section-7'>#</a>
           </div>
-          
+          <p>Save a 3D plot of the distribution function integrand into a file. </p>
         </div>
         <div class='code'>
-          <div class="highlight"><pre><span class="k">def</span> <span class="nf">plot_integrand</span><span class="p">(</span><span class="n">integrand</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">p0</span><span class="p">):</span>
+          <div class="highlight"><pre><span class="k">def</span> <span class="nf">plot_integrand</span><span class="p">(</span><span class="n">integrand</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">p0</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="n">__file__</span><span class="p">):</span>
+
     <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
     <span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">gca</span><span class="p">(</span><span class="n">projection</span><span class="o">=</span><span class="s">&#39;3d&#39;</span><span class="p">)</span>
     <span class="n">plt</span><span class="o">.</span><span class="n">cla</span><span class="p">()</span>
@@ -337,23 +289,25 @@
     <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s">&#39;p2&#39;</span><span class="p">)</span>
     <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s">&#39;{} p0 = {}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">p0</span> <span class="o">/</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">MeV</span><span class="p">))</span>
 
-    <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">__file__</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span> <span class="s">&#39;logs/plt_{}.png&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">p0</span> <span class="o">/</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">MeV</span><span class="p">)))</span></pre></div>
+    <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">filename</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span> <span class="s">&#39;logs/plt_{}.png&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">p0</span> <span class="o">/</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">MeV</span><span class="p">)))</span></pre></div>
         </div>
         <div class='clearall'></div>
     </section>
   </div>
   <div class='section'>
-    <a id="section-10" class="section-anchor"></a>
+    <a id="section-8" class="section-anchor"></a>
     <section>
         <div class='docs'>
           <div class='octowrap'>
-            <a class='octothorpe' href='#section-10'>#</a>
+            <a class='octothorpe' href='#section-8'>#</a>
           </div>
-          
+          <p>Draw a scatter plot for a number of <code>points</code> tuples <code>(x, y)</code> </p>
         </div>
         <div class='code'>
           <div class="highlight"><pre><span class="k">def</span> <span class="nf">plot_points</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+
     <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
     <span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="o">*</span><span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">points</span><span class="p">))</span>
     <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 

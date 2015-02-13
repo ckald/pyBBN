@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta http-equiv="content-type" content="text/html;charset=utf-8">
-  <title>pyBBN v0.1.0: docs/particles/__init__.py</title>
+  <title>pyBBN v0.1.0: particles/__init__.py</title>
   <link rel="stylesheet" href="../pyccoon.css">
   <script type="text/x-mathjax-config">
   MathJax.Hub.Config({
@@ -22,15 +22,15 @@
     Contents
     <div id="jump_wrapper">
       <div id="jump_page">
-          <a class="source source-1" href="#section-1"> Particles </a>
-          <a class="source source-3" href="#section-3"> Particle species statistics </a>
-          <a class="source source-3" href="#section-7"> Particle dynamical regimes </a>
-          <a class="source source-2" href="#section-8"> Particle </a>
-          <a class="source source-2" href="#section-25"> Particle collisions integration </a>
-          <a class="source source-3" href="#section-31"> Regime-switching ratio </a>
-          <a class="source source-2" href="#section-37"> Distribution function interpolation </a>
-          <a class="source source-3" href="#section-40"> Exponential interpolation </a>
-          <a class="source source-3" href="#section-43"> Linear interpolation </a>
+          <a class="source source-1" href="#particles"> Particles </a>
+          <a class="source source-2" href="#particle-species-statistics"> Particle species statistics </a>
+          <a class="source source-2" href="#particle-dynamical-regimes"> Particle dynamical regimes </a>
+          <a class="source source-2" href="#particle"> Particle </a>
+          <a class="source source-3" href="#particle-collisions-integration"> Particle collisions integration </a>
+          <a class="source source-3" href="#regime-switching-ratio"> Regime-switching ratio </a>
+          <a class="source source-2" href="#distribution-function-interpolation"> Distribution function interpolation </a>
+          <a class="source source-3" href="#exponential-interpolation"> Exponential interpolation </a>
+          <a class="source source-3" href="#linear-interpolation"> Linear interpolation </a>
       </div>
     </div>
     </div>
@@ -38,7 +38,7 @@
         Generated at
         <a target="_blank" href="http://ckald.github.io/pyccoon/" title="Pyccoon: side-to-side documentation generator">
             <img id="pyccoon-icon" src="../pyccoon_icon.svg" alt="Pyccoon: side-to-side documentation generator" /></a>
-        <code>2014-11-26 01:10:22.743969</code>/
+        <code>2015-02-13 14:07:56.475617</code>/
         by a diligent
         <a target="_blank" href="http://ckald.github.io/pyccoon/" title="Pyccoon: side-to-side documentation generator">pyccoon</a>
     </div>
@@ -72,19 +72,17 @@
           <div class='octowrap'>
             <a class='octothorpe' href='#section-1'>#</a>
           </div>
-          <h1><span class="header" href="particles"> Particles </span><a id="particles" class="header-anchor"></a></h1>
+          <h1><a id="particles" class="header-anchor" href="#particles"> Particles </a></h1>
 <p>This file contains <code>Particle</code> class definition and code governing the switching of the dynamical regimes</p>
         </div>
         <div class='code'>
           <div class="highlight"><pre><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">division</span>
-<span class="kn">import</span> <span class="nn">math</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span>
 
-<span class="kn">from</span> <span class="nn">plotting</span> <span class="kn">import</span> <span class="n">plot_integrand</span>
-<span class="kn">from</span> <span class="nn">common</span> <span class="kn">import</span> <span class="n">GRID</span><span class="p">,</span> <span class="n">PARAMS</span><span class="p">,</span> <span class="n">UNITS</span>
-<span class="kn">from</span> <span class="nn">common.integrators</span> <span class="kn">import</span> <span class="n">integrate_2D</span><span class="p">,</span> <span class="n">implicit_euler</span>
-<span class="kn">from</span> <span class="nn">common.utils</span> <span class="kn">import</span> <span class="n">benchmark</span>
+<span class="kn">from</span> <span class="nn">common</span> <span class="kn">import</span> <span class="n">GRID</span><span class="p">,</span> <span class="n">UNITS</span><span class="p">,</span> <span class="n">Params</span>
+<span class="kn">from</span> <span class="nn">common.integrators</span> <span class="kn">import</span> <span class="n">adams_moulton_solver</span>
+<span class="kn">from</span> <span class="nn">common.utils</span> <span class="kn">import</span> <span class="n">PicklableObject</span>
 
 <span class="kn">from</span> <span class="nn">particles</span> <span class="kn">import</span> <span class="n">DustParticle</span><span class="p">,</span> <span class="n">RadiationParticle</span><span class="p">,</span> <span class="n">IntermediateParticle</span><span class="p">,</span> <span class="n">NonEqParticle</span></pre></div>
         </div>
@@ -113,10 +111,10 @@
           <div class='octowrap'>
             <a class='octothorpe' href='#section-3'>#</a>
           </div>
-          <h3><span class="header" href="particle-species-statistics"> Particle species statistics </span><a id="particle-species-statistics" class="header-anchor"></a></h3>
+          <h2><a id="particle-species-statistics" class="header-anchor" href="#particle-species-statistics"> Particle species statistics </a></h2>
         </div>
         <div class='code'>
-          <div class="highlight"><pre><span class="k">class</span> <span class="nc">STATISTICS</span><span class="p">:</span></pre></div>
+          <div class="highlight"><pre><span class="k">class</span> <span class="nc">STATISTICS</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span></pre></div>
         </div>
         <div class='clearall'></div>
     </section>
@@ -188,7 +186,7 @@
           <div class='octowrap'>
             <a class='octothorpe' href='#section-7'>#</a>
           </div>
-          <h3><span class="header" href="particle-dynamical-regimes"> Particle dynamical regimes </span><a id="particle-dynamical-regimes" class="header-anchor"></a></h3>
+          <h2><a id="particle-dynamical-regimes" class="header-anchor" href="#particle-dynamical-regimes"> Particle dynamical regimes </a></h2>
 <dl>
 <dt>Radiation (ultra-relativistic) <code>RADIATION</code></dt>
 <dd>particle mass is neglected, all values obtained analytically</dd>
@@ -218,14 +216,21 @@
           <div class='octowrap'>
             <a class='octothorpe' href='#section-8'>#</a>
           </div>
-          <h2><span class="header" href="particle"> Particle </span><a id="particle" class="header-anchor"></a></h2>
+          <h2><a id="particle" class="header-anchor" href="#particle"> Particle </a></h2>
 <p>Master-class for particle species. Realized as finite state machine that switches to different regime when temperature becomes comparable to the particle mass or drops below particle <code>decoupling_temperature</code></p>
         </div>
         <div class='code'>
-          <div class="highlight"><pre><span class="k">class</span> <span class="nc">Particle</span><span class="p">():</span>
+          <div class="highlight"><pre><span class="k">class</span> <span class="nc">Particle</span><span class="p">(</span><span class="n">PicklableObject</span><span class="p">):</span>
 
-    <span class="n">COLLISION_INTEGRATION_METHOD</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;mcquad&#39;</span><span class="p">,</span> <span class="s">&#39;dblquad&#39;</span><span class="p">,</span> <span class="s">&#39;fixed&#39;</span><span class="p">][</span><span class="mi">2</span><span class="p">]</span>
-    <span class="n">COLLECTIVE_INTEGRATION</span> <span class="o">=</span> <span class="bp">False</span></pre></div>
+    <span class="n">_saveable_fields</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="s">&#39;name&#39;</span><span class="p">,</span> <span class="s">&#39;symbol&#39;</span><span class="p">,</span>
+        <span class="s">&#39;mass&#39;</span><span class="p">,</span> <span class="s">&#39;decoupling_temperature&#39;</span><span class="p">,</span>
+        <span class="s">&#39;dof&#39;</span><span class="p">,</span> <span class="s">&#39;eta&#39;</span><span class="p">,</span>
+        <span class="s">&#39;data&#39;</span><span class="p">,</span>
+        <span class="s">&#39;_distribution&#39;</span><span class="p">,</span>
+        <span class="s">&#39;collision_integral&#39;</span><span class="p">,</span> <span class="s">&#39;collision_integrals&#39;</span><span class="p">,</span>
+        <span class="s">&#39;T&#39;</span><span class="p">,</span> <span class="s">&#39;aT&#39;</span><span class="p">,</span> <span class="s">&#39;params&#39;</span>
+    <span class="p">]</span></pre></div>
         </div>
         <div class='clearall'></div>
     </section>
@@ -240,10 +245,12 @@
           <p>Set internal parameters using arguments or default values </p>
         </div>
         <div class='code'>
-          <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+          <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">T</span> <span class="o">=</span> <span class="n">PARAMS</span><span class="o">.</span><span class="n">T</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">aT</span> <span class="o">=</span> <span class="n">PARAMS</span><span class="o">.</span><span class="n">aT</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">params</span> <span class="o">=</span> <span class="n">params</span> <span class="k">if</span> <span class="n">params</span> <span class="k">else</span> <span class="n">Params</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">T</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">T</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">aT</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">aT</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">mass</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;mass&#39;</span><span class="p">,</span> <span class="mi">0</span> <span class="o">*</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">eV</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">decoupling_temperature</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;decoupling_temperature&#39;</span><span class="p">,</span> <span class="mi">0</span> <span class="o">*</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">eV</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;name&#39;</span><span class="p">,</span> <span class="s">&#39;Particle&#39;</span><span class="p">)</span>
@@ -252,12 +259,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">dof</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;dof&#39;</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>  <span class="c"># particle species degeneracy (e.g., spin-degeneracy)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">statistics</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;statistics&#39;</span><span class="p">,</span> <span class="n">STATISTICS</span><span class="o">.</span><span class="n">FERMION</span><span class="p">)</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">statistics</span> <span class="o">==</span> <span class="n">STATISTICS</span><span class="o">.</span><span class="n">FERMION</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">eta</span> <span class="o">=</span> <span class="mf">1.</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">distribution_function</span> <span class="o">=</span> <span class="n">STATISTICS</span><span class="o">.</span><span class="n">Fermi</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">eta</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1.</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">distribution_function</span> <span class="o">=</span> <span class="n">STATISTICS</span><span class="o">.</span><span class="n">Bose</span></pre></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">eta</span> <span class="o">=</span> <span class="mf">1.</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">statistics</span> <span class="o">==</span> <span class="n">STATISTICS</span><span class="o">.</span><span class="n">FERMION</span> <span class="k">else</span> <span class="o">-</span><span class="mf">1.</span></pre></div>
         </div>
         <div class='clearall'></div>
     </section>
@@ -289,14 +291,13 @@
         <div class='code'>
           <div class="highlight"><pre>        <span class="bp">self</span><span class="o">.</span><span class="n">collision_integral</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">GRID</span><span class="o">.</span><span class="n">MOMENTUM_SAMPLES</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">float_</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">collision_integrands</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">collision_integrals</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s">&#39;collision_integral&#39;</span><span class="p">:</span> <span class="p">[]</span>
+        <span class="p">}</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">T</span> <span class="o">=</span> <span class="n">PARAMS</span><span class="o">.</span><span class="n">T</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">aT</span> <span class="o">=</span> <span class="n">PARAMS</span><span class="o">.</span><span class="n">aT</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">init_distribution</span><span class="p">()</span>
-
-        <span class="k">print</span> <span class="bp">self</span></pre></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">init_distribution</span><span class="p">()</span></pre></div>
         </div>
         <div class='clearall'></div>
     </section>
@@ -347,24 +348,6 @@
           <div class='octowrap'>
             <a class='octothorpe' href='#section-14'>#</a>
           </div>
-          
-        </div>
-        <div class='code'>
-          <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">__copy__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">newone</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)()</span>
-        <span class="n">newone</span><span class="o">.</span><span class="n">__dict__</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__dict__</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">newone</span></pre></div>
-        </div>
-        <div class='clearall'></div>
-    </section>
-  </div>
-  <div class='section'>
-    <a id="section-15" class="section-anchor"></a>
-    <section>
-        <div class='docs'>
-          <div class='octowrap'>
-            <a class='octothorpe' href='#section-15'>#</a>
-          </div>
           <p>Update the particle parameters according to the new state of the system </p>
         </div>
         <div class='code'>
@@ -377,16 +360,32 @@
     </section>
   </div>
   <div class='section'>
+    <a id="section-15" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-15'>#</a>
+          </div>
+          <p>Update particle internal params only while it is in equilibrium</p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">in_equilibrium</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">in_equilibrium</span> <span class="o">!=</span> <span class="n">oldeq</span><span class="p">:</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+  </div>
+  <div class='section'>
     <a id="section-16" class="section-anchor"></a>
     <section>
         <div class='docs'>
           <div class='octowrap'>
             <a class='octothorpe' href='#section-16'>#</a>
           </div>
-          <p>Update particle internal params only while it is in equilibrium</p>
+          <p>Particle species has temperature only when it is in equilibrium</p>
         </div>
         <div class='code'>
-          <div class="highlight"><pre>        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">in_equilibrium</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">in_equilibrium</span> <span class="o">!=</span> <span class="n">oldeq</span><span class="p">:</span></pre></div>
+          <div class="highlight"><pre>            <span class="bp">self</span><span class="o">.</span><span class="n">T</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">T</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">aT</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">aT</span></pre></div>
         </div>
         <div class='clearall'></div>
     </section>
@@ -398,11 +397,10 @@
           <div class='octowrap'>
             <a class='octothorpe' href='#section-17'>#</a>
           </div>
-          <p>Particle species has temperature only when it is in equilibrium</p>
+          
         </div>
         <div class='code'>
-          <div class="highlight"><pre>            <span class="bp">self</span><span class="o">.</span><span class="n">T</span> <span class="o">=</span> <span class="n">PARAMS</span><span class="o">.</span><span class="n">T</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">aT</span> <span class="o">=</span> <span class="n">PARAMS</span><span class="o">.</span><span class="n">aT</span></pre></div>
+          <div class="highlight"><pre>        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">in_equilibrium</span> <span class="o">!=</span> <span class="n">oldeq</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">in_equilibrium</span><span class="p">:</span></pre></div>
         </div>
         <div class='clearall'></div>
     </section>
@@ -414,10 +412,10 @@
           <div class='octowrap'>
             <a class='octothorpe' href='#section-18'>#</a>
           </div>
-          
+          <p>Particle decouples, have to init the distribution function array for kinetics</p>
         </div>
         <div class='code'>
-          <div class="highlight"><pre>        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">in_equilibrium</span> <span class="o">!=</span> <span class="n">oldeq</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">in_equilibrium</span><span class="p">:</span></pre></div>
+          <div class="highlight"><pre>            <span class="bp">self</span><span class="o">.</span><span class="n">init_distribution</span><span class="p">()</span></pre></div>
         </div>
         <div class='clearall'></div>
     </section>
@@ -429,10 +427,11 @@
           <div class='octowrap'>
             <a class='octothorpe' href='#section-19'>#</a>
           </div>
-          <p>Particle decouples, have to init the distribution function array for kinetics</p>
+          
         </div>
         <div class='code'>
-          <div class="highlight"><pre>            <span class="bp">self</span><span class="o">.</span><span class="n">init_distribution</span><span class="p">()</span></pre></div>
+          <div class="highlight"><pre>        <span class="k">if</span> <span class="n">force_print</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">regime</span> <span class="o">!=</span> <span class="n">oldregime</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">in_equilibrium</span> <span class="o">!=</span> <span class="n">oldeq</span><span class="p">:</span>
+            <span class="k">print</span> <span class="bp">self</span></pre></div>
         </div>
         <div class='clearall'></div>
     </section>
@@ -444,11 +443,15 @@
           <div class='octowrap'>
             <a class='octothorpe' href='#section-20'>#</a>
           </div>
-          
+          <p>Apply collision integral to modify the distribution function </p>
         </div>
         <div class='code'>
-          <div class="highlight"><pre>        <span class="k">if</span> <span class="n">force_print</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">regime</span> <span class="o">!=</span> <span class="n">oldregime</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">in_equilibrium</span> <span class="o">!=</span> <span class="n">oldeq</span><span class="p">:</span>
-            <span class="k">print</span> <span class="bp">self</span></pre></div>
+          <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">update_distribution</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">in_equilibrium</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_distribution</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">collision_integral</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">dy</span></pre></div>
         </div>
         <div class='clearall'></div>
     </section>
@@ -460,18 +463,11 @@
           <div class='octowrap'>
             <a class='octothorpe' href='#section-21'>#</a>
           </div>
-          
+          <p>Clear collision integrands for the next computation step</p>
         </div>
         <div class='code'>
-          <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">update_distribution</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">in_equilibrium</span><span class="p">:</span>
-            <span class="k">return</span>
-
-        <span class="n">delta</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">collision_integral</span> <span class="o">*</span> <span class="n">PARAMS</span><span class="o">.</span><span class="n">dx</span>
-
-        <span class="n">prediction</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_distribution</span> <span class="o">+</span> <span class="n">delta</span>
-        <span class="k">if</span> <span class="n">numpy</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">prediction</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">):</span>
-            <span class="k">print</span><span class="p">(</span><span class="s">&quot;Holy cow, negative distribution!&quot;</span><span class="p">)</span></pre></div>
+          <div class="highlight"><pre>        <span class="bp">self</span><span class="o">.</span><span class="n">collision_integrals</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s">&#39;collision_integral&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">collision_integral</span><span class="p">)</span></pre></div>
         </div>
         <div class='clearall'></div>
     </section>
@@ -483,10 +479,11 @@
           <div class='octowrap'>
             <a class='octothorpe' href='#section-22'>#</a>
           </div>
-          <p>Force minimal distribution function value to 0</p>
+          
         </div>
         <div class='code'>
-          <div class="highlight"><pre>        <span class="bp">self</span><span class="o">.</span><span class="n">_distribution</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">prediction</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span></pre></div>
+          <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">integrate_collisions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">numpy</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">calculate_collision_integral</span><span class="p">)(</span><span class="n">GRID</span><span class="o">.</span><span class="n">TEMPLATE</span><span class="p">)</span></pre></div>
         </div>
         <div class='clearall'></div>
     </section>
@@ -498,11 +495,36 @@
           <div class='octowrap'>
             <a class='octothorpe' href='#section-23'>#</a>
           </div>
-          <p>Clear collision integrands for the next computation step</p>
+          <h3><a id="particle-collisions-integration" class="header-anchor" href="#particle-collisions-integration"> Particle collisions integration </a></h3>
         </div>
         <div class='code'>
-          <div class="highlight"><pre>        <span class="bp">self</span><span class="o">.</span><span class="n">collision_integrands</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">collision_integral</span> <span class="o">*=</span> <span class="mi">0</span></pre></div>
+          <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">calculate_collision_integral</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p0</span><span class="p">):</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">collision_integrals</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">0</span>
+
+        <span class="n">As</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">Bs</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">collision_integrals</span><span class="p">:</span>
+            <span class="n">integral_1</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">i</span><span class="o">.</span><span class="n">integral_1</span><span class="p">(</span><span class="n">p0</span><span class="p">)</span>
+            <span class="n">As</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">integral_1</span><span class="p">)</span>
+
+            <span class="n">integral_f</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">i</span><span class="o">.</span><span class="n">integral_f</span><span class="p">(</span><span class="n">p0</span><span class="p">)</span>
+            <span class="n">Bs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">integral_f</span><span class="p">)</span>
+
+        <span class="n">order</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s">&#39;collision_integral&#39;</span><span class="p">])</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+
+        <span class="n">index</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">argwhere</span><span class="p">(</span><span class="n">GRID</span><span class="o">.</span><span class="n">TEMPLATE</span> <span class="o">==</span> <span class="n">p0</span><span class="p">)[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">fs</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s">&#39;collision_integral&#39;</span><span class="p">][</span><span class="o">-</span><span class="n">order</span><span class="o">+</span><span class="mi">1</span><span class="p">:]]</span>
+
+        <span class="n">prediction</span> <span class="o">=</span> <span class="n">adams_moulton_solver</span><span class="p">(</span><span class="n">y</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">distribution</span><span class="p">(</span><span class="n">p0</span><span class="p">),</span> <span class="n">fs</span><span class="o">=</span><span class="n">fs</span><span class="p">,</span>
+                                          <span class="n">A</span><span class="o">=</span><span class="nb">sum</span><span class="p">(</span><span class="n">As</span><span class="p">),</span> <span class="n">B</span><span class="o">=</span><span class="nb">sum</span><span class="p">(</span><span class="n">Bs</span><span class="p">),</span>
+                                          <span class="n">h</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">dy</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="n">order</span><span class="p">)</span>
+
+        <span class="n">total_integral</span> <span class="o">=</span> <span class="p">(</span><span class="n">prediction</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">distribution</span><span class="p">(</span><span class="n">p0</span><span class="p">))</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">dy</span>
+
+        <span class="k">return</span> <span class="n">total_integral</span></pre></div>
         </div>
         <div class='clearall'></div>
     </section>
@@ -514,173 +536,7 @@
           <div class='octowrap'>
             <a class='octothorpe' href='#section-24'>#</a>
           </div>
-          
-        </div>
-        <div class='code'>
-          <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">benchmarked_integration</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p0</span><span class="p">,</span> <span class="n">integrand</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">bounds</span><span class="p">):</span>
-        <span class="k">with</span> <span class="n">benchmark</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\t</span><span class="s">&quot;</span><span class="p">):</span>
-            <span class="n">integral</span><span class="p">,</span> <span class="n">error</span> <span class="o">=</span> <span class="n">integrate_2D</span><span class="p">(</span>
-                <span class="k">lambda</span> <span class="p">(</span><span class="n">p1</span><span class="p">,</span> <span class="n">p2</span><span class="p">):</span> <span class="n">integrand</span><span class="p">([</span><span class="n">p0</span><span class="p">,</span> <span class="n">p1</span><span class="p">,</span> <span class="n">p2</span><span class="p">,</span> <span class="mi">0</span><span class="p">]),</span>
-                <span class="n">bounds</span><span class="o">=</span><span class="n">bounds</span><span class="p">,</span>
-                <span class="n">method</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">COLLISION_INTEGRATION_METHOD</span><span class="p">)</span>
-
-            <span class="k">print</span> <span class="s">&#39;{name:}</span><span class="se">\t\t</span><span class="s">I( {p0:5.2f} ) = {integral: .5e}</span><span class="se">\t</span><span class="s">&#39;</span>\
-                <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">integral</span><span class="o">=</span><span class="n">integral</span> <span class="o">*</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">MeV</span><span class="p">,</span> <span class="n">p0</span><span class="o">=</span><span class="n">p0</span> <span class="o">/</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">MeV</span><span class="p">),</span>
-
-            <span class="k">return</span> <span class="n">integral</span><span class="p">,</span> <span class="n">error</span></pre></div>
-        </div>
-        <div class='clearall'></div>
-    </section>
-  </div>
-  <div class='section'>
-    <a id="section-25" class="section-anchor"></a>
-    <section>
-        <div class='docs'>
-          <div class='octowrap'>
-            <a class='octothorpe' href='#section-25'>#</a>
-          </div>
-          <h2><span class="header" href="particle-collisions-integration"> Particle collisions integration </span><a id="particle-collisions-integration" class="header-anchor"></a></h2>
-        </div>
-        <div class='code'>
-          <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">integrate_collisions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p0</span><span class="p">):</span>
-
-        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">collision_integrands</span><span class="p">:</span>
-            <span class="k">return</span> <span class="mi">0</span>
-
-        <span class="n">As</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">Bs</span> <span class="o">=</span> <span class="p">[]</span>
-
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">COLLECTIVE_INTEGRATION</span><span class="p">:</span>
-
-            <span class="n">integral_1</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">benchmarked_integration</span><span class="p">(</span>
-                <span class="n">p0</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">ps</span><span class="p">:</span> <span class="nb">sum</span><span class="p">([</span>
-                    <span class="n">i</span><span class="o">.</span><span class="n">integrand</span><span class="p">(</span><span class="n">ps</span><span class="p">,</span> <span class="n">F_A</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">F_B</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">F_1</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">F_f</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
-                    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">collision_integrands</span>
-                <span class="p">]),</span> <span class="n">name</span><span class="o">=</span><span class="s">&#39;{} ~1 interactions&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">symbol</span><span class="p">)</span>
-            <span class="p">)</span>
-            <span class="n">As</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">integral_1</span><span class="p">)</span>
-
-            <span class="n">integral_f</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">benchmarked_integration</span><span class="p">(</span>
-                <span class="n">p0</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">ps</span><span class="p">:</span> <span class="nb">sum</span><span class="p">([</span>
-                    <span class="n">i</span><span class="o">.</span><span class="n">integrand</span><span class="p">(</span><span class="n">ps</span><span class="p">,</span> <span class="n">F_A</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">F_B</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">F_1</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">F_f</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
-                    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">collision_integrands</span>
-                <span class="p">]),</span> <span class="n">name</span><span class="o">=</span><span class="s">&#39;{} ~f interactions&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">symbol</span><span class="p">)</span>
-            <span class="p">)</span>
-            <span class="n">Bs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">integral_f</span><span class="p">)</span>
-
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">collision_integrands</span><span class="p">:</span></pre></div>
-        </div>
-        <div class='clearall'></div>
-    </section>
-  </div>
-  <div class='section'>
-    <a id="section-26" class="section-anchor"></a>
-    <section>
-        <div class='docs'>
-          <div class='octowrap'>
-            <a class='octothorpe' href='#section-26'>#</a>
-          </div>
-          <p>plot_integrand(lambda (p1, p2): i.integrand([p0, p1, p2, 0]), self.name, p0)</p>
-        </div>
-        <div class='code'>
-          <div class="highlight"><pre>                <span class="n">bounds</span> <span class="o">=</span> <span class="p">(</span></pre></div>
-        </div>
-        <div class='clearall'></div>
-    </section>
-  </div>
-  <div class='section'>
-    <a id="section-27" class="section-anchor"></a>
-    <section>
-        <div class='docs'>
-          <div class='octowrap'>
-            <a class='octothorpe' href='#section-27'>#</a>
-          </div>
-          <p>(max(GRID.MIN_MOMENTUM, i.particles[2].conformal_mass
-+ i.particles[3].conformal_mass - p0),</p>
-        </div>
-        <div class='code'>
-          <div class="highlight"><pre>                    <span class="p">(</span><span class="n">GRID</span><span class="o">.</span><span class="n">MIN_MOMENTUM</span><span class="p">,</span>
-                     <span class="n">GRID</span><span class="o">.</span><span class="n">MAX_MOMENTUM</span><span class="p">),</span>
-                    <span class="p">(</span><span class="k">lambda</span> <span class="n">p1</span><span class="p">:</span> <span class="n">GRID</span><span class="o">.</span><span class="n">MIN_MOMENTUM</span><span class="p">,</span></pre></div>
-        </div>
-        <div class='clearall'></div>
-    </section>
-  </div>
-  <div class='section'>
-    <a id="section-28" class="section-anchor"></a>
-    <section>
-        <div class='docs'>
-          <div class='octowrap'>
-            <a class='octothorpe' href='#section-28'>#</a>
-          </div>
-          <p>max(GRID.MIN_MOMENTUM, p0 + p1 - i.particles[3].conformal_mass
-- i.particles[2].conformal_mass),</p>
-        </div>
-        <div class='code'>
-          <div class="highlight"><pre>                     <span class="k">lambda</span> <span class="n">p1</span><span class="p">:</span> <span class="nb">min</span><span class="p">(</span><span class="n">p0</span> <span class="o">+</span> <span class="n">p1</span><span class="p">,</span> <span class="n">GRID</span><span class="o">.</span><span class="n">MAX_MOMENTUM</span><span class="p">)),</span></pre></div>
-        </div>
-        <div class='clearall'></div>
-    </section>
-  </div>
-  <div class='section'>
-    <a id="section-29" class="section-anchor"></a>
-    <section>
-        <div class='docs'>
-          <div class='octowrap'>
-            <a class='octothorpe' href='#section-29'>#</a>
-          </div>
-          
-        </div>
-        <div class='code'>
-          <div class="highlight"><pre>                <span class="p">)</span>
-
-                <span class="n">integral_1</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">benchmarked_integration</span><span class="p">(</span>
-                    <span class="n">p0</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">ps</span><span class="p">:</span> <span class="n">i</span><span class="o">.</span><span class="n">integrand</span><span class="p">(</span><span class="n">ps</span><span class="p">,</span> <span class="n">F_A</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">F_B</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">F_1</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">F_f</span><span class="o">=</span><span class="bp">False</span><span class="p">),</span>
-                    <span class="n">name</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">),</span> <span class="n">bounds</span><span class="o">=</span><span class="n">bounds</span>
-                <span class="p">)</span>
-                <span class="n">As</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">integral_1</span><span class="p">)</span>
-
-                <span class="n">integral_f</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">benchmarked_integration</span><span class="p">(</span>
-                    <span class="n">p0</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">ps</span><span class="p">:</span> <span class="n">i</span><span class="o">.</span><span class="n">integrand</span><span class="p">(</span><span class="n">ps</span><span class="p">,</span> <span class="n">F_A</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">F_B</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">F_1</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">F_f</span><span class="o">=</span><span class="bp">True</span><span class="p">),</span>
-                    <span class="n">name</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">),</span> <span class="n">bounds</span><span class="o">=</span><span class="n">bounds</span>
-                <span class="p">)</span>
-                <span class="n">Bs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">integral_f</span><span class="p">)</span></pre></div>
-        </div>
-        <div class='clearall'></div>
-    </section>
-  </div>
-  <div class='section'>
-    <a id="section-30" class="section-anchor"></a>
-    <section>
-        <div class='docs'>
-          <div class='octowrap'>
-            <a class='octothorpe' href='#section-30'>#</a>
-          </div>
-          
-        </div>
-        <div class='code'>
-          <div class="highlight"><pre>        <span class="n">prediction</span> <span class="o">=</span> <span class="n">implicit_euler</span><span class="p">(</span><span class="n">y</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">distribution</span><span class="p">(</span><span class="n">p0</span><span class="p">),</span>
-                                    <span class="n">t</span><span class="o">=</span><span class="n">PARAMS</span><span class="o">.</span><span class="n">x</span><span class="p">,</span>
-                                    <span class="n">A</span><span class="o">=</span><span class="k">lambda</span> <span class="n">t</span><span class="p">:</span> <span class="nb">sum</span><span class="p">(</span><span class="n">As</span><span class="p">),</span>
-                                    <span class="n">B</span><span class="o">=</span><span class="k">lambda</span> <span class="n">t</span><span class="p">:</span> <span class="nb">sum</span><span class="p">(</span><span class="n">Bs</span><span class="p">),</span>
-                                    <span class="n">h</span><span class="o">=</span><span class="n">PARAMS</span><span class="o">.</span><span class="n">dx</span><span class="p">)</span>
-
-        <span class="n">total_integral</span> <span class="o">=</span> <span class="p">(</span><span class="n">prediction</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">distribution</span><span class="p">(</span><span class="n">p0</span><span class="p">))</span> <span class="o">/</span> <span class="n">PARAMS</span><span class="o">.</span><span class="n">dx</span>
-
-        <span class="k">return</span> <span class="n">total_integral</span></pre></div>
-        </div>
-        <div class='clearall'></div>
-    </section>
-  </div>
-  <div class='section'>
-    <a id="section-31" class="section-anchor"></a>
-    <section>
-        <div class='docs'>
-          <div class='octowrap'>
-            <a class='octothorpe' href='#section-31'>#</a>
-          </div>
-          <h3><span class="header" href="regime-switching-ratio"> Regime-switching ratio </span><a id="regime-switching-ratio" class="header-anchor"></a></h3>
+          <h3><a id="regime-switching-ratio" class="header-anchor" href="#regime-switching-ratio"> Regime-switching ratio </a></h3>
 <p>For ultra-relativistic particles the mass is effectively <code>0</code>. This implies that all computed numerically values can be as well obtained analytically: energy density, pressure, etc.</p>
 <p>Let particle mass be equal $M$ and regime factor equal $\gamma$. As soon as the temperature of the system $T$ drops to the value about $ M \gamma $, particle should be switched to the computation regime where its mass is also considered: <code>REGIMES.INTERMEDIATE</code>. When $T$ drops down even further to the value $ M / \gamma $, particle species can be treated as <code>REGIMES.DUST</code> with a Boltzmann distribution function.</p>
         </div>
@@ -706,11 +562,11 @@
     </section>
   </div>
   <div class='section'>
-    <a id="section-32" class="section-anchor"></a>
+    <a id="section-25" class="section-anchor"></a>
     <section>
         <div class='docs'>
           <div class='octowrap'>
-            <a class='octothorpe' href='#section-32'>#</a>
+            <a class='octothorpe' href='#section-25'>#</a>
           </div>
           <p><span class=todo><strong>TODO</strong>: probably just remove these and always use <code>particle.regime.something()</code>?</span></p>
         </div>
@@ -722,11 +578,11 @@
     </section>
   </div>
   <div class='section'>
-    <a id="section-33" class="section-anchor"></a>
+    <a id="section-26" class="section-anchor"></a>
     <section>
         <div class='docs'>
           <div class='octowrap'>
-            <a class='octothorpe' href='#section-33'>#</a>
+            <a class='octothorpe' href='#section-26'>#</a>
           </div>
           
         </div>
@@ -738,11 +594,11 @@
     </section>
   </div>
   <div class='section'>
-    <a id="section-34" class="section-anchor"></a>
+    <a id="section-27" class="section-anchor"></a>
     <section>
         <div class='docs'>
           <div class='octowrap'>
-            <a class='octothorpe' href='#section-34'>#</a>
+            <a class='octothorpe' href='#section-27'>#</a>
           </div>
           
         </div>
@@ -754,11 +610,11 @@
     </section>
   </div>
   <div class='section'>
-    <a id="section-35" class="section-anchor"></a>
+    <a id="section-28" class="section-anchor"></a>
     <section>
         <div class='docs'>
           <div class='octowrap'>
-            <a class='octothorpe' href='#section-35'>#</a>
+            <a class='octothorpe' href='#section-28'>#</a>
           </div>
           
         </div>
@@ -770,11 +626,11 @@
     </section>
   </div>
   <div class='section'>
-    <a id="section-36" class="section-anchor"></a>
+    <a id="section-29" class="section-anchor"></a>
     <section>
         <div class='docs'>
           <div class='octowrap'>
-            <a class='octothorpe' href='#section-36'>#</a>
+            <a class='octothorpe' href='#section-29'>#</a>
           </div>
           
         </div>
@@ -786,13 +642,13 @@
     </section>
   </div>
   <div class='section'>
-    <a id="section-37" class="section-anchor"></a>
+    <a id="section-30" class="section-anchor"></a>
     <section>
         <div class='docs'>
           <div class='octowrap'>
-            <a class='octothorpe' href='#section-37'>#</a>
+            <a class='octothorpe' href='#section-30'>#</a>
           </div>
-          <h2><span class="header" href="distribution-function-interpolation"> Distribution function interpolation </span><a id="distribution-function-interpolation" class="header-anchor"></a></h2>
+          <h2><a id="distribution-function-interpolation" class="header-anchor" href="#distribution-function-interpolation"> Distribution function interpolation </a></h2>
 <p>Two possible strategies for the distribution function interpolation are implemented:</p>
 <ul>
 <li>linear interpolation</li>
@@ -807,17 +663,17 @@
         <span class="n">exponential_interpolation</span> <span class="o">=</span> <span class="bp">True</span>
         <span class="n">p</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">in_equilibrium</span> <span class="ow">or</span> <span class="n">p</span> <span class="o">&gt;</span> <span class="n">GRID</span><span class="o">.</span><span class="n">MAX_MOMENTUM</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">distribution_function</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">conformal_energy</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">aT</span><span class="p">)</span></pre></div>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">equilibrium_distribution</span><span class="p">(</span><span class="n">p</span><span class="p">)</span></pre></div>
         </div>
         <div class='clearall'></div>
     </section>
   </div>
   <div class='section'>
-    <a id="section-38" class="section-anchor"></a>
+    <a id="section-31" class="section-anchor"></a>
     <section>
         <div class='docs'>
           <div class='octowrap'>
-            <a class='octothorpe' href='#section-38'>#</a>
+            <a class='octothorpe' href='#section-31'>#</a>
           </div>
           <p>Cython implementation experiment</p>
 <div class="codehilite"><pre><span class="k">return</span> <span class="n">distribution_interpolation</span><span class="p">(</span><span class="n">GRID</span><span class="o">.</span><span class="n">TEMPLATE</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_distribution</span><span class="p">,</span>
@@ -840,11 +696,11 @@
     </section>
   </div>
   <div class='section'>
-    <a id="section-39" class="section-anchor"></a>
+    <a id="section-32" class="section-anchor"></a>
     <section>
         <div class='docs'>
           <div class='octowrap'>
-            <a class='octothorpe' href='#section-39'>#</a>
+            <a class='octothorpe' href='#section-32'>#</a>
           </div>
           <p>Determine the closest grid points</p>
         </div>
@@ -861,13 +717,13 @@
     </section>
   </div>
   <div class='section'>
-    <a id="section-40" class="section-anchor"></a>
+    <a id="section-33" class="section-anchor"></a>
     <section>
         <div class='docs'>
           <div class='octowrap'>
-            <a class='octothorpe' href='#section-40'>#</a>
+            <a class='octothorpe' href='#section-33'>#</a>
           </div>
-          <h3><span class="header" href="exponential-interpolation"> Exponential interpolation </span><a id="exponential-interpolation" class="header-anchor"></a></h3>
+          <h3><a id="exponential-interpolation" class="header-anchor" href="#exponential-interpolation"> Exponential interpolation </a></h3>
         </div>
         <div class='code'>
           <div class="highlight"><pre>            <span class="n">E_p</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">conformal_energy</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
@@ -878,11 +734,11 @@
     </section>
   </div>
   <div class='section'>
-    <a id="section-41" class="section-anchor"></a>
+    <a id="section-34" class="section-anchor"></a>
     <section>
         <div class='docs'>
           <div class='octowrap'>
-            <a class='octothorpe' href='#section-41'>#</a>
+            <a class='octothorpe' href='#section-34'>#</a>
           </div>
           <p>\begin{equation}
     g = \frac{ (E_p - E_{low}) g_{high} + (E_{high} - E_p) g_{low} } { (E_{high} - E_{low}) }
@@ -908,11 +764,11 @@
     </section>
   </div>
   <div class='section'>
-    <a id="section-42" class="section-anchor"></a>
+    <a id="section-35" class="section-anchor"></a>
     <section>
         <div class='docs'>
           <div class='octowrap'>
-            <a class='octothorpe' href='#section-42'>#</a>
+            <a class='octothorpe' href='#section-35'>#</a>
           </div>
           
         </div>
@@ -923,13 +779,13 @@
     </section>
   </div>
   <div class='section'>
-    <a id="section-43" class="section-anchor"></a>
+    <a id="section-36" class="section-anchor"></a>
     <section>
         <div class='docs'>
           <div class='octowrap'>
-            <a class='octothorpe' href='#section-43'>#</a>
+            <a class='octothorpe' href='#section-36'>#</a>
           </div>
-          <h3><span class="header" href="linear-interpolation"> Linear interpolation </span><a id="linear-interpolation" class="header-anchor"></a></h3>
+          <h3><a id="linear-interpolation" class="header-anchor" href="#linear-interpolation"> Linear interpolation </a></h3>
         </div>
         <div class='code'>
           <div class="highlight"><pre>            <span class="k">return</span> <span class="p">(</span>
@@ -940,32 +796,53 @@
     </section>
   </div>
   <div class='section'>
-    <a id="section-44" class="section-anchor"></a>
+    <a id="section-37" class="section-anchor"></a>
     <section>
         <div class='docs'>
           <div class='octowrap'>
-            <a class='octothorpe' href='#section-44'>#</a>
+            <a class='octothorpe' href='#section-37'>#</a>
           </div>
-          
+          <p>Equilibrium distribution that corresponds to the particle internal temperature </p>
         </div>
         <div class='code'>
-          <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">equilibrium_distribution</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">p</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">distribution_function</span><span class="p">(</span>
+          <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">equilibrium_distribution</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+
+        <span class="k">if</span> <span class="n">y</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">equilibrium_distribution_function</span><span class="p">(</span>
                 <span class="n">numpy</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">conformal_energy</span><span class="p">)(</span><span class="n">GRID</span><span class="o">.</span><span class="n">TEMPLATE</span><span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">aT</span>
             <span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">distribution_function</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">conformal_energy</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">aT</span><span class="p">)</span></pre></div>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">equilibrium_distribution_function</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">conformal_energy</span><span class="p">(</span><span class="n">y</span><span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">aT</span><span class="p">)</span></pre></div>
         </div>
         <div class='clearall'></div>
     </section>
   </div>
   <div class='section'>
-    <a id="section-45" class="section-anchor"></a>
+    <a id="section-38" class="section-anchor"></a>
     <section>
         <div class='docs'>
           <div class='octowrap'>
-            <a class='octothorpe' href='#section-45'>#</a>
+            <a class='octothorpe' href='#section-38'>#</a>
+          </div>
+          
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">equilibrium_distribution_function</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">eta</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">STATISTICS</span><span class="o">.</span><span class="n">Bose</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">STATISTICS</span><span class="o">.</span><span class="n">Fermi</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+  </div>
+  <div class='section'>
+    <a id="section-39" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-39'>#</a>
           </div>
           
         </div>
@@ -978,11 +855,11 @@
     </section>
   </div>
   <div class='section'>
-    <a id="section-46" class="section-anchor"></a>
+    <a id="section-40" class="section-anchor"></a>
     <section>
         <div class='docs'>
           <div class='octowrap'>
-            <a class='octothorpe' href='#section-46'>#</a>
+            <a class='octothorpe' href='#section-40'>#</a>
           </div>
           <p>Simple check for equilibrium </p>
         </div>
@@ -996,11 +873,11 @@
     </section>
   </div>
   <div class='section'>
-    <a id="section-47" class="section-anchor"></a>
+    <a id="section-41" class="section-anchor"></a>
     <section>
         <div class='docs'>
           <div class='octowrap'>
-            <a class='octothorpe' href='#section-47'>#</a>
+            <a class='octothorpe' href='#section-41'>#</a>
           </div>
           <p>Physical energy of the particle</p>
 <p>\begin{equation}
@@ -1019,15 +896,15 @@
     </section>
   </div>
   <div class='section'>
-    <a id="section-48" class="section-anchor"></a>
+    <a id="section-42" class="section-anchor"></a>
     <section>
         <div class='docs'>
           <div class='octowrap'>
-            <a class='octothorpe' href='#section-48'>#</a>
+            <a class='octothorpe' href='#section-42'>#</a>
           </div>
           <p>Conformal energy of the particle in comoving coordinates with evolving mass term</p>
 <p>\begin{equation}
-       E_n = \sqrt{y^2 + (M a)^2}
+       E_N = \sqrt{y^2 + (M a)^2}
    \end{equation}</p>
         </div>
         <div class='code'>
@@ -1042,18 +919,19 @@
     </section>
   </div>
   <div class='section'>
-    <a id="section-49" class="section-anchor"></a>
+    <a id="section-43" class="section-anchor"></a>
     <section>
         <div class='docs'>
           <div class='octowrap'>
-            <a class='octothorpe' href='#section-49'>#</a>
+            <a class='octothorpe' href='#section-43'>#</a>
           </div>
-          
+          <p>In the expanding Universe, distribution function of the massive particle in the conformal coordinates changes because of the evolving mass term $M a$ </p>
         </div>
         <div class='code'>
           <div class="highlight"><pre>    <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">conformal_mass</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">mass</span> <span class="o">*</span> <span class="n">PARAMS</span><span class="o">.</span><span class="n">a</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">mass</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">a</span>
 
 </pre></div>
         </div>

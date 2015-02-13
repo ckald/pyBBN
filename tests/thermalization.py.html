@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta http-equiv="content-type" content="text/html;charset=utf-8">
-  <title>pyBBN v0.1.0: docs/tests/thermalization.py</title>
+  <title>pyBBN v0.1.0: tests/thermalization.py</title>
   <link rel="stylesheet" href="../pyccoon.css">
   <script type="text/x-mathjax-config">
   MathJax.Hub.Config({
@@ -22,7 +22,7 @@
         Generated at
         <a target="_blank" href="http://ckald.github.io/pyccoon/" title="Pyccoon: side-to-side documentation generator">
             <img id="pyccoon-icon" src="../pyccoon_icon.svg" alt="Pyccoon: side-to-side documentation generator" /></a>
-        <code>2014-11-26 01:10:25.852743</code>/
+        <code>2015-02-13 14:08:02.236708</code>/
         by a diligent
         <a target="_blank" href="http://ckald.github.io/pyccoon/" title="Pyccoon: side-to-side documentation generator">pyccoon</a>
     </div>
@@ -72,7 +72,8 @@
                                             <span class="n">otypes</span><span class="o">=</span><span class="p">[</span><span class="n">numpy</span><span class="o">.</span><span class="n">float_</span><span class="p">])(</span><span class="n">GRID</span><span class="o">.</span><span class="n">TEMPLATE</span><span class="p">)</span>
 
 <span class="n">universe</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="n">Particles</span><span class="p">,</span> <span class="n">Interactions</span><span class="p">)</span>
-<span class="n">universe</span><span class="o">.</span><span class="n">graphics</span><span class="o">.</span><span class="n">monitor</span><span class="p">(</span><span class="n">particles</span><span class="o">=</span><span class="p">[</span><span class="n">neutrino_e</span><span class="p">,</span> <span class="n">neutrino_mu</span><span class="p">])</span></pre></div>
+<span class="k">if</span> <span class="n">universe</span><span class="o">.</span><span class="n">graphics</span><span class="p">:</span>
+    <span class="n">universe</span><span class="o">.</span><span class="n">graphics</span><span class="o">.</span><span class="n">monitor</span><span class="p">(</span><span class="n">particles</span><span class="o">=</span><span class="p">[</span><span class="n">neutrino_e</span><span class="p">,</span> <span class="n">neutrino_mu</span><span class="p">])</span></pre></div>
         </div>
         <div class='clearall'></div>
     </section>
@@ -86,8 +87,8 @@
           </div>
           <p>from plotting import plot_points
 for p0 in GRID.TEMPLATE:
-    Interactions[0].calculate()
-    i = neutrino_e.collision_integrands[0]
+    Interactions[0].initialize()
+    i = neutrino_e.collision_integrals[0]
     plot_points(i.bounds(p0), p0)</p>
         </div>
         <div class='code'>

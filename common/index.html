@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta http-equiv="content-type" content="text/html;charset=utf-8">
-  <title>pyBBN v0.1.0: docs/common/__init__.py</title>
+  <title>pyBBN v0.1.0: common/__init__.py</title>
   <link rel="stylesheet" href="../pyccoon.css">
   <script type="text/x-mathjax-config">
   MathJax.Hub.Config({
@@ -22,11 +22,11 @@
     Contents
     <div id="jump_wrapper">
       <div id="jump_page">
-          <a class="source source-1" href="#section-1"> Common </a>
-          <a class="source source-2" href="#section-3"> Units </a>
-          <a class="source source-3" href="#section-6"> Physical constants </a>
-          <a class="source source-2" href="#section-7"> Parameters </a>
-          <a class="source source-3" href="#section-22"> Distribution functions grid </a>
+          <a class="source source-1" href="#common"> Common </a>
+          <a class="source source-2" href="#units"> Units </a>
+          <a class="source source-3" href="#physical-constants"> Physical constants </a>
+          <a class="source source-2" href="#parameters"> Parameters </a>
+          <a class="source source-3" href="#distribution-functions-grid"> Distribution functions grid </a>
       </div>
     </div>
     </div>
@@ -34,7 +34,7 @@
         Generated at
         <a target="_blank" href="http://ckald.github.io/pyccoon/" title="Pyccoon: side-to-side documentation generator">
             <img id="pyccoon-icon" src="../pyccoon_icon.svg" alt="Pyccoon: side-to-side documentation generator" /></a>
-        <code>2014-11-26 01:10:22.105553</code>/
+        <code>2015-02-13 14:07:55.741864</code>/
         by a diligent
         <a target="_blank" href="http://ckald.github.io/pyccoon/" title="Pyccoon: side-to-side documentation generator">pyccoon</a>
     </div>
@@ -68,12 +68,13 @@
           <div class='octowrap'>
             <a class='octothorpe' href='#section-1'>#</a>
           </div>
-          <h1><span class="header" href="common"> Common </span><a id="common" class="header-anchor"></a></h1>
+          <h1><a id="common" class="header-anchor" href="#common"> Common </a></h1>
 <p>This file contains constants and utilities shared by all other modules in the project.</p>
         </div>
         <div class='code'>
           <div class="highlight"><pre><span class="kn">import</span> <span class="nn">numpy</span>
-<span class="kn">import</span> <span class="nn">numericalunits</span> <span class="kn">as</span> <span class="nn">nu</span></pre></div>
+<span class="kn">import</span> <span class="nn">numericalunits</span> <span class="kn">as</span> <span class="nn">nu</span>
+<span class="kn">from</span> <span class="nn">utils</span> <span class="kn">import</span> <span class="n">PicklableObject</span></pre></div>
         </div>
         <div class='clearall'></div>
     </section>
@@ -85,11 +86,14 @@
           <div class='octowrap'>
             <a class='octothorpe' href='#section-2'>#</a>
           </div>
-          <p>Numpy error handling behavior. Uncomment to see a notice each time you get an overflow.
-numpy.seterr(all='print')</p>
+          <h2><a id="units" class="header-anchor" href="#units"> Units </a></h2>
+<p>As we use natural units in the project, all units from <code>numericalunits</code> except energy units are useless. Here some useful units are defined in terms of <code>GeV</code>s. </p>
         </div>
         <div class='code'>
-          
+          <div class="highlight"><pre><span class="k">class</span> <span class="nc">UNITS</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+
+    <span class="n">use_numericalunits</span> <span class="o">=</span> <span class="bp">False</span>
+    <span class="n">eV</span> <span class="o">=</span> <span class="n">nu</span><span class="o">.</span><span class="n">eV</span> <span class="k">if</span> <span class="n">use_numericalunits</span> <span class="k">else</span> <span class="mf">1e-9</span></pre></div>
         </div>
         <div class='clearall'></div>
     </section>
@@ -100,25 +104,6 @@ numpy.seterr(all='print')</p>
         <div class='docs'>
           <div class='octowrap'>
             <a class='octothorpe' href='#section-3'>#</a>
-          </div>
-          <h2><span class="header" href="units"> Units </span><a id="units" class="header-anchor"></a></h2>
-<p>As we use natural units in the project, all units from <code>numericalunits</code> except energy units are useless. Here some useful units are defined in terms of <code>GeV</code>s. </p>
-        </div>
-        <div class='code'>
-          <div class="highlight"><pre><span class="k">class</span> <span class="nc">UNITS</span><span class="p">:</span>
-
-    <span class="n">use_numericalunits</span> <span class="o">=</span> <span class="bp">False</span>
-    <span class="n">eV</span> <span class="o">=</span> <span class="n">nu</span><span class="o">.</span><span class="n">eV</span> <span class="k">if</span> <span class="n">use_numericalunits</span> <span class="k">else</span> <span class="mf">1e-9</span></pre></div>
-        </div>
-        <div class='clearall'></div>
-    </section>
-  </div>
-  <div class='section'>
-    <a id="section-4" class="section-anchor"></a>
-    <section>
-        <div class='docs'>
-          <div class='octowrap'>
-            <a class='octothorpe' href='#section-4'>#</a>
           </div>
           
         </div>
@@ -138,16 +123,38 @@ numpy.seterr(all='print')</p>
     </section>
   </div>
   <div class='section'>
+    <a id="section-4" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-4'>#</a>
+          </div>
+          
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre><span class="n">UNITS</span><span class="o">.</span><span class="n">reset_units</span><span class="p">()</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+  </div>
+  <div class='section'>
     <a id="section-5" class="section-anchor"></a>
     <section>
         <div class='docs'>
           <div class='octowrap'>
             <a class='octothorpe' href='#section-5'>#</a>
           </div>
-          
+          <h3><a id="physical-constants" class="header-anchor" href="#physical-constants"> Physical constants </a></h3>
         </div>
         <div class='code'>
-          <div class="highlight"><pre><span class="n">UNITS</span><span class="o">.</span><span class="n">reset_units</span><span class="p">()</span></pre></div>
+          <div class="highlight"><pre><span class="k">class</span> <span class="nc">CONST</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+
+    <span class="n">G</span> <span class="o">=</span> <span class="mf">6.67</span> <span class="o">*</span> <span class="mf">1e-11</span> <span class="o">*</span> <span class="p">(</span><span class="n">UNITS</span><span class="o">.</span><span class="n">N</span> <span class="o">/</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">kg</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">m</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">M_p</span> <span class="o">=</span> <span class="mf">1.2209</span> <span class="o">*</span> <span class="mf">1e19</span> <span class="o">*</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">GeV</span>
+    <span class="n">G_F</span> <span class="o">=</span> <span class="mf">1.166</span> <span class="o">*</span> <span class="mf">1e-5</span> <span class="o">/</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">GeV</span><span class="o">**</span><span class="mi">2</span>
+    <span class="n">sin_theta_w_2</span> <span class="o">=</span> <span class="mf">0.2312</span>
+    <span class="n">g_R</span> <span class="o">=</span> <span class="n">sin_theta_w_2</span>
+    <span class="n">g_L</span> <span class="o">=</span> <span class="n">sin_theta_w_2</span> <span class="o">+</span> <span class="mf">0.5</span></pre></div>
         </div>
         <div class='clearall'></div>
     </section>
@@ -159,16 +166,11 @@ numpy.seterr(all='print')</p>
           <div class='octowrap'>
             <a class='octothorpe' href='#section-6'>#</a>
           </div>
-          <h3><span class="header" href="physical-constants"> Physical constants </span><a id="physical-constants" class="header-anchor"></a></h3>
+          <h2><a id="parameters" class="header-anchor" href="#parameters"> Parameters </a></h2>
+<p>Master object carrying the cosmological state of the system and initial conditions </p>
         </div>
         <div class='code'>
-          <div class="highlight"><pre><span class="k">class</span> <span class="nc">CONST</span><span class="p">:</span>
-
-    <span class="n">G</span> <span class="o">=</span> <span class="mf">6.67</span> <span class="o">*</span> <span class="mf">1e-11</span> <span class="o">*</span> <span class="p">(</span><span class="n">UNITS</span><span class="o">.</span><span class="n">N</span> <span class="o">/</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">kg</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">m</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
-    <span class="n">G_F</span> <span class="o">=</span> <span class="mf">1.166</span> <span class="o">*</span> <span class="mf">1e-5</span> <span class="o">/</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">GeV</span><span class="o">**</span><span class="mi">2</span>
-    <span class="n">sin_theta_w_2</span> <span class="o">=</span> <span class="mf">0.23</span>
-    <span class="n">g_R</span> <span class="o">=</span> <span class="n">sin_theta_w_2</span>
-    <span class="n">g_L</span> <span class="o">=</span> <span class="n">sin_theta_w_2</span> <span class="o">+</span> <span class="mf">0.5</span></pre></div>
+          <div class="highlight"><pre><span class="k">class</span> <span class="nc">Params</span><span class="p">(</span><span class="n">PicklableObject</span><span class="p">):</span></pre></div>
         </div>
         <div class='clearall'></div>
     </section>
@@ -180,11 +182,11 @@ numpy.seterr(all='print')</p>
           <div class='octowrap'>
             <a class='octothorpe' href='#section-7'>#</a>
           </div>
-          <h2><span class="header" href="parameters"> Parameters </span><a id="parameters" class="header-anchor"></a></h2>
-<p>Master object carrying the cosmological state of the system and initial conditions </p>
+          <p>Temperature bounds define the simulations boundaries of the system</p>
         </div>
         <div class='code'>
-          <div class="highlight"><pre><span class="k">class</span> <span class="nc">Params</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span></pre></div>
+          <div class="highlight"><pre>    <span class="n">T_initial</span> <span class="o">=</span> <span class="mi">10</span> <span class="o">*</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">MeV</span>
+    <span class="n">T_final</span> <span class="o">=</span> <span class="mi">10</span> <span class="o">*</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">keV</span></pre></div>
         </div>
         <div class='clearall'></div>
     </section>
@@ -196,11 +198,10 @@ numpy.seterr(all='print')</p>
           <div class='octowrap'>
             <a class='octothorpe' href='#section-8'>#</a>
           </div>
-          <p>Temperature bounds define the simulations boundaries of the system</p>
+          <p>Arbitrary normalization of the conformal scale factor</p>
         </div>
         <div class='code'>
-          <div class="highlight"><pre>    <span class="n">T_initial</span> <span class="o">=</span> <span class="mi">10</span> <span class="o">*</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">MeV</span>
-    <span class="n">T_final</span> <span class="o">=</span> <span class="mi">10</span> <span class="o">*</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">keV</span></pre></div>
+          <div class="highlight"><pre>    <span class="n">m</span> <span class="o">=</span> <span class="mf">1.</span> <span class="o">*</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">MeV</span></pre></div>
         </div>
         <div class='clearall'></div>
     </section>
@@ -212,10 +213,10 @@ numpy.seterr(all='print')</p>
           <div class='octowrap'>
             <a class='octothorpe' href='#section-9'>#</a>
           </div>
-          <p>Arbitrary normalization of the conformal scale factor</p>
+          <p>Conformal scale factor step size during computations</p>
         </div>
         <div class='code'>
-          <div class="highlight"><pre>    <span class="n">m</span> <span class="o">=</span> <span class="mf">1.</span> <span class="o">*</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">MeV</span></pre></div>
+          <div class="highlight"><pre>    <span class="n">dy</span> <span class="o">=</span> <span class="mf">0.05</span></pre></div>
         </div>
         <div class='clearall'></div>
     </section>
@@ -227,10 +228,10 @@ numpy.seterr(all='print')</p>
           <div class='octowrap'>
             <a class='octothorpe' href='#section-10'>#</a>
           </div>
-          <p>Conformal scale factor step size during computations</p>
+          <p>Initial time</p>
         </div>
         <div class='code'>
-          <div class="highlight"><pre>    <span class="n">dx</span> <span class="o">=</span> <span class="mf">1e-2</span> <span class="o">*</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">MeV</span></pre></div>
+          <div class="highlight"><pre>    <span class="n">t</span> <span class="o">=</span> <span class="mf">0.</span> <span class="o">*</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">s</span></pre></div>
         </div>
         <div class='clearall'></div>
     </section>
@@ -242,10 +243,10 @@ numpy.seterr(all='print')</p>
           <div class='octowrap'>
             <a class='octothorpe' href='#section-11'>#</a>
           </div>
-          <p>Initial time</p>
+          <p>Hubble rate</p>
         </div>
         <div class='code'>
-          <div class="highlight"><pre>    <span class="n">t</span> <span class="o">=</span> <span class="mf">0.</span> <span class="o">*</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">s</span></pre></div>
+          <div class="highlight"><pre>    <span class="n">H</span> <span class="o">=</span> <span class="mf">0.</span></pre></div>
         </div>
         <div class='clearall'></div>
     </section>
@@ -257,10 +258,10 @@ numpy.seterr(all='print')</p>
           <div class='octowrap'>
             <a class='octothorpe' href='#section-12'>#</a>
           </div>
-          <p>Hubble rate</p>
+          <p>Total energy density</p>
         </div>
         <div class='code'>
-          <div class="highlight"><pre>    <span class="n">H</span> <span class="o">=</span> <span class="mf">0.</span></pre></div>
+          <div class="highlight"><pre>    <span class="n">rho</span> <span class="o">=</span> <span class="mf">0.</span></pre></div>
         </div>
         <div class='clearall'></div>
     </section>
@@ -272,10 +273,14 @@ numpy.seterr(all='print')</p>
           <div class='octowrap'>
             <a class='octothorpe' href='#section-13'>#</a>
           </div>
-          <p>Total energy density</p>
+          
         </div>
         <div class='code'>
-          <div class="highlight"><pre>    <span class="n">rho</span> <span class="o">=</span> <span class="mf">0.</span></pre></div>
+          <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+            <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">infer</span><span class="p">()</span></pre></div>
         </div>
         <div class='clearall'></div>
     </section>
@@ -287,13 +292,10 @@ numpy.seterr(all='print')</p>
           <div class='octowrap'>
             <a class='octothorpe' href='#section-14'>#</a>
           </div>
-          
+          <p>Set initial cosmological parameters based on the value of <code>T_initial</code> </p>
         </div>
         <div class='code'>
-          <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">kw</span> <span class="o">=</span> <span class="n">kw</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__dict__</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">kw</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">infer</span><span class="p">()</span></pre></div>
+          <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">infer</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></pre></div>
         </div>
         <div class='clearall'></div>
     </section>
@@ -305,11 +307,10 @@ numpy.seterr(all='print')</p>
           <div class='octowrap'>
             <a class='octothorpe' href='#section-15'>#</a>
           </div>
-          
+          <p>As the initial scale factor is arbitrary, it can be use to ensure the initial $aT$ value equal to 1</p>
         </div>
         <div class='code'>
-          <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">Params</span><span class="p">(</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">kw</span><span class="p">)</span></pre></div>
+          <div class="highlight"><pre>        <span class="bp">self</span><span class="o">.</span><span class="n">a_initial</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">m</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">T_initial</span></pre></div>
         </div>
         <div class='clearall'></div>
     </section>
@@ -321,10 +322,15 @@ numpy.seterr(all='print')</p>
           <div class='octowrap'>
             <a class='octothorpe' href='#section-16'>#</a>
           </div>
-          <p>Set initial cosmological parameters based on the value of <code>T_initial</code> </p>
+          <p>Compute present-state parameters that can be inferred from the base ones</p>
         </div>
         <div class='code'>
-          <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">infer</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></pre></div>
+          <div class="highlight"><pre>        <span class="bp">self</span><span class="o">.</span><span class="n">a</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">a_initial</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">a</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">m</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">*</span> <span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dy</span><span class="p">)</span> <span class="o">-</span> <span class="mf">1.</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">T</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">T_initial</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">aT</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">a</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">T</span></pre></div>
         </div>
         <div class='clearall'></div>
     </section>
@@ -336,10 +342,18 @@ numpy.seterr(all='print')</p>
           <div class='octowrap'>
             <a class='octothorpe' href='#section-17'>#</a>
           </div>
-          <p>As the initial scale factor is arbitrary, it can be use to ensure the initial $aT$ value equal to 1</p>
+          <p>Hubble expansion parameter defined by a Friedmann equation:</p>
+<p>\begin{equation}
+       H = \sqrt{\frac{8 \pi}{3} G \rho}
+   \end{equation}</p>
         </div>
         <div class='code'>
-          <div class="highlight"><pre>        <span class="bp">self</span><span class="o">.</span><span class="n">a_initial</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">m</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">T_initial</span></pre></div>
+          <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rho</span><span class="p">):</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">rho</span> <span class="o">=</span> <span class="n">rho</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">H</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mf">8.</span><span class="o">/</span><span class="mf">3.</span><span class="o">*</span><span class="n">numpy</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">rho</span><span class="p">)</span> <span class="o">/</span> <span class="n">CONST</span><span class="o">.</span><span class="n">M_p</span>
+
+        <span class="n">old_a</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">a</span></pre></div>
         </div>
         <div class='clearall'></div>
     </section>
@@ -351,47 +365,6 @@ numpy.seterr(all='print')</p>
           <div class='octowrap'>
             <a class='octothorpe' href='#section-18'>#</a>
           </div>
-          <p>Compute present-state parameters that can be inferred from the base ones</p>
-        </div>
-        <div class='code'>
-          <div class="highlight"><pre>        <span class="bp">self</span><span class="o">.</span><span class="n">a</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">a_initial</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">a</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">m</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">T</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">T_initial</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">aT</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">a</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">T</span></pre></div>
-        </div>
-        <div class='clearall'></div>
-    </section>
-  </div>
-  <div class='section'>
-    <a id="section-19" class="section-anchor"></a>
-    <section>
-        <div class='docs'>
-          <div class='octowrap'>
-            <a class='octothorpe' href='#section-19'>#</a>
-          </div>
-          <p>Hubble expansion parameter defined by a Friedmann equation:</p>
-<p>\begin{equation}
-       H = \sqrt{\frac{8 \pi}{3} G \rho}
-   \end{equation}</p>
-        </div>
-        <div class='code'>
-          <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rho</span><span class="p">):</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">rho</span> <span class="o">=</span> <span class="n">rho</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">H</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mf">8.</span><span class="o">/</span><span class="mf">3.</span><span class="o">*</span><span class="n">numpy</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">CONST</span><span class="o">.</span><span class="n">G</span> <span class="o">*</span> <span class="n">rho</span><span class="p">)</span>
-
-        <span class="n">old_a</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">a</span></pre></div>
-        </div>
-        <div class='clearall'></div>
-    </section>
-  </div>
-  <div class='section'>
-    <a id="section-20" class="section-anchor"></a>
-    <section>
-        <div class='docs'>
-          <div class='octowrap'>
-            <a class='octothorpe' href='#section-20'>#</a>
-          </div>
           <p>Physical scale factor and temperature for convenience </p>
         </div>
         <div class='code'>
@@ -402,11 +375,11 @@ numpy.seterr(all='print')</p>
     </section>
   </div>
   <div class='section'>
-    <a id="section-21" class="section-anchor"></a>
+    <a id="section-19" class="section-anchor"></a>
     <section>
         <div class='docs'>
           <div class='octowrap'>
-            <a class='octothorpe' href='#section-21'>#</a>
+            <a class='octothorpe' href='#section-19'>#</a>
           </div>
           <p>Time step size is inferred from the approximation of the scale factor <code>a</code> derivative and a definition of the Hubble parameter <code>H</code>:</p>
 <p>\begin{equation}
@@ -424,20 +397,20 @@ numpy.seterr(all='print')</p>
     </section>
   </div>
   <div class='section'>
-    <a id="section-22" class="section-anchor"></a>
+    <a id="section-20" class="section-anchor"></a>
     <section>
         <div class='docs'>
           <div class='octowrap'>
-            <a class='octothorpe' href='#section-22'>#</a>
+            <a class='octothorpe' href='#section-20'>#</a>
           </div>
-          <h3><span class="header" href="distribution-functions-grid"> Distribution functions grid </span><a id="distribution-functions-grid" class="header-anchor"></a></h3>
+          <h3><a id="distribution-functions-grid" class="header-anchor" href="#distribution-functions-grid"> Distribution functions grid </a></h3>
 <p><span class=todo><strong>TODO</strong>: try a log-spaced grid instead of equally-spaced</span>
 <span class=todo><strong>TODO</strong>: try an irregular grid based on the Gauss-Legendre quadrature roots to minimize the interpolation for the massless particles.</span></p>
 <p>To capture non-equilibrium effects in the Early Universe, we work with particle species distribution functions $f(\vec{p}, \vec{r}, t)$. Assuming that the Universe is homogeneous and isotropic, we can forget dependency on the position and the momentum direction: $f(p, t)$.</p>
 <p>Resulting functions are sampled across a wide range of momenta. However, momentum range cannot include both 0 momenta and very large momenta (either leads to numerical overflows and errors).</p>
         </div>
         <div class='code'>
-          <div class="highlight"><pre><span class="k">class</span> <span class="nc">Grid</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+          <div class="highlight"><pre><span class="k">class</span> <span class="nc">Grid</span><span class="p">(</span><span class="n">PicklableObject</span><span class="p">):</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">MIN_MOMENTUM</span> <span class="o">=</span> <span class="mf">1.</span> <span class="o">*</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">eV</span>
@@ -448,11 +421,11 @@ numpy.seterr(all='print')</p>
     </section>
   </div>
   <div class='section'>
-    <a id="section-23" class="section-anchor"></a>
+    <a id="section-21" class="section-anchor"></a>
     <section>
         <div class='docs'>
           <div class='octowrap'>
-            <a class='octothorpe' href='#section-23'>#</a>
+            <a class='octothorpe' href='#section-21'>#</a>
           </div>
           <p>Grid template can be copied when defining a new distribution function and is convenient to calculate any <em>vectorized</em> function over the grid. For example,</p>
 <div class="codehilite"><pre><span class="n">numpy</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="n">particle</span><span class="o">.</span><span class="n">conformal_energy</span><span class="p">)(</span><span class="n">GRID</span><span class="o">.</span><span class="n">TEMPLATE</span><span class="p">)</span>
@@ -471,27 +444,26 @@ numpy.seterr(all='print')</p>
     </section>
   </div>
   <div class='section'>
-    <a id="section-24" class="section-anchor"></a>
+    <a id="section-22" class="section-anchor"></a>
     <section>
         <div class='docs'>
           <div class='octowrap'>
-            <a class='octothorpe' href='#section-24'>#</a>
+            <a class='octothorpe' href='#section-22'>#</a>
           </div>
           
         </div>
         <div class='code'>
-          <div class="highlight"><pre><span class="n">PARAMS</span> <span class="o">=</span> <span class="n">Params</span><span class="p">()</span>
-<span class="n">GRID</span> <span class="o">=</span> <span class="n">Grid</span><span class="p">()</span></pre></div>
+          <div class="highlight"><pre><span class="n">GRID</span> <span class="o">=</span> <span class="n">Grid</span><span class="p">()</span></pre></div>
         </div>
         <div class='clearall'></div>
     </section>
   </div>
   <div class='section'>
-    <a id="section-25" class="section-anchor"></a>
+    <a id="section-23" class="section-anchor"></a>
     <section>
         <div class='docs'>
           <div class='octowrap'>
-            <a class='octothorpe' href='#section-25'>#</a>
+            <a class='octothorpe' href='#section-23'>#</a>
           </div>
           <p>Heaviside $\theta$ function </p>
         </div>

@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta http-equiv="content-type" content="text/html;charset=utf-8">
-  <title>pyBBN v0.1.0: docs/tests/unit/integrators_test.py</title>
+  <title>pyBBN v0.1.0: tests/unit/integrators_test.py</title>
   <link rel="stylesheet" href="../../pyccoon.css">
   <script type="text/x-mathjax-config">
   MathJax.Hub.Config({
@@ -22,7 +22,7 @@
         Generated at
         <a target="_blank" href="http://ckald.github.io/pyccoon/" title="Pyccoon: side-to-side documentation generator">
             <img id="pyccoon-icon" src="../../pyccoon_icon.svg" alt="Pyccoon: side-to-side documentation generator" /></a>
-        <code>2014-11-26 01:10:25.892730</code>/
+        <code>2015-02-13 14:08:02.300846</code>/
         by a diligent
         <a target="_blank" href="http://ckald.github.io/pyccoon/" title="Pyccoon: side-to-side documentation generator">pyccoon</a>
     </div>
@@ -44,9 +44,14 @@
           
         </div>
         <div class='code'>
-          <div class="highlight"><pre><span class="kn">from</span> <span class="nn">scipy</span> <span class="kn">import</span> <span class="n">special</span><span class="p">,</span> <span class="n">integrate</span>
+          <div class="highlight"><pre><span class="kn">import</span> <span class="nn">numpy</span>
 
-<span class="kn">from</span> <span class="nn">common</span> <span class="kn">import</span> <span class="n">integrators</span></pre></div>
+<span class="kn">from</span> <span class="nn">array</span> <span class="kn">import</span> <span class="n">array</span>
+<span class="kn">from</span> <span class="nn">scipy</span> <span class="kn">import</span> <span class="n">special</span><span class="p">,</span> <span class="n">integrate</span>
+
+<span class="kn">from</span> <span class="nn">common</span> <span class="kn">import</span> <span class="n">integrators</span>
+
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">eps</span></pre></div>
         </div>
         <div class='clearall'></div>
     </section>
@@ -57,6 +62,155 @@
         <div class='docs'>
           <div class='octowrap'>
             <a class='octothorpe' href='#section-1'>#</a>
+          </div>
+          
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre><span class="k">def</span> <span class="nf">solve_explicit</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">y_0</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">t_i</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">t_f</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">array</span><span class="p">(</span><span class="s">&#39;f&#39;</span><span class="p">,</span> <span class="p">[</span><span class="n">y_0</span><span class="p">])</span>
+    <span class="n">t</span> <span class="o">=</span> <span class="n">t_i</span>
+
+    <span class="k">while</span> <span class="n">t</span> <span class="o">&lt;=</span> <span class="n">t_f</span><span class="p">:</span>
+        <span class="n">y</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">integrators</span><span class="o">.</span><span class="n">euler_correction</span><span class="p">(</span><span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">t</span><span class="o">=</span><span class="n">t</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">,</span> <span class="n">h</span><span class="o">=</span><span class="n">h</span><span class="p">))</span>
+        <span class="n">t</span> <span class="o">+=</span> <span class="n">h</span>
+
+    <span class="k">return</span> <span class="n">y</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+  </div>
+  <div class='section'>
+    <a id="section-2" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-2'>#</a>
+          </div>
+          
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre><span class="k">def</span> <span class="nf">solve_implicit</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">y_0</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">t_i</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">t_f</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">array</span><span class="p">(</span><span class="s">&#39;f&#39;</span><span class="p">,</span> <span class="p">[</span><span class="n">y_0</span><span class="p">])</span>
+    <span class="n">t</span> <span class="o">=</span> <span class="n">t_i</span>
+
+    <span class="k">while</span> <span class="n">t</span> <span class="o">&lt;=</span> <span class="n">t_f</span><span class="p">:</span>
+        <span class="n">y</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">integrators</span><span class="o">.</span><span class="n">implicit_euler</span><span class="p">(</span><span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">t</span><span class="o">=</span><span class="n">t</span><span class="p">,</span> <span class="n">A</span><span class="o">=</span><span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="o">=</span><span class="n">B</span><span class="p">,</span> <span class="n">h</span><span class="o">=</span><span class="n">h</span><span class="p">))</span>
+        <span class="n">t</span> <span class="o">+=</span> <span class="n">h</span>
+
+    <span class="k">return</span> <span class="n">y</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+  </div>
+  <div class='section'>
+    <a id="section-3" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-3'>#</a>
+          </div>
+          
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre><span class="k">def</span> <span class="nf">solve_heun</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">y_0</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">t_i</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">t_f</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">array</span><span class="p">(</span><span class="s">&#39;f&#39;</span><span class="p">,</span> <span class="p">[</span><span class="n">y_0</span><span class="p">])</span>
+    <span class="n">t</span> <span class="o">=</span> <span class="n">t_i</span>
+
+    <span class="k">while</span> <span class="n">t</span> <span class="o">&lt;=</span> <span class="n">t_f</span><span class="p">:</span>
+        <span class="n">y</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">integrators</span><span class="o">.</span><span class="n">heun_correction</span><span class="p">(</span><span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">t</span><span class="o">=</span><span class="n">t</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">,</span> <span class="n">h</span><span class="o">=</span><span class="n">h</span><span class="p">))</span>
+        <span class="n">t</span> <span class="o">+=</span> <span class="n">h</span>
+
+    <span class="k">return</span> <span class="n">y</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+  </div>
+  <div class='section'>
+    <a id="section-4" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-4'>#</a>
+          </div>
+          
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre><span class="k">def</span> <span class="nf">explicit_euler_test</span><span class="p">():</span>
+
+    <span class="n">f</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">t</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="o">-</span><span class="mf">2.3</span> <span class="o">*</span> <span class="n">y</span>
+
+    <span class="n">y_unstable</span> <span class="o">=</span> <span class="n">solve_explicit</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">5.</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="nb">all</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">y_unstable</span><span class="p">))</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">),</span>\
+        <span class="s">&quot;Explicit Euler method should be unstable here&quot;</span>
+    <span class="n">y_stable</span> <span class="o">=</span> <span class="n">solve_explicit</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">5.</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="nb">all</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">y_stable</span><span class="p">))</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">),</span>\
+        <span class="s">&quot;Explicit Euler method should be stable here&quot;</span>
+
+    <span class="k">assert</span> <span class="n">y_stable</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">eps</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+  </div>
+  <div class='section'>
+    <a id="section-5" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-5'>#</a>
+          </div>
+          
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre><span class="k">def</span> <span class="nf">implicit_euler_test</span><span class="p">():</span>
+
+    <span class="n">y_implicit</span> <span class="o">=</span> <span class="n">solve_implicit</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mf">2.3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">5.</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">y_implicit</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">,</span> <span class="s">&quot;Implicit Euler method be positive&quot;</span>
+    <span class="k">assert</span> <span class="nb">all</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">y_implicit</span><span class="p">))</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">),</span> <span class="s">&quot;Implicit Euler method should be stable&quot;</span>
+
+    <span class="n">y_implicit_coarse</span> <span class="o">=</span> <span class="n">solve_implicit</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mf">2.3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">5.</span><span class="p">)</span>
+    <span class="k">print</span> <span class="n">y_implicit_coarse</span>
+    <span class="k">assert</span> <span class="n">y_implicit_coarse</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">,</span> <span class="s">&quot;Implicit Euler method solution be positive&quot;</span>
+    <span class="k">assert</span> <span class="nb">all</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">y_implicit_coarse</span><span class="p">))</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">),</span> \
+        <span class="s">&quot;Implicit Euler method should be stable&quot;</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+  </div>
+  <div class='section'>
+    <a id="section-6" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-6'>#</a>
+          </div>
+          
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre><span class="k">def</span> <span class="nf">heun_test</span><span class="p">():</span>
+
+    <span class="n">f</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">t</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="o">-</span><span class="mf">2.3</span> <span class="o">*</span> <span class="n">y</span>
+
+    <span class="n">exact</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="k">lambda</span> <span class="n">t</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="mf">2.3</span> <span class="o">*</span> <span class="n">t</span><span class="p">))</span>
+
+    <span class="n">y_euler</span> <span class="o">=</span> <span class="n">solve_explicit</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">5.</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">y_euler</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">),</span> <span class="s">&quot;Explicit Euler method should be unstable here&quot;</span>
+    <span class="n">y_heun</span> <span class="o">=</span> <span class="n">solve_heun</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">5.</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="nb">all</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">y_heun</span><span class="p">))</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">),</span> <span class="s">&quot;Heun method should be stable here&quot;</span>
+
+    <span class="n">y_heun_detailed</span> <span class="o">=</span> <span class="n">solve_heun</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">0.05</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">5.</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="nb">all</span><span class="p">((</span><span class="n">y_heun</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">exact</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">)))[</span><span class="mi">2</span><span class="p">:]</span> <span class="o">&gt;=</span>
+               <span class="p">(</span><span class="n">y_heun_detailed</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">exact</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mf">0.05</span><span class="p">)))[::</span><span class="mi">10</span><span class="p">][</span><span class="mi">2</span><span class="p">:]),</span> \
+        <span class="s">&quot;Heun method should be more accurate&quot;</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+  </div>
+  <div class='section'>
+    <a id="section-7" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-7'>#</a>
           </div>
           
         </div>
@@ -78,11 +232,11 @@
     </section>
   </div>
   <div class='section'>
-    <a id="section-2" class="section-anchor"></a>
+    <a id="section-8" class="section-anchor"></a>
     <section>
         <div class='docs'>
           <div class='octowrap'>
-            <a class='octothorpe' href='#section-2'>#</a>
+            <a class='octothorpe' href='#section-8'>#</a>
           </div>
           
         </div>

@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta http-equiv="content-type" content="text/html;charset=utf-8">
-  <title>pyBBN v0.1.0: docs/tests/unit/non_equilibrium_test.py</title>
+  <title>pyBBN v0.1.0: tests/unit/non_equilibrium_test.py</title>
   <link rel="stylesheet" href="../../pyccoon.css">
   <script type="text/x-mathjax-config">
   MathJax.Hub.Config({
@@ -22,7 +22,7 @@
         Generated at
         <a target="_blank" href="http://ckald.github.io/pyccoon/" title="Pyccoon: side-to-side documentation generator">
             <img id="pyccoon-icon" src="../../pyccoon_icon.svg" alt="Pyccoon: side-to-side documentation generator" /></a>
-        <code>2014-11-26 01:10:25.913524</code>/
+        <code>2015-02-13 14:08:02.323373</code>/
         by a diligent
         <a target="_blank" href="http://ckald.github.io/pyccoon/" title="Pyccoon: side-to-side documentation generator">pyccoon</a>
     </div>
@@ -44,15 +44,11 @@
           
         </div>
         <div class='code'>
-          <div class="highlight"><pre><span class="kn">import</span> <span class="nn">numpy</span>
-<span class="kn">from</span> <span class="nn">nose</span> <span class="kn">import</span> <span class="n">with_setup</span>
-
-<span class="kn">from</span> <span class="nn">common</span> <span class="kn">import</span> <span class="n">GRID</span><span class="p">,</span> <span class="n">PARAMS</span>
-<span class="kn">from</span> <span class="nn">evolution</span> <span class="kn">import</span> <span class="n">Universe</span>
+          <div class="highlight"><pre><span class="kn">from</span> <span class="nn">evolution</span> <span class="kn">import</span> <span class="n">Universe</span>
 <span class="kn">from</span> <span class="nn">particles</span> <span class="kn">import</span> <span class="n">Particle</span>
 <span class="kn">from</span> <span class="nn">library</span> <span class="kn">import</span> <span class="n">StandardModelParticles</span> <span class="k">as</span> <span class="n">SMP</span><span class="p">,</span> <span class="n">StandardModelInteractions</span> <span class="k">as</span> <span class="n">SMI</span>
 
-<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">eps</span><span class="p">,</span> <span class="n">setup</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">eps</span><span class="p">,</span> <span class="n">setup</span><span class="p">,</span> <span class="n">with_setup_args</span>
 
 
 <span class="n">universe</span> <span class="o">=</span> <span class="bp">None</span></pre></div>
@@ -72,17 +68,20 @@
         <div class='code'>
           <div class="highlight"><pre><span class="k">def</span> <span class="nf">non_equilibium_setup</span><span class="p">():</span>
     <span class="k">global</span> <span class="n">universe</span>
-    <span class="n">setup</span><span class="p">()</span>
+    <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span> <span class="o">=</span> <span class="n">setup</span><span class="p">()</span>
+    <span class="n">params</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
-    <span class="n">photon</span> <span class="o">=</span> <span class="n">Particle</span><span class="p">(</span><span class="o">**</span><span class="n">SMP</span><span class="o">.</span><span class="n">photon</span><span class="p">)</span>
-    <span class="n">neutrino_e</span> <span class="o">=</span> <span class="n">Particle</span><span class="p">(</span><span class="o">**</span><span class="n">SMP</span><span class="o">.</span><span class="n">neutrino_e</span><span class="p">)</span>
-    <span class="n">neutrino_mu</span> <span class="o">=</span> <span class="n">Particle</span><span class="p">(</span><span class="o">**</span><span class="n">SMP</span><span class="o">.</span><span class="n">neutrino_mu</span><span class="p">)</span>
+    <span class="n">photon</span> <span class="o">=</span> <span class="n">Particle</span><span class="p">(</span><span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">,</span> <span class="o">**</span><span class="n">SMP</span><span class="o">.</span><span class="n">photon</span><span class="p">)</span>
+    <span class="n">neutrino_e</span> <span class="o">=</span> <span class="n">Particle</span><span class="p">(</span><span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">,</span> <span class="o">**</span><span class="n">SMP</span><span class="o">.</span><span class="n">neutrino_e</span><span class="p">)</span>
+    <span class="n">neutrino_mu</span> <span class="o">=</span> <span class="n">Particle</span><span class="p">(</span><span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">,</span> <span class="o">**</span><span class="n">SMP</span><span class="o">.</span><span class="n">neutrino_mu</span><span class="p">)</span>
 
     <span class="n">neutrino_self_scattering</span> <span class="o">=</span> <span class="n">SMI</span><span class="o">.</span><span class="n">neutrino_self_scattering</span><span class="p">(</span><span class="n">neutrino</span><span class="o">=</span><span class="n">neutrino_e</span><span class="p">)</span>
 
-    <span class="n">universe</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="n">particles</span><span class="o">=</span><span class="p">[</span><span class="n">photon</span><span class="p">,</span> <span class="n">neutrino_e</span><span class="p">,</span> <span class="n">neutrino_mu</span><span class="p">],</span>
-                        <span class="n">interactions</span><span class="o">=</span><span class="p">[</span><span class="n">neutrino_self_scattering</span><span class="p">],</span>
-                        <span class="n">plotting</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span></pre></div>
+    <span class="n">universe</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">,</span> <span class="n">plotting</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+    <span class="n">universe</span><span class="o">.</span><span class="n">particles</span> <span class="o">+=</span> <span class="p">[</span><span class="n">photon</span><span class="p">,</span> <span class="n">neutrino_e</span><span class="p">,</span> <span class="n">neutrino_mu</span><span class="p">]</span>
+    <span class="n">universe</span><span class="o">.</span><span class="n">interactions</span> <span class="o">+=</span> <span class="p">[</span><span class="n">neutrino_self_scattering</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span></pre></div>
         </div>
         <div class='clearall'></div>
     </section>
@@ -97,10 +96,10 @@
           
         </div>
         <div class='code'>
-          <div class="highlight"><pre><span class="nd">@with_setup</span><span class="p">(</span><span class="n">non_equilibium_setup</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">free_non_equilibrium_test</span><span class="p">():</span>
+          <div class="highlight"><pre><span class="nd">@with_setup_args</span><span class="p">(</span><span class="n">non_equilibium_setup</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">free_non_equilibrium_test</span><span class="p">(</span><span class="n">params</span><span class="p">):</span>
 
-    <span class="n">PARAMS</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">universe</span><span class="o">.</span><span class="n">total_energy_density</span><span class="p">())</span>
+    <span class="n">params</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">universe</span><span class="o">.</span><span class="n">total_energy_density</span><span class="p">())</span>
 
     <span class="n">photon</span><span class="p">,</span> <span class="n">neutrino_e</span><span class="p">,</span> <span class="n">neutrino_mu</span> <span class="o">=</span> <span class="n">universe</span><span class="o">.</span><span class="n">particles</span>
 
@@ -113,14 +112,10 @@
     <span class="n">universe</span><span class="o">.</span><span class="n">calculate_collisions</span><span class="p">()</span>
 
     <span class="k">assert</span> <span class="nb">all</span><span class="p">(</span><span class="n">photon</span><span class="o">.</span><span class="n">collision_integral</span> <span class="o">==</span> <span class="mi">0</span><span class="p">),</span> <span class="s">&quot;Equilibrium particle integral is non-zero&quot;</span>
-    <span class="k">assert</span> <span class="nb">all</span><span class="p">(</span><span class="n">neutrino_e</span><span class="o">.</span><span class="n">collision_integral</span> <span class="o">*</span> <span class="n">PARAMS</span><span class="o">.</span><span class="n">dx</span> <span class="o">&lt;</span> <span class="n">eps</span><span class="p">),</span> <span class="s">&quot;Integral do not cancel&quot;</span>
+    <span class="k">assert</span> <span class="nb">all</span><span class="p">(</span><span class="n">neutrino_e</span><span class="o">.</span><span class="n">collision_integral</span> <span class="o">*</span> <span class="n">params</span><span class="o">.</span><span class="n">dx</span> <span class="o">&lt;</span> <span class="n">eps</span><span class="p">),</span> <span class="s">&quot;Integral do not cancel&quot;</span>
     <span class="k">assert</span> <span class="nb">all</span><span class="p">(</span><span class="n">neutrino_mu</span><span class="o">.</span><span class="n">collision_integral</span> <span class="o">==</span> <span class="mi">0</span><span class="p">),</span> <span class="s">&quot;Free particle integral is non-zero&quot;</span>
 
     <span class="n">universe</span><span class="o">.</span><span class="n">update_distributions</span><span class="p">()</span>
-
-    <span class="k">assert</span> <span class="nb">all</span><span class="p">(</span><span class="n">photon</span><span class="o">.</span><span class="n">collision_integral</span>
-               <span class="o">+</span> <span class="n">neutrino_e</span><span class="o">.</span><span class="n">collision_integral</span>
-               <span class="o">+</span> <span class="n">neutrino_mu</span><span class="o">.</span><span class="n">collision_integral</span> <span class="o">==</span> <span class="mi">0</span><span class="p">),</span> <span class="s">&quot;Collision integrals were not cleared&quot;</span>
 
     <span class="k">assert</span> <span class="nb">all</span><span class="p">(</span><span class="n">photon</span><span class="o">.</span><span class="n">_distribution</span> <span class="o">==</span> <span class="n">photon_distribution</span><span class="p">),</span>\
         <span class="s">&quot;Equilibrium particle distribution changed&quot;</span>

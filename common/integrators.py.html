@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta http-equiv="content-type" content="text/html;charset=utf-8">
-  <title>pyBBN v0.1.0: docs/common/integrators.py</title>
+  <title>pyBBN v0.1.0: common/integrators.py</title>
   <link rel="stylesheet" href="../pyccoon.css">
   <script type="text/x-mathjax-config">
   MathJax.Hub.Config({
@@ -22,7 +22,7 @@
         Generated at
         <a target="_blank" href="http://ckald.github.io/pyccoon/" title="Pyccoon: side-to-side documentation generator">
             <img id="pyccoon-icon" src="../pyccoon_icon.svg" alt="Pyccoon: side-to-side documentation generator" /></a>
-        <code>2014-11-26 01:10:22.139224</code>/
+        <code>2015-02-13 14:07:55.777436</code>/
         by a diligent
         <a target="_blank" href="http://ckald.github.io/pyccoon/" title="Pyccoon: side-to-side documentation generator">pyccoon</a>
     </div>
@@ -45,12 +45,7 @@
         </div>
         <div class='code'>
           <div class="highlight"><pre><span class="kn">import</span> <span class="nn">numpy</span>
-<span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">polynomial</span>
-
-<span class="kn">from</span> <span class="nn">scipy</span> <span class="kn">import</span> <span class="n">integrate</span>
-<span class="kn">from</span> <span class="nn">skmonaco</span> <span class="kn">import</span> <span class="n">mcquad</span>
-
-<span class="kn">from</span> <span class="nn">common</span> <span class="kn">import</span> <span class="n">GRID</span></pre></div>
+<span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">polynomial</span></pre></div>
         </div>
         <div class='clearall'></div>
     </section>
@@ -108,7 +103,7 @@
                               <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">,</span>
                               <span class="n">h</span><span class="o">=</span><span class="n">h</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="p">(</span><span class="n">euler_y</span> <span class="o">+</span> <span class="n">heun_y</span><span class="p">)</span></pre></div>
+    <span class="k">return</span> <span class="p">(</span><span class="n">euler_y</span> <span class="o">+</span> <span class="n">heun_y</span><span class="p">)</span> <span class="o">/</span> <span class="mf">2.</span></pre></div>
         </div>
         <div class='clearall'></div>
     </section>
@@ -135,7 +130,7 @@
         <div class='code'>
           <div class="highlight"><pre><span class="k">def</span> <span class="nf">implicit_euler</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">h</span><span class="p">):</span>
 
-    <span class="k">return</span> <span class="p">(</span><span class="n">y</span> <span class="o">+</span> <span class="n">A</span><span class="p">(</span><span class="n">t</span> <span class="o">+</span> <span class="n">h</span><span class="p">)</span> <span class="o">*</span> <span class="n">h</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">B</span><span class="p">(</span><span class="n">t</span> <span class="o">+</span> <span class="n">h</span><span class="p">)</span> <span class="o">*</span> <span class="n">h</span><span class="p">)</span></pre></div>
+    <span class="k">return</span> <span class="p">(</span><span class="n">y</span> <span class="o">+</span> <span class="n">A</span> <span class="o">*</span> <span class="n">h</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">B</span> <span class="o">*</span> <span class="n">h</span><span class="p">)</span></pre></div>
         </div>
         <div class='clearall'></div>
     </section>
@@ -150,35 +145,13 @@
           
         </div>
         <div class='code'>
-          <div class="highlight"><pre><span class="k">def</span> <span class="nf">integrate_2D</span><span class="p">(</span><span class="n">integrand</span><span class="p">,</span> <span class="n">bounds</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s">&#39;mcquad&#39;</span><span class="p">):</span>
-    <span class="k">if</span> <span class="n">method</span> <span class="o">==</span> <span class="s">&#39;dblquad&#39;</span><span class="p">:</span>
-        <span class="n">integral</span><span class="p">,</span> <span class="n">error</span> <span class="o">=</span> <span class="n">integrate</span><span class="o">.</span><span class="n">dblquad</span><span class="p">(</span>
-            <span class="k">lambda</span> <span class="n">p1</span><span class="p">,</span> <span class="n">p2</span><span class="p">:</span> <span class="n">integrand</span><span class="p">((</span><span class="n">p1</span><span class="p">,</span> <span class="n">p2</span><span class="p">)),</span>
-            <span class="n">bounds</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">bounds</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span>
-            <span class="n">bounds</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">bounds</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span>
-            <span class="n">epsrel</span><span class="o">=</span><span class="mf">1e-1</span><span class="p">,</span> <span class="n">epsabs</span><span class="o">=</span><span class="mi">0</span>
-        <span class="p">)</span>
-    <span class="k">elif</span> <span class="n">method</span> <span class="o">==</span> <span class="s">&#39;mcquad&#39;</span><span class="p">:</span>
-        <span class="n">integral</span><span class="p">,</span> <span class="n">error</span> <span class="o">=</span> <span class="n">mcquad</span><span class="p">(</span>
-            <span class="n">integrand</span><span class="p">,</span>
-            <span class="n">xl</span><span class="o">=</span><span class="p">[</span><span class="n">GRID</span><span class="o">.</span><span class="n">MIN_MOMENTUM</span><span class="p">,</span> <span class="n">GRID</span><span class="o">.</span><span class="n">MIN_MOMENTUM</span><span class="p">],</span>
-            <span class="n">xu</span><span class="o">=</span><span class="p">[</span><span class="n">GRID</span><span class="o">.</span><span class="n">MAX_MOMENTUM</span><span class="p">,</span> <span class="n">GRID</span><span class="o">.</span><span class="n">MAX_MOMENTUM</span><span class="p">],</span>
-            <span class="n">npoints</span><span class="o">=</span><span class="mi">2</span><span class="o">*</span><span class="mf">1e3</span>
-        <span class="p">)</span>
-    <span class="k">elif</span> <span class="n">method</span> <span class="o">==</span> <span class="s">&#39;fixed&#39;</span><span class="p">:</span>
-        <span class="n">integral</span> <span class="o">=</span> <span class="n">double_gaussian</span><span class="p">(</span>
-            <span class="k">lambda</span> <span class="n">p1</span><span class="p">,</span> <span class="n">p2</span><span class="p">:</span> <span class="n">integrand</span><span class="p">((</span><span class="n">p1</span><span class="p">,</span> <span class="n">p2</span><span class="p">)),</span>
-            <span class="n">bounds</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">bounds</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span>
-            <span class="n">bounds</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">bounds</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
-        <span class="p">)</span>
-        <span class="n">error</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">nan</span>
-
-    <span class="k">return</span> <span class="n">integral</span><span class="p">,</span> <span class="n">error</span>
-
-
-<span class="n">GAUSS_LEGENDRE_ORDER</span> <span class="o">=</span> <span class="mi">40</span>
-<span class="n">points</span><span class="p">,</span> <span class="n">weights</span> <span class="o">=</span> <span class="n">polynomial</span><span class="o">.</span><span class="n">legendre</span><span class="o">.</span><span class="n">leggauss</span><span class="p">(</span><span class="n">GAUSS_LEGENDRE_ORDER</span><span class="p">)</span>
-<span class="n">grid</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="n">points</span><span class="p">)</span></pre></div>
+          <div class="highlight"><pre><span class="n">ADAMS_BASHFORTH_COEFFICIENTS</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="mi">1</span><span class="p">:</span> <span class="p">([</span><span class="mf">1.</span><span class="p">],</span> <span class="mf">1.</span><span class="p">),</span>
+    <span class="mi">2</span><span class="p">:</span> <span class="p">([</span><span class="o">-</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">3.</span><span class="p">],</span> <span class="mf">2.</span><span class="p">),</span>
+    <span class="mi">3</span><span class="p">:</span> <span class="p">([</span><span class="mf">5.</span><span class="p">,</span> <span class="o">-</span><span class="mf">16.</span><span class="p">,</span> <span class="mf">23.</span><span class="p">],</span> <span class="mf">12.</span><span class="p">),</span>
+    <span class="mi">4</span><span class="p">:</span> <span class="p">([</span><span class="o">-</span><span class="mf">9.</span><span class="p">,</span> <span class="mf">37.</span><span class="p">,</span> <span class="o">-</span><span class="mf">59.</span><span class="p">,</span> <span class="mf">55.</span><span class="p">],</span> <span class="mf">24.</span><span class="p">),</span>
+    <span class="mi">5</span><span class="p">:</span> <span class="p">([</span><span class="mf">251.</span><span class="p">,</span> <span class="o">-</span><span class="mf">1274.</span><span class="p">,</span> <span class="mf">2616.</span><span class="p">,</span> <span class="o">-</span><span class="mf">2774.</span><span class="p">,</span> <span class="mf">1901.</span><span class="p">],</span> <span class="mf">720.</span><span class="p">)</span>
+<span class="p">}</span></pre></div>
         </div>
         <div class='clearall'></div>
     </section>
@@ -193,16 +166,22 @@
           
         </div>
         <div class='code'>
-          <div class="highlight"><pre><span class="k">def</span> <span class="nf">gaussian</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
-    <span class="k">global</span> <span class="n">points</span><span class="p">,</span> <span class="n">weights</span>
+          <div class="highlight"><pre><span class="k">def</span> <span class="nf">adams_bashforth_correction</span><span class="p">(</span><span class="n">fs</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">order</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">order</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ADAMS_BASHFORTH_COEFFICIENTS</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">fs</span><span class="p">))</span>
 
-    <span class="n">sub</span> <span class="o">=</span> <span class="p">(</span><span class="n">b</span> <span class="o">-</span> <span class="n">a</span><span class="p">)</span> <span class="o">/</span> <span class="mf">2.</span>
-    <span class="n">add</span> <span class="o">=</span> <span class="p">(</span><span class="n">b</span> <span class="o">+</span> <span class="n">a</span><span class="p">)</span> <span class="o">/</span> <span class="mf">2.</span>
+    <span class="n">bs</span><span class="p">,</span> <span class="n">divider</span> <span class="o">=</span> <span class="n">ADAMS_BASHFORTH_COEFFICIENTS</span><span class="p">[</span><span class="n">order</span><span class="p">]</span>
 
-    <span class="k">if</span> <span class="n">sub</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="k">return</span> <span class="mf">0.</span>
+    <span class="k">return</span> <span class="n">h</span> <span class="o">*</span> <span class="nb">sum</span><span class="p">(</span><span class="n">b</span> <span class="o">*</span> <span class="n">f</span> <span class="k">for</span> <span class="n">b</span><span class="p">,</span> <span class="n">f</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">bs</span><span class="p">,</span> <span class="n">fs</span><span class="p">[</span><span class="o">-</span><span class="n">order</span><span class="p">:]))</span> <span class="o">/</span> <span class="n">divider</span>
 
-    <span class="k">return</span> <span class="n">sub</span> <span class="o">*</span> <span class="n">numpy</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">f</span><span class="p">(</span><span class="n">sub</span> <span class="o">*</span> <span class="n">points</span> <span class="o">+</span> <span class="n">add</span><span class="p">),</span> <span class="n">weights</span><span class="p">)</span></pre></div>
+
+<span class="n">ADAMS_MOULTON_COEFFICIENTS</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="mi">1</span><span class="p">:</span> <span class="p">([</span><span class="mf">1.</span><span class="p">],</span> <span class="mf">1.</span><span class="p">),</span>
+    <span class="mi">2</span><span class="p">:</span> <span class="p">([</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">],</span> <span class="mf">2.</span><span class="p">),</span>
+    <span class="mi">3</span><span class="p">:</span> <span class="p">([</span><span class="o">-</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">8.</span><span class="p">,</span> <span class="mf">5.</span><span class="p">],</span> <span class="mf">12.</span><span class="p">),</span>
+    <span class="mi">4</span><span class="p">:</span> <span class="p">([</span><span class="mf">1.</span><span class="p">,</span> <span class="o">-</span><span class="mf">5.</span><span class="p">,</span> <span class="mf">19.</span><span class="p">,</span> <span class="mf">9.</span><span class="p">],</span> <span class="mf">24.</span><span class="p">),</span>
+    <span class="mi">5</span><span class="p">:</span> <span class="p">([</span><span class="o">-</span><span class="mf">19.</span><span class="p">,</span> <span class="mf">106.</span><span class="p">,</span> <span class="o">-</span><span class="mf">264.</span><span class="p">,</span> <span class="mf">646.</span><span class="p">,</span> <span class="mf">251.</span><span class="p">],</span> <span class="mf">720.</span><span class="p">)</span>
+<span class="p">}</span></pre></div>
         </div>
         <div class='clearall'></div>
     </section>
@@ -217,22 +196,14 @@
           
         </div>
         <div class='code'>
-          <div class="highlight"><pre><span class="k">def</span> <span class="nf">remap_interval</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">bounds</span><span class="p">):</span>
-    <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">h</span> <span class="o">=</span> <span class="n">bounds</span>
+          <div class="highlight"><pre><span class="k">def</span> <span class="nf">adams_moulton_solver</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">fs</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">order</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">order</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ADAMS_MOULTON_COEFFICIENTS</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">fs</span><span class="p">))</span>
 
-    <span class="n">sub_x</span> <span class="o">=</span> <span class="p">(</span><span class="n">b</span> <span class="o">-</span> <span class="n">a</span><span class="p">)</span> <span class="o">/</span> <span class="mf">2.</span>
-    <span class="n">add_x</span> <span class="o">=</span> <span class="p">(</span><span class="n">b</span> <span class="o">+</span> <span class="n">a</span><span class="p">)</span> <span class="o">/</span> <span class="mf">2.</span>
-    <span class="n">norm_x</span> <span class="o">=</span> <span class="n">sub_x</span> <span class="o">*</span> <span class="n">x</span> <span class="o">+</span> <span class="n">add_x</span>
+    <span class="n">bs</span><span class="p">,</span> <span class="n">divider</span> <span class="o">=</span> <span class="n">ADAMS_MOULTON_COEFFICIENTS</span><span class="p">[</span><span class="n">order</span><span class="p">]</span>
 
-    <span class="n">h_x</span> <span class="o">=</span> <span class="n">h</span><span class="p">(</span><span class="n">norm_x</span><span class="p">)</span>
-    <span class="n">g_x</span> <span class="o">=</span> <span class="n">g</span><span class="p">(</span><span class="n">norm_x</span><span class="p">)</span>
-    <span class="n">sub_y</span> <span class="o">=</span> <span class="p">(</span><span class="n">h_x</span> <span class="o">-</span> <span class="n">g_x</span><span class="p">)</span> <span class="o">/</span> <span class="mf">2.</span>
-    <span class="n">add_y</span> <span class="o">=</span> <span class="p">(</span><span class="n">h_x</span> <span class="o">+</span> <span class="n">g_x</span><span class="p">)</span> <span class="o">/</span> <span class="mf">2.</span>
-    <span class="n">norm_y</span> <span class="o">=</span> <span class="n">sub_y</span> <span class="o">*</span> <span class="n">y</span> <span class="o">+</span> <span class="n">add_y</span>
-
-    <span class="k">return</span> <span class="n">sub_x</span> <span class="o">*</span> <span class="n">sub_y</span> <span class="o">*</span> <span class="n">f</span><span class="p">(</span><span class="n">norm_x</span><span class="p">,</span> <span class="n">norm_y</span><span class="p">)</span>
-
-<span class="n">remap_interval</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="n">remap_interval</span><span class="p">,</span> <span class="n">otypes</span><span class="o">=</span><span class="p">[</span><span class="n">numpy</span><span class="o">.</span><span class="n">float_</span><span class="p">],</span> <span class="n">excluded</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;f&#39;</span><span class="p">,</span> <span class="s">&#39;bounds&#39;</span><span class="p">])</span></pre></div>
+    <span class="k">return</span> <span class="p">(</span><span class="n">y</span> <span class="o">+</span> <span class="n">h</span> <span class="o">*</span> <span class="nb">sum</span><span class="p">(</span><span class="n">b</span> <span class="o">*</span> <span class="n">f</span> <span class="k">for</span> <span class="n">b</span><span class="p">,</span> <span class="n">f</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">bs</span><span class="p">,</span> <span class="n">fs</span><span class="p">[</span><span class="o">-</span><span class="n">order</span><span class="o">+</span><span class="mi">1</span><span class="p">:]</span> <span class="o">+</span> <span class="p">[</span><span class="n">A</span><span class="p">]))</span> <span class="o">/</span> <span class="n">divider</span><span class="p">)</span> <span class="o">/</span>\
+        <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">h</span> <span class="o">*</span> <span class="n">B</span> <span class="o">*</span> <span class="n">bs</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="n">divider</span><span class="p">)</span></pre></div>
         </div>
         <div class='clearall'></div>
     </section>
@@ -247,8 +218,110 @@
           
         </div>
         <div class='code'>
+          <div class="highlight"><pre><span class="k">def</span> <span class="nf">integrate_1D</span><span class="p">(</span><span class="n">integrand</span><span class="p">,</span> <span class="n">bounds</span><span class="p">):</span>
+    <span class="n">integral</span> <span class="o">=</span> <span class="n">gaussian</span><span class="p">(</span>
+        <span class="n">integrand</span><span class="p">,</span>
+        <span class="n">bounds</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">bounds</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="p">)</span>
+    <span class="n">error</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">nan</span>
+
+    <span class="k">return</span> <span class="n">integral</span><span class="p">,</span> <span class="n">error</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+  </div>
+  <div class='section'>
+    <a id="section-8" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-8'>#</a>
+          </div>
+          
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre><span class="k">def</span> <span class="nf">integrate_2D</span><span class="p">(</span><span class="n">integrand</span><span class="p">,</span> <span class="n">bounds</span><span class="p">):</span>
+    <span class="n">integral</span> <span class="o">=</span> <span class="n">double_gaussian</span><span class="p">(</span>
+        <span class="n">integrand</span><span class="p">,</span>
+        <span class="n">bounds</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">bounds</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span>
+        <span class="n">bounds</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">bounds</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+    <span class="p">)</span>
+    <span class="n">error</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">nan</span>
+
+    <span class="k">return</span> <span class="n">integral</span><span class="p">,</span> <span class="n">error</span>
+
+
+<span class="n">GAUSS_LEGENDRE_ORDER</span> <span class="o">=</span> <span class="mi">40</span>
+<span class="n">points</span><span class="p">,</span> <span class="n">weights</span> <span class="o">=</span> <span class="n">polynomial</span><span class="o">.</span><span class="n">legendre</span><span class="o">.</span><span class="n">leggauss</span><span class="p">(</span><span class="n">GAUSS_LEGENDRE_ORDER</span><span class="p">)</span>
+<span class="n">grid</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="n">points</span><span class="p">)</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+  </div>
+  <div class='section'>
+    <a id="section-9" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-9'>#</a>
+          </div>
+          
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre><span class="k">def</span> <span class="nf">gaussian</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+
+    <span class="n">sub</span> <span class="o">=</span> <span class="p">(</span><span class="n">b</span> <span class="o">-</span> <span class="n">a</span><span class="p">)</span> <span class="o">/</span> <span class="mf">2.</span>
+    <span class="n">add</span> <span class="o">=</span> <span class="p">(</span><span class="n">b</span> <span class="o">+</span> <span class="n">a</span><span class="p">)</span> <span class="o">/</span> <span class="mf">2.</span>
+
+    <span class="k">if</span> <span class="n">sub</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mf">0.</span>
+
+    <span class="k">return</span> <span class="n">sub</span> <span class="o">*</span> <span class="n">numpy</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">f</span><span class="p">(</span><span class="n">sub</span> <span class="o">*</span> <span class="n">points</span> <span class="o">+</span> <span class="n">add</span><span class="p">),</span> <span class="n">weights</span><span class="p">)</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+  </div>
+  <div class='section'>
+    <a id="section-10" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-10'>#</a>
+          </div>
+          
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre><span class="k">def</span> <span class="nf">remap_interval</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">bounds</span><span class="p">):</span>
+    <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">h</span> <span class="o">=</span> <span class="n">bounds</span>
+
+    <span class="n">sub_x</span> <span class="o">=</span> <span class="p">(</span><span class="n">b</span> <span class="o">-</span> <span class="n">a</span><span class="p">)</span> <span class="o">/</span> <span class="mf">2.</span>
+    <span class="n">add_x</span> <span class="o">=</span> <span class="p">(</span><span class="n">b</span> <span class="o">+</span> <span class="n">a</span><span class="p">)</span> <span class="o">/</span> <span class="mf">2.</span>
+    <span class="n">norm_x</span> <span class="o">=</span> <span class="n">sub_x</span> <span class="o">*</span> <span class="n">x</span> <span class="o">+</span> <span class="n">add_x</span>
+
+    <span class="n">h_x</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="n">h</span><span class="p">)(</span><span class="n">norm_x</span><span class="p">)</span>
+    <span class="n">g_x</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="n">g</span><span class="p">)(</span><span class="n">norm_x</span><span class="p">)</span>
+    <span class="n">sub_y</span> <span class="o">=</span> <span class="p">(</span><span class="n">h_x</span> <span class="o">-</span> <span class="n">g_x</span><span class="p">)</span> <span class="o">/</span> <span class="mf">2.</span>
+    <span class="n">add_y</span> <span class="o">=</span> <span class="p">(</span><span class="n">h_x</span> <span class="o">+</span> <span class="n">g_x</span><span class="p">)</span> <span class="o">/</span> <span class="mf">2.</span>
+    <span class="n">norm_y</span> <span class="o">=</span> <span class="n">sub_y</span> <span class="o">*</span> <span class="n">y</span> <span class="o">+</span> <span class="n">add_y</span>
+
+    <span class="k">return</span> <span class="n">sub_x</span> <span class="o">*</span> <span class="n">sub_y</span> <span class="o">*</span> <span class="n">f</span><span class="p">(</span><span class="n">norm_x</span><span class="p">,</span> <span class="n">norm_y</span><span class="p">)</span>
+
+<span class="n">remap_interval</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="n">remap_interval</span><span class="p">,</span> <span class="n">otypes</span><span class="o">=</span><span class="p">[</span><span class="n">numpy</span><span class="o">.</span><span class="n">float_</span><span class="p">],</span> <span class="n">excluded</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;f&#39;</span><span class="p">,</span> <span class="s">&#39;bounds&#39;</span><span class="p">])</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+  </div>
+  <div class='section'>
+    <a id="section-11" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-11'>#</a>
+          </div>
+          
+        </div>
+        <div class='code'>
           <div class="highlight"><pre><span class="k">def</span> <span class="nf">double_gaussian</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">h</span><span class="p">):</span>
-    <span class="k">global</span> <span class="n">grid</span><span class="p">,</span> <span class="n">weights</span>
 
     <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">grid</span>
     <span class="n">mesh</span> <span class="o">=</span> <span class="n">remap_interval</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">bounds</span><span class="o">=</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">h</span><span class="p">))</span>

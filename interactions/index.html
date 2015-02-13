@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>pyBBN v0.1.0: interactions/__init__.py</title>
+  <link rel="stylesheet" href="../pyccoon.css">
+  <script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+  });
+  </script>
+  <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</head>
+<body>
+<div id='container'>
+  <a id="top"></a>
+  <div id="background"></div>
+  <div id="footer">
+    <a class="btn" id="project-name" href="../index.html">pyBBN v0.1.0</a>
+    <a class="btn" class="source source-1" href="#top">Back to top</a>
+    <div id="jump_to" class="btn">
+    Contents
+    <div id="jump_wrapper">
+      <div id="jump_page">
+          <a class="source source-2" href="#boltzmann-collision-integral"> Boltzmann collision integral </a>
+          <a class="source source-2" href="#interaction"> Interaction </a>
+          <a class="source source-3" href="#interaction-integrals-initialization-strategy"> Interaction integrals initialization strategy </a>
+          <a class="source source-4" href="#1.-permute-all-in_particles"> 1. Permute all in_particles </a>
+          <a class="source source-4" href="#2.-turn-to-the-backward-process"> 2. Turn to the backward process </a>
+          <a class="source source-4" href="#3.-permute-all-new-&lt;code&gt;in_particles&lt;/code&gt;-(former-&lt;code&gt;out_particles&lt;/code&gt;)"><a id="3.-permute-all-new-in_particles-(former-out_particles)" class="header-anchor" href="#3.-permute-all-new-in_particles-(former-out_particles)"> 3. Permute all new in_particles (former out_particles) </a>
+      </div>
+    </div>
+    </div>
+    <div class="generation-time">
+        Generated at
+        <a target="_blank" href="http://ckald.github.io/pyccoon/" title="Pyccoon: side-to-side documentation generator">
+            <img id="pyccoon-icon" src="../pyccoon_icon.svg" alt="Pyccoon: side-to-side documentation generator" /></a>
+        <code>2015-02-13 14:07:56.015551</code>/
+        by a diligent
+        <a target="_blank" href="http://ckald.github.io/pyccoon/" title="Pyccoon: side-to-side documentation generator">pyccoon</a>
+    </div>
+  </div>
+  <div class='section'>
+    <div class='docs'>
+      <h1 id="breadcrumbs">/ <a href="index.html/../../index.html">.</a> / <a href="index.html/../index.html">interactions</a> / <a href="index.html">__init__.py</a> </h1>
+      <ul id="children"><li><a href="index.html">__init__.py</a></li><li><a href="boltzmann.py.html">boltzmann.py</a></li><li><a href="four_particle.py.html">four_particle.py</a></li><li><a href="three_particle.py.html">three_particle.py</a></li></ul>
+    </div>
+  </div>
+  <div class='clearall'>
+  <div class='section'>
+    <a id="section-0" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-0'>#</a>
+          </div>
+          <p>-<em>- coding: utf-8 -</em>-</p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre><span class="kn">import</span> <span class="nn">copy</span>
+<span class="kn">import</span> <span class="nn">numpy</span>
+<span class="kn">from</span> <span class="nn">common</span> <span class="kn">import</span> <span class="n">GRID</span><span class="p">,</span> <span class="n">integrators</span>
+<span class="kn">from</span> <span class="nn">common.utils</span> <span class="kn">import</span> <span class="n">PicklableObject</span>
+<span class="kn">from</span> <span class="nn">interactions.four_particle</span> <span class="kn">import</span> <span class="n">FourParticleIntegral</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+  </div>
+  <div class='section'>
+    <a id="section-1" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-1'>#</a>
+          </div>
+          <h2><a id="boltzmann-collision-integral" class="header-anchor" href="#boltzmann-collision-integral"> Boltzmann collision integral </a></h2>
+<p>\begin{multline}
+    I_{coll}(t,p_i) = \frac{1}{2 E_i} \sum_{reactions} \int \cdots \int
+        \prod_{j} \frac{d^3 p_{in,j}}{(2 \pi)^3 2 E_{in,j}}
+        \prod_{k} \frac{d^3 p_{out,k}}{(2 \pi)^3 2 E_{out,k}} \ S |\mathcal{M}|^2 \mathcal{F}({f_\alpha}) (2 \pi)^4 \ \delta^4(\sum_{m} p_{in,m}^\mu - \sum_{n} p_{out,n}^\mu)
+\end{multline}</p>
+        </div>
+        <div class='code'>
+          
+        </div>
+        <div class='clearall'></div>
+    </section>
+  </div>
+  <div class='section'>
+    <a id="section-2" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-2'>#</a>
+          </div>
+          <h2><a id="interaction" class="header-anchor" href="#interaction"> Interaction </a></h2>
+<p>Helper class that takes care of creating all necessary <code>Integral</code>s for the actual interaction.</p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre><span class="k">class</span> <span class="nc">Interaction</span><span class="p">(</span><span class="n">PicklableObject</span><span class="p">):</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+  </div>
+  <div class='section'>
+    <a id="section-3" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-3'>#</a>
+          </div>
+          <p>Human-friendly interaction identifier</p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>    <span class="n">name</span> <span class="o">=</span> <span class="s">&quot;Particle interaction&quot;</span>
+
+    <span class="n">integrals</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="n">in_particles</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c"># Incoming particles</span>
+    <span class="n">out_particles</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c"># Outgoing particles</span>
+    <span class="n">particles</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c"># All particles involved</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+  </div>
+  <div class='section'>
+    <a id="section-4" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-4'>#</a>
+          </div>
+          <p>Temperature when the typical interaction time exceeds the Hubble expansion time</p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>    <span class="n">decoupling_temperature</span> <span class="o">=</span> <span class="mf">0.</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+  </div>
+  <div class='section'>
+    <a id="section-5" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-5'>#</a>
+          </div>
+          <p>Matrix elements of the interaction</p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>    <span class="n">Ms</span> <span class="o">=</span> <span class="p">[]</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+  </div>
+  <div class='section'>
+    <a id="section-6" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-6'>#</a>
+          </div>
+          <p>Create an <code>Integral</code> object for all particle species involved in the interaction.</p>
+<p>Precise expressions for all integrals can be derived by permuting all particle-related functions in the distribution functions, matrix elements, momenta, energy and mass arrays.</p>
+<p>To avoid double-counting, one should create an integral for each particle specie only once.</p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+            <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">integrals</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">particles</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">in_particles</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">out_particles</span>
+
+        <span class="n">Ms</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Ms</span><span class="p">)</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+  </div>
+  <div class='section'>
+    <a id="section-7" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-7'>#</a>
+          </div>
+          <p>Remember all particle species we've already considered to avoid double-counting</p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>        <span class="n">accounted_particles</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+  </div>
+  <div class='section'>
+    <a id="section-8" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-8'>#</a>
+          </div>
+          <h3><a id="interaction-integrals-initialization-strategy" class="header-anchor" href="#interaction-integrals-initialization-strategy"> Interaction integrals initialization strategy </a></h3>
+        </div>
+        <div class='code'>
+          
+        </div>
+        <div class='clearall'></div>
+    </section>
+  </div>
+  <div class='section'>
+    <a id="section-9" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-9'>#</a>
+          </div>
+          <h4><a id="1.-permute-all-in_particles" class="header-anchor" href="#1.-permute-all-in_particles"> 1. Permute all in_particles </a></h4>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>        <span class="n">in_particles</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">in_particles</span>
+        <span class="n">out_particles</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">out_particles</span>
+        <span class="n">accounted_particles</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">init_integrals</span><span class="p">(</span><span class="n">in_particles</span><span class="p">,</span> <span class="n">out_particles</span><span class="p">,</span>
+                                                  <span class="n">Ms</span><span class="p">,</span> <span class="n">accounted_particles</span><span class="p">)</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+  </div>
+  <div class='section'>
+    <a id="section-10" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-10'>#</a>
+          </div>
+          <h4><a id="2.-turn-to-the-backward-process" class="header-anchor" href="#2.-turn-to-the-backward-process"> 2. Turn to the backward process </a></h4>
+<p><code>(0, 1, 2, 3) -&gt; (2, 3, 0, 1)</code></p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>        <span class="k">for</span> <span class="n">M</span> <span class="ow">in</span> <span class="n">Ms</span><span class="p">:</span>
+            <span class="n">M</span><span class="o">.</span><span class="n">order</span> <span class="o">=</span> <span class="n">M</span><span class="o">.</span><span class="n">order</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">in_particles</span><span class="p">):]</span> <span class="o">+</span> <span class="n">M</span><span class="o">.</span><span class="n">order</span><span class="p">[:</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">in_particles</span><span class="p">)]</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+  </div>
+  <div class='section'>
+    <a id="section-11" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-11'>#</a>
+          </div>
+          <h4><a id="3.-permute-all-new-<code>in_particles</code>-(former-<code>out_particles</code>)" class="header-anchor" href="#3.-permute-all-new-<code>in_particles</code>-(former-<code>out_particles</code>)"> 3. Permute all new <code>in_particles</code> (former <code>out_particles</code>) </a></h4>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>        <span class="n">accounted_particles</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">init_integrals</span><span class="p">(</span><span class="n">out_particles</span><span class="p">,</span> <span class="n">in_particles</span><span class="p">,</span>
+                                                  <span class="n">Ms</span><span class="p">,</span> <span class="n">accounted_particles</span><span class="p">)</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+  </div>
+  <div class='section'>
+    <a id="section-12" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-12'>#</a>
+          </div>
+          <p>String-like representation of the interaction and all its integral </p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">+</span> <span class="s">&quot;</span><span class="se">\n\t</span><span class="s">&quot;</span> <span class="o">+</span> <span class="s">&quot;</span><span class="se">\n\t</span><span class="s">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">integral</span><span class="p">)</span> <span class="k">for</span> <span class="n">integral</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">integrals</span><span class="p">])</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+  </div>
+  <div class='section'>
+    <a id="section-13" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-13'>#</a>
+          </div>
+          <p>Starting from the single representation of the interaction, create integrals objects to be computed for every particle specie involved </p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">init_integrals</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">in_particles</span><span class="p">,</span> <span class="n">out_particles</span><span class="p">,</span> <span class="n">Ms</span><span class="p">,</span> <span class="n">accounted_particles</span><span class="p">):</span>
+
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">particle</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">in_particles</span><span class="p">):</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+  </div>
+  <div class='section'>
+    <a id="section-14" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-14'>#</a>
+          </div>
+          <p>Skip already accounted species</p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>            <span class="k">if</span> <span class="n">particle</span> <span class="ow">in</span> <span class="n">accounted_particles</span><span class="p">:</span>
+                <span class="k">continue</span>
+
+            <span class="n">particle_Ms</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">Ms</span><span class="p">)</span>
+
+            <span class="k">for</span> <span class="n">M</span> <span class="ow">in</span> <span class="n">particle_Ms</span><span class="p">:</span>
+                <span class="n">M</span><span class="o">.</span><span class="n">order</span> <span class="o">=</span> <span class="n">M</span><span class="o">.</span><span class="n">order</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">M</span><span class="o">.</span><span class="n">order</span><span class="p">[:</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">M</span><span class="o">.</span><span class="n">order</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">:]</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+  </div>
+  <div class='section'>
+    <a id="section-15" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-15'>#</a>
+          </div>
+          <p>Add interaction integrals by putting each incoming particle as the first one</p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>            <span class="bp">self</span><span class="o">.</span><span class="n">integrals</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">FourParticleIntegral</span><span class="p">(</span>
+                <span class="n">in_particles</span><span class="o">=</span><span class="n">in_particles</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">in_particles</span><span class="p">[:</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">in_particles</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">:],</span>
+                <span class="n">out_particles</span><span class="o">=</span><span class="n">out_particles</span><span class="p">,</span>
+                <span class="n">decoupling_temperature</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">decoupling_temperature</span><span class="p">,</span>
+                <span class="n">Ms</span><span class="o">=</span><span class="n">particle_Ms</span>
+            <span class="p">))</span>
+            <span class="n">accounted_particles</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">particle</span><span class="p">)</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+  </div>
+  <div class='section'>
+    <a id="section-16" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-16'>#</a>
+          </div>
+          
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>        <span class="k">return</span> <span class="n">accounted_particles</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+  </div>
+  <div class='section'>
+    <a id="section-17" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-17'>#</a>
+          </div>
+          <p>Proxy method </p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="k">for</span> <span class="n">integral</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">integrals</span><span class="p">:</span>
+            <span class="n">integral</span><span class="o">.</span><span class="n">initialize</span><span class="p">()</span>
+
+</pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+  </div>
+</div>
+</body>

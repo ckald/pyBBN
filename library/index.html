@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta http-equiv="content-type" content="text/html;charset=utf-8">
-  <title>pyBBN v0.1.0: docs/library/__init__.py</title>
+  <title>pyBBN v0.1.0: library/__init__.py</title>
   <link rel="stylesheet" href="../pyccoon.css">
   <script type="text/x-mathjax-config">
   MathJax.Hub.Config({
@@ -22,7 +22,7 @@
         Generated at
         <a target="_blank" href="http://ckald.github.io/pyccoon/" title="Pyccoon: side-to-side documentation generator">
             <img id="pyccoon-icon" src="../pyccoon_icon.svg" alt="Pyccoon: side-to-side documentation generator" /></a>
-        <code>2014-11-26 01:10:22.460237</code>/
+        <code>2015-02-13 14:07:56.197985</code>/
         by a diligent
         <a target="_blank" href="http://ckald.github.io/pyccoon/" title="Pyccoon: side-to-side documentation generator">pyccoon</a>
     </div>
@@ -46,7 +46,8 @@
         <div class='code'>
           <div class="highlight"><pre><span class="kn">from</span> <span class="nn">common</span> <span class="kn">import</span> <span class="n">UNITS</span><span class="p">,</span> <span class="n">CONST</span>
 <span class="kn">from</span> <span class="nn">particles</span> <span class="kn">import</span> <span class="n">STATISTICS</span>
-<span class="kn">from</span> <span class="nn">interaction</span> <span class="kn">import</span> <span class="n">Interaction</span><span class="p">,</span> <span class="n">WeakM</span></pre></div>
+<span class="kn">from</span> <span class="nn">interactions</span> <span class="kn">import</span> <span class="n">Interaction</span>
+<span class="kn">from</span> <span class="nn">interactions.four_particle</span> <span class="kn">import</span> <span class="n">WeakM</span></pre></div>
         </div>
         <div class='clearall'></div>
     </section>
@@ -61,7 +62,7 @@
           <p>A collection of Standard Model particles templates to be used as a reference and to avoid typical mistakes such as wrong degree of freedom for the neutrinos (2, not 4 - there are no right-handed neutrinos and left-handed antineutrinos). </p>
         </div>
         <div class='code'>
-          <div class="highlight"><pre><span class="k">class</span> <span class="nc">StandardModelParticles</span><span class="p">:</span>
+          <div class="highlight"><pre><span class="k">class</span> <span class="nc">StandardModelParticles</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 
     <span class="n">photon</span> <span class="o">=</span> <span class="p">{</span>
         <span class="s">&#39;name&#39;</span><span class="p">:</span> <span class="s">&#39;Photon&#39;</span><span class="p">,</span>
@@ -139,7 +140,7 @@
           <p>Collection of Standard Model interactions double-triple-checked and used in all tests for consistency. </p>
         </div>
         <div class='code'>
-          <div class="highlight"><pre><span class="k">class</span> <span class="nc">StandardModelInteractions</span><span class="p">:</span></pre></div>
+          <div class="highlight"><pre><span class="k">class</span> <span class="nc">StandardModelInteractions</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span></pre></div>
         </div>
         <div class='clearall'></div>
     </section>
@@ -292,9 +293,9 @@
    \end{align}</p>
 <p>\begin{align}
        |\mathcal{M}|^2 = 32 G_F^2 \left(
-       \\ 4 \, g_L^2 \, (p_0 \cdot p_1) (p_2 \cdot p_3) +
-       \\ +4 \, g_L^2 \, (p_0 \cdot p_3) (p_1 \cdot p_2) -
-       \\ -4 \, g_L g_R \, m_1 m_3 (p_0 \cdot p_2)
+       \\ 4 \, (g_L^2 + g_R^2) \, (p_0 \cdot p_1) (p_2 \cdot p_3) +
+       \\ +4 \, (g_R^2 + g_L^2) \, (p_0 \cdot p_3) (p_1 \cdot p_2) -
+       \\ -8 \, g_L g_R \, m_1 m_3 (p_0 \cdot p_2)
        \\ \right)
    \end{align}</p>
 <p>Depending of the neutrino generations involved, $g_L$ can either be equal to $g_R + \frac12$ (for $\nu_e$) or $g_R - \frac12$ (for others).</p>
@@ -309,10 +310,76 @@
             <span class="n">out_particles</span><span class="o">=</span><span class="p">[</span><span class="n">neutrino</span><span class="p">,</span> <span class="n">electron</span><span class="p">],</span>
             <span class="n">decoupling_temperature</span><span class="o">=</span><span class="mi">0</span> <span class="o">*</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">MeV</span><span class="p">,</span>
             <span class="n">Ms</span><span class="o">=</span><span class="p">[</span>
-                <span class="n">WeakM</span><span class="p">(</span><span class="n">K1</span><span class="o">=</span><span class="mi">4</span> <span class="o">*</span> <span class="n">g_L</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">)),</span>
-                <span class="n">WeakM</span><span class="p">(</span><span class="n">K1</span><span class="o">=</span><span class="mi">4</span> <span class="o">*</span> <span class="n">g_L</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)),</span>
-                <span class="n">WeakM</span><span class="p">(</span><span class="n">K2</span><span class="o">=-</span><span class="mi">4</span> <span class="o">*</span> <span class="n">g_L</span> <span class="o">*</span> <span class="n">CONST</span><span class="o">.</span><span class="n">g_R</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">)),</span>
+                <span class="n">WeakM</span><span class="p">(</span><span class="n">K1</span><span class="o">=</span><span class="mi">4</span> <span class="o">*</span> <span class="p">(</span><span class="n">g_L</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">CONST</span><span class="o">.</span><span class="n">g_R</span><span class="o">**</span><span class="mi">2</span><span class="p">),</span> <span class="n">order</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">)),</span>
+                <span class="n">WeakM</span><span class="p">(</span><span class="n">K1</span><span class="o">=</span><span class="mi">4</span> <span class="o">*</span> <span class="p">(</span><span class="n">g_L</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">CONST</span><span class="o">.</span><span class="n">g_R</span><span class="o">**</span><span class="mi">2</span><span class="p">),</span> <span class="n">order</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)),</span>
+                <span class="n">WeakM</span><span class="p">(</span><span class="n">K2</span><span class="o">=-</span><span class="mi">8</span> <span class="o">*</span> <span class="n">g_L</span> <span class="o">*</span> <span class="n">CONST</span><span class="o">.</span><span class="n">g_R</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">)),</span>
             <span class="p">]</span>
+        <span class="p">)</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+  </div>
+  <div class='section'>
+    <a id="section-8" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-8'>#</a>
+          </div>
+          
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre><span class="k">class</span> <span class="nc">NuMSMParticles</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">sterile_neutrino</span><span class="p">(</span><span class="n">mass</span><span class="o">=</span><span class="mf">33.9</span> <span class="o">*</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">MeV</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s">&#39;name&#39;</span><span class="p">:</span> <span class="s">&#39;Sterile neutrino&#39;</span><span class="p">,</span>
+            <span class="s">&#39;symbol&#39;</span><span class="p">:</span> <span class="s">&#39;N&#39;</span><span class="p">,</span>
+            <span class="s">&#39;statistics&#39;</span><span class="p">:</span> <span class="n">STATISTICS</span><span class="o">.</span><span class="n">FERMION</span><span class="p">,</span>
+            <span class="s">&#39;mass&#39;</span><span class="p">:</span> <span class="n">mass</span><span class="p">,</span>
+            <span class="s">&#39;dof&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+            <span class="s">&#39;decoupling_temperature&#39;</span><span class="p">:</span> <span class="mi">50</span> <span class="o">*</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">MeV</span>
+        <span class="p">}</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+  </div>
+  <div class='section'>
+    <a id="section-9" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-9'>#</a>
+          </div>
+          
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre><span class="k">class</span> <span class="nc">NuMSMInteractions</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+  </div>
+  <div class='section'>
+    <a id="section-10" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-10'>#</a>
+          </div>
+          <p>\begin{align}
+       N_S + \nu_{\alpha} &amp;\to \nu_{\alpha} + \nu_{\alpha}
+       \\ N_S + \overline{\nu_{\alpha}} &amp;\to \nu_{\alpha} + \overline{\nu_{\alpha}}
+   \end{align}</p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">sterile_active_mixing</span><span class="p">(</span><span class="n">sterile</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">active</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+
+        <span class="k">return</span> <span class="n">Interaction</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="s">&quot;Sterile-active neutrino mixing&quot;</span><span class="p">,</span>
+            <span class="n">in_particles</span><span class="o">=</span><span class="p">[</span><span class="n">sterile</span><span class="p">,</span> <span class="n">active</span><span class="p">],</span>
+            <span class="n">out_particles</span><span class="o">=</span><span class="p">[</span><span class="n">active</span><span class="p">,</span> <span class="n">active</span><span class="p">]</span>
         <span class="p">)</span>
 
 </pre></div>

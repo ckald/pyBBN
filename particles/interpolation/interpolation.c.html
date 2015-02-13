@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta http-equiv="content-type" content="text/html;charset=utf-8">
-  <title>pyBBN v0.1.0: docs/particles/interpolation/interpolation.c</title>
+  <title>pyBBN v0.1.0: particles/interpolation/interpolation.c</title>
   <link rel="stylesheet" href="../../pyccoon.css">
   <script type="text/x-mathjax-config">
   MathJax.Hub.Config({
@@ -18,56 +18,11 @@
   <div id="footer">
     <a class="btn" id="project-name" href="../../index.html">pyBBN v0.1.0</a>
     <a class="btn" class="source source-1" href="#top">Back to top</a>
-    <div id="jump_to" class="btn">
-    Contents
-    <div id="jump_wrapper">
-      <div id="jump_page">
-          <a class="source source-1" href="#section-6">in Cython to enable them only on the right systems.</a>
-          <a class="source source-1" href="#section-8">ctypedef npy_int96      int96_t</a>
-          <a class="source source-1" href="#section-9">ctypedef npy_int96      int96_t</a>
-          <a class="source source-1" href="#section-10">ctypedef npy_int128     int128_t</a>
-          <a class="source source-1" href="#section-12">ctypedef npy_uint96     uint96_t</a>
-          <a class="source source-1" href="#section-13">ctypedef npy_uint96     uint96_t</a>
-          <a class="source source-1" href="#section-14">ctypedef npy_uint128    uint128_t</a>
-          <a class="source source-1" href="#section-15">ctypedef npy_float80    float80_t</a>
-          <a class="source source-1" href="#section-16">The int types are mapped a bit surprising --</a>
-          <a class="source source-1" href="#section-17">numpy.int corresponds to 'l' and numpy.long to 'q'</a>
-          <a class="source source-1" href="#section-27">every type in the numpy module there's a corresponding compile-time</a>
-          <a class="source source-1" href="#section-51">&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;</a>
-          <a class="source source-1" href="#section-54">&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;</a>
-          <a class="source source-1" href="#section-68">&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;</a>
-          <a class="source source-1" href="#section-70">&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;</a>
-          <a class="source source-1" href="#section-71">Determine the closest grid points</a>
-          <a class="source source-1" href="#section-76">&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;</a>
-          <a class="source source-1" href="#section-195">&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;</a>
-          <a class="source source-1" href="#section-198">&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;</a>
-          <a class="source source-1" href="#section-200">&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;</a>
-          <a class="source source-1" href="#section-203">&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;</a>
-          <a class="source source-1" href="#section-205">&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;</a>
-          <a class="source source-1" href="#section-208">&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;</a>
-          <a class="source source-1" href="#section-210">&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;</a>
-          <a class="source source-1" href="#section-213">&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;</a>
-          <a class="source source-1" href="#section-215">&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;</a>
-          <a class="source source-1" href="#section-218">&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;</a>
-          <a class="source source-1" href="#section-220">&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;</a>
-          <a class="source source-1" href="#section-229">&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;</a>
-          <a class="source source-1" href="#section-268">&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;</a>
-          <a class="source source-1" href="#section-270">&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;</a>
-          <a class="source source-1" href="#section-272">&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;</a>
-          <a class="source source-1" href="#section-274">&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;</a>
-          <a class="source source-1" href="#section-281">&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;</a>
-          <a class="source source-1" href="#section-283">&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;</a>
-          <a class="source source-1" href="#section-284">&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;</a>
-          <a class="source source-1" href="#section-288">&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;</a>
-          <a class="source source-1" href="#section-319">&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;</a>
-      </div>
-    </div>
-    </div>
     <div class="generation-time">
         Generated at
         <a target="_blank" href="http://ckald.github.io/pyccoon/" title="Pyccoon: side-to-side documentation generator">
             <img id="pyccoon-icon" src="../../pyccoon_icon.svg" alt="Pyccoon: side-to-side documentation generator" /></a>
-        <code>2014-11-26 01:10:24.994088</code>/
+        <code>2015-02-13 14:07:58.872710</code>/
         by a diligent
         <a target="_blank" href="http://ckald.github.io/pyccoon/" title="Pyccoon: side-to-side documentation generator">pyccoon</a>
     </div>

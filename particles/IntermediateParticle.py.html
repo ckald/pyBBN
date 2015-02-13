@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta http-equiv="content-type" content="text/html;charset=utf-8">
-  <title>pyBBN v0.1.0: docs/particles/IntermediateParticle.py</title>
+  <title>pyBBN v0.1.0: particles/IntermediateParticle.py</title>
   <link rel="stylesheet" href="../pyccoon.css">
   <script type="text/x-mathjax-config">
   MathJax.Hub.Config({
@@ -22,10 +22,10 @@
     Contents
     <div id="jump_wrapper">
       <div id="jump_page">
-          <a class="source source-2" href="#section-1"> Particle density </a>
-          <a class="source source-2" href="#section-2"> Particle energy density </a>
-          <a class="source source-2" href="#section-5"> Particle pressure </a>
-          <a class="source source-2" href="#section-8"> Master equation terms </a>
+          <a class="source source-2" href="#particle-density"> Particle density </a>
+          <a class="source source-2" href="#particle-energy-density"> Particle energy density </a>
+          <a class="source source-2" href="#particle-pressure"> Particle pressure </a>
+          <a class="source source-2" href="#master-equation-terms"> Master equation terms </a>
       </div>
     </div>
     </div>
@@ -33,7 +33,7 @@
         Generated at
         <a target="_blank" href="http://ckald.github.io/pyccoon/" title="Pyccoon: side-to-side documentation generator">
             <img id="pyccoon-icon" src="../pyccoon_icon.svg" alt="Pyccoon: side-to-side documentation generator" /></a>
-        <code>2014-11-26 01:10:22.591812</code>/
+        <code>2015-02-13 14:07:56.331062</code>/
         by a diligent
         <a target="_blank" href="http://ckald.github.io/pyccoon/" title="Pyccoon: side-to-side documentation generator">pyccoon</a>
     </div>
@@ -57,7 +57,7 @@
         <div class='code'>
           <div class="highlight"><pre><span class="kn">from</span> <span class="nn">scipy</span> <span class="kn">import</span> <span class="n">integrate</span>
 <span class="kn">import</span> <span class="nn">numpy</span>
-<span class="kn">from</span> <span class="nn">common</span> <span class="kn">import</span> <span class="n">GRID</span><span class="p">,</span> <span class="n">PARAMS</span>
+<span class="kn">from</span> <span class="nn">common</span> <span class="kn">import</span> <span class="n">GRID</span>
 
 
 <span class="n">name</span> <span class="o">=</span> <span class="s">&#39;intermediate&#39;</span></pre></div>
@@ -72,7 +72,7 @@
           <div class='octowrap'>
             <a class='octothorpe' href='#section-1'>#</a>
           </div>
-          <h2><span class="header" href="particle-density"> Particle density </span><a id="particle-density" class="header-anchor"></a></h2>
+          <h2><a id="particle-density" class="header-anchor" href="#particle-density"> Particle density </a></h2>
 <p>\begin{equation}
        g \int \frac{p^2 dp}{2 \pi^2} f\left( \frac{p}{T} \right)
    \end{equation}</p>
@@ -82,10 +82,10 @@
 
     <span class="n">density</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">integrate</span><span class="o">.</span><span class="n">quad</span><span class="p">(</span>
         <span class="k">lambda</span> <span class="n">p</span><span class="p">:</span> <span class="p">(</span>
-            <span class="n">particle</span><span class="o">.</span><span class="n">distribution_function</span><span class="p">(</span>
+            <span class="n">particle</span><span class="o">.</span><span class="n">equilibrium_distribution_function</span><span class="p">(</span>
                 <span class="n">particle</span><span class="o">.</span><span class="n">energy</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="o">/</span> <span class="n">particle</span><span class="o">.</span><span class="n">T</span>
             <span class="p">)</span> <span class="o">*</span> <span class="n">p</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="n">particle</span><span class="o">.</span><span class="n">dof</span> <span class="o">/</span> <span class="mf">2.</span> <span class="o">/</span> <span class="n">numpy</span><span class="o">.</span><span class="n">pi</span><span class="o">**</span><span class="mi">2</span>
-        <span class="p">),</span> <span class="n">GRID</span><span class="o">.</span><span class="n">MIN_MOMENTUM</span><span class="p">,</span> <span class="n">GRID</span><span class="o">.</span><span class="n">MAX_MOMENTUM</span><span class="p">,</span>
+        <span class="p">),</span> <span class="n">GRID</span><span class="o">.</span><span class="n">MIN_MOMENTUM</span> <span class="o">/</span> <span class="n">particle</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">a</span><span class="p">,</span> <span class="n">GRID</span><span class="o">.</span><span class="n">MAX_MOMENTUM</span> <span class="o">/</span> <span class="n">particle</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">a</span><span class="p">,</span>
         <span class="n">epsrel</span><span class="o">=</span><span class="mf">1e-8</span><span class="p">,</span> <span class="n">epsabs</span><span class="o">=</span><span class="mi">0</span>
     <span class="p">)</span>
     <span class="k">return</span> <span class="n">density</span></pre></div>
@@ -100,7 +100,7 @@
           <div class='octowrap'>
             <a class='octothorpe' href='#section-2'>#</a>
           </div>
-          <h2><span class="header" href="particle-energy-density"> Particle energy density </span><a id="particle-energy-density" class="header-anchor"></a></h2>
+          <h2><a id="particle-energy-density" class="header-anchor" href="#particle-energy-density"> Particle energy density </a></h2>
         </div>
         <div class='code'>
           
@@ -124,7 +124,7 @@
 
     <span class="n">E</span> <span class="o">=</span> <span class="n">particle</span><span class="o">.</span><span class="n">energy</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
     <span class="k">return</span> <span class="p">(</span>
-        <span class="n">particle</span><span class="o">.</span><span class="n">distribution_function</span><span class="p">(</span><span class="n">E</span> <span class="o">/</span> <span class="n">particle</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+        <span class="n">particle</span><span class="o">.</span><span class="n">equilibrium_distribution_function</span><span class="p">(</span><span class="n">E</span> <span class="o">/</span> <span class="n">particle</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
         <span class="o">*</span> <span class="n">p</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="n">E</span>
         <span class="o">*</span> <span class="n">particle</span><span class="o">.</span><span class="n">dof</span> <span class="o">/</span> <span class="mf">2.</span> <span class="o">/</span> <span class="n">numpy</span><span class="o">.</span><span class="n">pi</span><span class="o">**</span><span class="mi">2</span>
     <span class="p">)</span></pre></div>
@@ -148,7 +148,7 @@
 
     <span class="n">energy_density</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">integrate</span><span class="o">.</span><span class="n">quad</span><span class="p">(</span>
         <span class="k">lambda</span> <span class="n">p</span><span class="p">:</span> <span class="n">energy_density_integrand</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">particle</span><span class="p">),</span>
-        <span class="n">GRID</span><span class="o">.</span><span class="n">MIN_MOMENTUM</span><span class="p">,</span> <span class="n">GRID</span><span class="o">.</span><span class="n">MAX_MOMENTUM</span><span class="p">,</span>
+        <span class="n">GRID</span><span class="o">.</span><span class="n">MIN_MOMENTUM</span> <span class="o">/</span> <span class="n">particle</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">a</span><span class="p">,</span> <span class="n">GRID</span><span class="o">.</span><span class="n">MAX_MOMENTUM</span> <span class="o">/</span> <span class="n">particle</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">a</span><span class="p">,</span>
         <span class="n">epsrel</span><span class="o">=</span><span class="mf">1e-8</span><span class="p">,</span> <span class="n">epsabs</span><span class="o">=</span><span class="mi">0</span>
     <span class="p">)</span>
     <span class="k">return</span> <span class="n">energy_density</span></pre></div>
@@ -163,7 +163,7 @@
           <div class='octowrap'>
             <a class='octothorpe' href='#section-5'>#</a>
           </div>
-          <h2><span class="header" href="particle-pressure"> Particle pressure </span><a id="particle-pressure" class="header-anchor"></a></h2>
+          <h2><a id="particle-pressure" class="header-anchor" href="#particle-pressure"> Particle pressure </a></h2>
         </div>
         <div class='code'>
           
@@ -187,7 +187,7 @@
 
     <span class="n">E</span> <span class="o">=</span> <span class="n">particle</span><span class="o">.</span><span class="n">energy</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
     <span class="k">return</span> <span class="p">(</span>
-        <span class="n">particle</span><span class="o">.</span><span class="n">distribution_function</span><span class="p">(</span><span class="n">E</span> <span class="o">/</span> <span class="n">particle</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+        <span class="n">particle</span><span class="o">.</span><span class="n">equilibrium_distribution_function</span><span class="p">(</span><span class="n">E</span> <span class="o">/</span> <span class="n">particle</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
         <span class="o">*</span> <span class="n">p</span><span class="o">**</span><span class="mi">4</span> <span class="o">/</span> <span class="n">E</span>
         <span class="o">*</span> <span class="n">particle</span><span class="o">.</span><span class="n">dof</span> <span class="o">/</span> <span class="mf">6.</span> <span class="o">/</span> <span class="n">numpy</span><span class="o">.</span><span class="n">pi</span><span class="o">**</span><span class="mi">2</span>
     <span class="p">)</span></pre></div>
@@ -211,7 +211,7 @@
 
     <span class="n">pressure</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">integrate</span><span class="o">.</span><span class="n">quad</span><span class="p">(</span>
         <span class="k">lambda</span> <span class="n">p</span><span class="p">:</span> <span class="n">pressure_integrand</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">particle</span><span class="p">),</span>
-        <span class="n">GRID</span><span class="o">.</span><span class="n">MIN_MOMENTUM</span><span class="p">,</span> <span class="n">GRID</span><span class="o">.</span><span class="n">MAX_MOMENTUM</span><span class="p">,</span>
+        <span class="n">GRID</span><span class="o">.</span><span class="n">MIN_MOMENTUM</span> <span class="o">/</span> <span class="n">particle</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">a</span><span class="p">,</span> <span class="n">GRID</span><span class="o">.</span><span class="n">MAX_MOMENTUM</span> <span class="o">/</span> <span class="n">particle</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">a</span><span class="p">,</span>
         <span class="n">epsrel</span><span class="o">=</span><span class="mf">1e-8</span><span class="p">,</span> <span class="n">epsabs</span><span class="o">=</span><span class="mi">0</span>
     <span class="p">)</span>
     <span class="k">return</span> <span class="n">pressure</span></pre></div>
@@ -226,7 +226,7 @@
           <div class='octowrap'>
             <a class='octothorpe' href='#section-8'>#</a>
           </div>
-          <h2><span class="header" href="master-equation-terms"> Master equation terms </span><a id="master-equation-terms" class="header-anchor"></a></h2>
+          <h2><a id="master-equation-terms" class="header-anchor" href="#master-equation-terms"> Master equation terms </a></h2>
         </div>
         <div class='code'>
           
@@ -248,7 +248,8 @@
         <div class='code'>
           <div class="highlight"><pre><span class="k">def</span> <span class="nf">numerator</span><span class="p">(</span><span class="n">particle</span><span class="p">):</span>
 
-    <span class="k">return</span> <span class="n">particle</span><span class="o">.</span><span class="n">mass</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="n">PARAMS</span><span class="o">.</span><span class="n">x</span> <span class="o">/</span> <span class="n">PARAMS</span><span class="o">.</span><span class="n">m</span><span class="o">**</span><span class="mi">2</span> <span class="o">/</span> <span class="n">PARAMS</span><span class="o">.</span><span class="n">aT</span> <span class="o">*</span> <span class="n">I</span><span class="p">(</span><span class="n">particle</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span></pre></div>
+    <span class="k">return</span> <span class="n">particle</span><span class="o">.</span><span class="n">mass</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="n">particle</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">x</span> <span class="o">/</span> <span class="n">particle</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">m</span><span class="o">**</span><span class="mi">2</span> \
+        <span class="o">/</span> <span class="n">particle</span><span class="o">.</span><span class="n">aT</span> <span class="o">*</span> <span class="n">I</span><span class="p">(</span><span class="n">particle</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span></pre></div>
         </div>
         <div class='clearall'></div>
     </section>
@@ -261,13 +262,13 @@
             <a class='octothorpe' href='#section-10'>#</a>
           </div>
           <p>\begin{equation}
-       \frac{(I(4) + M_N^2 I(2))}{(a T)^2}
+       \frac{I(4) + M_N^2 I(2)}{(a T)^2}
    \end{equation}</p>
         </div>
         <div class='code'>
           <div class="highlight"><pre><span class="k">def</span> <span class="nf">denominator</span><span class="p">(</span><span class="n">particle</span><span class="p">):</span>
 
-    <span class="k">return</span> <span class="p">(</span><span class="n">I</span><span class="p">(</span><span class="n">particle</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span> <span class="o">+</span> <span class="n">particle</span><span class="o">.</span><span class="n">conformal_mass</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="n">I</span><span class="p">(</span><span class="n">particle</span><span class="p">))</span> <span class="o">/</span> <span class="n">PARAMS</span><span class="o">.</span><span class="n">aT</span><span class="o">**</span><span class="mi">2</span></pre></div>
+    <span class="k">return</span> <span class="p">(</span><span class="n">I</span><span class="p">(</span><span class="n">particle</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span> <span class="o">+</span> <span class="n">particle</span><span class="o">.</span><span class="n">conformal_mass</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="n">I</span><span class="p">(</span><span class="n">particle</span><span class="p">))</span> <span class="o">/</span> <span class="n">particle</span><span class="o">.</span><span class="n">aT</span><span class="o">**</span><span class="mi">2</span></pre></div>
         </div>
         <div class='clearall'></div>
     </section>
@@ -288,9 +289,11 @@
 
     <span class="k">return</span> <span class="n">particle</span><span class="o">.</span><span class="n">dof</span> <span class="o">/</span> <span class="mf">2.</span> <span class="o">/</span> <span class="n">numpy</span><span class="o">.</span><span class="n">pi</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="n">integrate</span><span class="o">.</span><span class="n">quad</span><span class="p">(</span>
         <span class="k">lambda</span> <span class="n">y</span><span class="p">:</span> <span class="p">(</span>
-            <span class="n">y</span><span class="o">**</span><span class="n">y_power</span> <span class="o">*</span> <span class="n">numpy</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">particle</span><span class="o">.</span><span class="n">conformal_energy</span><span class="p">(</span><span class="n">y</span><span class="p">)</span> <span class="o">/</span> <span class="n">PARAMS</span><span class="o">.</span><span class="n">aT</span><span class="p">)</span>
-            <span class="o">/</span> <span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">particle</span><span class="o">.</span><span class="n">conformal_energy</span><span class="p">(</span><span class="n">y</span><span class="p">)</span> <span class="o">/</span> <span class="n">PARAMS</span><span class="o">.</span><span class="n">aT</span><span class="p">)</span> <span class="o">+</span> <span class="n">particle</span><span class="o">.</span><span class="n">eta</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span>
-        <span class="p">),</span> <span class="n">GRID</span><span class="o">.</span><span class="n">MIN_MOMENTUM</span><span class="p">,</span> <span class="n">GRID</span><span class="o">.</span><span class="n">MAX_MOMENTUM</span><span class="p">,</span> <span class="n">epsrel</span><span class="o">=</span><span class="mf">1e-8</span><span class="p">,</span> <span class="n">epsabs</span><span class="o">=</span><span class="mi">0</span>
+            <span class="n">y</span><span class="o">**</span><span class="n">y_power</span> <span class="o">*</span> <span class="n">numpy</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">particle</span><span class="o">.</span><span class="n">conformal_energy</span><span class="p">(</span><span class="n">y</span><span class="p">)</span> <span class="o">/</span> <span class="n">particle</span><span class="o">.</span><span class="n">aT</span><span class="p">)</span>
+            <span class="o">/</span> <span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">particle</span><span class="o">.</span><span class="n">conformal_energy</span><span class="p">(</span><span class="n">y</span><span class="p">)</span> <span class="o">/</span> <span class="n">particle</span><span class="o">.</span><span class="n">aT</span><span class="p">)</span> <span class="o">+</span> <span class="n">particle</span><span class="o">.</span><span class="n">eta</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span>
+        <span class="p">),</span>
+        <span class="n">GRID</span><span class="o">.</span><span class="n">MIN_MOMENTUM</span><span class="p">,</span> <span class="n">GRID</span><span class="o">.</span><span class="n">MAX_MOMENTUM</span><span class="p">,</span>
+        <span class="n">epsrel</span><span class="o">=</span><span class="mf">1e-8</span><span class="p">,</span> <span class="n">epsabs</span><span class="o">=</span><span class="mi">0</span>
     <span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
 
 </pre></div>
