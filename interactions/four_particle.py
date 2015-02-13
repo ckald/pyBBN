@@ -57,7 +57,7 @@ class FourParticleIntegral(BoltzmannIntegral):
             self.constant = 1./64. / numpy.pi**3 * params.m**5 / params.x**5 / params.H
             self.particles[0].collision_integrals.append(self)
 
-    def integrate(self, p0, integrand, name, bounds=None, kwargs=None):
+    def integrate(self, p0, integrand, bounds=None, kwargs=None):
         kwargs = kwargs if kwargs else {}
 
         if bounds is None:

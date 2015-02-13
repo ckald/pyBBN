@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import numpy
-from common import PicklableObject
+from common import PicklableObject, GRID, integrators
 
 
 class DistributionFunctional(object):
@@ -195,14 +195,14 @@ class BoltzmannIntegral(PicklableObject, DistributionFunctional):
         return self.integrate(
             p0, self.integrand,
             kwargs={'fau': self.F_1},
-            name=str(self), bounds=bounds
+            bounds=bounds
         )
 
     def integral_f(self, p0, bounds=None):
         return self.integrate(
             p0, self.integrand,
             kwargs={'fau': self.F_f},
-            name=str(self), bounds=bounds
+            bounds=bounds
         )
 
     def integrand(self, *args, **kwargs):

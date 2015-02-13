@@ -34,7 +34,7 @@ class ThreeParticleIntegral(BoltzmannIntegral):
             self.constant = MM / 16. / numpy.pi * params.m / params.x / params.H
             self.particles[0].collision_integrals.append(self)
 
-    def integrate(self, p0, integrand, name, bounds=None, kwargs=None):
+    def integrate(self, p0, integrand, bounds=None, kwargs=None):
         kwargs = kwargs if kwargs else {}
 
         if bounds is None:
