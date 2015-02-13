@@ -23,28 +23,26 @@ from plotting import plt
 from particles import Particle
 from library import StandardModelParticles as SMP, StandardModelInteractions as SMI
 from evolution import Universe
-from common import CONST, UNITS, PARAMS, GRID
+from common import CONST, UNITS, Params, GRID
 
 
-PARAMS.T_initial = 5. * UNITS.MeV
-PARAMS.T_final = 0.01 * UNITS.MeV
-PARAMS.dx = 1e-5 * UNITS.MeV
-PARAMS.infer()
+params = Params(T_initial=5. * UNITS.MeV,
+                T_final=0.015 * UNITS.MeV,
+                dx=1e-5 * UNITS.MeV)
 
+universe = Universe(params=params,
+                    logfile='tests/massive_nu_tau/log.txt')
 
-Particles = []
-Interactions = []
-
-photon = Particle(**SMP.photon)
-electron = Particle(**SMP.electron)
-neutrino_e = Particle(**SMP.neutrino_e)
-neutrino_mu = Particle(**SMP.neutrino_mu)
+photon = Particle(params, **SMP.photon)
+electron = Particle(params, **SMP.electron)
+neutrino_e = Particle(params, **SMP.neutrino_e)
+neutrino_mu = Particle(params, **SMP.neutrino_mu)
 
 massive_tau = SMP.neutrino_tau
 massive_tau['mass'] = 20 * UNITS.MeV
 neutrino_tau = Particle(**massive_tau)
 
-Particles += [
+universe.particles += [
     photon,
     electron,
     neutrino_e,
@@ -52,7 +50,7 @@ Particles += [
     neutrino_tau,
 ]
 
-Interactions += [
+universe.interactions += [
     SMI.neutrino_self_scattering(neutrino_e),
     SMI.neutrino_self_scattering(neutrino_mu),
     SMI.neutrino_self_scattering(neutrino_tau),
@@ -70,7 +68,6 @@ Interactions += [
     SMI.neutrino_electron_scattering(g_L=CONST.g_R-0.5, electron=electron, neutrino=neutrino_tau),
 ]
 
-universe = Universe(Particles, Interactions, logfile='tests/massive_nu_tau/log.txt')
 universe.graphics.monitor(particles=[
     neutrino_e,
     neutrino_mu,
