@@ -59,12 +59,15 @@ Interactions += [
     SMI.neutrino_inter_scattering(neutrino_e, neutrino_mu),
     SMI.neutrino_inter_scattering(neutrino_mu, neutrino_tau),
     SMI.neutrino_inter_scattering(neutrino_tau, neutrino_e),
-    SMI.neutrinos_to_electrons(neutrino=neutrino_e, electron=electron, g_L=CONST.g_R+0.5),
-    SMI.neutrinos_to_electrons(neutrino=neutrino_mu, electron=electron, g_L=CONST.g_R-0.5),
-    SMI.neutrinos_to_electrons(neutrino=neutrino_tau, electron=electron, g_L=CONST.g_R-0.5),
-    SMI.neutrino_electron_scattering(neutrino=neutrino_e, electron=electron, g_L=CONST.g_R+0.5),
-    SMI.neutrino_electron_scattering(neutrino=neutrino_mu, electron=electron, g_L=CONST.g_R-0.5),
-    SMI.neutrino_electron_scattering(neutrino=neutrino_tau, electron=electron, g_L=CONST.g_R-0.5),
+    SMI.neutrino_pair_flavour_change(neutrino_e, neutrino_mu),
+    SMI.neutrino_pair_flavour_change(neutrino_mu, neutrino_tau),
+    SMI.neutrino_pair_flavour_change(neutrino_tau, neutrino_e),
+    SMI.neutrinos_to_electrons(g_L=CONST.g_R+0.5, electron=electron, neutrino=neutrino_e),
+    SMI.neutrinos_to_electrons(g_L=CONST.g_R-0.5, electron=electron, neutrino=neutrino_mu),
+    SMI.neutrinos_to_electrons(g_L=CONST.g_R-0.5, electron=electron, neutrino=neutrino_tau),
+    SMI.neutrino_electron_scattering(g_L=CONST.g_R+0.5, electron=electron, neutrino=neutrino_e),
+    SMI.neutrino_electron_scattering(g_L=CONST.g_R-0.5, electron=electron, neutrino=neutrino_mu),
+    SMI.neutrino_electron_scattering(g_L=CONST.g_R-0.5, electron=electron, neutrino=neutrino_tau),
 ]
 
 universe = Universe(Particles, Interactions, logfile='tests/massive_nu_tau/log.txt')
