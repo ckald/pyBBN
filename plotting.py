@@ -119,7 +119,8 @@ class Plotting(object):
                 self.particles_plots[i][0].scatter(
                     particle.params.a,
                     particle.energy_density() / (
-                        7. * particle.dof * numpy.pi**2 * (particle.T)**4 / 240.
+                        7. * particle.dof * numpy.pi**2
+                        * (particle.params.m / particle.params.a)**4 / 240.
                     ), s=1)
 
                 feq = particle.equilibrium_distribution()
