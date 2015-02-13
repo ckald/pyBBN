@@ -201,3 +201,31 @@ class StandardModelInteractions(object):
                 WeakM(K2=-8 * g_L * CONST.g_R, order=(1, 3, 0, 2)),
             ]
         )
+
+
+class NuMSMParticles(object):
+    @staticmethod
+    def sterile_neutrino(mass=33.9 * UNITS.MeV):
+        return {
+            'name': 'Sterile neutrino',
+            'symbol': 'N',
+            'statistics': STATISTICS.FERMION,
+            'mass': mass,
+            'dof': 2,
+            'decoupling_temperature': 50 * UNITS.MeV
+        }
+
+
+class NuMSMInteractions(object):
+    @staticmethod
+    def sterile_active_mixing(sterile=None, active=None):
+        """ \begin{align}
+                N_S + \nu_{\alpha} &\to \nu_{\alpha} + \nu_{\alpha}
+                \\\\ N_S + \overline{\nu_{\alpha}} &\to \nu_{\alpha} + \overline{\nu_{\alpha}}
+            \end{align}
+        """
+        return Interaction(
+            name="Sterile-active neutrino mixing",
+            in_particles=[sterile, active],
+            out_particles=[active, active]
+        )
