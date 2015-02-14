@@ -8,6 +8,7 @@ regimes
 from __future__ import division
 
 import numpy
+from collections import defaultdict
 
 from common import GRID, UNITS, Params
 from common.integrators import adams_moulton_solver
@@ -81,6 +82,8 @@ class Particle(PicklableObject):
         'collision_integral', 'collision_integrals',
         'T', 'aT', 'params'
     ]
+
+    INTEGRATION_ORDER = ['sum-first', 'integral-first'][0]
 
     def __init__(self, params=None, **kwargs):
 
@@ -167,12 +170,27 @@ class Particle(PicklableObject):
         As = []
         Bs = []
 
-        for i in self.collision_integrals:
-            integral_1, _ = i.integral_1(p0)
-            As.append(integral_1)
+        if self.INTEGRATION_ORDER == 'integral-first':
 
-            integral_f, _ = i.integral_f(p0)
-            Bs.append(integral_f)
+            for i in self.collision_integrals:
+                integral_1, _ = i.integral_1(p0)
+                As.append(integral_1)
+
+                integral_f, _ = i.integral_f(p0)
+                Bs.append(integral_f)
+
+        else:
+
+            A_integrand_groups = defaultdict(list)
+            B_integrand_groups = defaultdict(list)
+            for i in self.collision_integrals:
+                A_integrand_groups[i.__class__].append(i.integrand_1)
+                B_integrand_groups[i.__class__].append(i.integrand_f)
+
+            for cls, integrands in A_integrand_groups.items():
+                As.append(cls.integrate(p0, integrands)[0])
+            for cls, integrands in B_integrand_groups.items():
+                Bs.append(cls.integrate(p0, integrands)[0])
 
         order = min(len(self.data['collision_integral']) + 1, 5)
 

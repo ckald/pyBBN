@@ -188,26 +188,21 @@ class BoltzmannIntegral(PicklableObject, DistributionFunctional):
 
         return total_integral
 
+    @staticmethod
     def integrate(self, p0, integrand, bounds=None, kwargs=None):
         raise NotImplementedError()
-
-    def integral_1(self, p0, bounds=None):
-        return self.integrate(
-            p0, self.integrand,
-            kwargs={'fau': self.F_1},
-            bounds=bounds
-        )
-
-    def integral_f(self, p0, bounds=None):
-        return self.integrate(
-            p0, self.integrand,
-            kwargs={'fau': self.F_f},
-            bounds=bounds
-        )
 
     def integrand(self, *args, **kwargs):
         """ Collision integral interior. """
         raise NotImplementedError()
+
+    def integrand_1(self, *args, **kwargs):
+        kwargs['fau'] = self.F_1
+        return self.integrand(*args, **kwargs)
+
+    def integrand_f(self, *args, **kwargs):
+        kwargs['fau'] = self.F_f
+        return self.integrand(*args, **kwargs)
 
     """ === Integration region bounds methods === """
 

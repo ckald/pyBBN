@@ -34,14 +34,22 @@ class ThreeParticleIntegral(BoltzmannIntegral):
             self.constant = MM / 16. / numpy.pi * params.m / params.x / params.H
             self.particles[0].collision_integrals.append(self)
 
-    def integrate(self, p0, integrand, bounds=None, kwargs=None):
+    @staticmethod
+    def integrate(p0, integrand, bounds=None, kwargs=None):
         kwargs = kwargs if kwargs else {}
 
         if bounds is None:
             bounds = (GRID.MIN_MOMENTUM, GRID.MAX_MOMENTUM)
 
+        if isinstance(integrand, list):
+            def prepared_integrand(p1):
+                return sum([i(p0, p1, **kwargs) for i in integrand])
+        else:
+            def prepared_integrand(p1, p2):
+                return integrand(p0, p1, **kwargs)
+
         integral, error = integrators.integrate_1D(
-            lambda p1: integrand(p0, p1, **kwargs),
+            prepared_integrand,
             bounds=bounds
         )
 

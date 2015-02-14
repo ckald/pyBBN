@@ -57,7 +57,8 @@ class FourParticleIntegral(BoltzmannIntegral):
             self.constant = 1./64. / numpy.pi**3 * params.m**5 / params.x**5 / params.H
             self.particles[0].collision_integrals.append(self)
 
-    def integrate(self, p0, integrand, bounds=None, kwargs=None):
+    @staticmethod
+    def integrate(p0, integrand, bounds=None, kwargs=None):
         kwargs = kwargs if kwargs else {}
 
         if bounds is None:
@@ -68,8 +69,15 @@ class FourParticleIntegral(BoltzmannIntegral):
                  lambda p1: min(p0 + p1, GRID.MAX_MOMENTUM)),
             )
 
+        if isinstance(integrand, list):
+            def prepared_integrand(p1, p2):
+                return sum([i(p0, p1, p2, **kwargs) for i in integrand])
+        else:
+            def prepared_integrand(p1, p2):
+                return integrand(p0, p1, p2, **kwargs)
+
         integral, error = integrators.integrate_2D(
-            lambda p1, p2: integrand(p0, p1, p2, **kwargs),
+            prepared_integrand,
             bounds=bounds
         )
 
