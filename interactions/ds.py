@@ -20,7 +20,14 @@ def D(p=None, E=None, m=None, K1=0., K2=0., signs=None, order=(0, 1, 2, 3)):
 
 
 def D1(k1, k2, k3, k4):
-    """ Dimensionality: energy """
+    """ Dimensionality: energy
+
+        \begin{align}
+            D_1(p_i, p_j, p_k, p_l) = \frac{4}{\pi} \int_0^\infty \frac{d \lambda}{\lambda^2}
+            sin(p_i \lambda) sin(p_j \lambda) sin(p_k \lambda) sin(p_l \lambda)
+        \end{align}
+
+    """
 
     q1, q2 = (k1, k2) if k1 >= k2 else (k2, k1)
     q3, q4 = (k3, k4) if k3 >= k4 else (k4, k3)
@@ -37,7 +44,16 @@ def D1(k1, k2, k3, k4):
 
 
 def D2(k1, k2, k3, k4):
-    """ Dimensionality: energy**3 """
+    """ Dimensionality: energy**3
+
+        \begin{align}
+            D_2(p_i, p_j, p_k, p_l) = s_k s_l \frac{4 p_k p_l}{\pi}
+            \int_0^\infty \frac{d \lambda}{\lambda^2}
+            sin(p_i \lambda) sin(p_j \lambda) \\\\
+             \left[ cos(p_k \lambda) - \frac{sin(p_k \lambda)}{p_k \lambda} \right]
+            \left[ cos(p_l \lambda) - \frac{sin(p_l \lambda)}{p_l \lambda} \right]
+        \end{align}
+    """
 
     q1, q2 = (k1, k2) if k1 >= k2 else (k2, k1)
     q3, q4 = (k3, k4) if k3 >= k4 else (k4, k3)
@@ -66,7 +82,17 @@ def D2(k1, k2, k3, k4):
 
 
 def D3(k1, k2, k3, k4):
-    """ Dimensionality: energy**5 """
+    """ Dimensionality: energy**5
+
+        \begin{align}
+            D_3(p_i, p_j, p_k, p_l) = s_i s_j s_k s_l \frac{4 p_i p_j p_k p_l}{\pi}
+            \int_0^\infty \frac{d \lambda}{\lambda^2} \\\\
+             \left[ cos(p_i \lambda) - \frac{sin(p_i \lambda)}{p_i \lambda} \right]
+             \left[ cos(p_j \lambda) - \frac{sin(p_j \lambda)}{p_j \lambda} \right] \\\\
+             \left[ cos(p_k \lambda) - \frac{sin(p_k \lambda)}{p_k \lambda} \right]
+            \left[ cos(p_l \lambda) - \frac{sin(p_l \lambda)}{p_l \lambda} \right]
+        \end{align}
+    """
 
     q1, q2 = (k1, k2) if k1 >= k2 else (k2, k1)
     q3, q4 = (k3, k4) if k3 >= k4 else (k4, k3)
@@ -98,8 +124,6 @@ def D3(k1, k2, k3, k4):
                     + q2**2 * (q4**3 - q3**3 + q1**3 + (q1**2 + q3**2 + q4**2) * q2)
                 )
             ) / 60.
-
-    # print result / UNITS.MeV**5,
 
     return result
 
