@@ -64,7 +64,7 @@ plt.show()
 #                 # val = f2 * f3 * (1 - f0) * (1 - f1) - f0 * f1 * (1 - f2) * (1 - f3)
 #                 res.append(val)
 
-from ds import D1, D2, D3
+from interactions.ds import D1, D2, D3
 from plotting import plot_integrand
 
 plot_integrand(lambda (p1, p2): D1(p1, p2, 1, 1), 'D1', 0)

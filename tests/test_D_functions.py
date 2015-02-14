@@ -2,7 +2,7 @@ import os
 import json
 import numpy
 
-import ds
+from interactions import ds
 from common import GRID
 
 cwd = os.path.split(__file__)[0]

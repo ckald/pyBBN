@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
 import numpy
-from common import CONST, GRID, UNITS, integrators
-from common.utils import benchmark
+from common import CONST, GRID, integrators
 from interactions.boltzmann import BoltzmannIntegral
-from ds import D, Db1, Db2
+from interactions.ds import D, Db1, Db2
 
 
 class FourParticleM(object):
