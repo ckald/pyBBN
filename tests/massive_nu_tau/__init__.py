@@ -26,9 +26,9 @@ from evolution import Universe
 from common import CONST, UNITS, Params, GRID
 
 
-params = Params(T_initial=5. * UNITS.MeV,
+params = Params(T_initial=20. * UNITS.MeV,
                 T_final=0.015 * UNITS.MeV,
-                dx=1e-5 * UNITS.MeV)
+                dy=0.05)
 
 universe = Universe(params=params,
                     logfile='tests/massive_nu_tau/log.txt')

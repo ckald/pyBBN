@@ -27,8 +27,7 @@ from common import CONST, UNITS, Params, GRID
 
 
 params = Params(T_initial=5. * UNITS.MeV,
-                T_final=0.015 * UNITS.MeV,
-                dx=1e-5 * UNITS.MeV)
+                T_final=0.015 * UNITS.MeV)
 
 universe = Universe(params=params,
                     logfile='tests/standard_model_bbn/log.txt')
