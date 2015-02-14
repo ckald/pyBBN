@@ -40,6 +40,7 @@ class Plotting(object):
 
         self.plots[2].set_title("T * a")
         self.plots[2].set_xlabel("time, s")
+        self.plots[3].set_xscale("log")
         self.plots[2].set_ylabel("T * a, MeV")
         self.plots[0].set_ylim(1, 10)
 
