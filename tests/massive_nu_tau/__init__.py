@@ -40,6 +40,10 @@ neutrino_mu = Particle(params, **SMP.neutrino_mu)
 neutrino_tau = Particle(params, **SMP.neutrino_tau)
 neutrino_tau.mass = 20 * UNITS.MeV
 
+neutrino_e.decoupling_temperature = params.T_initial
+neutrino_mu.decoupling_temperature = params.T_initial
+neutrino_tau.decoupling_temperature = params.T_initial
+
 
 universe.particles += [
     photon,
@@ -84,52 +88,48 @@ universe.graphics.save(__file__)
 folder = os.path.split(__file__)[0]
 plt.ion()
 
-""" === JCAP10(2012)014, Figure 9 ===
-    <img src="figure_9.png" width=100% /> """
+""" === 1202.2841, Figure 13 ===
+    <img src="figure_13.png" width=100% /> """
 
-plt.figure(9)
-plt.title('Figure 9')
+plt.figure(13)
+plt.title('Figure 13')
 plt.xlabel('MeV/T')
 plt.ylabel(u'aT')
 plt.xscale('log')
 plt.xlim(0.5, UNITS.MeV/params.T_final)
-plt.xticks([1, 2, 3, 5, 10, 20])
+plt.xticks([0.1, 0.2, 0.5, 1, 2, 5, 10, 20])
 plt.axes().get_xaxis().set_major_formatter(matplotlib.ticker.ScalarFormatter())
 plt.plot(UNITS.MeV / numpy.array(universe.data['T']), numpy.array(universe.data['aT']) / UNITS.MeV)
 plt.show()
-plt.savefig(os.path.join(folder, 'figure_9.png'))
+plt.savefig(os.path.join(folder, 'figure_13.png'))
 
-""" === JCAP10(2012)014, Figure 10 ===
-    <img src="figure_10.png" width=100% />
-    <img src="figure_10_full.png" width=100% /> """
+""" === 1202.2841, Figure 14 ===
+    <img src="figure_14.png" width=100% /> """
 
-plt.figure(10)
-plt.title('Figure 10')
+plt.figure(14)
+plt.title('Figure 14')
 plt.xlabel('Conformal momentum y = pa')
-plt.ylabel('f/f_eq')
+plt.ylabel('y^2 (f-f_eq), MeV^2')
 plt.xlim(0, 10)
+
+yy = GRID.TEMPLATE * GRID.TEMPLATE / UNITS.MeV**2
 
 f_e = neutrino_e._distribution
 feq_e = neutrino_e.equilibrium_distribution()
-plt.plot(GRID.TEMPLATE/UNITS.MeV, f_e/feq_e, label="nu_e")
+plt.plot(GRID.TEMPLATE/UNITS.MeV, yy*(f_e-feq_e), label="nu_e")
 
 f_mu = neutrino_mu._distribution
 feq_mu = neutrino_mu.equilibrium_distribution()
-plt.plot(GRID.TEMPLATE/UNITS.MeV, f_mu/feq_mu, label="nu_mu")
+plt.plot(GRID.TEMPLATE/UNITS.MeV, yy*(f_mu-feq_mu), label="nu_mu")
 
 f_tau = neutrino_tau._distribution
 feq_tau = neutrino_tau.equilibrium_distribution()
-plt.plot(GRID.TEMPLATE/UNITS.MeV, f_tau/feq_tau, label="nu_tau")
+plt.plot(GRID.TEMPLATE/UNITS.MeV, yy*(f_tau-feq_tau), label="nu_tau")
 
 plt.legend()
 plt.draw()
 plt.show()
-plt.savefig(os.path.join(folder, 'figure_10.png'))
-
-plt.xlim(0, 20)
-plt.draw()
-plt.show()
-plt.savefig(os.path.join(folder, 'figure_10_full.png'))
+plt.savefig(os.path.join(folder, 'figure_14.png'))
 
 # Distribution functions arrays
 distributions_file = open(os.path.join(folder, 'distributions.txt'), "w")
