@@ -38,7 +38,7 @@
         Generated at
         <a target="_blank" href="http://ckald.github.io/pyccoon/" title="Pyccoon: side-to-side documentation generator">
             <img id="pyccoon-icon" src="../pyccoon_icon.svg" alt="Pyccoon: side-to-side documentation generator" /></a>
-        <code>2015-02-13 14:07:56.475617</code>/
+        <code>2015-02-14 18:52:48.414383</code>/
         by a diligent
         <a target="_blank" href="http://ckald.github.io/pyccoon/" title="Pyccoon: side-to-side documentation generator">pyccoon</a>
     </div>
@@ -79,6 +79,7 @@
           <div class="highlight"><pre><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">division</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">defaultdict</span>
 
 <span class="kn">from</span> <span class="nn">common</span> <span class="kn">import</span> <span class="n">GRID</span><span class="p">,</span> <span class="n">UNITS</span><span class="p">,</span> <span class="n">Params</span>
 <span class="kn">from</span> <span class="nn">common.integrators</span> <span class="kn">import</span> <span class="n">adams_moulton_solver</span>
@@ -230,7 +231,9 @@
         <span class="s">&#39;_distribution&#39;</span><span class="p">,</span>
         <span class="s">&#39;collision_integral&#39;</span><span class="p">,</span> <span class="s">&#39;collision_integrals&#39;</span><span class="p">,</span>
         <span class="s">&#39;T&#39;</span><span class="p">,</span> <span class="s">&#39;aT&#39;</span><span class="p">,</span> <span class="s">&#39;params&#39;</span>
-    <span class="p">]</span></pre></div>
+    <span class="p">]</span>
+
+    <span class="n">INTEGRATION_ORDER</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;sum-first&#39;</span><span class="p">,</span> <span class="s">&#39;integral-first&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span></pre></div>
         </div>
         <div class='clearall'></div>
     </section>
@@ -506,12 +509,27 @@
         <span class="n">As</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">Bs</span> <span class="o">=</span> <span class="p">[]</span>
 
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">collision_integrals</span><span class="p">:</span>
-            <span class="n">integral_1</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">i</span><span class="o">.</span><span class="n">integral_1</span><span class="p">(</span><span class="n">p0</span><span class="p">)</span>
-            <span class="n">As</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">integral_1</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">INTEGRATION_ORDER</span> <span class="o">==</span> <span class="s">&#39;integral-first&#39;</span><span class="p">:</span>
 
-            <span class="n">integral_f</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">i</span><span class="o">.</span><span class="n">integral_f</span><span class="p">(</span><span class="n">p0</span><span class="p">)</span>
-            <span class="n">Bs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">integral_f</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">collision_integrals</span><span class="p">:</span>
+                <span class="n">integral_1</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">i</span><span class="o">.</span><span class="n">integral_1</span><span class="p">(</span><span class="n">p0</span><span class="p">)</span>
+                <span class="n">As</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">integral_1</span><span class="p">)</span>
+
+                <span class="n">integral_f</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">i</span><span class="o">.</span><span class="n">integral_f</span><span class="p">(</span><span class="n">p0</span><span class="p">)</span>
+                <span class="n">Bs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">integral_f</span><span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+
+            <span class="n">A_integrand_groups</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
+            <span class="n">B_integrand_groups</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">collision_integrals</span><span class="p">:</span>
+                <span class="n">A_integrand_groups</span><span class="p">[</span><span class="n">i</span><span class="o">.</span><span class="n">__class__</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="o">.</span><span class="n">integrand_1</span><span class="p">)</span>
+                <span class="n">B_integrand_groups</span><span class="p">[</span><span class="n">i</span><span class="o">.</span><span class="n">__class__</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="o">.</span><span class="n">integrand_f</span><span class="p">)</span>
+
+            <span class="k">for</span> <span class="n">cls</span><span class="p">,</span> <span class="n">integrands</span> <span class="ow">in</span> <span class="n">A_integrand_groups</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="n">As</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cls</span><span class="o">.</span><span class="n">integrate</span><span class="p">(</span><span class="n">p0</span><span class="p">,</span> <span class="n">integrands</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="k">for</span> <span class="n">cls</span><span class="p">,</span> <span class="n">integrands</span> <span class="ow">in</span> <span class="n">B_integrand_groups</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="n">Bs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cls</span><span class="o">.</span><span class="n">integrate</span><span class="p">(</span><span class="n">p0</span><span class="p">,</span> <span class="n">integrands</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
 
         <span class="n">order</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s">&#39;collision_integral&#39;</span><span class="p">])</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
 

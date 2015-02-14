@@ -24,7 +24,7 @@
       <div id="jump_page">
           <a class="source source-2" href="#massive-$\nu_\tau$-($20-mev$)-test"> Massive $\nu_\tau$ ($20 MeV$) test </a>
           <a class="source source-2" href="#plots-for-comparison-with-articles"> Plots for comparison with articles </a>
-          <a class="source source-3" href="#jcap10(2012)014,-figure-9"> JCAP10(2012)014, Figure 9 </a>
+          <a class="source source-3" href="#1202.2841,-figure-13"> 1202.2841, Figure 13 </a>
           <a class="source source-3" href="#jcap10(2012)014,-figure-10"> JCAP10(2012)014, Figure 10 </a>
       </div>
     </div>
@@ -33,7 +33,7 @@
         Generated at
         <a target="_blank" href="http://ckald.github.io/pyccoon/" title="Pyccoon: side-to-side documentation generator">
             <img id="pyccoon-icon" src="../../pyccoon_icon.svg" alt="Pyccoon: side-to-side documentation generator" /></a>
-        <code>2015-02-13 14:08:01.488945</code>/
+        <code>2015-02-14 18:52:50.928551</code>/
         by a diligent
         <a target="_blank" href="http://ckald.github.io/pyccoon/" title="Pyccoon: side-to-side documentation generator">pyccoon</a>
     </div>
@@ -70,30 +70,27 @@
 
 <span class="kn">from</span> <span class="nn">plotting</span> <span class="kn">import</span> <span class="n">plt</span>
 <span class="kn">from</span> <span class="nn">particles</span> <span class="kn">import</span> <span class="n">Particle</span>
-<span class="kn">from</span> <span class="nn">library</span> <span class="kn">import</span> <span class="n">StandardModelParticles</span> <span class="k">as</span> <span class="n">SMP</span><span class="p">,</span> <span class="n">StandardModelInteractions</span> <span class="k">as</span> <span class="n">SMI</span>
+<span class="kn">from</span> <span class="nn">library.SM</span> <span class="kn">import</span> <span class="n">particles</span> <span class="k">as</span> <span class="n">SMP</span><span class="p">,</span> <span class="n">interactions</span> <span class="k">as</span> <span class="n">SMI</span>
 <span class="kn">from</span> <span class="nn">evolution</span> <span class="kn">import</span> <span class="n">Universe</span>
-<span class="kn">from</span> <span class="nn">common</span> <span class="kn">import</span> <span class="n">CONST</span><span class="p">,</span> <span class="n">UNITS</span><span class="p">,</span> <span class="n">PARAMS</span><span class="p">,</span> <span class="n">GRID</span>
+<span class="kn">from</span> <span class="nn">common</span> <span class="kn">import</span> <span class="n">CONST</span><span class="p">,</span> <span class="n">UNITS</span><span class="p">,</span> <span class="n">Params</span><span class="p">,</span> <span class="n">GRID</span>
 
 
-<span class="n">PARAMS</span><span class="o">.</span><span class="n">T_initial</span> <span class="o">=</span> <span class="mf">5.</span> <span class="o">*</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">MeV</span>
-<span class="n">PARAMS</span><span class="o">.</span><span class="n">T_final</span> <span class="o">=</span> <span class="mf">0.01</span> <span class="o">*</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">MeV</span>
-<span class="n">PARAMS</span><span class="o">.</span><span class="n">dx</span> <span class="o">=</span> <span class="mf">1e-5</span> <span class="o">*</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">MeV</span>
-<span class="n">PARAMS</span><span class="o">.</span><span class="n">infer</span><span class="p">()</span>
+<span class="n">params</span> <span class="o">=</span> <span class="n">Params</span><span class="p">(</span><span class="n">T_initial</span><span class="o">=</span><span class="mf">5.</span> <span class="o">*</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">MeV</span><span class="p">,</span>
+                <span class="n">T_final</span><span class="o">=</span><span class="mf">0.015</span> <span class="o">*</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">MeV</span><span class="p">,</span>
+                <span class="n">dx</span><span class="o">=</span><span class="mf">1e-5</span> <span class="o">*</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">MeV</span><span class="p">)</span>
+
+<span class="n">universe</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">,</span>
+                    <span class="n">logfile</span><span class="o">=</span><span class="s">&#39;tests/massive_nu_tau/log.txt&#39;</span><span class="p">)</span>
+
+<span class="n">photon</span> <span class="o">=</span> <span class="n">Particle</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="o">**</span><span class="n">SMP</span><span class="o">.</span><span class="n">photon</span><span class="p">)</span>
+<span class="n">electron</span> <span class="o">=</span> <span class="n">Particle</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="o">**</span><span class="n">SMP</span><span class="o">.</span><span class="n">electron</span><span class="p">)</span>
+<span class="n">neutrino_e</span> <span class="o">=</span> <span class="n">Particle</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="o">**</span><span class="n">SMP</span><span class="o">.</span><span class="n">neutrino_e</span><span class="p">)</span>
+<span class="n">neutrino_mu</span> <span class="o">=</span> <span class="n">Particle</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="o">**</span><span class="n">SMP</span><span class="o">.</span><span class="n">neutrino_mu</span><span class="p">)</span>
+<span class="n">neutrino_tau</span> <span class="o">=</span> <span class="n">Particle</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="o">**</span><span class="n">SMP</span><span class="o">.</span><span class="n">neutrino_tau</span><span class="p">)</span>
+<span class="n">neutrino_tau</span><span class="o">.</span><span class="n">mass</span> <span class="o">=</span> <span class="mi">20</span> <span class="o">*</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">MeV</span>
 
 
-<span class="n">Particles</span> <span class="o">=</span> <span class="p">[]</span>
-<span class="n">Interactions</span> <span class="o">=</span> <span class="p">[]</span>
-
-<span class="n">photon</span> <span class="o">=</span> <span class="n">Particle</span><span class="p">(</span><span class="o">**</span><span class="n">SMP</span><span class="o">.</span><span class="n">photon</span><span class="p">)</span>
-<span class="n">electron</span> <span class="o">=</span> <span class="n">Particle</span><span class="p">(</span><span class="o">**</span><span class="n">SMP</span><span class="o">.</span><span class="n">electron</span><span class="p">)</span>
-<span class="n">neutrino_e</span> <span class="o">=</span> <span class="n">Particle</span><span class="p">(</span><span class="o">**</span><span class="n">SMP</span><span class="o">.</span><span class="n">neutrino_e</span><span class="p">)</span>
-<span class="n">neutrino_mu</span> <span class="o">=</span> <span class="n">Particle</span><span class="p">(</span><span class="o">**</span><span class="n">SMP</span><span class="o">.</span><span class="n">neutrino_mu</span><span class="p">)</span>
-
-<span class="n">massive_tau</span> <span class="o">=</span> <span class="n">SMP</span><span class="o">.</span><span class="n">neutrino_tau</span>
-<span class="n">massive_tau</span><span class="p">[</span><span class="s">&#39;mass&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">20</span> <span class="o">*</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">MeV</span>
-<span class="n">neutrino_tau</span> <span class="o">=</span> <span class="n">Particle</span><span class="p">(</span><span class="o">**</span><span class="n">massive_tau</span><span class="p">)</span>
-
-<span class="n">Particles</span> <span class="o">+=</span> <span class="p">[</span>
+<span class="n">universe</span><span class="o">.</span><span class="n">particles</span> <span class="o">+=</span> <span class="p">[</span>
     <span class="n">photon</span><span class="p">,</span>
     <span class="n">electron</span><span class="p">,</span>
     <span class="n">neutrino_e</span><span class="p">,</span>
@@ -101,22 +98,24 @@
     <span class="n">neutrino_tau</span><span class="p">,</span>
 <span class="p">]</span>
 
-<span class="n">Interactions</span> <span class="o">+=</span> <span class="p">[</span>
+<span class="n">universe</span><span class="o">.</span><span class="n">interactions</span> <span class="o">+=</span> <span class="p">[</span>
     <span class="n">SMI</span><span class="o">.</span><span class="n">neutrino_self_scattering</span><span class="p">(</span><span class="n">neutrino_e</span><span class="p">),</span>
     <span class="n">SMI</span><span class="o">.</span><span class="n">neutrino_self_scattering</span><span class="p">(</span><span class="n">neutrino_mu</span><span class="p">),</span>
     <span class="n">SMI</span><span class="o">.</span><span class="n">neutrino_self_scattering</span><span class="p">(</span><span class="n">neutrino_tau</span><span class="p">),</span>
     <span class="n">SMI</span><span class="o">.</span><span class="n">neutrino_inter_scattering</span><span class="p">(</span><span class="n">neutrino_e</span><span class="p">,</span> <span class="n">neutrino_mu</span><span class="p">),</span>
     <span class="n">SMI</span><span class="o">.</span><span class="n">neutrino_inter_scattering</span><span class="p">(</span><span class="n">neutrino_mu</span><span class="p">,</span> <span class="n">neutrino_tau</span><span class="p">),</span>
     <span class="n">SMI</span><span class="o">.</span><span class="n">neutrino_inter_scattering</span><span class="p">(</span><span class="n">neutrino_tau</span><span class="p">,</span> <span class="n">neutrino_e</span><span class="p">),</span>
-    <span class="n">SMI</span><span class="o">.</span><span class="n">neutrinos_to_electrons</span><span class="p">(</span><span class="n">neutrino</span><span class="o">=</span><span class="n">neutrino_e</span><span class="p">,</span> <span class="n">electron</span><span class="o">=</span><span class="n">electron</span><span class="p">,</span> <span class="n">g_L</span><span class="o">=</span><span class="n">CONST</span><span class="o">.</span><span class="n">g_R</span><span class="o">+</span><span class="mf">0.5</span><span class="p">),</span>
-    <span class="n">SMI</span><span class="o">.</span><span class="n">neutrinos_to_electrons</span><span class="p">(</span><span class="n">neutrino</span><span class="o">=</span><span class="n">neutrino_mu</span><span class="p">,</span> <span class="n">electron</span><span class="o">=</span><span class="n">electron</span><span class="p">,</span> <span class="n">g_L</span><span class="o">=</span><span class="n">CONST</span><span class="o">.</span><span class="n">g_R</span><span class="o">-</span><span class="mf">0.5</span><span class="p">),</span>
-    <span class="n">SMI</span><span class="o">.</span><span class="n">neutrinos_to_electrons</span><span class="p">(</span><span class="n">neutrino</span><span class="o">=</span><span class="n">neutrino_tau</span><span class="p">,</span> <span class="n">electron</span><span class="o">=</span><span class="n">electron</span><span class="p">,</span> <span class="n">g_L</span><span class="o">=</span><span class="n">CONST</span><span class="o">.</span><span class="n">g_R</span><span class="o">-</span><span class="mf">0.5</span><span class="p">),</span>
-    <span class="n">SMI</span><span class="o">.</span><span class="n">neutrino_electron_scattering</span><span class="p">(</span><span class="n">neutrino</span><span class="o">=</span><span class="n">neutrino_e</span><span class="p">,</span> <span class="n">electron</span><span class="o">=</span><span class="n">electron</span><span class="p">,</span> <span class="n">g_L</span><span class="o">=</span><span class="n">CONST</span><span class="o">.</span><span class="n">g_R</span><span class="o">+</span><span class="mf">0.5</span><span class="p">),</span>
-    <span class="n">SMI</span><span class="o">.</span><span class="n">neutrino_electron_scattering</span><span class="p">(</span><span class="n">neutrino</span><span class="o">=</span><span class="n">neutrino_mu</span><span class="p">,</span> <span class="n">electron</span><span class="o">=</span><span class="n">electron</span><span class="p">,</span> <span class="n">g_L</span><span class="o">=</span><span class="n">CONST</span><span class="o">.</span><span class="n">g_R</span><span class="o">-</span><span class="mf">0.5</span><span class="p">),</span>
-    <span class="n">SMI</span><span class="o">.</span><span class="n">neutrino_electron_scattering</span><span class="p">(</span><span class="n">neutrino</span><span class="o">=</span><span class="n">neutrino_tau</span><span class="p">,</span> <span class="n">electron</span><span class="o">=</span><span class="n">electron</span><span class="p">,</span> <span class="n">g_L</span><span class="o">=</span><span class="n">CONST</span><span class="o">.</span><span class="n">g_R</span><span class="o">-</span><span class="mf">0.5</span><span class="p">),</span>
+    <span class="n">SMI</span><span class="o">.</span><span class="n">neutrino_pair_flavour_change</span><span class="p">(</span><span class="n">neutrino_e</span><span class="p">,</span> <span class="n">neutrino_mu</span><span class="p">),</span>
+    <span class="n">SMI</span><span class="o">.</span><span class="n">neutrino_pair_flavour_change</span><span class="p">(</span><span class="n">neutrino_mu</span><span class="p">,</span> <span class="n">neutrino_tau</span><span class="p">),</span>
+    <span class="n">SMI</span><span class="o">.</span><span class="n">neutrino_pair_flavour_change</span><span class="p">(</span><span class="n">neutrino_tau</span><span class="p">,</span> <span class="n">neutrino_e</span><span class="p">),</span>
+    <span class="n">SMI</span><span class="o">.</span><span class="n">neutrinos_to_electrons</span><span class="p">(</span><span class="n">g_L</span><span class="o">=</span><span class="n">CONST</span><span class="o">.</span><span class="n">g_R</span><span class="o">+</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">electron</span><span class="o">=</span><span class="n">electron</span><span class="p">,</span> <span class="n">neutrino</span><span class="o">=</span><span class="n">neutrino_e</span><span class="p">),</span>
+    <span class="n">SMI</span><span class="o">.</span><span class="n">neutrinos_to_electrons</span><span class="p">(</span><span class="n">g_L</span><span class="o">=</span><span class="n">CONST</span><span class="o">.</span><span class="n">g_R</span><span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">electron</span><span class="o">=</span><span class="n">electron</span><span class="p">,</span> <span class="n">neutrino</span><span class="o">=</span><span class="n">neutrino_mu</span><span class="p">),</span>
+    <span class="n">SMI</span><span class="o">.</span><span class="n">neutrinos_to_electrons</span><span class="p">(</span><span class="n">g_L</span><span class="o">=</span><span class="n">CONST</span><span class="o">.</span><span class="n">g_R</span><span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">electron</span><span class="o">=</span><span class="n">electron</span><span class="p">,</span> <span class="n">neutrino</span><span class="o">=</span><span class="n">neutrino_tau</span><span class="p">),</span>
+    <span class="n">SMI</span><span class="o">.</span><span class="n">neutrino_electron_scattering</span><span class="p">(</span><span class="n">g_L</span><span class="o">=</span><span class="n">CONST</span><span class="o">.</span><span class="n">g_R</span><span class="o">+</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">electron</span><span class="o">=</span><span class="n">electron</span><span class="p">,</span> <span class="n">neutrino</span><span class="o">=</span><span class="n">neutrino_e</span><span class="p">),</span>
+    <span class="n">SMI</span><span class="o">.</span><span class="n">neutrino_electron_scattering</span><span class="p">(</span><span class="n">g_L</span><span class="o">=</span><span class="n">CONST</span><span class="o">.</span><span class="n">g_R</span><span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">electron</span><span class="o">=</span><span class="n">electron</span><span class="p">,</span> <span class="n">neutrino</span><span class="o">=</span><span class="n">neutrino_mu</span><span class="p">),</span>
+    <span class="n">SMI</span><span class="o">.</span><span class="n">neutrino_electron_scattering</span><span class="p">(</span><span class="n">g_L</span><span class="o">=</span><span class="n">CONST</span><span class="o">.</span><span class="n">g_R</span><span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">electron</span><span class="o">=</span><span class="n">electron</span><span class="p">,</span> <span class="n">neutrino</span><span class="o">=</span><span class="n">neutrino_tau</span><span class="p">),</span>
 <span class="p">]</span>
 
-<span class="n">universe</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="n">Particles</span><span class="p">,</span> <span class="n">Interactions</span><span class="p">,</span> <span class="n">logfile</span><span class="o">=</span><span class="s">&#39;tests/massive_nu_tau/log.txt&#39;</span><span class="p">)</span>
 <span class="n">universe</span><span class="o">.</span><span class="n">graphics</span><span class="o">.</span><span class="n">monitor</span><span class="p">(</span><span class="n">particles</span><span class="o">=</span><span class="p">[</span>
     <span class="n">neutrino_e</span><span class="p">,</span>
     <span class="n">neutrino_mu</span><span class="p">,</span>
@@ -154,17 +153,17 @@
           <div class='octowrap'>
             <a class='octothorpe' href='#section-2'>#</a>
           </div>
-          <h3><a id="jcap10(2012)014,-figure-9" class="header-anchor" href="#jcap10(2012)014,-figure-9"> JCAP10(2012)014, Figure 9 </a></h3>
-<p><img src="figure_9.png" width=100% /> </p>
+          <h3><a id="1202.2841,-figure-13" class="header-anchor" href="#1202.2841,-figure-13"> 1202.2841, Figure 13 </a></h3>
+<p><img src="figure_13.png" width=100% /> </p>
         </div>
         <div class='code'>
-          <div class="highlight"><pre><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="mi">9</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s">&#39;Figure 9&#39;</span><span class="p">)</span>
+          <div class="highlight"><pre><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="mi">13</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s">&#39;Figure 13&#39;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s">&#39;MeV/T&#39;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s">u&#39;aT&#39;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">xscale</span><span class="p">(</span><span class="s">&#39;log&#39;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">xlim</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">MeV</span><span class="o">/</span><span class="n">PARAMS</span><span class="o">.</span><span class="n">T_final</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">xticks</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">])</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlim</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">MeV</span><span class="o">/</span><span class="n">params</span><span class="o">.</span><span class="n">T_final</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xticks</span><span class="p">([</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">])</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">axes</span><span class="p">()</span><span class="o">.</span><span class="n">get_xaxis</span><span class="p">()</span><span class="o">.</span><span class="n">set_major_formatter</span><span class="p">(</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">ticker</span><span class="o">.</span><span class="n">ScalarFormatter</span><span class="p">())</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">UNITS</span><span class="o">.</span><span class="n">MeV</span> <span class="o">/</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">universe</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s">&#39;T&#39;</span><span class="p">]),</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">universe</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s">&#39;aT&#39;</span><span class="p">])</span> <span class="o">/</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">MeV</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>

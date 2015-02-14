@@ -22,7 +22,7 @@
         Generated at
         <a target="_blank" href="http://ckald.github.io/pyccoon/" title="Pyccoon: side-to-side documentation generator">
             <img id="pyccoon-icon" src="./pyccoon_icon.svg" alt="Pyccoon: side-to-side documentation generator" /></a>
-        <code>2015-02-13 14:07:59.013448</code>/
+        <code>2015-02-14 18:52:50.702592</code>/
         by a diligent
         <a target="_blank" href="http://ckald.github.io/pyccoon/" title="Pyccoon: side-to-side documentation generator">pyccoon</a>
     </div>
@@ -221,7 +221,8 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">particles_plots</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span>
                     <span class="n">particle</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">a</span><span class="p">,</span>
                     <span class="n">particle</span><span class="o">.</span><span class="n">energy_density</span><span class="p">()</span> <span class="o">/</span> <span class="p">(</span>
-                        <span class="mf">7.</span> <span class="o">*</span> <span class="n">particle</span><span class="o">.</span><span class="n">dof</span> <span class="o">*</span> <span class="n">numpy</span><span class="o">.</span><span class="n">pi</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="n">particle</span><span class="o">.</span><span class="n">T</span><span class="p">)</span><span class="o">**</span><span class="mi">4</span> <span class="o">/</span> <span class="mf">240.</span>
+                        <span class="mf">7.</span> <span class="o">*</span> <span class="n">particle</span><span class="o">.</span><span class="n">dof</span> <span class="o">*</span> <span class="n">numpy</span><span class="o">.</span><span class="n">pi</span><span class="o">**</span><span class="mi">2</span>
+                        <span class="o">*</span> <span class="p">(</span><span class="n">particle</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">m</span> <span class="o">/</span> <span class="n">particle</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">a</span><span class="p">)</span><span class="o">**</span><span class="mi">4</span> <span class="o">/</span> <span class="mf">240.</span>
                     <span class="p">),</span> <span class="n">s</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 
                 <span class="n">feq</span> <span class="o">=</span> <span class="n">particle</span><span class="o">.</span><span class="n">equilibrium_distribution</span><span class="p">()</span>

@@ -31,7 +31,7 @@
         Generated at
         <a target="_blank" href="http://ckald.github.io/pyccoon/" title="Pyccoon: side-to-side documentation generator">
             <img id="pyccoon-icon" src="../pyccoon_icon.svg" alt="Pyccoon: side-to-side documentation generator" /></a>
-        <code>2015-02-13 14:07:56.145823</code>/
+        <code>2015-02-14 18:52:48.040828</code>/
         by a diligent
         <a target="_blank" href="http://ckald.github.io/pyccoon/" title="Pyccoon: side-to-side documentation generator">pyccoon</a>
     </div>
@@ -160,18 +160,17 @@
           
         </div>
         <div class='code'>
-          <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">integrate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p0</span><span class="p">,</span> <span class="n">integrand</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">bounds</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+          <div class="highlight"><pre>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">integrate</span><span class="p">(</span><span class="n">p0</span><span class="p">,</span> <span class="n">integrand</span><span class="p">,</span> <span class="n">bounds</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="n">kwargs</span> <span class="o">=</span> <span class="n">kwargs</span> <span class="k">if</span> <span class="n">kwargs</span> <span class="k">else</span> <span class="p">{}</span>
 
         <span class="k">if</span> <span class="n">bounds</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
             <span class="n">bounds</span> <span class="o">=</span> <span class="p">(</span><span class="n">GRID</span><span class="o">.</span><span class="n">MIN_MOMENTUM</span><span class="p">,</span> <span class="n">GRID</span><span class="o">.</span><span class="n">MAX_MOMENTUM</span><span class="p">)</span>
 
-        <span class="n">integral</span><span class="p">,</span> <span class="n">error</span> <span class="o">=</span> <span class="n">integrators</span><span class="o">.</span><span class="n">integrate_1D</span><span class="p">(</span>
-            <span class="k">lambda</span> <span class="n">p1</span><span class="p">:</span> <span class="n">integrand</span><span class="p">(</span><span class="n">p0</span><span class="p">,</span> <span class="n">p1</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">),</span>
-            <span class="n">bounds</span><span class="o">=</span><span class="n">bounds</span>
-        <span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">integrand</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
 
-        <span class="k">return</span> <span class="n">integral</span><span class="p">,</span> <span class="n">error</span></pre></div>
+            <span class="k">def</span> <span class="nf">prepared_integrand</span><span class="p">(</span><span class="n">p1</span><span class="p">):</span>
+                <span class="k">return</span> <span class="nb">sum</span><span class="p">([</span><span class="n">i</span><span class="p">(</span><span class="n">p0</span><span class="p">,</span> <span class="n">p1</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">integrand</span><span class="p">])</span></pre></div>
         </div>
         <div class='clearall'></div>
     </section>
@@ -182,6 +181,44 @@
         <div class='docs'>
           <div class='octowrap'>
             <a class='octothorpe' href='#section-7'>#</a>
+          </div>
+          
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>        <span class="k">else</span><span class="p">:</span>
+
+            <span class="k">def</span> <span class="nf">prepared_integrand</span><span class="p">(</span><span class="n">p1</span><span class="p">,</span> <span class="n">p2</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">integrand</span><span class="p">(</span><span class="n">p0</span><span class="p">,</span> <span class="n">p1</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+  </div>
+  <div class='section'>
+    <a id="section-8" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-8'>#</a>
+          </div>
+          
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>        <span class="n">integral</span><span class="p">,</span> <span class="n">error</span> <span class="o">=</span> <span class="n">integrators</span><span class="o">.</span><span class="n">integrate_1D</span><span class="p">(</span>
+            <span class="n">prepared_integrand</span><span class="p">,</span>
+            <span class="n">bounds</span><span class="o">=</span><span class="n">bounds</span>
+        <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">integral</span><span class="p">,</span> <span class="n">error</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+  </div>
+  <div class='section'>
+    <a id="section-9" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-9'>#</a>
           </div>
           <p>Collision integral interior.</p>
         </div>
@@ -200,11 +237,11 @@
     </section>
   </div>
   <div class='section'>
-    <a id="section-8" class="section-anchor"></a>
+    <a id="section-10" class="section-anchor"></a>
     <section>
         <div class='docs'>
           <div class='octowrap'>
-            <a class='octothorpe' href='#section-8'>#</a>
+            <a class='octothorpe' href='#section-10'>#</a>
           </div>
           <p>Avoid rounding errors and division by zero</p>
         </div>
@@ -223,11 +260,11 @@
     </section>
   </div>
   <div class='section'>
-    <a id="section-9" class="section-anchor"></a>
+    <a id="section-11" class="section-anchor"></a>
     <section>
         <div class='docs'>
           <div class='octowrap'>
-            <a class='octothorpe' href='#section-9'>#</a>
+            <a class='octothorpe' href='#section-11'>#</a>
           </div>
           <h3><a id="integration-region-bounds-methods" class="header-anchor" href="#integration-region-bounds-methods"> Integration region bounds methods </a></h3>
         </div>
@@ -238,11 +275,11 @@
     </section>
   </div>
   <div class='section'>
-    <a id="section-10" class="section-anchor"></a>
+    <a id="section-12" class="section-anchor"></a>
     <section>
         <div class='docs'>
           <div class='octowrap'>
-            <a class='octothorpe' href='#section-10'>#</a>
+            <a class='octothorpe' href='#section-12'>#</a>
           </div>
           <p>$D$-functions involved in the interactions imply a cut-off region for the collision integrand. In the general case of arbitrary particle masses, this is a set of irrational inequalities that can hardly be solved (at least, Wolfram Mathematica does not succeed in this). To avoid excessive computations, it is convenient to do an early <code>return 0</code> when the particles kinematics lay out of the cut-off region </p>
         </div>
