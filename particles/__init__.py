@@ -110,6 +110,7 @@ class Particle(PicklableObject):
 
         self.collision_integrals = []
         self.data = {
+            'distribution': [self._distribution],
             'collision_integral': []
         }
 
@@ -157,6 +158,7 @@ class Particle(PicklableObject):
         # Clear collision integrands for the next computation step
         self.collision_integrals = []
         self.data['collision_integral'].append(self.collision_integral)
+        self.data['distribution'].append(self._distribution)
 
     def integrate_collisions(self):
         return numpy.vectorize(self.calculate_collision_integral)(GRID.TEMPLATE)
