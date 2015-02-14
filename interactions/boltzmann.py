@@ -189,7 +189,7 @@ class BoltzmannIntegral(PicklableObject, DistributionFunctional):
         return total_integral
 
     @staticmethod
-    def integrate(self, p0, integrand, bounds=None, kwargs=None):
+    def integrate(p0, integrand, bounds=None, kwargs=None):
         raise NotImplementedError()
 
     def integrand(self, *args, **kwargs):

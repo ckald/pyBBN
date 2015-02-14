@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 import numpy
-from common import GRID, UNITS, integrators
-from common.utils import benchmark
+from common import GRID, integrators
 from interactions.boltzmann import BoltzmannIntegral
 
 
@@ -45,7 +44,7 @@ class ThreeParticleIntegral(BoltzmannIntegral):
             def prepared_integrand(p1):
                 return sum([i(p0, p1, **kwargs) for i in integrand])
         else:
-            def prepared_integrand(p1, p2):
+            def prepared_integrand(p1):
                 return integrand(p0, p1, **kwargs)
 
         integral, error = integrators.integrate_1D(
