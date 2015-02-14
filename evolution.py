@@ -161,11 +161,8 @@ class Universe(object):
                 particle.collision_integral = \
                     numpy.array(parallelization.poolmap(particle, 'calculate_collision_integral',
                                                         self.grid.TEMPLATE))
-
             else:
-                particle.collision_integral = \
-                    numpy.vectorize(particle.integrate_collisions,
-                                    otypes=[numpy.float_])(self.grid.TEMPLATE)
+                particle.collision_integral = particle.integrate_collisions()
 
             print particle.symbol, "I =", particle.collision_integral
 
