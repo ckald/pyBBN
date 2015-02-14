@@ -1,5 +1,5 @@
 from particles import Particle
-from library import StandardModelParticles as SMP
+from library.SM import particles as SMP
 from evolution import Universe
 from common import UNITS, PARAMS
 

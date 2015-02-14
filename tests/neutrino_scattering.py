@@ -1,6 +1,6 @@
 from particles import Particle
 from evolution import Universe
-from library import StandardModelParticles as SMP, StandardModelInteractions as SMI
+from library.SM import particles as SMP, interactions as SMI
 
 
 universe = Universe()

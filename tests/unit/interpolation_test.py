@@ -3,7 +3,7 @@ from nose import with_setup
 
 from common import GRID
 from particles import Particle
-from library import StandardModelParticles as SMP
+from library.SM import particles as SMP
 
 from . import eps, setup
 

@@ -1,5 +1,5 @@
 from common import Params, UNITS
-from library import StandardModelParticles as SMP
+from library.SM import particles as SMP
 
 
 eps = 1e-5

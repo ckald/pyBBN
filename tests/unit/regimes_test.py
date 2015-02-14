@@ -1,6 +1,6 @@
-from common import Params, UNITS
+from common import UNITS
 from particles import Particle, REGIMES
-from library import StandardModelParticles as SMP
+from library.SM import particles as SMP
 
 from . import eps, setup, with_setup_args
 

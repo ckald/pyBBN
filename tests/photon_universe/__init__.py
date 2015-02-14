@@ -16,7 +16,7 @@ import numpy
 
 from particles import Particle
 from evolution import Universe
-from library import StandardModelParticles as SMP
+from library.SM import particles as SMP
 from common import Params, UNITS
 
 

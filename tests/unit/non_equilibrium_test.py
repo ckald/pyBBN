@@ -1,6 +1,6 @@
 from evolution import Universe
 from particles import Particle
-from library import StandardModelParticles as SMP, StandardModelInteractions as SMI
+from library.SM import particles as SMP, interactions as SMI
 
 from . import eps, setup, with_setup_args
 

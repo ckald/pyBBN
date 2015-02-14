@@ -21,7 +21,7 @@ import matplotlib
 
 from plotting import plt
 from particles import Particle
-from library import StandardModelParticles as SMP, StandardModelInteractions as SMI
+from library.SM import particles as SMP, interactions as SMI
 from evolution import Universe
 from common import CONST, UNITS, Params, GRID
 

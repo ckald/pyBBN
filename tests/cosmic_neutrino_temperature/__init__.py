@@ -19,7 +19,7 @@ plasma. This leads to increasing of the entropy and plasma temperature approxima
 from particles import Particle
 from evolution import Universe
 from common import Params, UNITS
-from library import StandardModelParticles as SMP
+from library.SM import particles as SMP
 
 params = Params(T_initial=10 * UNITS.MeV,
                 T_final=0.05 * UNITS.MeV,

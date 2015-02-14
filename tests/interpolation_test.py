@@ -1,4 +1,4 @@
-from library import StandardModelParticles as SMP
+from library.SM import particles as SMP
 from interactions import Interaction, M
 from particles import Particle
 from evolution import Universe

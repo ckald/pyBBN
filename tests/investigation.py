@@ -1,7 +1,7 @@
 from particles import Particle, STATISTICS
 from evolution import Universe
 from common import UNITS, Params
-from library import StandardModelParticles as SMP
+from library.SM import particles as SMP
 
 
 params = Params(T_initial=100 * UNITS.MeV,
