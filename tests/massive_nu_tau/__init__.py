@@ -23,7 +23,7 @@ from plotting import plt
 from particles import Particle
 from library.SM import particles as SMP, interactions as SMI
 from evolution import Universe
-from common import CONST, UNITS, Params, GRID
+from common import UNITS, Params, GRID
 
 
 params = Params(T_initial=20. * UNITS.MeV,
@@ -53,23 +53,9 @@ universe.particles += [
     neutrino_tau,
 ]
 
-universe.interactions += [
-    SMI.neutrino_self_scattering(neutrino_e),
-    SMI.neutrino_self_scattering(neutrino_mu),
-    SMI.neutrino_self_scattering(neutrino_tau),
-    SMI.neutrino_inter_scattering(neutrino_e, neutrino_mu),
-    SMI.neutrino_inter_scattering(neutrino_mu, neutrino_tau),
-    SMI.neutrino_inter_scattering(neutrino_tau, neutrino_e),
-    SMI.neutrino_pair_flavour_change(neutrino_e, neutrino_mu),
-    SMI.neutrino_pair_flavour_change(neutrino_mu, neutrino_tau),
-    SMI.neutrino_pair_flavour_change(neutrino_tau, neutrino_e),
-    SMI.neutrinos_to_electrons(g_L=CONST.g_R+0.5, electron=electron, neutrino=neutrino_e),
-    SMI.neutrinos_to_electrons(g_L=CONST.g_R-0.5, electron=electron, neutrino=neutrino_mu),
-    SMI.neutrinos_to_electrons(g_L=CONST.g_R-0.5, electron=electron, neutrino=neutrino_tau),
-    SMI.neutrino_electron_scattering(g_L=CONST.g_R+0.5, electron=electron, neutrino=neutrino_e),
-    SMI.neutrino_electron_scattering(g_L=CONST.g_R-0.5, electron=electron, neutrino=neutrino_mu),
-    SMI.neutrino_electron_scattering(g_L=CONST.g_R-0.5, electron=electron, neutrino=neutrino_tau),
-]
+universe.interactions += \
+    SMI.neutrino_interactions(electron=electron, neutrino_e=neutrino_e,
+                              neutrino_mu=neutrino_mu, neutrino_tau=neutrino_tau)
 
 universe.graphics.monitor(particles=[
     neutrino_e,

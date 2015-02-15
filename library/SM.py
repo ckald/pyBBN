@@ -205,3 +205,26 @@ class interactions(object):
                 WeakM(K2=-8 * g_L * CONST.g_R, order=(1, 3, 0, 2)),
             ]
         )
+
+    @classmethod
+    def neutrino_interactions(cls, electron=None,
+                              neutrino_e=None, neutrino_mu=None, neutrino_tau=None):
+
+        g_R = CONST.g_R
+        return [
+            cls.neutrino_self_scattering(neutrino_e),
+            cls.neutrino_self_scattering(neutrino_mu),
+            cls.neutrino_self_scattering(neutrino_tau),
+            cls.neutrino_inter_scattering(neutrino_e, neutrino_mu),
+            cls.neutrino_inter_scattering(neutrino_mu, neutrino_tau),
+            cls.neutrino_inter_scattering(neutrino_tau, neutrino_e),
+            cls.neutrino_pair_flavour_change(neutrino_e, neutrino_mu),
+            cls.neutrino_pair_flavour_change(neutrino_mu, neutrino_tau),
+            cls.neutrino_pair_flavour_change(neutrino_tau, neutrino_e),
+            cls.neutrinos_to_electrons(g_L=g_R+0.5, electron=electron, neutrino=neutrino_e),
+            cls.neutrinos_to_electrons(g_L=g_R-0.5, electron=electron, neutrino=neutrino_mu),
+            cls.neutrinos_to_electrons(g_L=g_R-0.5, electron=electron, neutrino=neutrino_tau),
+            cls.neutrino_electron_scattering(g_L=g_R+0.5, electron=electron, neutrino=neutrino_e),
+            cls.neutrino_electron_scattering(g_L=g_R-0.5, electron=electron, neutrino=neutrino_mu),
+            cls.neutrino_electron_scattering(g_L=g_R-0.5, electron=electron, neutrino=neutrino_tau),
+        ]
