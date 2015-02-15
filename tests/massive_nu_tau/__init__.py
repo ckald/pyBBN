@@ -6,7 +6,7 @@
 
 This test checks that in the universe filled with photons, electrons and neutrinos:
 
-  * $a * T$ is not conserved by a factor around `1.401` and precise details of this process
+  * $a * T$ is not conserved by a factor around `1.477` and precise details of this process
   * neutrino non-equilibrium corrections reproduce the results of the Dolgov-Hansen-Semikoz papers
 
 [Log file](log.txt)
