@@ -82,6 +82,7 @@ class Plotting(object):
             for i, particle in enumerate(self.particles):
                 self.particles_plots[i][0].set_title(particle.name)
                 self.particles_plots[i][0].set_xlabel("a")
+                self.particles_plots[i][0].set_xscale("log")
                 self.particles_plots[i][0].set_ylabel(u"ρ/ρ_eq")
 
                 self.particles_plots[i][1].set_xlabel("y, MeV")
