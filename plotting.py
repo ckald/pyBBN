@@ -31,24 +31,22 @@ class Plotting(object):
         self.plots[0].set_xlabel("time, s")
         self.plots[0].set_ylabel("T, MeV")
         self.plots[0].set_yscale("log")
-        self.plots[0].set_ylim(0, 10)
 
         self.plots[1].set_title("Scale factor")
         self.plots[1].set_xlabel("time, s")
         self.plots[1].set_ylabel("a, 1")
-        self.plots[1].set_ylim(1, 10)
+        self.plots[1].set_ylim(0, 1)
 
         self.plots[2].set_title("T * a")
         self.plots[2].set_xlabel("time, s")
         self.plots[2].set_xscale("log")
         self.plots[2].set_ylabel("T * a, MeV")
-        self.plots[2].set_ylim(1, 10)
+        self.plots[2].set_ylim(1, 1.1)
 
         self.plots[3].set_title("Total energy density")
         self.plots[3].set_yscale("log")
         self.plots[3].set_xlabel("time, s")
         self.plots[3].set_ylabel(u"ρ, eV**4")
-        self.plots[3].set_ylim(1, 10)
 
         self.lines = []
         self.plots_data = []
@@ -86,6 +84,7 @@ class Plotting(object):
                 self.particles_plots[i][0].set_ylabel(u"ρ/ρ_eq")
 
                 self.particles_plots[i][1].set_xlabel("y, MeV")
+                self.particles_plots[i][1].set_xlim(GRID.MIN_MOMENTUM, GRID.MAX_MOMENTUM)
                 self.particles_plots[i][1].set_ylabel("f/f_eq")
 
             self.particles_figure.show()
