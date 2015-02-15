@@ -38,7 +38,7 @@
         Generated at
         <a target="_blank" href="http://ckald.github.io/pyccoon/" title="Pyccoon: side-to-side documentation generator">
             <img id="pyccoon-icon" src="./pyccoon_icon.svg" alt="Pyccoon: side-to-side documentation generator" /></a>
-        <code>2015-02-14 18:52:47.833930</code>/
+        <code>2015-02-15 02:43:29.790372</code>/
         by a diligent
         <a target="_blank" href="http://ckald.github.io/pyccoon/" title="Pyccoon: side-to-side documentation generator">pyccoon</a>
     </div>
@@ -361,11 +361,8 @@
                 <span class="n">particle</span><span class="o">.</span><span class="n">collision_integral</span> <span class="o">=</span> \
                     <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">parallelization</span><span class="o">.</span><span class="n">poolmap</span><span class="p">(</span><span class="n">particle</span><span class="p">,</span> <span class="s">&#39;calculate_collision_integral&#39;</span><span class="p">,</span>
                                                         <span class="bp">self</span><span class="o">.</span><span class="n">grid</span><span class="o">.</span><span class="n">TEMPLATE</span><span class="p">))</span>
-
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">particle</span><span class="o">.</span><span class="n">collision_integral</span> <span class="o">=</span> \
-                    <span class="n">numpy</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="n">particle</span><span class="o">.</span><span class="n">integrate_collisions</span><span class="p">,</span>
-                                    <span class="n">otypes</span><span class="o">=</span><span class="p">[</span><span class="n">numpy</span><span class="o">.</span><span class="n">float_</span><span class="p">])(</span><span class="bp">self</span><span class="o">.</span><span class="n">grid</span><span class="o">.</span><span class="n">TEMPLATE</span><span class="p">)</span>
+                <span class="n">particle</span><span class="o">.</span><span class="n">collision_integral</span> <span class="o">=</span> <span class="n">particle</span><span class="o">.</span><span class="n">integrate_collisions</span><span class="p">()</span>
 
             <span class="k">print</span> <span class="n">particle</span><span class="o">.</span><span class="n">symbol</span><span class="p">,</span> <span class="s">&quot;I =&quot;</span><span class="p">,</span> <span class="n">particle</span><span class="o">.</span><span class="n">collision_integral</span></pre></div>
         </div>
