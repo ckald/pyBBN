@@ -12,7 +12,7 @@
   <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 </head>
 <body>
-<div id='container'>
+<div id='container' >
   <a id="top"></a>
   <div id="background"></div>
   <div id="footer">
@@ -22,7 +22,7 @@
         Generated at
         <a target="_blank" href="http://ckald.github.io/pyccoon/" title="Pyccoon: side-to-side documentation generator">
             <img id="pyccoon-icon" src="./pyccoon_icon.svg" alt="Pyccoon: side-to-side documentation generator" /></a>
-        <code>2015-02-15 02:43:32.961333</code>/
+        <code>2015-02-19 18:03:14.540720</code>/
         by a diligent
         <a target="_blank" href="http://ckald.github.io/pyccoon/" title="Pyccoon: side-to-side documentation generator">pyccoon</a>
     </div>
@@ -34,7 +34,7 @@
     </div>
   </div>
   <div class='clearall'>
-  <div class='section'>
+    <div class='section'>
     <a id="section-0" class="section-anchor"></a>
     <section>
         <div class='docs'>
@@ -57,8 +57,8 @@
         </div>
         <div class='clearall'></div>
     </section>
-  </div>
-  <div class='section'>
+    </div>
+    <div class='section'>
     <a id="section-1" class="section-anchor"></a>
     <section>
         <div class='docs'>
@@ -73,8 +73,8 @@
         </div>
         <div class='clearall'></div>
     </section>
-  </div>
-  <div class='section'>
+    </div>
+    <div class='section'>
     <a id="section-2" class="section-anchor"></a>
     <section>
         <div class='docs'>
@@ -99,24 +99,22 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">plots</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s">&quot;time, s&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">plots</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s">&quot;T, MeV&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">plots</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_yscale</span><span class="p">(</span><span class="s">&quot;log&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">plots</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">plots</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s">&quot;Scale factor&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">plots</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s">&quot;time, s&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">plots</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s">&quot;a, 1&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">plots</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">plots</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">plots</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s">&quot;T * a&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">plots</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s">&quot;time, s&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">plots</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">set_xscale</span><span class="p">(</span><span class="s">&quot;log&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">plots</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s">&quot;T * a, MeV&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">plots</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">plots</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mf">1.1</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">plots</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s">&quot;Total energy density&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">plots</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">set_yscale</span><span class="p">(</span><span class="s">&quot;log&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">plots</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s">&quot;time, s&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">plots</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s">u&quot;ρ, eV**4&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">plots</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">lines</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">plots_data</span> <span class="o">=</span> <span class="p">[]</span>
@@ -129,8 +127,8 @@
         </div>
         <div class='clearall'></div>
     </section>
-  </div>
-  <div class='section'>
+    </div>
+    <div class='section'>
     <a id="section-3" class="section-anchor"></a>
     <section>
         <div class='docs'>
@@ -151,8 +149,8 @@
         </div>
         <div class='clearall'></div>
     </section>
-  </div>
-  <div class='section'>
+    </div>
+    <div class='section'>
     <a id="section-4" class="section-anchor"></a>
     <section>
         <div class='docs'>
@@ -176,14 +174,15 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">particles_plots</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s">u&quot;ρ/ρ_eq&quot;</span><span class="p">)</span>
 
                 <span class="bp">self</span><span class="o">.</span><span class="n">particles_plots</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s">&quot;y, MeV&quot;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">particles_plots</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="n">GRID</span><span class="o">.</span><span class="n">MIN_MOMENTUM</span><span class="p">,</span> <span class="n">GRID</span><span class="o">.</span><span class="n">MAX_MOMENTUM</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">particles_plots</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s">&quot;f/f_eq&quot;</span><span class="p">)</span>
 
             <span class="bp">self</span><span class="o">.</span><span class="n">particles_figure</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></pre></div>
         </div>
         <div class='clearall'></div>
     </section>
-  </div>
-  <div class='section'>
+    </div>
+    <div class='section'>
     <a id="section-5" class="section-anchor"></a>
     <section>
         <div class='docs'>
@@ -241,8 +240,8 @@
         </div>
         <div class='clearall'></div>
     </section>
-  </div>
-  <div class='section'>
+    </div>
+    <div class='section'>
     <a id="section-6" class="section-anchor"></a>
     <section>
         <div class='docs'>
@@ -263,8 +262,8 @@
         </div>
         <div class='clearall'></div>
     </section>
-  </div>
-  <div class='section'>
+    </div>
+    <div class='section'>
     <a id="section-7" class="section-anchor"></a>
     <section>
         <div class='docs'>
@@ -296,8 +295,8 @@
         </div>
         <div class='clearall'></div>
     </section>
-  </div>
-  <div class='section'>
+    </div>
+    <div class='section'>
     <a id="section-8" class="section-anchor"></a>
     <section>
         <div class='docs'>
@@ -318,6 +317,6 @@
         </div>
         <div class='clearall'></div>
     </section>
+    </div>
   </div>
-</div>
 </body>

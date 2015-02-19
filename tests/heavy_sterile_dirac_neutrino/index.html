@@ -12,7 +12,7 @@
   <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 </head>
 <body>
-<div id='container'>
+<div id='container' >
   <a id="top"></a>
   <div id="background"></div>
   <div id="footer">
@@ -32,7 +32,7 @@
         Generated at
         <a target="_blank" href="http://ckald.github.io/pyccoon/" title="Pyccoon: side-to-side documentation generator">
             <img id="pyccoon-icon" src="../../pyccoon_icon.svg" alt="Pyccoon: side-to-side documentation generator" /></a>
-        <code>2015-02-15 02:43:33.071475</code>/
+        <code>2015-02-19 18:03:14.650931</code>/
         by a diligent
         <a target="_blank" href="http://ckald.github.io/pyccoon/" title="Pyccoon: side-to-side documentation generator">pyccoon</a>
     </div>
@@ -44,7 +44,7 @@
     </div>
   </div>
   <div class='clearall'>
-  <div class='section'>
+    <div class='section'>
     <a id="section-0" class="section-anchor"></a>
     <section>
         <div class='docs'>
@@ -63,7 +63,7 @@
 <span class="kn">from</span> <span class="nn">library.SM</span> <span class="kn">import</span> <span class="n">particles</span> <span class="k">as</span> <span class="n">SMP</span><span class="p">,</span> <span class="n">interactions</span> <span class="k">as</span> <span class="n">SMI</span>
 <span class="kn">from</span> <span class="nn">library.NuMSM</span> <span class="kn">import</span> <span class="n">particles</span> <span class="k">as</span> <span class="n">NuP</span><span class="p">,</span> <span class="n">interactions</span> <span class="k">as</span> <span class="n">NuI</span>
 <span class="kn">from</span> <span class="nn">evolution</span> <span class="kn">import</span> <span class="n">Universe</span>
-<span class="kn">from</span> <span class="nn">common</span> <span class="kn">import</span> <span class="n">CONST</span><span class="p">,</span> <span class="n">UNITS</span><span class="p">,</span> <span class="n">Params</span><span class="p">,</span> <span class="n">GRID</span>
+<span class="kn">from</span> <span class="nn">common</span> <span class="kn">import</span> <span class="n">UNITS</span><span class="p">,</span> <span class="n">Params</span><span class="p">,</span> <span class="n">GRID</span>
 
 
 <span class="n">params</span> <span class="o">=</span> <span class="n">Params</span><span class="p">(</span><span class="n">T_initial</span><span class="o">=</span><span class="mf">5.</span> <span class="o">*</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">MeV</span><span class="p">,</span>
@@ -89,25 +89,11 @@
     <span class="n">sterile_neutrino</span><span class="p">,</span>
 <span class="p">]</span>
 
-<span class="n">universe</span><span class="o">.</span><span class="n">interactions</span> <span class="o">+=</span> <span class="p">[</span>
-    <span class="n">SMI</span><span class="o">.</span><span class="n">neutrino_self_scattering</span><span class="p">(</span><span class="n">neutrino_e</span><span class="p">),</span>
-    <span class="n">SMI</span><span class="o">.</span><span class="n">neutrino_self_scattering</span><span class="p">(</span><span class="n">neutrino_mu</span><span class="p">),</span>
-    <span class="n">SMI</span><span class="o">.</span><span class="n">neutrino_self_scattering</span><span class="p">(</span><span class="n">neutrino_tau</span><span class="p">),</span>
-    <span class="n">SMI</span><span class="o">.</span><span class="n">neutrino_inter_scattering</span><span class="p">(</span><span class="n">neutrino_e</span><span class="p">,</span> <span class="n">neutrino_mu</span><span class="p">),</span>
-    <span class="n">SMI</span><span class="o">.</span><span class="n">neutrino_inter_scattering</span><span class="p">(</span><span class="n">neutrino_mu</span><span class="p">,</span> <span class="n">neutrino_tau</span><span class="p">),</span>
-    <span class="n">SMI</span><span class="o">.</span><span class="n">neutrino_inter_scattering</span><span class="p">(</span><span class="n">neutrino_tau</span><span class="p">,</span> <span class="n">neutrino_e</span><span class="p">),</span>
-    <span class="n">SMI</span><span class="o">.</span><span class="n">neutrino_pair_flavour_change</span><span class="p">(</span><span class="n">neutrino_e</span><span class="p">,</span> <span class="n">neutrino_mu</span><span class="p">),</span>
-    <span class="n">SMI</span><span class="o">.</span><span class="n">neutrino_pair_flavour_change</span><span class="p">(</span><span class="n">neutrino_mu</span><span class="p">,</span> <span class="n">neutrino_tau</span><span class="p">),</span>
-    <span class="n">SMI</span><span class="o">.</span><span class="n">neutrino_pair_flavour_change</span><span class="p">(</span><span class="n">neutrino_tau</span><span class="p">,</span> <span class="n">neutrino_e</span><span class="p">),</span>
-    <span class="n">SMI</span><span class="o">.</span><span class="n">neutrinos_to_electrons</span><span class="p">(</span><span class="n">g_L</span><span class="o">=</span><span class="n">CONST</span><span class="o">.</span><span class="n">g_R</span><span class="o">+</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">electron</span><span class="o">=</span><span class="n">electron</span><span class="p">,</span> <span class="n">neutrino</span><span class="o">=</span><span class="n">neutrino_e</span><span class="p">),</span>
-    <span class="n">SMI</span><span class="o">.</span><span class="n">neutrinos_to_electrons</span><span class="p">(</span><span class="n">g_L</span><span class="o">=</span><span class="n">CONST</span><span class="o">.</span><span class="n">g_R</span><span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">electron</span><span class="o">=</span><span class="n">electron</span><span class="p">,</span> <span class="n">neutrino</span><span class="o">=</span><span class="n">neutrino_mu</span><span class="p">),</span>
-    <span class="n">SMI</span><span class="o">.</span><span class="n">neutrinos_to_electrons</span><span class="p">(</span><span class="n">g_L</span><span class="o">=</span><span class="n">CONST</span><span class="o">.</span><span class="n">g_R</span><span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">electron</span><span class="o">=</span><span class="n">electron</span><span class="p">,</span> <span class="n">neutrino</span><span class="o">=</span><span class="n">neutrino_tau</span><span class="p">),</span>
-    <span class="n">SMI</span><span class="o">.</span><span class="n">neutrino_electron_scattering</span><span class="p">(</span><span class="n">g_L</span><span class="o">=</span><span class="n">CONST</span><span class="o">.</span><span class="n">g_R</span><span class="o">+</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">electron</span><span class="o">=</span><span class="n">electron</span><span class="p">,</span> <span class="n">neutrino</span><span class="o">=</span><span class="n">neutrino_e</span><span class="p">),</span>
-    <span class="n">SMI</span><span class="o">.</span><span class="n">neutrino_electron_scattering</span><span class="p">(</span><span class="n">g_L</span><span class="o">=</span><span class="n">CONST</span><span class="o">.</span><span class="n">g_R</span><span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">electron</span><span class="o">=</span><span class="n">electron</span><span class="p">,</span> <span class="n">neutrino</span><span class="o">=</span><span class="n">neutrino_mu</span><span class="p">),</span>
-    <span class="n">SMI</span><span class="o">.</span><span class="n">neutrino_electron_scattering</span><span class="p">(</span><span class="n">g_L</span><span class="o">=</span><span class="n">CONST</span><span class="o">.</span><span class="n">g_R</span><span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">electron</span><span class="o">=</span><span class="n">electron</span><span class="p">,</span> <span class="n">neutrino</span><span class="o">=</span><span class="n">neutrino_tau</span><span class="p">),</span>
-
-    <span class="n">NuI</span><span class="o">.</span><span class="n">sterile_active_mixing</span><span class="p">(</span><span class="n">sterile</span><span class="o">=</span><span class="n">sterile_neutrino</span><span class="p">,</span> <span class="n">active</span><span class="o">=</span><span class="n">neutrino_tau</span><span class="p">)</span>
-<span class="p">]</span>
+<span class="n">universe</span><span class="o">.</span><span class="n">interactions</span> <span class="o">+=</span> <span class="p">(</span>
+    <span class="n">SMI</span><span class="o">.</span><span class="n">neutrino_interactions</span><span class="p">(</span><span class="n">electron</span><span class="o">=</span><span class="n">electron</span><span class="p">,</span> <span class="n">neutrino_e</span><span class="o">=</span><span class="n">neutrino_e</span><span class="p">,</span>
+                              <span class="n">neutrino_mu</span><span class="o">=</span><span class="n">neutrino_mu</span><span class="p">,</span> <span class="n">neutrino_tau</span><span class="o">=</span><span class="n">neutrino_tau</span><span class="p">)</span>
+    <span class="o">+</span> <span class="p">[</span><span class="n">NuI</span><span class="o">.</span><span class="n">sterile_active_mixing</span><span class="p">(</span><span class="n">sterile</span><span class="o">=</span><span class="n">sterile_neutrino</span><span class="p">,</span> <span class="n">active</span><span class="o">=</span><span class="n">neutrino_tau</span><span class="p">)]</span>
+<span class="p">)</span>
 
 <span class="n">universe</span><span class="o">.</span><span class="n">graphics</span><span class="o">.</span><span class="n">monitor</span><span class="p">(</span><span class="n">particles</span><span class="o">=</span><span class="p">[</span>
     <span class="n">neutrino_e</span><span class="p">,</span>
@@ -122,8 +108,8 @@
         </div>
         <div class='clearall'></div>
     </section>
-  </div>
-  <div class='section'>
+    </div>
+    <div class='section'>
     <a id="section-1" class="section-anchor"></a>
     <section>
         <div class='docs'>
@@ -138,8 +124,8 @@
         </div>
         <div class='clearall'></div>
     </section>
-  </div>
-  <div class='section'>
+    </div>
+    <div class='section'>
     <a id="section-2" class="section-anchor"></a>
     <section>
         <div class='docs'>
@@ -164,8 +150,8 @@
         </div>
         <div class='clearall'></div>
     </section>
-  </div>
-  <div class='section'>
+    </div>
+    <div class='section'>
     <a id="section-3" class="section-anchor"></a>
     <section>
         <div class='docs'>
@@ -208,8 +194,8 @@
         </div>
         <div class='clearall'></div>
     </section>
-  </div>
-  <div class='section'>
+    </div>
+    <div class='section'>
     <a id="section-4" class="section-anchor"></a>
     <section>
         <div class='docs'>
@@ -231,8 +217,8 @@
         </div>
         <div class='clearall'></div>
     </section>
-  </div>
-  <div class='section'>
+    </div>
+    <div class='section'>
     <a id="section-5" class="section-anchor"></a>
     <section>
         <div class='docs'>
@@ -251,6 +237,6 @@
         </div>
         <div class='clearall'></div>
     </section>
+    </div>
   </div>
-</div>
 </body>

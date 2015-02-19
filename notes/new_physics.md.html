@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>pyBBN v0.1.0: notes/new_physics.md</title>
+  <link rel="stylesheet" href="../pyccoon.css">
+  <script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+  });
+  </script>
+  <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</head>
+<body>
+<div id='container' class="documentation">
+  <a id="top"></a>
+  <div id="background"></div>
+  <div id="footer">
+    <a class="btn" id="project-name" href="../index.html">pyBBN v0.1.0</a>
+    <a class="btn" class="source source-1" href="#top">Back to top</a>
+    <div id="jump_to" class="btn">
+    Contents
+    <div id="jump_wrapper">
+      <div id="jump_page">
+          <a class="source source-1" href="#sterile-neutrinos-in-the-mass-range-$m_\pi-\div-m_k$"> Sterile neutrinos in the mass range $m_\pi \div m_K$ </a>
+      </div>
+    </div>
+    </div>
+    <div class="generation-time">
+        Generated at
+        <a target="_blank" href="http://ckald.github.io/pyccoon/" title="Pyccoon: side-to-side documentation generator">
+            <img id="pyccoon-icon" src="../pyccoon_icon.svg" alt="Pyccoon: side-to-side documentation generator" /></a>
+        <code>2015-02-19 18:03:11.617446</code>/
+        by a diligent
+        <a target="_blank" href="http://ckald.github.io/pyccoon/" title="Pyccoon: side-to-side documentation generator">pyccoon</a>
+    </div>
+  </div>
+  <div class='section'>
+    <div class='docs'>
+      <h1 id="breadcrumbs">/ <a href="new_physics.md.html/../../index.html">.</a> / <a href="new_physics.md.html/../index.html">notes</a> / <a href="new_physics.md.html">new_physics.md</a> </h1>
+      <ul id="children"></ul>
+    </div>
+  </div>
+  <div class='clearall'>
+    <div class='section'>
+    <a id="section-0" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-0'>#</a>
+          </div>
+          <h1><a id="sterile-neutrinos-in-the-mass-range-$m_\pi-\div-m_k$" class="header-anchor" href="#sterile-neutrinos-in-the-mass-range-$m_\pi-\div-m_k$"> Sterile neutrinos in the mass range $m_\pi \div m_K$ </a></h1>
+<p>Interactions of sterile neutrinos mostly mimic the weak interactions of active neutrinos. However, non-zero mass of $N$ allows many channels previously forbidden by kinematics (e.g., $\nu \to \nu \nu \nu$ is forbidden, but $N \to \nu \nu \nu$ isn't).</p>
+<p>In general, listing all leading order interactions of some particle requires building perturbation series for the corresponding Hamiltonian. This is a rather complicated task in case of the Standard Model, so it is convenient to use effective field theory ideas.</p>
+<p>To account efficiently for all new interactions of sterile neutrinos with $m_N \ge m_\pi$, we need to list all possible effective interaction terms in the Lagrangian and take into consideration the thermodynamical state of the Universe at the moment of interest.</p>
+<h2><a id="primordial-plasma" class="header-anchor" href="#primordial-plasma"> Primordial plasma </a></h2>
+<p>We consider the Early Universe at temperatures around few $MeV$. Plasma mostly consists of photons, active neutrinos, electrons and positrons - and tiny additions of long-living heavier particles like muons, protons and neutrons.</p>
+<p>Thermodynamical state of the system is characterized by equilibrium in the electromagnetic sector (maintained by high-rate EM-interactions), while weakly-only interacting particles begin to decouple. This means that all weak processes rate are small comparing to the Hubble rate and it is possible to consider only few lowest orders in the weak expansion.</p>
+<p>Additionally, we are interested only in the influence of interactions on non-equilibrium species as fast EM interactions dominate. Here is the tentative hierarchy of interaction rates:</p>
+<p>\begin{equation}
+    \Gamma_{EM} \gg H \ge \Gamma_{Weak} &gt; \Gamma_{Sterile}
+\end{equation}</p>
+<h2><a id="processes-of-interest" class="header-anchor" href="#processes-of-interest"> Processes of interest </a></h2>
+<p>For our discussion it is sufficient to consider only processes where only a single sterile neutrino is present. This narrows our list to processes of 2 kinds:</p>
+<ul>
+<li>$N \to 1 + 2 + \dotsc$</li>
+<li>$N + 2 \to 3 + 4 + \dotsc$</li>
+</ul>
+<h3><a id="kinematics" class="header-anchor" href="#kinematics"> Kinematics </a></h3>
+<p>In case of sterile neutrino decay, allowed processes are limited solely the the masses of the final states:</p>
+<p>\begin{align}
+    p_N^\mu &amp;= p_1^\mu + p_2^\mu + \dotsc
+    \\ p_N^2 = m_N^2 &amp;= \sum_i m_i^2 + \sum_{ij} (p_i \cdot p_j)
+\end{align}</p>
+<p>Meaning that</p>
+<p>\begin{equation}
+    m_N^2 \ge \sum_i m_i^2
+\end{equation}</p>
+<p>Thus let's list all particles with masses below the Kaon mass:</p>
+<table>
+<thead>
+<tr>
+<th>Particle</th>
+<th>Mass</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>$\gamma$</td>
+<td>0</td>
+</tr>
+<tr>
+<td>$\nu_\alpha$</td>
+<td>0</td>
+</tr>
+<tr>
+<td>$e^\pm$</td>
+<td>0.511 MeV</td>
+</tr>
+<tr>
+<td>$\mu^\pm$</td>
+<td>105.7 MeV</td>
+</tr>
+<tr>
+<td>$\pi^0$ (uu, dd)</td>
+<td>135.0 MeV</td>
+</tr>
+<tr>
+<td>$\pi^\pm$ (ud)</td>
+<td>139.6 MeV</td>
+</tr>
+<tr>
+<td>$K^\pm$ (us)</td>
+<td>493.7 MeV</td>
+</tr>
+<tr>
+<td>$K^0, \overline{K}^0$ (ds)</td>
+<td>497.6 MeV</td>
+</tr>
+</tbody>
+</table>
+<p>The only states of interest are three pi-mesons composed of weakly interacting quark pairs. As they are relatively short-lived, abundant generation of them is improbable. Then, beside the previously considered processes, we need to anticipate the appearance of pions in the final states.</p>
+<p>This leads to the following processes:</p>
+<ul>
+<li>Pionic decays:
+    \begin{align}
+        N &amp;\to \nu_\alpha + \pi^0
+        \\ N &amp;\to l^- + \pi^+
+    \end{align}</li>
+<li>Leptonic scatterings:
+    \begin{align}
+        N + l^+ \to \pi^+
+    \end{align}</li>
+<li>Exotic:
+    \begin{align}
+        N + \mu^+ \to K^+
+    \end{align}</li>
+</ul>
+<p>Apparently, kaon reactions can appear already with $m_N &gt; 384 MeV$, but we will see that interactions with kaons are suppressed by $|V_{us}|$ and the rareness of muons.</p>
+<p>The backreaction of the pions on the plasma is dominated by few decay modes:</p>
+<p>\begin{align}
+    \pi^0 &amp;\to \gamma + \gamma
+    \\ \pi^+ &amp;\to \mu^+ + \nu_\mu
+    \\ \pi^+ &amp;\to e^+ + \nu_e
+\end{align}</p>
+<h2><a id="pion-interactions" class="header-anchor" href="#pion-interactions"> Pion interactions </a></h2>
+<p>According to the quark model, mesons are bound states formed by quark pairs and gluons. In practice this means that quark quantum states inside mesons are deformed and one cannot directly apply the Feynman calculus. However, in case of electroweak interactions, only the quarks carry the corresponding quantum numbers and the influence of gluons can be omitted.</p>
+<h3><a id="phenomenological-model" class="header-anchor" href="#phenomenological-model"> Phenomenological model </a></h3>
+<p>According to experimental evidence, pi-mesons constitute a pseudoscalar triplet. Simplest possible interactions for a pion with fermionic current then have to be of the form</p>
+<p>\begin{align}
+    g J_\mu^{\pm(0)} F^\mu + g' \overline{f} \gamma^5 \pi f
+\end{align}</p>
+<p>The latter interaction is not realized in nature (proven by experiments and can be explained from theoretical point of view by Goldstone boson-like origin of the pions).</p>
+<p>$F^\mu$ is referred to as the "pion form-factor". It's precise form can be reconstructed by recalling that for a spin-0 particle the only associated 4-vector is it's momentum. Moreover, multiplier of this vector has to be a Lorentz scalar, thus depending only on the $p^2 = m_\pi^2$. However, this multiplier can differ for neutral and charged pions.</p>
+<p>\begin{equation}
+    F^\mu = f_\pm p^\mu
+\end{equation}</p>
+<h3><a id="gauge-bosons-interactions" class="header-anchor" href="#gauge-bosons-interactions"> Gauge bosons interactions </a></h3>
+<p>According to the phenomenological model, pi-mesons is gradiently coupled to SM currents, thus we assume that this interaction has a form analogous to the regular current interactions. In particular, we can apply Feynman rules for quarks and fix the renormalization due to gluons using the observed lifetime of the meson.</p>
+<p><center><img src="pion_decay.png" width=200 /></center></p>
+<h3><a id="feynman-rules" class="header-anchor" href="#feynman-rules"> Feynman rules </a></h3>
+<p>\begin{align}
+    \Delta \mathcal{L}_{CC} = \frac{g}{2 \sqrt{2}}
+    \begin{bmatrix} \overline{u} &amp; \overline{c} &amp; \overline{t} \end{bmatrix}
+    \gamma^\lambda (1-\gamma^5) V_{CKM}
+    \begin{bmatrix} d \\ s \\ b \end{bmatrix}
+    W_\lambda^+ + h.c.
+\end{align}</p>
+<p>\begin{align}
+    \Delta \mathcal{L}_{NC} = \frac{g}{\cos \theta_W}
+    \left(
+          \epsilon_L^{(f)} \overline{f}_L \gamma^\lambda f_L
+          + \epsilon_R^{(f)} \overline{f}_R \gamma^\lambda f_R
+    \right) Z_\lambda
+\end{align}</p>
+<p>where</p>
+<p>\begin{align}
+    \epsilon_L^{(f)} &amp;= -\frac12 - Q_f \sin^2 \theta_W  &amp;&amp; \text{for}  &amp;f = e,\mu,\tau,d,s,b
+    \\ \epsilon_L^{(f)} &amp;= +\frac12 - Q_f \sin^2 \theta_W
+    &amp;&amp; \text{for}  &amp;f = \nu_e,\nu_\mu,\nu_\tau,u,c,t
+    \\ \epsilon_R^{(f)} &amp;= - Q_f \sin^2 \theta_W
+\end{align}</p>
+<p>or</p>
+<p>\begin{align}
+    \Delta \mathcal{L}_{NC} = \frac{g}{\cos \theta_W}
+    \overline{f} (v_f - a_f \gamma^5) f \; Z_\lambda
+\end{align}</p>
+<p>\begin{align}
+    v_f = \pm_f \frac14 - Q_f \sin^2 \theta_W &amp;&amp; a_f = \pm_f \frac14
+\end{align}</p>
+<p>\begin{align}
+\begin{cases}
+    \pm_f = -1 &amp;&amp; \text{for} &amp;f = e,\mu,\tau,d,s,b
+    \\ \pm_f = +1 &amp;&amp; \text{for} &amp;f = \nu_e,\nu_\mu,\nu_\tau,u,c,t
+\end{cases}
+\end{align}</p>
+<p>Direct interaction of the pion states with bosons is considered to be</p>
+<p>\begin{align}
+    \Delta \mathcal{L}_{\pi W} &amp;= f_\pm |V_{ud}| (\partial_\mu \pi) {W^\dagger}^\mu + h.c.
+    \\ \Delta \mathcal{L}_{\pi Z} &amp;= f_0 (\partial_\mu \pi^0) Z^\mu
+\end{align}</p>
+<p>Turns out that $f_\pm = \sqrt{2} f_0 = f_{\pi} \approx 130 MeV$</p>
+<p>Relation between $f_\pm$ and $f_0$ can be related to the fact that precise quark composition of the $\pi^0$ is $\frac{1}{\sqrt{2}}(u \overline{u} + d \overline{d})$</p>
+        </div>
+        <div class='code'>
+          
+        </div>
+        <div class='clearall'></div>
+    </section>
+    </div>
+  </div>
+</body>
