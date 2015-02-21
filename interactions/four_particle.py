@@ -33,18 +33,6 @@ class FourParticleM(object):
         return "K1={: .2e}, K2={: .2e}, {}".format(self.K1, self.K2, self.order)
 
 
-class WeakM(FourParticleM):
-
-    """ == Weak interactions matrix element ==
-        Weak processes usually include a common factor of $32 G_F^2$ """
-
-    def __init__(self, *args, **kwargs):
-        super(WeakM, self).__init__(*args, **kwargs)
-
-        self.K1 *= 32 * CONST.G_F**2
-        self.K2 *= 32 * CONST.G_F**2
-
-
 class FourParticleIntegral(BoltzmannIntegral):
 
     def initialize(self):
