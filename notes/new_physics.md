@@ -45,13 +45,12 @@ states:
 
 \begin{align}
     p_N^\mu &= p_1^\mu + p_2^\mu + \dotsc
-    \\\\ p_N^2 = m_N^2 &= \sum_i m_i^2 + \sum_{ij} (p_i \cdot p_j)
 \end{align}
 
-Meaning that
+Meaning that the mass of the sterile neutrino has to satisfy
 
 \begin{equation}
-    m_N^2 \ge \sum_i m_i^2
+    m_N \ge \sum_i m_i
 \end{equation}
 
 Thus let's list all particles with masses below the Kaon mass:
@@ -88,7 +87,7 @@ This leads to the following processes:
         N + \mu^+ \to K^+
     \end{align}
 
-Apparently, kaon reactions can appear already with $m_N > 384 MeV$, but we will see that\
+Apparently, kaon reactions can appear already with $m_N > 388 MeV$, but we will see that\
 interactions with kaons are suppressed by $|V_{us}|$ and the rareness of muons.
 
 The backreaction of the pions on the plasma is dominated by few decay modes:
@@ -192,3 +191,113 @@ Turns out that $f_\pm = \sqrt{2} f_0 = f_{\pi} \approx 130 MeV$
 
 Relation between $f_\pm$ and $f_0$ can be related to the fact that precise quark composition of the\
 $\pi^0$ is $\frac{1}{\sqrt{2}}(u \overline{u} + d \overline{d})$
+
+
+== Matrix elements ==
+
+=== Pionic decays ===
+
+\begin{align}
+    N &\to \nu_\alpha + \pi^0
+    \\\\ N + \overline{\nu}_\alpha &\to \pi^0
+    \\\\ N &\to l^- + \pi^+
+    \\\\ N + l^+ &\to \pi^+
+\end{align}
+
+We will concentrate on computation of the first diagram and will get to the second by a series \
+of substitutions. In the following, $\nu$ spinor represents the lepton and $N$ is a sterile neutrino.
+
+\begin{align}
+    \require{cancel}
+    \imath \mathcal{M} &=
+        \left(
+            \overline{\nu}(k) \gamma^\mu \frac{-\imath g'}{2} \frac{1+\gamma^5}{2} \frac{\imath}{\cancel{p}} M_D N(p)
+        \right)
+        \frac{-\imath g_{\mu \nu}}{M_Z^2}
+        \left(
+            \frac{g'}{2\sqrt{2}} f_\pi \pi^\nu
+        \right) = \\\\
+    &= -\imath \frac{g'^2 M_D f_\pi}{4 \sqrt{2} M_Z^2} \overline{\nu}(k) \cancel{\pi} \frac{1+\gamma^5}{2} \frac{\cancel{p}}{p^2} N(p)
+    = -\imath \frac{g'^2 M_D f_\pi}{4 \sqrt{2} m_N^2 M_Z^2} \overline{\nu}(k) \cancel{\pi} \frac{1+\gamma^5}{2} \cancel{p} N(p)
+\end{align}
+
+\begin{align}
+    \require{cancel}
+    |\mathcal{M}|^2 &= \frac{g'^4 M_D^2 f_\pi^2}{32 m_N^4 M_Z^4}
+        \left( \overline{\nu}(k) \cancel{\pi} \frac{1+\gamma^5}{2} \cancel{p} N(p) \right)
+        \left( \overline{N}(p) \cancel{p} \frac{1-\gamma^5}{2} \cancel{\pi} \nu(k) \right)
+    = \left(\frac{g'}{M_Z}\right)^4 \frac{M_D^2 f_\pi^2}{32 m_N^4} Tr\left[ \nu \overline{\nu} \cancel{\pi} (\frac{1+\gamma^5}{2}) \cancel{p} N \overline{N} \cancel{p} (\frac{1-\gamma^5}{2}) \cancel{\pi} \right]
+\end{align}
+
+Averaging by sterile neutrino polarizations and summing by neutrino's:
+
+\begin{align}
+    \require{cancel}
+    |\mathcal{\overline{M}}|^2
+        &= \left(\frac{g'}{M_Z}\right)^4 \frac{M_D^2 f_\pi^2}{32 m_N^4}
+        Tr\left[(\cancel{k} \pm m_l) \cancel{\pi} (\frac{1+\gamma^5}{2})
+                \cancel{p} (\cancel{p} \pm m_N) \cancel{p}
+                (\frac{1-\gamma^5}{2}) \cancel{\pi}
+        \right]
+\end{align}
+
+The $\pm m_N$ sign comes from the spin sum for Majorana fermion that is not defined. \
+Fortunately, chirality projectors automatically remove the constant term of that spin sum.
+
+The sign of the lepton function depends on the side, where this particle occurs in the reaction.\
+For the outgoing lepton it will be $+$ and $-$ for incoming antilepton. However, lepton mass occurs\
+only in a term with an odd number of gamma matrices in a trace - hence, it vanishes.
+
+=== Reaction kinematics ===
+
+\begin{align}
+    &p^\mu = k^\mu + \pi^\mu \\\\
+    &\begin{cases}
+        p^2 &= m_N^2 = (p \cdot k) + (p \cdot \pi) \\\\
+        (p \cdot k) &= k^2 + (k \cdot \pi) = m_l^2 + (k \cdot \pi) \\\\
+        (p \cdot \pi) &= (k \cdot \pi) + \pi^2 = (k \cdot \pi) + m_\pi^2
+    \end{cases}
+    \\\\
+    &\begin{cases}
+        (p \cdot k) &= \frac12 (m_N^2 + m_l^2 - m_\pi^2)     \\\\
+        (p \cdot \pi) &= \frac12 (m_N^2 - m_l^2 + m_\pi^2)
+    \end{cases}
+\end{align}
+
+=== Trace computation ===
+
+As the trace expression is the same between both diagrams, we will compute it in assumption $m_l \neq 0$
+
+\begin{align}
+    \require{cancel}
+    Tr &= m_N^2 Tr\left[ \cancel{k} \cancel{\pi} \frac{1+\gamma^5}{2} \cancel{p} \cancel{\pi} \right]
+        = m_N^2 Tr\left[ (\cancel{p}-\cancel{\pi}) \cancel{\pi} \frac{1+\gamma^5}{2} \cancel{p} \cancel{\pi} \right]
+        \\\\ &= m_N^2 Tr\left[ \cancel{p} \cancel{\pi} \frac{1+\gamma^5}{2} \cancel{p} \cancel{\pi} \right]
+            - m_N^2 m_\pi^2 Tr\left[ \frac{1+\gamma^5}{2} \cancel{p} \cancel{\pi} \right]
+        \\\\ &= - 2 m_N^4 m_\pi^2 + 4 m_N^2 (p \cdot \pi)^2 - 2 m_N^2 m_\pi^2 (p \cdot \pi)
+        \\\\ &= - 2 m_N^4 m_\pi^2 + m_N^2 (m_N^2 - m_l^2 + m_\pi^2)^2 - m_N^2 m_\pi^2 (m_N^2 - m_l^2 + m_\pi^2)
+        \\\\ &= m_N^4 (m_N^2 - m_\pi^2) - m_l^2 m_N^2 (2 m_N^2 + m_\pi^2 - m_l^2)
+\end{align}
+
+=== Neutral current and neutrino scattering ===
+
+Putting that back to the squared amplitude with $m_l = 0$
+
+\begin{align}
+    \require{cancel}
+    |\mathcal{\overline{M}}|^2
+        &= \left(\frac{g'}{M_Z}\right)^4 \frac{M_D^2 f_\pi^2}{32} (m_N^2 - m_\pi^2)
+        = G_F^2 M_D^2 f_\pi^2 (m_N^2 - m_\pi^2)
+        = G_F^2 \theta^2 f_\pi^2 m_N^2 (m_N^2 - m_\pi^2)
+\end{align}
+
+=== Charged current and lepton scattering ===
+
+For the diagrams with charged leptons we need to include the mass of the lepton and modify \
+the coupling constants ($g' \to g$, $M_Z \to M_W$ and multiply the whole amplitude by $|V_{ud}|$)
+
+\begin{align}
+    \require{cancel}
+    |\mathcal{\overline{M}}|^2
+        &= G_F^2 \theta^2 |V_{ud}|^2 f_\pi^2 \left[ (m_N^2 -m_l^2)^2 - m_\pi^2 (m_N^2 + m_l^2) \right]
+\end{align}
