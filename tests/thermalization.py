@@ -19,7 +19,7 @@ neutrino_mu = Particle(**SMP.neutrino_mu)
 
 Particles += [photon, neutrino_e, neutrino_mu]
 
-Interactions += [SMI.neutrino_self_scattering(neutrino_e)]
+Interactions += [SMI.neutrino_scattering(neutrino_e, neutrino_e)]
 
 import numpy
 neutrino_e._distribution += numpy.vectorize(lambda x: 0.01 * numpy.exp(-(x/UNITS.MeV-5)**2),

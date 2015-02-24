@@ -96,30 +96,7 @@ class interactions(object):
         in all tests for consistency. """
 
     @staticmethod
-    def neutrino_self_scattering(neutrino):
-        """ \begin{align}
-                \nu_\alpha + \nu_\alpha &\to \nu_\alpha + \nu_\alpha
-                \\\\ \nu_\alpha + \overline{\nu_\alpha} &\to \nu_\alpha + \overline{\nu_\alpha}
-            \end{align}
-
-            \begin{equation}
-                |\mathcal{M}|^2 = 32 G_F^2 \left( 2 (p_0 \cdot p_1) (p_2 \cdot p_3) +
-                    4 (p_0 \cdot p_3) (p_1 \cdot p_2) \right)
-            \end{equation}
-        """
-        return Interaction(
-            name="Neutrino self-scattering",
-            in_particles=[neutrino, neutrino],
-            out_particles=[neutrino, neutrino],
-            decoupling_temperature=0 * UNITS.MeV,
-            Ms=[
-                WeakM(K1=2., order=(0, 1, 2, 3)),
-                WeakM(K1=4., order=(0, 3, 1, 2))
-            ]
-        )
-
-    @staticmethod
-    def neutrino_inter_scattering(neutrino_a, neutrino_b):
+    def neutrino_scattering(neutrino_a, neutrino_b):
         """ \begin{align}
                 \nu_\alpha + \nu_\beta &\to \nu_\alpha + \nu_\beta
                 \\\\ \nu_\alpha + \overline{\nu_\beta} &\to \nu_\alpha + \overline{\nu_\beta}
@@ -129,15 +106,28 @@ class interactions(object):
                 |\mathcal{M}|^2 = 32 G_F^2 \left( (p_0 \cdot p_1) (p_2 \cdot p_3) +
                     (p_0 \cdot p_3) (p_1 \cdot p_2) \right)
             \end{equation}
+
+            \begin{align}
+                \nu_\alpha + \nu_\alpha &\to \nu_\alpha + \nu_\alpha
+                \\\\ \nu_\alpha + \overline{\nu_\alpha} &\to \nu_\alpha + \overline{\nu_\alpha}
+            \end{align}
+
+            \begin{equation}
+                |\mathcal{M}|^2 = 32 G_F^2 \left( 2 (p_0 \cdot p_1) (p_2 \cdot p_3) +
+                    4 (p_0 \cdot p_3) (p_1 \cdot p_2) \right)
+            \end{equation}
         """
+
+        K1 = [2., 4.] if neutrino_a == neutrino_b else [1., 1.]
+
         return Interaction(
-            name="Neutrino species-scattering",
+            name="Neutrino species scattering",
             in_particles=[neutrino_a, neutrino_b],
             out_particles=[neutrino_a, neutrino_b],
             decoupling_temperature=0 * UNITS.MeV,
             Ms=[
-                WeakM(K1=1., order=(0, 1, 2, 3)),
-                WeakM(K1=1., order=(0, 3, 1, 2)),
+                WeakM(K1=K1[0], order=(0, 1, 2, 3)),
+                WeakM(K1=K1[1], order=(0, 3, 1, 2)),
             ]
         )
 
@@ -224,12 +214,12 @@ class interactions(object):
 
         g_R = CONST.g_R
         return [
-            cls.neutrino_self_scattering(neutrino_e),
-            cls.neutrino_self_scattering(neutrino_mu),
-            cls.neutrino_self_scattering(neutrino_tau),
-            cls.neutrino_inter_scattering(neutrino_e, neutrino_mu),
-            cls.neutrino_inter_scattering(neutrino_mu, neutrino_tau),
-            cls.neutrino_inter_scattering(neutrino_tau, neutrino_e),
+            cls.neutrino_scattering(neutrino_e, neutrino_e),
+            cls.neutrino_scattering(neutrino_mu, neutrino_mu),
+            cls.neutrino_scattering(neutrino_tau, neutrino_tau),
+            cls.neutrino_scattering(neutrino_e, neutrino_mu),
+            cls.neutrino_scattering(neutrino_mu, neutrino_tau),
+            cls.neutrino_scattering(neutrino_tau, neutrino_e),
             cls.neutrino_pair_flavour_change(neutrino_e, neutrino_mu),
             cls.neutrino_pair_flavour_change(neutrino_mu, neutrino_tau),
             cls.neutrino_pair_flavour_change(neutrino_tau, neutrino_e),

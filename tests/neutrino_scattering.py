@@ -13,7 +13,7 @@ electron = Particle(params=params, **SMP.electron)
 
 universe.particles += [photon, neutrino, electron]
 universe.interactions += [
-    SMI.neutrino_self_scattering(neutrino),
+    SMI.neutrino_scattering(neutrino, neutrino),
     SMI.neutrinos_to_electrons(neutrino=neutrino, electron=electron),
     SMI.neutrino_electron_scattering(neutrino=neutrino, electron=electron)
 ]

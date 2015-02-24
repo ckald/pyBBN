@@ -17,7 +17,7 @@ def non_equilibium_setup():
     neutrino_e = Particle(params=params, **SMP.neutrino_e)
     neutrino_mu = Particle(params=params, **SMP.neutrino_mu)
 
-    neutrino_self_scattering = SMI.neutrino_self_scattering(neutrino=neutrino_e)
+    neutrino_self_scattering = SMI.neutrino_scattering(neutrino_e, neutrino_e)
 
     universe = Universe(params=params, plotting=False)
     universe.particles += [photon, neutrino_e, neutrino_mu]
