@@ -80,15 +80,12 @@ This leads to the following processes:
     \end{align}
  *  Leptonic scatterings:
     \begin{align}
-        N + l^+ \to \pi^+
-    \end{align}
- *  Exotic:
-    \begin{align}
         N + \mu^+ \to K^+
     \end{align}
 
 Apparently, kaon reactions can appear already with $m_N > 388 MeV$, but we will see that\
-interactions with kaons are suppressed by $|V_{us}|$ and the rareness of muons.
+interactions with kaons are suppressed by $|V_{us}|$ and the rareness of muons. Production of pions\
+from leptonic scattering ($ N + l^+ \to \pi^+ $) is forbidden by kinematics.
 
 The backreaction of the pions on the plasma is dominated by few decay modes:
 
@@ -195,16 +192,16 @@ $\pi^0$ is $\frac{1}{\sqrt{2}}(u \overline{u} + d \overline{d})$
 
 == Matrix elements ==
 
-=== Pionic decays ===
+=== Pions production ===
 
 \begin{align}
-    N &\to \nu_\alpha + \pi^0
-    \\\\ N + \overline{\nu}_\alpha &\to \pi^0
-    \\\\ N &\to l^- + \pi^+
-    \\\\ N + l^+ &\to \pi^+
+    N &\to \pi^0 + \nu_\alpha
+    \\\\ \overline{\nu}_\alpha + N &\to \pi^0
+    \\\\ N &\to \pi^+ + l^-
+    \\\\ l^+ + N &\to \pi^+
 \end{align}
 
-We will concentrate on computation of the first diagram and will get to the second by a series \
+We will concentrate on computation of the first diagram and will get to the others by a series \
 of substitutions. In the following, $\nu$ spinor represents the lepton and $N$ is a sterile neutrino.
 
 \begin{align}
@@ -244,7 +241,7 @@ Averaging by sterile neutrino polarizations and summing by neutrino's:
 The $\pm m_N$ sign comes from the spin sum for Majorana fermion that is not defined. \
 Fortunately, chirality projectors automatically remove the constant term of that spin sum.
 
-The sign of the lepton function depends on the side, where this particle occurs in the reaction.\
+The sign in the lepton spin sum depends on the side, where this particle occurs in the reaction.\
 For the outgoing lepton it will be $+$ and $-$ for incoming antilepton. However, lepton mass occurs\
 only in a term with an odd number of gamma matrices in a trace - hence, it vanishes.
 

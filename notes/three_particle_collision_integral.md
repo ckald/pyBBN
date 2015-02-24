@@ -58,9 +58,9 @@ As the distributions are functions of energy only, the above expression is signi
         &= \frac{S |\mathcal{\overline{M}}|^2 }{(2\pi)^2 E_1}
             \int \frac{p_2^2 d p_2}{E_2} \frac{p_3^2 d p_3}{E_3} \lambda^2 d \lambda
             \mathcal{F}(f_\alpha)
-            \frac{\sin p_2\lambda}{\imath p_2 \lambda}
-            \frac{\sin p_3\lambda}{\imath p_3 \lambda}
-            \frac{\sin p_1 \lambda}{\imath p_1 \lambda}
+            \frac{\sin p_2\lambda}{p_2 \lambda}
+            \frac{\sin p_3\lambda}{p_3 \lambda}
+            \frac{\sin p_1 \lambda}{p_1 \lambda}
             \\ \delta(E_1-E_2-E_3)
         \\\\ &= \frac{S |\mathcal{\overline{M}}|^2 }{4 \pi^2 E_1 p_1}
             \int \frac{p_2 d p_2}{E_2} \frac{p_3 d p_3}{E_3}
