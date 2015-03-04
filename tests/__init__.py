@@ -9,7 +9,6 @@
     :   check that electron-positron annihilation influences on the system entropy
   * [Cosmic neutrino background temperature](cosmic_neutrino_temperature/index.html) (good)
     :   check that additional particles do not spoil the temperature ratio `1.401`
-  * Thermalization test (equilibrium distribution with a "bump")
   * [Standard Model BBN](standard_model_bbn/index.html) (good)
     :   verify the Standard Model neutrino decoupling
 
