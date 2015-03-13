@@ -13,7 +13,6 @@
 </head>
 <body>
 <div id='container' >
-  <a id="top"></a>
   <div id="footer">
     <span id="project-name">
         <a class="btn" href="../../index.html">pyBBN v0.1.0</a>
@@ -21,12 +20,13 @@
     <a class="btn" class="source source-1" href="#top">Back to top</a>
     <div class="generation-time">
         Generated at
-        <code>2015-02-23 02:37</code>
+        <code>2015-03-13 17:32</code>
         by a diligent
         <a target="_blank" href="http://ckald.github.io/pyccoon/" title="Pyccoon: side-to-side documentation generator">
             <img id="pyccoon-icon" src="../../pyccoon_icon.svg" alt="Pyccoon: side-to-side documentation generator" />pyccoon</a>
     </div>
   </div>
+  <a id="top"></a>
   <div class='section'>
     <div class='docs nav'>
       <nav id="breadcrumbs">/ <a href="non_equilibrium_test.py.html/../../../index.html">.</a> / <a href="non_equilibrium_test.py.html/../../index.html">tests</a> / <a href="non_equilibrium_test.py.html/../index.html">unit</a> / <a href="non_equilibrium_test.py.html">non_equilibrium_test.py</a> </nav>
@@ -76,7 +76,7 @@
     <span class="n">neutrino_e</span> <span class="o">=</span> <span class="n">Particle</span><span class="p">(</span><span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">,</span> <span class="o">**</span><span class="n">SMP</span><span class="o">.</span><span class="n">neutrino_e</span><span class="p">)</span>
     <span class="n">neutrino_mu</span> <span class="o">=</span> <span class="n">Particle</span><span class="p">(</span><span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">,</span> <span class="o">**</span><span class="n">SMP</span><span class="o">.</span><span class="n">neutrino_mu</span><span class="p">)</span>
 
-    <span class="n">neutrino_self_scattering</span> <span class="o">=</span> <span class="n">SMI</span><span class="o">.</span><span class="n">neutrino_self_scattering</span><span class="p">(</span><span class="n">neutrino</span><span class="o">=</span><span class="n">neutrino_e</span><span class="p">)</span>
+    <span class="n">neutrino_self_scattering</span> <span class="o">=</span> <span class="n">SMI</span><span class="o">.</span><span class="n">neutrino_scattering</span><span class="p">(</span><span class="n">neutrino_e</span><span class="p">,</span> <span class="n">neutrino_e</span><span class="p">)</span>
 
     <span class="n">universe</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">,</span> <span class="n">plotting</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
     <span class="n">universe</span><span class="o">.</span><span class="n">particles</span> <span class="o">+=</span> <span class="p">[</span><span class="n">photon</span><span class="p">,</span> <span class="n">neutrino_e</span><span class="p">,</span> <span class="n">neutrino_mu</span><span class="p">]</span>

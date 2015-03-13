@@ -13,7 +13,6 @@
 </head>
 <body>
 <div id='container' class="documentation">
-  <a id="top"></a>
   <div id="footer">
     <span id="project-name">
         <a class="btn" href="./index.html">pyBBN v0.1.0</a>
@@ -23,22 +22,24 @@
     Contents
     <div id="jump_wrapper">
       <div id="jump_page">
-          <a class="source source-2" href="#pybbn"> pyBBN </a>
+          <a class="source source-2" href="#installation"> Installation </a>
+          <a class="source source-2" href="#usage"> Usage </a>
       </div>
     </div>
     </div>
     <div class="generation-time">
         Generated at
-        <code>2015-02-23 02:37</code>
+        <code>2015-03-13 17:32</code>
         by a diligent
         <a target="_blank" href="http://ckald.github.io/pyccoon/" title="Pyccoon: side-to-side documentation generator">
             <img id="pyccoon-icon" src="./pyccoon_icon.svg" alt="Pyccoon: side-to-side documentation generator" />pyccoon</a>
     </div>
   </div>
+  <a id="top"></a>
   <div class='section'>
     <div class='docs nav'>
       <nav id="breadcrumbs">/ <a href="index.html/../index.html">.</a> / <a href="index.html">__init__.py</a> </nav>
-      <ul id="children"><li><a href="common/index.html" class="directory">common</a></li><li><a href="interactions/index.html" class="directory">interactions</a></li><li><a href="library/index.html" class="directory">library</a></li><li><a href="notes/index.html" class="directory">notes</a></li><li><a href="particles/index.html" class="directory">particles</a></li><li><a href="tests/index.html" class="directory">tests</a></li><li><a href="index.html">__init__.py</a></li><li><a href="evolution.py.html">evolution.py</a></li><li><a href="GammaTraces.nb">GammaTraces.nb</a></li><li><a href="greek_alphabet.txt">greek_alphabet.txt</a></li><li><a href="numericalunits.py.html">numericalunits.py</a></li><li><a href="plotting.py.html">plotting.py</a></li><li><a href="requirements.txt">requirements.txt</a></li></ul>
+      <ul id="children"><li><a href="common/index.html" class="directory">common</a></li><li><a href="interactions/index.html" class="directory">interactions</a></li><li><a href="library/index.html" class="directory">library</a></li><li><a href="notes/index.html" class="directory">notes</a></li><li><a href="particles/index.html" class="directory">particles</a></li><li><a href="tests/index.html" class="directory">tests</a></li><li><a href="index.html">__init__.py</a></li><li><a href="evolution.py.html">evolution.py</a></li><li><a href="GammaTraces.nb">GammaTraces.nb</a></li><li><a href="greek_alphabet.txt.html">greek_alphabet.txt</a></li><li><a href="numericalunits.py.html">numericalunits.py</a></li><li><a href="plotting.py.html">plotting.py</a></li><li><a href="requirements.txt.html">requirements.txt</a></li></ul>
     </div>
   </div>
   <div id="everything" class='clearall'>
@@ -65,10 +66,36 @@
           <div class='octowrap'>
             <a class='octothorpe' href='#section-1'>#</a>
           </div>
-          <h2><a id="pybbn" class="header-anchor" href="#pybbn"> pyBBN </a></h2>
-<p>This software is a <em>work-in-progress</em> experiment on implementing the particle physics simulations using Python. It is designed to model the weak processes in the Early Universe that precede the primordial nucleosynthesis (Big Bang Nucleosynthesis, BBN).</p>
-<p>To accomplish this, it solves a system of integro-differential Boltzmann kinetic equations coupled to the cosmological equations of the Friedmann–Lemaître–Robertson–Walker Universe.</p>
-<p>This project is aimed at testing the predictions of a number of particle physics models like $\nu MSM$ (Neutrino Minimal Standard Model) by comparing their influence on the BBN observables (yields of the light nuclei; $^1 \mkern-2mu H, \, ^2 \mkern-2mu H, \, ^3 \mkern-2mu H, \, ^4 \mkern-2mu He, \, B, \, Li$)</p>
+          <h2><a id="installation" class="header-anchor" href="#installation"> Installation </a></h2>
+<ol>
+<li>
+<p>Download the project source or clone the repository <a href="https://github.com/ckald/pyBBN">https://github.com/ckald/pyBBN</a></p>
+<div class="codehilite"><pre><span class="n">git</span> <span class="n">clone</span> <span class="n">https</span><span class="o">:</span><span class="c1">//github.com/ckald/pyBBN.git</span>
+</pre></div>
+
+
+</li>
+<li>
+<p>Install dependencies using OS package manager and <a href="https://pypi.python.org/pypi/pip">pip</a> (usually preinstalled on Linux and Mac OS X along with the standard CPython 2.7+ interpreter)</p>
+<ul>
+<li>Ubuntu: <code>sudo aptitude install libblas-dev liblapack-dev python-dev gfortran</code></li>
+<li>Mac OS X: <code>brew install scipy</code></li>
+</ul>
+</li>
+</ol>
+<div class="codehilite"><pre>    <span class="n">sudo</span> <span class="n">pip</span> <span class="n">install</span> <span class="o">-</span><span class="n">r</span> <span class="n">requirements</span><span class="p">.</span><span class="n">txt</span>
+</pre></div>
+
+
+<h2><a id="usage" class="header-anchor" href="#usage"> Usage </a></h2>
+<p>To run some script in the context of the code, one should temporarily alter the <code>PYTHONPATH</code> environment variable:</p>
+<div class="codehilite"><pre><span class="n">PYTHONPATH</span><span class="o">=</span><span class="p">.</span> <span class="n">python</span> <span class="n">some_script</span><span class="p">.</span><span class="n">py</span>
+</pre></div>
+
+
+<p>For example, to run the cosmic neutrino background temperature test:</p>
+<div class="codehilite"><pre><span class="n">PYTHONPATH</span><span class="o">=</span><span class="p">.</span> <span class="n">python</span> <span class="n">tests</span><span class="o">/</span><span class="n">cosmic_neutrino_temperature</span><span class="o">/</span><span class="n">__init__</span><span class="p">.</span><span class="n">py</span>
+</pre></div>
         </div>
         <div class='code'>
           

@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>pyBBN v0.1.0: notes/outline.md</title>
+  <link rel="stylesheet" href="../pyccoon.css">
+  <script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+  });
+  </script>
+  <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</head>
+<body>
+<div id='container' class="documentation">
+  <div id="footer">
+    <span id="project-name">
+        <a class="btn" href="../index.html">pyBBN v0.1.0</a>
+    </span>
+    <a class="btn" class="source source-1" href="#top">Back to top</a>
+    <div id="jump_to" class="btn">
+    Contents
+    <div id="jump_wrapper">
+      <div id="jump_page">
+          <a class="source source-1" href="#project-outline"> Project outline </a>
+          <a class="source source-2" href="#sterile-neutrinos-generation-and-decoupling"> Sterile neutrinos generation and decoupling </a>
+          <a class="source source-3" href="#mixing-angle-temperature-dependence"> Mixing angle temperature dependence </a>
+          <a class="source source-3" href="#subleading-effects"> Subleading effects </a>
+          <a class="source source-2" href="#sterile-neutrinos-decay"> Sterile neutrinos decay </a>
+          <a class="source source-2" href="#neutrinos-decoupling-and-bbn-setup"> Neutrinos decoupling and BBN setup </a>
+          <a class="source source-2" href="#nucleosynthesis"> Nucleosynthesis </a>
+          <a class="source source-3" href="#deuterium-bottleneck"> Deuterium bottleneck </a>
+          <a class="source source-3" href="#backreaction"> Backreaction </a>
+          <a class="source source-3" href="#computation"> Computation </a>
+      </div>
+    </div>
+    </div>
+    <div class="generation-time">
+        Generated at
+        <code>2015-03-13 17:32</code>
+        by a diligent
+        <a target="_blank" href="http://ckald.github.io/pyccoon/" title="Pyccoon: side-to-side documentation generator">
+            <img id="pyccoon-icon" src="../pyccoon_icon.svg" alt="Pyccoon: side-to-side documentation generator" />pyccoon</a>
+    </div>
+  </div>
+  <a id="top"></a>
+  <div class='section'>
+    <div class='docs nav'>
+      <nav id="breadcrumbs">/ <a href="outline.md.html/../../index.html">.</a> / <a href="outline.md.html/../index.html">notes</a> / <a href="outline.md.html">outline.md</a> </nav>
+      <ul id="children"></ul>
+    </div>
+  </div>
+  <div id="everything" class='clearall'>
+    <div id="background"></div>
+    <div class='section'>
+    <a id="section-0" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-0'>#</a>
+          </div>
+          <h1><a id="project-outline" class="header-anchor" href="#project-outline"> Project outline </a></h1>
+<h2><a id="sterile-neutrinos-generation-and-decoupling" class="header-anchor" href="#sterile-neutrinos-generation-and-decoupling"> Sterile neutrinos generation and decoupling </a></h2>
+<p>Heavy sterile neutrinos ($N_{1,2}$) are produced thermally at the temperatures $\gtrsim 10^2 MeV$ (vaguely, depending on the mixing angle and the mass). Influence on the universe expansion at the later stages depends on the regime in which sterile neutrinos decouple from the plasma.</p>
+<p>Decoupling happens when the interaction rate of the equilibrium-supporting reactions drops below the Hubble rate. In the radiation dominated epoch, Hubble rate can be conveniently approximated:</p>
+<p>\begin{equation}
+    H \approx \frac{T^2}{M_*}
+\end{equation}</p>
+<p>Typical interaction rate for 2-to-2 scattering ($N + \nu \to N + \nu$) of the sterile neutrino with the coupling constant $g$ is of the form</p>
+<p>\begin{equation}
+    \Gamma_N = \left&lt; \sigma n_\nu v\right&gt;
+\end{equation}</p>
+<p>where $\sigma$ is the cross-section of the reaction $\propto g^2$, and $v$ is the relative velocity.</p>
+<p>Coupling constant for sterile neutrinos is $G_F |\theta|$, so cross-section from dimensional considerations looks like</p>
+<p>\begin{equation}
+    \sigma \sim [E]^{-2} = G_F^2 |\theta|^2 [E]^2
+\end{equation}</p>
+<p>Kinematically considered reaction contains few parameters: invariant mass and scattering angles The total cross-section does not depend on the angle, so $\sigma = \sigma(s)$.</p>
+<p>\begin{equation}
+    s \sim
+    \begin{cases}
+        m^2 &amp; \text{for non-relativistic N} \\ T^2 &amp; \text{for ultra-relativistic}
+    \end{cases}
+\end{equation}</p>
+<p>Then</p>
+<p>\begin{equation}
+    \Gamma_N \sim G_F^2 |\theta|^2 T^3
+    \begin{cases}
+        m^2 \\ T^2
+    \end{cases}
+    \sim \frac{T^2}{M_*}
+\end{equation}</p>
+<p>This gives us corresponding decoupling temperatures for sterile neutrinos:</p>
+<p>\begin{equation}
+    T^{-1} \sim
+    \begin{cases}
+        G_F^2 |\theta|^2 M_* m^2
+        \\ (G_F^2 |\theta|^2 M_*)^\frac13
+    \end{cases}
+\end{equation}</p>
+<p>For $|\theta|^2 \approx 10^{-8}$ and $m = 0.3 GeV$</p>
+<p>\begin{equation}
+    T^{-1} \sim
+    \begin{cases}
+        (300 GeV)^{-4} \cdot 10^{-8} \cdot 2.4 \cdot 10^{18} GeV \cdot (0.3 GeV)^2
+        \\ \left((300 GeV)^{-4} \cdot 10^{-8} \cdot 2.4 \cdot 10^{18} GeV \right)^\frac13
+    \end{cases}
+    \sim
+     \begin{cases}
+        240 GeV^{-3} \cdot 10^2 \cdot 9 \cdot 10^{-2} GeV^2
+        \\ (240 GeV^{-3})^\frac13
+    \end{cases}
+    \sim
+     \begin{cases}
+        22 GeV^{-1}
+        \\ 6 GeV^{-1}
+    \end{cases}
+\end{equation}</p>
+<p>\begin{equation}
+    T \sim
+     \begin{cases}
+        45 MeV
+        \\ 166 MeV
+    \end{cases}
+\end{equation}</p>
+<p>Hence, the distribution function of sterile neutrinos at the later times highly depends on the following factors:</p>
+<ul>
+<li>sterile-active mixing angle temperature dependence</li>
+<li>mass of the sterile neutrino</li>
+<li>regime of decoupling (relativistic/non-relativistic)</li>
+</ul>
+<p>For example, if thermal corrections of $\theta$ are significant at the time of relativistic decoupling "in vacuum", sterile neutrinos might stay in the equilibrium longer and decouple being non-relativistic.</p>
+<h3><a id="mixing-angle-temperature-dependence" class="header-anchor" href="#mixing-angle-temperature-dependence"> Mixing angle temperature dependence </a></h3>
+<p>A simple example of influence of the medium on sterile neutrino mixing (as well as active neutrinos oscillations) is the Miheev-Smirnov-Wolfenstein (MSW) effect. It is discussed in the theory of solar neutrinos oscillations and captures the influence of the solar $e^-$-$e^+$ plasma on the propagation of neutrinos. Basically, the reason for any interaction between sterile and active neutrinos and oscillation is the fact that mass operator of the Hamiltonian does not commute with the interaction operator. Hence, they don't have a shared set of eigenfunctions.</p>
+<p>The easiest way to account for the thermal corrections to the mixing angle is the effective field theory. Let's consider the basic charged current scattering diagram of the active neutrinos on the electrons:</p>
+<p>\begin{equation}
+    \nu_e + e^+ \to \nu_e + e^+
+\end{equation}</p>
+<p>The corresponding term in the Lagrangian looks like:</p>
+<p>\begin{equation}
+    \Delta \mathcal{L} \sim \overline{\nu_e}(x) \gamma_\mu (1-\gamma^5) e(x)
+        D_W^{\mu \nu}(x-y) \overline{e}(y) \gamma_\nu (1-\gamma^5) \nu_e(y)
+\end{equation}</p>
+<p>In the lowest order (i.e., Fermi theory) the propagator is simply:</p>
+<p>\begin{equation}
+    D_W^{\mu \nu}(x-y) \propto G_F g^{\mu \nu} \delta^4(x-y)
+\end{equation}</p>
+<p>If we average out the electron degrees of freedom, we will obtain the following effective Lagrangian term:</p>
+<p>\begin{equation}
+    &lt;\Delta \mathcal{L}&gt; \sim G_F \overline{\nu_e}(x) \gamma_\mu (1-\gamma^5)
+        &lt; e(x) \overline{e}(x) &gt; \gamma_\nu (1-\gamma^5) \nu_e(x)
+\end{equation}</p>
+<p>Recalling the Dirac current:</p>
+<p>\begin{align}
+    &lt; \overline{e}(x) \gamma^\mu e(x) &gt; &amp;= j^\mu(x)  \\ &lt; e(x) \overline{e}(x)&gt; &amp;= -j^0 (x) \gamma^0 = -(n_e(x)-n_\overline{e}(x)) \gamma^0
+\end{align}</p>
+<p><span class=todo><strong>TODO</strong>: can't quite justify this part</span></p>
+<p>Notice the difference from the MSW-effect, where the medium is absolutely anisotropic and one can neglect the density of the positrons.</p>
+<p>Finally this gives us:</p>
+<p>\begin{align}
+    &lt;\Delta \mathcal{L}&gt;
+        &amp;\sim -G_F (n_e(x)-n_\overline{e}(x))
+            \overline{\nu_e}(x) \gamma_\mu (1-\gamma^5) \gamma^0 \gamma_\nu (1-\gamma^5) \nu_e(x)
+        \\ &amp;= 8 G_F (n_e(x)-n_\overline{e}(x)) \, \overline{\nu_e}(x) \gamma^0 \nu_e(x)
+\end{align}</p>
+<p>Expanding this term in terms of chiral spinors, we see that it is basically an effective mass of
+the active neutrino:</p>
+<p>\begin{align}
+    &lt;\Delta \mathcal{L}&gt;
+        &amp;= 8 G_F \Delta n_e \, {\nu_e}_L^+ {\nu_e}_L
+\end{align}</p>
+<p>From this we immediately see that this effect automatically cancels out in the lepton-symmetric medium.</p>
+<p>Using the same technique, we can find a correction to $\theta$:</p>
+<p>\begin{align}
+    &lt;\Delta \mathcal{L_\theta}&gt; &amp;\sim 8 \theta_0 G_F \Delta n_e \, \overline{\nu_e} \gamma^0 N
+\end{align}</p>
+<p>Where $\theta_0$ is the vacuum value of the mixing:</p>
+<p>\begin{equation}
+    \theta(T) = \frac{M_D(T)}{M_I} = \theta_0 \left(1 + \frac{G_F \Delta n_e}{M_I} + ...\right)
+\end{equation}</p>
+<p>This correction is insignificant when</p>
+<p>\begin{equation}
+    M_I \gg G_F \Delta n_e \approx G_F T^3 \eta_l
+\end{equation}</p>
+<p>Depending on the assumptions in the system, this correction might cancel out ($\eta_l = 0$). The maximal influence of this correction corresponds to the MSW situation: $\eta_l = 1$:</p>
+<p>\begin{align}
+    T &amp;\ll \left(\frac{M_I}{G_F \eta_l}\right)^\frac13
+        \sim \left(0.3 GeV (3 \cdot 10^2 GeV)^2 \right)^\frac13
+        \\ &amp;= \left(27 \cdot 10^3 \right)^\frac13 GeV = 30 GeV
+\end{align}</p>
+<p>So, as long as the temperature is below $1 GeV$ it is completely safe to neglect this effect.</p>
+<p>However, due to the symmetry of the system, the subleading terms that give a rise to corrections proportional to $n_e + n_\overline{e}$ might become dominant.</p>
+<h3><a id="subleading-effects" class="header-anchor" href="#subleading-effects"> Subleading effects </a></h3>
+<p>Returning to the interaction term of the Lagrangian:</p>
+<p>\begin{equation}
+    \Delta \mathcal{L} \sim \overline{\nu_e}(x) \gamma_\mu (1-\gamma^5) e(x)
+        D_W^{\mu \nu}(x-y) \overline{e}(y) \gamma_\nu (1-\gamma^5) \nu_e(y)
+\end{equation}</p>
+<p>Expanding the W-boson propagator, we obtain new effective interactions of the kind:</p>
+<p>\begin{align}
+    \Delta \mathcal{L}
+        &amp; \sim G_F \overline{\nu_e} \gamma_\mu e \frac{\partial^2}{M_W^2} \overline{e} \gamma^\mu \nu_e +
+        \\ &amp;+ G_F \overline{\nu_e} \gamma_\mu e \frac{\partial^\mu \partial^\nu}{M_W^2} \overline{e} \gamma_\nu \nu_e
+\end{align}</p>
+<p><span class=todo><strong>TODO</strong>: I don't see how to derive the $n+n$ effect in this framework. Looks like double-derivative terms won't give the necessary relative sign between the electrons and positrons.</span></p>
+<h2><a id="sterile-neutrinos-decay" class="header-anchor" href="#sterile-neutrinos-decay"> Sterile neutrinos decay </a></h2>
+<p>After sterile neutrinos had decoupled from the plasma, their distribution as a function of conformal momentum stays constant. During this time sterile neutrinos do not scatter with the equilibrated plasma but they do decay.</p>
+<p>Main decays channels for sterile neutrinos with masses $m_N &lt; m_K$ range are:</p>
+<p>\begin{align}
+    N &amp;\to \nu_\alpha + \nu_\beta + \overline{\nu_\beta} \\ N &amp;\to \nu_\alpha + l^+_\beta + l^-_\beta \\ N &amp;\to \nu_\alpha + l^+_\alpha + l^-_{\beta \neq \alpha} \\ N &amp;\to \pi^0 + \nu_\alpha \\ N &amp;\to \pi^+ + l^-_\alpha
+\end{align}</p>
+<p>Summed up decay rates of these processes gives us the total decay rate of the sterile neutrino. As the interaction rates of weak and electromagnetic processes are still sufficiently higher than the expansion rate of the Universe, all decay products of the sterile neutrino immediately equilibrate and affect only the temperature of the plasma.</p>
+<p>Then the kinetic equation on the sterile neutrino reads:</p>
+<p>\begin{equation}
+    \frac{d n_N}{d t} = - (3 H + \Gamma_N) n_N
+\end{equation}</p>
+<p>Decay products function as a heating system of the plasma. This effect can be seen from the energy conservation law. For simplicity, let's consider a system consisting only of photons and non-relativistic sterile neutrinos:</p>
+<p>\begin{align}
+    &amp;\dot{\rho} + 3 H ( \rho + p ) = 0
+    \\ \rho_\gamma &amp;= \frac{2 \pi^2}{30} T^4
+        &amp; p_\gamma &amp;= \frac13 \rho_\gamma
+        &amp; \dot{\rho_\gamma} &amp;= 4 \rho_\gamma \frac{\dot{T}}{T}
+    \\ \rho_N &amp;= m n_N
+        &amp; p_N &amp;= 0
+\end{align}</p>
+<p>\begin{align}
+    \dot{\rho} + 3 H (\rho + p) = \dot{\rho_\gamma} + \dot{\rho_N} + 3 H (\frac43 \rho_\gamma + m n_N) = 0
+\end{align}</p>
+<p>\begin{align}
+    4 \rho_\gamma \frac{\dot{T}}{T} - (3 H + \Gamma_N) m n_N + 3 H (\frac43 \rho_\gamma + m n_N) &amp;= 0
+    \\ 4 \rho_\gamma \frac{\dot{T}}{T} - \Gamma_N m n_N + 4 H \rho_\gamma &amp;= 0
+\end{align}</p>
+<p>\begin{equation}
+    \frac{\dot{T}}{T} = \frac14 \Gamma_N \frac{\rho_N}{\rho_\gamma } - H
+\end{equation}</p>
+<p>This effect can be accounted for analytically without considering the precise dynamics of the decay products. From the equation follows that the amount of heating highly depends on the energy density ratio of the sterile neutrinos and photons, so non-relativistic particles won't affect the expansion rate significantly.</p>
+<p>Depending on the decoupling temperature, one might also have to account for a transition in the plasma similar to the electron-positron annihilation at temperature $\sim m_e$ that changes the number of relativistic degrees of freedom - hence, the entropy conservation of the Universe will require another boost of temperature. Transition in this case is the QCD transition.</p>
+<h2><a id="neutrinos-decoupling-and-bbn-setup" class="header-anchor" href="#neutrinos-decoupling-and-bbn-setup"> Neutrinos decoupling and BBN setup </a></h2>
+<h2><a id="nucleosynthesis" class="header-anchor" href="#nucleosynthesis"> Nucleosynthesis </a></h2>
+<p>Big Bang Nucleosynthesis is a process of generation of the light nuclei in the Early Universe from the primordial protons and neutrons. Proton-neutron composition of the plasma and the baryon-to-photon ratio are the main input parameters for the system of nuclear kinetic equations of the BBN.</p>
+<p><center><img src="images/bbn_reactions.png" /></center></p>
+<h3><a id="deuterium-bottleneck" class="header-anchor" href="#deuterium-bottleneck"> Deuterium bottleneck </a></h3>
+<p>Generation of the nuclei is controlled by the balance of the deuterium generation reaction.</p>
+<p>\begin{equation}
+n + p \leftrightarrow D + \gamma
+\end{equation}</p>
+<p>The bounding energy of the deuterium nucleus is $\Delta_D \sim 2.2 MeV$ - the minimal energy requirement for deuterium generation. However, due to extremely small baryon-to-photon ratio, the are plenty high-energetic photons that drive the inverse reaction.</p>
+<p>The number of photons with $p &gt; \Delta_D$ is given by:</p>
+<p>\begin{align}
+n_\gamma (E&gt;\Delta_D) = \frac{1}{\pi^2} \int_{\Delta_D}^\infty \frac{p^2 dp}{e^\frac{p}{T}-1}
+= \frac{T^3}{\pi^2} \int_{\Delta_D/T}^\infty \frac{x^2 dx}{e^x-1}
+\end{align}</p>
+<p>As the first approximation, for efficient deuterium generation to begin, this value has to be comparable with $n_B$</p>
+<p>\begin{equation}
+n_\gamma (E&gt;\Delta_D) \sim n_B = n_\gamma \eta \approx 0.244 T^3 \cdot \eta
+\end{equation}</p>
+<h3><a id="backreaction" class="header-anchor" href="#backreaction"> Backreaction </a></h3>
+<p>Nucleosynthesis is a subleading process in the Early Universe as it governs mostly non-relativistic particles in the radiation dominated epoch. Due to this one can neglect any backreaction of the nuclear reactions on the expansion of the Universe and plasma.</p>
+<h3><a id="computation" class="header-anchor" href="#computation"> Computation </a></h3>
+<p>As all baryons are non-relativistic, their distribution functions are significantly spiked at the zero momentum and it is sufficient to treat them using simplified Boltzmann equations as in the case of sterile neutrinos. Originally nucleosynthesis was considered by Gamow as a system of neutron capture/emission processes (<a href="http://journals.aps.org/pr/pdf/10.1103/PhysRev.73.803"> $\alpha\beta\gamma$ paper</a>):</p>
+<p>\begin{equation}
+\frac{d n_i}{d t} = f(t)( \sigma_{i-1} n_{i-1} - \sigma_{i} n_i)
+\end{equation}</p>
+<p>($f(t)$ - expansion factor, $\sigma_i$ - neutron capture cross-sections).</p>
+<p>More precisely, one can consider a coupled system of ordinary differential equations expressing not only neutron capture processes, but all possible reactions between the nucleons and light nuclei. In conditions of primordial nucleosynthesis it is sufficient to include only 2-particle scatterings and nuclei up to $^7 Li, ^7 Be$. Heavier elements do not generate during the BBN because of absence of stable nuclei with $A=5,8$ and more complicated reactions like $^4 He + ^4 He + ^4 He \to ^{12} C$ are negligible at the densities of the interest.</p>
+        </div>
+        <div class='code'>
+          
+        </div>
+        <div class='clearall'></div>
+    </section>
+    </div>
+  </div>
+</body>

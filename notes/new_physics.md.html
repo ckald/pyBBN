@@ -13,7 +13,6 @@
 </head>
 <body>
 <div id='container' class="documentation">
-  <a id="top"></a>
   <div id="footer">
     <span id="project-name">
         <a class="btn" href="../index.html">pyBBN v0.1.0</a>
@@ -32,7 +31,7 @@
           <a class="source source-3" href="#gauge-bosons-interactions"> Gauge bosons interactions </a>
           <a class="source source-3" href="#feynman-rules"> Feynman rules </a>
           <a class="source source-2" href="#matrix-elements"> Matrix elements </a>
-          <a class="source source-3" href="#pionic-decays"> Pionic decays </a>
+          <a class="source source-3" href="#pions-production"> Pions production </a>
           <a class="source source-3" href="#reaction-kinematics"> Reaction kinematics </a>
           <a class="source source-3" href="#trace-computation"> Trace computation </a>
           <a class="source source-3" href="#neutral-current-and-neutrino-scattering"> Neutral current and neutrino scattering </a>
@@ -42,12 +41,13 @@
     </div>
     <div class="generation-time">
         Generated at
-        <code>2015-02-23 02:37</code>
+        <code>2015-03-13 17:32</code>
         by a diligent
         <a target="_blank" href="http://ckald.github.io/pyccoon/" title="Pyccoon: side-to-side documentation generator">
             <img id="pyccoon-icon" src="../pyccoon_icon.svg" alt="Pyccoon: side-to-side documentation generator" />pyccoon</a>
     </div>
   </div>
+  <a id="top"></a>
   <div class='section'>
     <div class='docs nav'>
       <nav id="breadcrumbs">/ <a href="new_physics.md.html/../../index.html">.</a> / <a href="new_physics.md.html/../index.html">notes</a> / <a href="new_physics.md.html">new_physics.md</a> </nav>
@@ -142,14 +142,10 @@
     \end{align}</li>
 <li>Leptonic scatterings:
     \begin{align}
-        N + l^+ \to \pi^+
-    \end{align}</li>
-<li>Exotic:
-    \begin{align}
         N + \mu^+ \to K^+
     \end{align}</li>
 </ul>
-<p>Apparently, kaon reactions can appear already with $m_N &gt; 388 MeV$, but we will see that interactions with kaons are suppressed by $|V_{us}|$ and the rareness of muons.</p>
+<p>Apparently, kaon reactions can appear already with $m_N &gt; 388 MeV$, but we will see that interactions with kaons are suppressed by $|V_{us}|$ and the rareness of muons. Production of pions from leptonic scattering ($ N + l^+ \to \pi^+ $) is forbidden by kinematics.</p>
 <p>The backreaction of the pions on the plasma is dominated by few decay modes:</p>
 <p>\begin{align}
     \pi^0 &amp;\to \gamma + \gamma
@@ -215,14 +211,14 @@
 <p>Turns out that $f_\pm = \sqrt{2} f_0 = f_{\pi} \approx 130 MeV$</p>
 <p>Relation between $f_\pm$ and $f_0$ can be related to the fact that precise quark composition of the $\pi^0$ is $\frac{1}{\sqrt{2}}(u \overline{u} + d \overline{d})$</p>
 <h2><a id="matrix-elements" class="header-anchor" href="#matrix-elements"> Matrix elements </a></h2>
-<h3><a id="pionic-decays" class="header-anchor" href="#pionic-decays"> Pionic decays </a></h3>
+<h3><a id="pions-production" class="header-anchor" href="#pions-production"> Pions production </a></h3>
 <p>\begin{align}
-    N &amp;\to \nu_\alpha + \pi^0
-    \\ N + \overline{\nu}_\alpha &amp;\to \pi^0
-    \\ N &amp;\to l^- + \pi^+
-    \\ N + l^+ &amp;\to \pi^+
+    N &amp;\to \pi^0 + \nu_\alpha
+    \\ \overline{\nu}_\alpha + N &amp;\to \pi^0
+    \\ N &amp;\to \pi^+ + l^-
+    \\ l^+ + N &amp;\to \pi^+
 \end{align}</p>
-<p>We will concentrate on computation of the first diagram and will get to the second by a series of substitutions. In the following, $\nu$ spinor represents the lepton and $N$ is a sterile neutrino.</p>
+<p>We will concentrate on computation of the first diagram and will get to the others by a series of substitutions. In the following, $\nu$ spinor represents the lepton and $N$ is a sterile neutrino.</p>
 <p>\begin{align}
     \require{cancel}
     \imath \mathcal{M} &amp;=
@@ -253,7 +249,7 @@
         \right]
 \end{align}</p>
 <p>The $\pm m_N$ sign comes from the spin sum for Majorana fermion that is not defined. Fortunately, chirality projectors automatically remove the constant term of that spin sum.</p>
-<p>The sign of the lepton function depends on the side, where this particle occurs in the reaction. For the outgoing lepton it will be $+$ and $-$ for incoming antilepton. However, lepton mass occurs only in a term with an odd number of gamma matrices in a trace - hence, it vanishes.</p>
+<p>The sign in the lepton spin sum depends on the side, where this particle occurs in the reaction. For the outgoing lepton it will be $+$ and $-$ for incoming antilepton. However, lepton mass occurs only in a term with an odd number of gamma matrices in a trace - hence, it vanishes.</p>
 <h3><a id="reaction-kinematics" class="header-anchor" href="#reaction-kinematics"> Reaction kinematics </a></h3>
 <p>\begin{align}
     &amp;p^\mu = k^\mu + \pi^\mu \\ &amp;\begin{cases}
