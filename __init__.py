@@ -1,17 +1,33 @@
 # -*- coding: utf-8 -*-
 
 """
-== pyBBN ==
+== Installation ==
 
-This software is a _work-in-progress_ experiment on implementing the particle physics simulations\
-using Python. It is designed to model the weak processes in the Early Universe that precede the\
-primordial nucleosynthesis (Big Bang Nucleosynthesis, BBN).
+ 1. Download the project source or clone the repository https://github.com/ckald/pyBBN
 
-To accomplish this, it solves a system of integro-differential Boltzmann kinetic equations coupled\
-to the cosmological equations of the Friedmann–Lemaître–Robertson–Walker Universe.
+        git clone https://github.com/ckald/pyBBN.git
 
-This project is aimed at testing the predictions of a number of particle physics models like \
-$\nu MSM$ (Neutrino Minimal Standard Model) by comparing their influence on the BBN observables\
-(yields of the light nuclei; \
- $^1 \mkern-2mu H, \, ^2 \mkern-2mu H, \, ^3 \mkern-2mu H, \, ^4 \mkern-2mu He, \, B, \, Li$)
+
+
+ 1. Install dependencies using OS package manager and [pip](https://pypi.python.org/pypi/pip)  \
+    (usually preinstalled on Linux and Mac OS X along with the standard CPython 2.7+ interpreter)
+
+     * Ubuntu: `sudo aptitude install libblas-dev liblapack-dev python-dev gfortran`
+     * Mac OS X: `brew install scipy`
+
+```
+    sudo pip install -r requirements.txt
+```
+
+== Usage ==
+
+To run some script in the context of the code, one should temporarily alter the `PYTHONPATH`\
+environment variable:
+
+    PYTHONPATH=. python some_script.py
+
+For example, to run the cosmic neutrino background temperature test:
+
+    PYTHONPATH=. python tests/cosmic_neutrino_temperature/__init__.py
+
 """
