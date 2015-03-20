@@ -23,10 +23,14 @@
     <div id="jump_wrapper">
       <div id="jump_page">
           <a class="source source-1" href="#project-outline"> Project outline </a>
-          <a class="source source-2" href="#sterile-neutrinos-generation-and-decoupling"> Sterile neutrinos generation and decoupling </a>
+          <a class="source source-2" href="#what-particles-can-influence-the-primordial-nucleosynthesis?"> What particles can influence the primordial nucleosynthesis? </a>
+          <a class="source source-2" href="#the-models-considered"> The models considered </a>
+          <a class="source source-3" href="#number-of-sterile-neutrinos"> Number of sterile neutrinos </a>
+          <a class="source source-3" href="#coupling-constants"> Coupling constants </a>
           <a class="source source-3" href="#mixing-angle-temperature-dependence"> Mixing angle temperature dependence </a>
-          <a class="source source-3" href="#subleading-effects"> Subleading effects </a>
+          <a class="source source-2" href="#sterile-neutrinos-generation-and-decoupling"> Sterile neutrinos generation and decoupling </a>
           <a class="source source-2" href="#sterile-neutrinos-decay"> Sterile neutrinos decay </a>
+          <a class="source source-3" href="#plasma-heating-by-decaying-relativistic-sterile-neutrinos"> Plasma heating by decaying relativistic sterile neutrinos </a>
           <a class="source source-2" href="#neutrinos-decoupling-and-bbn-setup"> Neutrinos decoupling and BBN setup </a>
           <a class="source source-2" href="#nucleosynthesis"> Nucleosynthesis </a>
           <a class="source source-3" href="#deuterium-bottleneck"> Deuterium bottleneck </a>
@@ -37,7 +41,7 @@
     </div>
     <div class="generation-time">
         Generated at
-        <code>2015-03-13 17:32</code>
+        <code>2015-03-20 18:20</code>
         by a diligent
         <a target="_blank" href="http://ckald.github.io/pyccoon/" title="Pyccoon: side-to-side documentation generator">
             <img id="pyccoon-icon" src="../pyccoon_icon.svg" alt="Pyccoon: side-to-side documentation generator" />pyccoon</a>
@@ -60,6 +64,58 @@
             <a class='octothorpe' href='#section-0'>#</a>
           </div>
           <h1><a id="project-outline" class="header-anchor" href="#project-outline"> Project outline </a></h1>
+<h2><a id="what-particles-can-influence-the-primordial-nucleosynthesis?" class="header-anchor" href="#what-particles-can-influence-the-primordial-nucleosynthesis?"> What particles can influence the primordial nucleosynthesis? </a></h2>
+<p>Equilibrium observables in the Early Universe follow the Markov evolution - the future state of the system is determined only by the current state. The reason for the word "equilibrium" is that any statistical state of the system is uniquely determined by the temperature while non-equilibrium parts of the plasma have memory about the dynamics of the past.</p>
+<p>In particular, for the Standard BBN theory we assume that all the relevant constituents of the plasma are equilibrated at the temperatures above few $MeV$ (influence of possible non-equilibrium particles is held to be negligible). This means that any particles existing before, but vanished by the time of BBN, cannot influence its predictions.</p>
+<p>The basic analogy to keep in mind comes from the electron-positron annihilation at $T \sim m_e$, that changes the expansion rate of the Universe and the number of relativistic degrees of freedom, but can be mimicked in the later moments by the initial conditions of some different radiation-dominated physics where these particles never existed (leaving the particle physics paradoxes aside).</p>
+<p>This creates a constraint on the non-stable non-equilibrium particles that might influence the BBN: their lifetime has to be at least of the same order as the time of decoupling of the first particle species (namely, neutrinos at $T~MeV$). As BBN itself is not sensitive to the history of expansion before this moment, it in principle can be freely shifted in time. The particular mapping of the expansion rate and the temperature to some time axis is fixed by the particle physics model being studied.</p>
+<p>Rough estimate for the non-equilibrium decaying particles:</p>
+<p>\begin{equation}
+    \tau \gtrsim 0.01 sec
+\end{equation}</p>
+<p>Only models that satisfy this estimate might influence the BBN either by changing the expansion law of the Universe or by adding corrections to the spectra of decoupled species that can affect the equilibrium of specific interactions.</p>
+<h2><a id="the-models-considered" class="header-anchor" href="#the-models-considered"> The models considered </a></h2>
+<p>We are interested in constraining the arbitrary sterile neutrino model, which is defined by the See-Saw Lagrangian:</p>
+<p>\begin{equation}
+     \mathcal{L} = \mathcal{L}_{SM}+ i \bar N_I \partial_\mu \gamma^\mu N_I -
+          \left(F_{\alpha I} \,\bar L_\alpha N_I \tilde \phi
+        - \frac{M_I}{2} \; \bar {N_I^c} N_I + h.c.\right)
+\end{equation}</p>
+<h3><a id="number-of-sterile-neutrinos" class="header-anchor" href="#number-of-sterile-neutrinos"> Number of sterile neutrinos </a></h3>
+<p>We are free to consider an arbitrary number of sterile neutrinos species, but the most interest comprise the case of 1 light sterile neutrino with negligible in the context of the BBN coupling constant and 2 heavy degenerate in mass sterile neutrinos. The first specie won't affect the observables, but heavier particles with higher interaction rates might survive until the BBN.</p>
+<p>Degeneracy in mass also allows to treat 2 Majorana fermions as a single Dirac particle - effectively substituting the doubling of the reactions due to charge conjugation with the notion of the antiparticle.</p>
+<p>However, more heavy sterile neutrino generations can be considered.</p>
+<h3><a id="coupling-constants" class="header-anchor" href="#coupling-constants"> Coupling constants </a></h3>
+<p>There are 3 mixing angles corresponding to each sterile neutrino specie (Dirac or Majorana). The lifetime of the particle depends on them in a non-trivial way, but for any given set of mixing angles it is possible to derive the mass range in which this particular realization of the sterile neutrino will survive until the BBN.</p>
+<p>Particular values for the coupling constants can be determined from neutrino oscillations experiments, so it is useful to use similar parametrization.</p>
+<p>It is convenient to define the sterile neutrino mixing angles as running with mass:</p>
+<p>$$
+    \theta_{M_N} = \theta_{M'} \sqrt{\frac{M'}{M_N}}
+$$</p>
+<p>And normalized by some parameter on which resulting neutrino masses do not depend:</p>
+<p>$$
+    \theta_{M_N} \propto |z|
+$$</p>
+<p>Particular choice of $|z|$, $M'$ and $\theta_M'$s ratios correspond to specific active neutrinos masses.</p>
+<p>Typical decay width and lifetime in such parametrization look like:</p>
+<p>$$
+    \theta_e = 1.14 \cdot 10^{-4} \\ \theta_\mu = 6.16 \cdot 10^{-4}  \\ \theta_\tau = 5.65 \cdot 10^{-4}
+$$</p>
+<p><center>
+<img src="images/sterile_neutrino_decay_width.png" width=350 /><img src="images/sterile_neutrino_lifetime.png" width=350 />
+</center></p>
+<p>By allowing the variation of normalization of mixing angles, one can determine the models affecting BBN predictions:</p>
+<p><center><img src="images/lifetime_contour_plot.png"/></center></p>
+<p>Meaning that all the sterile neutrinos models below the $0.01$ contour will survive at the times of BBN and might affect the observables.</p>
+<p>Of course, this is just a single projection of the multidimensional parameter space, but it is a useful one to compare with oscillation experiments.</p>
+<h3><a id="mixing-angle-temperature-dependence" class="header-anchor" href="#mixing-angle-temperature-dependence"> Mixing angle temperature dependence </a></h3>
+<p>A simple example of influence of the medium on sterile neutrino mixing (as well as active neutrinos oscillations) is the Miheev-Smirnov-Wolfenstein (MSW) effect. It is discussed in the theory of solar neutrinos oscillations and captures the influence of the solar $e^-$-$e^+$ plasma on the propagation of neutrinos.</p>
+<p>However, the MSW correction is proportional to electron-positron density difference and becomes prominent only in highly asymmetric medium like the Sun. An approach of the quantum field theory at finite temperatures allows to obtain more general result for the temperature dependence of the $\theta$:</p>
+<p><center><img src="images/0901.0011.png" /></center></p>
+<p>We assume no significant lepton asymmetry, so the main contribution comes from the $b$ function.</p>
+<p><img src="images/temperature_dependance_2D.png" /><img src="images/temperature_dependance_3D.png" /></p>
+<p>From these plots we can that temperature corrections become significant only at temperatures of the order of couple $GeV$s, so as long as sterile neutrinos decouple at later times, we can assume the mixing angles equal to the vacuum ones.</p>
+<p><span class=todo><strong>TODO</strong>: looks like this effect can be derived simply by calculating a single correction of the neutrino propagator (in the flavor basis there are no corrections sterile neutrinos) through the $W-e$ loop. $W$-boson propagator leading term gives MSW-like correction and a term, suppressed by $m_e / m_N$. The subleading term will hopefully give the desired $b$-function. The only thermal QFT information used is the electron thermal propagator.</span></p>
 <h2><a id="sterile-neutrinos-generation-and-decoupling" class="header-anchor" href="#sterile-neutrinos-generation-and-decoupling"> Sterile neutrinos generation and decoupling </a></h2>
 <p>Heavy sterile neutrinos ($N_{1,2}$) are produced thermally at the temperatures $\gtrsim 10^2 MeV$ (vaguely, depending on the mixing angle and the mass). Influence on the universe expansion at the later stages depends on the regime in which sterile neutrinos decouple from the plasma.</p>
 <p>Decoupling happens when the interaction rate of the equilibrium-supporting reactions drops below the Hubble rate. In the radiation dominated epoch, Hubble rate can be conveniently approximated:</p>
@@ -130,79 +186,13 @@
 <li>regime of decoupling (relativistic/non-relativistic)</li>
 </ul>
 <p>For example, if thermal corrections of $\theta$ are significant at the time of relativistic decoupling "in vacuum", sterile neutrinos might stay in the equilibrium longer and decouple being non-relativistic.</p>
-<h3><a id="mixing-angle-temperature-dependence" class="header-anchor" href="#mixing-angle-temperature-dependence"> Mixing angle temperature dependence </a></h3>
-<p>A simple example of influence of the medium on sterile neutrino mixing (as well as active neutrinos oscillations) is the Miheev-Smirnov-Wolfenstein (MSW) effect. It is discussed in the theory of solar neutrinos oscillations and captures the influence of the solar $e^-$-$e^+$ plasma on the propagation of neutrinos. Basically, the reason for any interaction between sterile and active neutrinos and oscillation is the fact that mass operator of the Hamiltonian does not commute with the interaction operator. Hence, they don't have a shared set of eigenfunctions.</p>
-<p>The easiest way to account for the thermal corrections to the mixing angle is the effective field theory. Let's consider the basic charged current scattering diagram of the active neutrinos on the electrons:</p>
-<p>\begin{equation}
-    \nu_e + e^+ \to \nu_e + e^+
-\end{equation}</p>
-<p>The corresponding term in the Lagrangian looks like:</p>
-<p>\begin{equation}
-    \Delta \mathcal{L} \sim \overline{\nu_e}(x) \gamma_\mu (1-\gamma^5) e(x)
-        D_W^{\mu \nu}(x-y) \overline{e}(y) \gamma_\nu (1-\gamma^5) \nu_e(y)
-\end{equation}</p>
-<p>In the lowest order (i.e., Fermi theory) the propagator is simply:</p>
-<p>\begin{equation}
-    D_W^{\mu \nu}(x-y) \propto G_F g^{\mu \nu} \delta^4(x-y)
-\end{equation}</p>
-<p>If we average out the electron degrees of freedom, we will obtain the following effective Lagrangian term:</p>
-<p>\begin{equation}
-    &lt;\Delta \mathcal{L}&gt; \sim G_F \overline{\nu_e}(x) \gamma_\mu (1-\gamma^5)
-        &lt; e(x) \overline{e}(x) &gt; \gamma_\nu (1-\gamma^5) \nu_e(x)
-\end{equation}</p>
-<p>Recalling the Dirac current:</p>
-<p>\begin{align}
-    &lt; \overline{e}(x) \gamma^\mu e(x) &gt; &amp;= j^\mu(x)  \\ &lt; e(x) \overline{e}(x)&gt; &amp;= -j^0 (x) \gamma^0 = -(n_e(x)-n_\overline{e}(x)) \gamma^0
-\end{align}</p>
-<p><span class=todo><strong>TODO</strong>: can't quite justify this part</span></p>
-<p>Notice the difference from the MSW-effect, where the medium is absolutely anisotropic and one can neglect the density of the positrons.</p>
-<p>Finally this gives us:</p>
-<p>\begin{align}
-    &lt;\Delta \mathcal{L}&gt;
-        &amp;\sim -G_F (n_e(x)-n_\overline{e}(x))
-            \overline{\nu_e}(x) \gamma_\mu (1-\gamma^5) \gamma^0 \gamma_\nu (1-\gamma^5) \nu_e(x)
-        \\ &amp;= 8 G_F (n_e(x)-n_\overline{e}(x)) \, \overline{\nu_e}(x) \gamma^0 \nu_e(x)
-\end{align}</p>
-<p>Expanding this term in terms of chiral spinors, we see that it is basically an effective mass of
-the active neutrino:</p>
-<p>\begin{align}
-    &lt;\Delta \mathcal{L}&gt;
-        &amp;= 8 G_F \Delta n_e \, {\nu_e}_L^+ {\nu_e}_L
-\end{align}</p>
-<p>From this we immediately see that this effect automatically cancels out in the lepton-symmetric medium.</p>
-<p>Using the same technique, we can find a correction to $\theta$:</p>
-<p>\begin{align}
-    &lt;\Delta \mathcal{L_\theta}&gt; &amp;\sim 8 \theta_0 G_F \Delta n_e \, \overline{\nu_e} \gamma^0 N
-\end{align}</p>
-<p>Where $\theta_0$ is the vacuum value of the mixing:</p>
-<p>\begin{equation}
-    \theta(T) = \frac{M_D(T)}{M_I} = \theta_0 \left(1 + \frac{G_F \Delta n_e}{M_I} + ...\right)
-\end{equation}</p>
-<p>This correction is insignificant when</p>
-<p>\begin{equation}
-    M_I \gg G_F \Delta n_e \approx G_F T^3 \eta_l
-\end{equation}</p>
-<p>Depending on the assumptions in the system, this correction might cancel out ($\eta_l = 0$). The maximal influence of this correction corresponds to the MSW situation: $\eta_l = 1$:</p>
-<p>\begin{align}
-    T &amp;\ll \left(\frac{M_I}{G_F \eta_l}\right)^\frac13
-        \sim \left(0.3 GeV (3 \cdot 10^2 GeV)^2 \right)^\frac13
-        \\ &amp;= \left(27 \cdot 10^3 \right)^\frac13 GeV = 30 GeV
-\end{align}</p>
-<p>So, as long as the temperature is below $1 GeV$ it is completely safe to neglect this effect.</p>
-<p>However, due to the symmetry of the system, the subleading terms that give a rise to corrections proportional to $n_e + n_\overline{e}$ might become dominant.</p>
-<h3><a id="subleading-effects" class="header-anchor" href="#subleading-effects"> Subleading effects </a></h3>
-<p>Returning to the interaction term of the Lagrangian:</p>
-<p>\begin{equation}
-    \Delta \mathcal{L} \sim \overline{\nu_e}(x) \gamma_\mu (1-\gamma^5) e(x)
-        D_W^{\mu \nu}(x-y) \overline{e}(y) \gamma_\nu (1-\gamma^5) \nu_e(y)
-\end{equation}</p>
-<p>Expanding the W-boson propagator, we obtain new effective interactions of the kind:</p>
-<p>\begin{align}
-    \Delta \mathcal{L}
-        &amp; \sim G_F \overline{\nu_e} \gamma_\mu e \frac{\partial^2}{M_W^2} \overline{e} \gamma^\mu \nu_e +
-        \\ &amp;+ G_F \overline{\nu_e} \gamma_\mu e \frac{\partial^\mu \partial^\nu}{M_W^2} \overline{e} \gamma_\nu \nu_e
-\end{align}</p>
-<p><span class=todo><strong>TODO</strong>: I don't see how to derive the $n+n$ effect in this framework. Looks like double-derivative terms won't give the necessary relative sign between the electrons and positrons.</span></p>
+<p>Using the analysis above, we assume no significant thermal corrections for the mixing angles and, for given mass and temperature, find the decoupling regime:</p>
+<p>For $ \theta \approx 10^{-4} $
+<img src="images/decoupling_regimes_10^-4.png" >
+For $ \theta \approx 10^{-2} $
+<img src="images/decoupling_regimes_10^-2.png" ></p>
+<p>The plotted regions correspond to non-equilibrium species in different regimes. In practice, as the temperature drops, when particle with given mass enters any of the regions - it decouples in the corresponding regime. For the sakes of certainty, the "intermediate" regime corresponds to the particle specie with $\frac15 T &lt; m &lt; 5 T$.</p>
+<p>Analysis of the decoupling regimes for the mass range of interest shows that for $\theta \lesssim 10^{-4}$ decoupling regime is rather relativistic, while for bigger values it is possible to get a fully-non-relativistic decoupling.</p>
 <h2><a id="sterile-neutrinos-decay" class="header-anchor" href="#sterile-neutrinos-decay"> Sterile neutrinos decay </a></h2>
 <p>After sterile neutrinos had decoupled from the plasma, their distribution as a function of conformal momentum stays constant. During this time sterile neutrinos do not scatter with the equilibrated plasma but they do decay.</p>
 <p>Main decays channels for sterile neutrinos with masses $m_N &lt; m_K$ range are:</p>
@@ -235,6 +225,30 @@ the active neutrino:</p>
 \end{equation}</p>
 <p>This effect can be accounted for analytically without considering the precise dynamics of the decay products. From the equation follows that the amount of heating highly depends on the energy density ratio of the sterile neutrinos and photons, so non-relativistic particles won't affect the expansion rate significantly.</p>
 <p>Depending on the decoupling temperature, one might also have to account for a transition in the plasma similar to the electron-positron annihilation at temperature $\sim m_e$ that changes the number of relativistic degrees of freedom - hence, the entropy conservation of the Universe will require another boost of temperature. Transition in this case is the QCD transition.</p>
+<h3><a id="plasma-heating-by-decaying-relativistic-sterile-neutrinos" class="header-anchor" href="#plasma-heating-by-decaying-relativistic-sterile-neutrinos"> Plasma heating by decaying relativistic sterile neutrinos </a></h3>
+<p>In the case of relativistic decoupling,</p>
+<p>$$
+    \rho_N(T) \propto \left( \frac{a_N T_N}{a} \right)^4 e^{-\Gamma_N t}
+$$</p>
+<p>Where $a_N T_N$ can be found from the entropy conservation law of the Early Universe.</p>
+<p>$$ g_* (a T)^3 = const $$</p>
+<p>Then, the ratio of sterile neutrino to photo energy densities transforms to:</p>
+<p>$$
+    \frac{\rho_N}{\rho_\gamma} = \frac78 \left( \frac{a_N T_N}{a T} \right)^4 e^{-\Gamma_N t} = \frac78 \left( \frac{g(T)}{g_N} \right)^\frac43 e^{-\Gamma_N t}
+$$</p>
+<p>This fraction can be quite significant, but the typical decay width of considered sterile neutrinos is in the range $\lesssim 10^{-20} MeV$ and the Hubble parameter ranges from $10^{-14}$ to $10^{-26}$. On the other hand, we are only interested in the expansion law corrections when the neutrinos or neutrons are in the non-equilibrium regime $\sim$ few $MeV$:</p>
+<p><img src="images/hubble_constant.png" /></p>
+<p>Additionally, we see that the influence of decoupled sterile neutrinos on the expansion rate is negligible at the earlier times.</p>
+<p>The decrease in the sterile neutrinos density due to decays depends only on the time it took the Universe to cool down to the temperature $T$:</p>
+<p>$$
+    t = \frac{M_{pl}^*}{2 T^2}
+$$</p>
+<p>So, the final temperature correction is determined by the equation:</p>
+<p>$$
+    \frac{\dot{T}}{T} = \frac{7}{32} \Gamma_N \left( \frac{g(T)}{g_N} \right)^\frac43 e^{-\frac{\Gamma_N M_{pl}^*}{2 T^2}} - H
+$$</p>
+<p>The relative size of the correction due to sterile neutrinos seems to be not very important:</p>
+<p><img src="images/H_correction.png" /></p>
 <h2><a id="neutrinos-decoupling-and-bbn-setup" class="header-anchor" href="#neutrinos-decoupling-and-bbn-setup"> Neutrinos decoupling and BBN setup </a></h2>
 <h2><a id="nucleosynthesis" class="header-anchor" href="#nucleosynthesis"> Nucleosynthesis </a></h2>
 <p>Big Bang Nucleosynthesis is a process of generation of the light nuclei in the Early Universe from the primordial protons and neutrons. Proton-neutron composition of the plasma and the baryon-to-photon ratio are the main input parameters for the system of nuclear kinetic equations of the BBN.</p>
