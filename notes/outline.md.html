@@ -30,8 +30,8 @@
           <a class="source source-3" href="#mixing-angle-temperature-dependence"> Mixing angle temperature dependence </a>
           <a class="source source-2" href="#sterile-neutrinos-generation-and-decoupling"> Sterile neutrinos generation and decoupling </a>
           <a class="source source-2" href="#sterile-neutrinos-decay"> Sterile neutrinos decay </a>
-          <a class="source source-3" href="#plasma-heating-by-decaying-relativistic-sterile-neutrinos"> Plasma heating by decaying relativistic sterile neutrinos </a>
-          <a class="source source-2" href="#neutrinos-decoupling-and-bbn-setup"> Neutrinos decoupling and BBN setup </a>
+          <a class="source source-3" href="#plasma-heating-by-decaying-non-relativistic-sterile-neutrinos"> Plasma heating by decaying non-relativistic sterile neutrinos </a>
+          <a class="source source-2" href="#neutrinos,-neutrons-decoupling-and-bbn-setup"> Neutrinos, neutrons decoupling and BBN setup </a>
           <a class="source source-2" href="#nucleosynthesis"> Nucleosynthesis </a>
           <a class="source source-3" href="#deuterium-bottleneck"> Deuterium bottleneck </a>
           <a class="source source-3" href="#backreaction"> Backreaction </a>
@@ -41,7 +41,7 @@
     </div>
     <div class="generation-time">
         Generated at
-        <code>2015-03-20 18:23</code>
+        <code>2015-03-26 17:34</code>
         by a diligent
         <a target="_blank" href="http://ckald.github.io/pyccoon/" title="Pyccoon: side-to-side documentation generator">
             <img id="pyccoon-icon" src="../pyccoon_icon.svg" alt="Pyccoon: side-to-side documentation generator" />pyccoon</a>
@@ -99,7 +99,7 @@ $$</p>
 <p>Particular choice of $|z|$, $M'$ and $\theta_M'$s ratios correspond to specific active neutrinos masses.</p>
 <p>Typical decay width and lifetime in such parametrization look like:</p>
 <p>$$
-    \theta_e = 1.14 \cdot 10^{-4} \\ \theta_\mu = 6.16 \cdot 10^{-4}  \\ \theta_\tau = 5.65 \cdot 10^{-4}
+    \theta_e = 1.14 \cdot 10^{-4} \frac{|z|}{\sqrt{M_N}} \\ \theta_\mu = 6.16 \cdot 10^{-4} \frac{|z|}{\sqrt{M_N}} \\ \theta_\tau = 5.65 \cdot 10^{-4} \frac{|z|}{\sqrt{M_N}}
 $$</p>
 <p><center>
 <img src="images/sterile_neutrino_decay_width.png" width=350 /><img src="images/sterile_neutrino_lifetime.png" width=350 />
@@ -129,7 +129,7 @@ $$</p>
 <p>where $\sigma$ is the cross-section of the reaction $\propto g^2$, and $v$ is the relative velocity.</p>
 <p>Coupling constant for sterile neutrinos is $G_F |\theta|$, so cross-section from dimensional considerations looks like</p>
 <p>\begin{equation}
-    \sigma \sim [E]^{-2} = G_F^2 |\theta|^2 [E]^2
+    \sigma \sim [E]^{-2} = G_F^2 |\theta|^2 \cdot [E]^2
 \end{equation}</p>
 <p>Kinematically considered reaction contains few parameters: invariant mass and scattering angles The total cross-section does not depend on the angle, so $\sigma = \sigma(s)$.</p>
 <p>\begin{equation}
@@ -140,12 +140,14 @@ $$</p>
 \end{equation}</p>
 <p>Then</p>
 <p>\begin{equation}
-    \Gamma_N \sim G_F^2 |\theta|^2 T^3
+    \Gamma_N \sim
     \begin{cases}
-        m^2 \\ T^2
+        G_F^2 |\theta|^2 T^3 m^2 \\ G_F^2 |\theta|^2 T^5
     \end{cases}
-    \sim \frac{T^2}{M_*}
 \end{equation}</p>
+<p>$$
+    \Gamma_N \sim \frac{T^2}{M_*}
+$$</p>
 <p>This gives us corresponding decoupling temperatures for sterile neutrinos:</p>
 <p>\begin{equation}
     T^{-1} \sim
@@ -156,27 +158,10 @@ $$</p>
 \end{equation}</p>
 <p>For $|\theta|^2 \approx 10^{-8}$ and $m = 0.3 GeV$</p>
 <p>\begin{equation}
-    T^{-1} \sim
-    \begin{cases}
-        (300 GeV)^{-4} \cdot 10^{-8} \cdot 2.4 \cdot 10^{18} GeV \cdot (0.3 GeV)^2
-        \\ \left((300 GeV)^{-4} \cdot 10^{-8} \cdot 2.4 \cdot 10^{18} GeV \right)^\frac13
-    \end{cases}
-    \sim
-     \begin{cases}
-        240 GeV^{-3} \cdot 10^2 \cdot 9 \cdot 10^{-2} GeV^2
-        \\ (240 GeV^{-3})^\frac13
-    \end{cases}
-    \sim
-     \begin{cases}
-        22 GeV^{-1}
-        \\ 6 GeV^{-1}
-    \end{cases}
-\end{equation}</p>
-<p>\begin{equation}
     T \sim
      \begin{cases}
-        45 MeV
-        \\ 166 MeV
+        45 \left( \frac{|\theta|^2}{10^{-8}} \right) \left( \frac{m}{0.3 GeV} \right)^2 MeV
+        \\ 166 \left( \frac{|\theta|^2}{10^{-8}} \right)^\frac13 MeV
     \end{cases}
 \end{equation}</p>
 <p>Hence, the distribution function of sterile neutrinos at the later times highly depends on the following factors:</p>
@@ -201,9 +186,22 @@ For $ \theta \approx 10^{-2} $
 \end{align}</p>
 <p>Summed up decay rates of these processes gives us the total decay rate of the sterile neutrino. As the interaction rates of weak and electromagnetic processes are still sufficiently higher than the expansion rate of the Universe, all decay products of the sterile neutrino immediately equilibrate and affect only the temperature of the plasma.</p>
 <p>Then the kinetic equation on the sterile neutrino reads:</p>
-<p>\begin{equation}
+<p>\begin{align}
+    \frac{d f_N}{d t} &amp;= - (3 H + \tilde{\Gamma}_N(p)) f_N
+    \\ \tilde{\Gamma}_N(p) &amp;= \frac{\Gamma_N}\gamma = \sqrt{1-v^2} \Gamma_N =
+        \sqrt{1-\left(\frac{p}{E}\right)^2} \Gamma_N = \frac{m}{E} \Gamma_N
+\end{align}</p>
+<p>The decay width is modified by the $\gamma$-factor of the particle, which can significantly prolong the lifetime of relativistic species. In the non-relativistic regime this allows to write a simplified Boltzmann equation on the density:</p>
+<p>$$
     \frac{d n_N}{d t} = - (3 H + \Gamma_N) n_N
-\end{equation}</p>
+$$</p>
+<p>However, for relativistic regime it looks like:</p>
+<p>$$
+    \frac{d n_N}{d t} = - \left(3 H + \Gamma_N \frac{\left&lt; \frac{m}{E} \right&gt;}{n_N}\right) n_N
+$$</p>
+<p>where angular brackets denote the averaging over the distribution function of the specie.</p>
+<p><center><img src="images/relativistic_decay.png" /></center></p>
+<p>The value of the ratio $\frac{\left&lt; \frac{m}{E} \right&gt;}{n_N}$ defines, how much the decay law differs from the exponential radioactive decay law $e^{-\Gamma t}$. More energetic particles survive longer and the distribution function gains non-equilibrium high-energetic corrections.</p>
 <p>Decay products function as a heating system of the plasma. This effect can be seen from the energy conservation law. For simplicity, let's consider a system consisting only of photons and non-relativistic sterile neutrinos:</p>
 <p>\begin{align}
     &amp;\dot{\rho} + 3 H ( \rho + p ) = 0
@@ -225,31 +223,50 @@ For $ \theta \approx 10^{-2} $
 \end{equation}</p>
 <p>This effect can be accounted for analytically without considering the precise dynamics of the decay products. From the equation follows that the amount of heating highly depends on the energy density ratio of the sterile neutrinos and photons, so non-relativistic particles won't affect the expansion rate significantly.</p>
 <p>Depending on the decoupling temperature, one might also have to account for a transition in the plasma similar to the electron-positron annihilation at temperature $\sim m_e$ that changes the number of relativistic degrees of freedom - hence, the entropy conservation of the Universe will require another boost of temperature. Transition in this case is the QCD transition.</p>
-<h3><a id="plasma-heating-by-decaying-relativistic-sterile-neutrinos" class="header-anchor" href="#plasma-heating-by-decaying-relativistic-sterile-neutrinos"> Plasma heating by decaying relativistic sterile neutrinos </a></h3>
-<p>In the case of relativistic decoupling,</p>
+<h3><a id="plasma-heating-by-decaying-non-relativistic-sterile-neutrinos" class="header-anchor" href="#plasma-heating-by-decaying-non-relativistic-sterile-neutrinos"> Plasma heating by decaying non-relativistic sterile neutrinos </a></h3>
 <p>$$
-    \rho_N(T) \propto \left( \frac{a_N T_N}{a} \right)^4 e^{-\Gamma_N t}
+    \frac{\rho_N}{\rho_\gamma} \sim \frac{m n_N}{\rho_\gamma}
+    = \frac{m \left( \frac{m T}{2 \pi} \right)^\frac32 }{\frac{2\pi^2}{30} T^4} e^{-\frac{m}{T}} e^{-\Gamma_N t}
 $$</p>
-<p>Where $a_N T_N$ can be found from the entropy conservation law of the Early Universe.</p>
-<p>$$ g_* (a T)^3 = const $$</p>
-<p>Then, the ratio of sterile neutrino to photo energy densities transforms to:</p>
-<p>$$
-    \frac{\rho_N}{\rho_\gamma} = \frac78 \left( \frac{a_N T_N}{a T} \right)^4 e^{-\Gamma_N t} = \frac78 \left( \frac{g(T)}{g_N} \right)^\frac43 e^{-\Gamma_N t}
-$$</p>
-<p>This fraction can be quite significant, but the typical decay width of considered sterile neutrinos is in the range $\lesssim 10^{-20} MeV$ and the Hubble parameter ranges from $10^{-14}$ to $10^{-26}$. On the other hand, we are only interested in the expansion law corrections when the neutrinos or neutrons are in the non-equilibrium regime $\sim$ few $MeV$:</p>
-<p><img src="images/hubble_constant.png" /></p>
-<p>Additionally, we see that the influence of decoupled sterile neutrinos on the expansion rate is negligible at the earlier times.</p>
 <p>The decrease in the sterile neutrinos density due to decays depends only on the time it took the Universe to cool down to the temperature $T$:</p>
 <p>$$
     t = \frac{M_{pl}^*}{2 T^2}
 $$</p>
 <p>So, the final temperature correction is determined by the equation:</p>
 <p>$$
-    \frac{\dot{T}}{T} = \frac{7}{32} \Gamma_N \left( \frac{g(T)}{g_N} \right)^\frac43 e^{-\frac{\Gamma_N M_{pl}^*}{2 T^2}} - H
+    \frac{\dot{T}}{T} = \frac{1}{200} \Gamma_N \left(\frac{m}{T}\right)^\frac52 e^{-\frac{m}{T} -\frac{\Gamma_N M_{pl}^*}{2 T^2}} - H
 $$</p>
-<p>The relative size of the correction due to sterile neutrinos seems to be not very important:</p>
+<p>The relative size of the correction due to sterile neutrinos turns out to be insignificant:</p>
 <p><img src="images/H_correction.png" /></p>
-<h2><a id="neutrinos-decoupling-and-bbn-setup" class="header-anchor" href="#neutrinos-decoupling-and-bbn-setup"> Neutrinos decoupling and BBN setup </a></h2>
+<h2><a id="neutrinos,-neutrons-decoupling-and-bbn-setup" class="header-anchor" href="#neutrinos,-neutrons-decoupling-and-bbn-setup"> Neutrinos, neutrons decoupling and BBN setup </a></h2>
+<p>Decoupling of the neutrinos and neutrons follows the similar pattern as the decoupling of the sterile neutrinos. Estimated decoupling temperature for both species is around $1.5 MeV$. However, it is important to discriminate them by more careful analysis that includes precise accounting for scattering cross-sections and regimes of the particles involved in reactions.</p>
+<p>The most important reactions for neutrinos are</p>
+<p>\begin{align}
+    \nu + \nu &amp;\to \nu + \nu \\ \nu + e^- &amp;\to \nu + e^-
+\end{align}</p>
+<p>(and crossing processes). Neutrons are governed by only 2 reactions:</p>
+<p>\begin{align}
+    p + e &amp;\leftrightarrow n + \nu_e \\ n &amp;\to p + e + \overline{\nu}_e
+\end{align}</p>
+<p>The estimated temperature is relatively close to the electron mass, so the assumption of the all-relativistic particles in the plasma becomes approximate and the more precise treatment is required.</p>
+<p><span class=todo><strong>TODO</strong>: Derive neutron decoupling temperature using not only the $\Gamma \sim H$ trick, but also the typical energy transfer timescale of the reactions.</span></p>
+<p>After neutrinos decoupled, additionally to the contributions from the non-instantaneous decoupling, they gain corrections from the sterile neutrinos decay. One of the most important parts of the project is to calculate this correction spectrum. It depends both on the sterile neutrinos spectrum and decay channels.</p>
+<p>Accordingly, corrections to the active neutrino spectrum influence the equilibrium of the neutrons reactions. For the scattering channel, additional active neutrinos lead to the shift in the balance to the production of $p$ and $e$, while in the decay channel they can increase the lifetime of the neutron:</p>
+<p>\begin{align}
+   \mathcal{F}\left[p+e\to n + \nu\right] &amp;= f_p f_e (1-f_n)(1-f_\nu) - f_n f_\nu (1- f_p)(1-f_e) =
+   \\ &amp;= f_p f_e(1-f_n) - f_\nu \left[f_n(1-f_p-f_e) + f_p f_e \right]
+\end{align}</p>
+<p>\begin{align}
+    \mathcal{F}\left[n \to p+e+\overline{\nu}\right] &amp;= f_n (1- f_p)(1-f_e)(1 - f_\nu) - f_p f_e f_\nu (1-f_n) =
+    \\ &amp;= f_n (1-f_p)(1-f_e) - f_\nu \left[ f_n(1 - f_p - f_e) +f_p f_e \right]
+\end{align}</p>
+<p>$$ f_\nu \to f_\nu + \delta f_\nu $$</p>
+<p>Other distributions are taken to be equilibrium, so the functional vanishes for them:</p>
+<p>\begin{align}
+    \mathcal{F}\left[p+e\to n + \nu\right] = \mathcal{F}\left[n \to p+e+\overline{\nu}\right] &amp;= - \delta f_\nu \left[f_n(1-f_p-f_e) + f_p f_e \right]
+\end{align}</p>
+<p>The expression in the brackets is extremely close to $1$ when we consider non-relativistic protons and neutrons. So the Boltzmann integral is roughly proportional to the number of non-equiliubrium active neutrinos.</p>
+<p>Physically, this effect contains 2 parts: firstly, more active neutrinos mean more interactions; secondly, active neutrinos phase space density repulses inverse reactions as they are fermions. One can imagine a situation when due to the densely packed neutrino phase space, neutrons are not allowed to decay.</p>
 <h2><a id="nucleosynthesis" class="header-anchor" href="#nucleosynthesis"> Nucleosynthesis </a></h2>
 <p>Big Bang Nucleosynthesis is a process of generation of the light nuclei in the Early Universe from the primordial protons and neutrons. Proton-neutron composition of the plasma and the baryon-to-photon ratio are the main input parameters for the system of nuclear kinetic equations of the BBN.</p>
 <p><center><img src="images/bbn_reactions.png" /></center></p>
