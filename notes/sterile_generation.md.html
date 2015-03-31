@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>pyBBN v0.1.0: notes/sterile_generation.md</title>
+  <link rel="stylesheet" href="../pyccoon.css">
+  <script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+  });
+  </script>
+  <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</head>
+<body>
+<div id='container' class="documentation">
+  <div id="footer">
+    <span id="project-name">
+        <a class="btn" href="../index.html">pyBBN v0.1.0</a>
+    </span>
+    <a class="btn" class="source source-1" href="#top">Back to top</a>
+    <div id="jump_to" class="btn">
+    Contents
+    <div id="jump_wrapper">
+      <div id="jump_page">
+          <a class="source source-2" href="#sterile-neutrinos-generation-and-decoupling"> Sterile neutrinos generation and decoupling</a>
+          <a class="source source-3" href="#decoupling-temperature-and-regime"> Decoupling temperature and regime</a>
+          <a class="source source-3" href="#decoupling-and-the-qcd-transition"> Decoupling and the QCD transition</a>
+      </div>
+    </div>
+    </div>
+    <div class="generation-time">
+        Generated at
+        <code>2015-03-31 16:09</code>
+        by a diligent
+        <a target="_blank" href="http://ckald.github.io/pyccoon/" title="Pyccoon: side-to-side documentation generator">
+            <img id="pyccoon-icon" src="../pyccoon_icon.svg" alt="Pyccoon: side-to-side documentation generator" />pyccoon</a>
+    </div>
+  </div>
+  <a id="top"></a>
+  <div class='section'>
+    <div class='docs nav'>
+      <nav id="breadcrumbs">/ <a href="sterile_generation.md.html/../../index.html">.</a> / <a href="sterile_generation.md.html/../index.html">notes</a> / <a href="sterile_generation.md.html">sterile_generation.md</a> </nav>
+      <ul id="children"></ul>
+    </div>
+  </div>
+  <div id="everything" class='clearall'>
+    <div id="background"></div>
+    <div class='section'>
+    <a id="section-0" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-0'>#</a>
+          </div>
+          <h2><a id="sterile-neutrinos-generation-and-decoupling" class="header-anchor" href="#sterile-neutrinos-generation-and-decoupling"> Sterile neutrinos generation and decoupling</a></h2>
+<h3><a id="decoupling-temperature-and-regime" class="header-anchor" href="#decoupling-temperature-and-regime"> Decoupling temperature and regime</a></h3>
+<p>Heavy sterile neutrinos ($N_{1,2}$) are produced thermally at the temperatures $\gtrsim 10^2 MeV$ (vaguely, depending on the mixing angle and the mass). Influence on the universe expansion at the later stages depends on the regime in which sterile neutrinos decouple from the plasma.</p>
+<p>Decoupling happens when the interaction rate of the equilibrium-supporting reactions drops below the Hubble rate. In the radiation dominated epoch, Hubble rate can be conveniently approximated:</p>
+<p>\begin{equation}
+    H \approx \frac{T^2}{M_*}
+\end{equation}</p>
+<p>Typical interaction rate for 2-to-2 scattering ($N + \nu \to N + \nu$) of the sterile neutrino with the coupling constant $g$ is of the form</p>
+<p>\begin{equation}
+    \Gamma_N = \left&lt; \sigma n_\nu v\right&gt;
+\end{equation}</p>
+<p>where $\sigma$ is the cross-section of the reaction $\propto g^2$, and $v$ is the relative velocity.</p>
+<p>Coupling constant for sterile neutrinos is $G_F |\theta|$, so cross-section from dimensional considerations looks like</p>
+<p>\begin{equation}
+    \sigma \sim [E]^{-2} = G_F^2 |\theta|^2 \cdot [E]^2
+\end{equation}</p>
+<p>Kinematically considered reaction contains few parameters: invariant mass and scattering angles The total cross-section does not depend on the angle, so $\sigma = \sigma(s)$.</p>
+<p>\begin{equation}
+    s \sim
+    \begin{cases}
+        m^2 &amp; \text{for non-relativistic N} \\ T^2 &amp; \text{for ultra-relativistic}
+    \end{cases}
+\end{equation}</p>
+<p>Then</p>
+<p>\begin{equation}
+    \Gamma_N \sim
+    \begin{cases}
+        G_F^2 |\theta|^2 T^3 m^2 \\ G_F^2 |\theta|^2 T^5
+    \end{cases}
+\end{equation}</p>
+<p>$$
+    \Gamma_N \sim \frac{T^2}{M_*}
+$$</p>
+<p>This gives us corresponding decoupling temperatures for sterile neutrinos:</p>
+<p>\begin{equation}
+    T^{-1} \sim
+    \begin{cases}
+        G_F^2 |\theta|^2 M_* m^2
+        \\ (G_F^2 |\theta|^2 M_*)^\frac13
+    \end{cases}
+\end{equation}</p>
+<p>Hence, the distribution function of sterile neutrinos at the later times highly depends on the following factors:</p>
+<ul>
+<li>sterile-active mixing angle temperature dependence</li>
+<li>mass of the sterile neutrino</li>
+<li>regime of decoupling (relativistic/non-relativistic)</li>
+</ul>
+<p>For example, if thermal corrections of $\theta$ are significant at the time of relativistic decoupling "in vacuum", sterile neutrinos might stay in the equilibrium longer and decouple being non-relativistic.</p>
+<p>Using the analysis above, we assume no significant thermal corrections for the mixing angles and, for given mass and temperature, find the decoupling regime:</p>
+<p>For $ \theta \approx 10^{-4} $
+<img src="images/decoupling_regimes_10^-4.png" >
+For $ \theta \approx 10^{-2} $
+<img src="images/decoupling_regimes_10^-2.png" ></p>
+<p>The plotted regions correspond to non-equilibrium species in different regimes. In practice, as the temperature drops, when particle with given mass enters any of the regions - it decouples in the corresponding regime. For the sakes of certainty, the "intermediate" regime corresponds to the particle specie with $\frac15 T &lt; m &lt; 5 T$.</p>
+<p>Analysis of the decoupling regimes for the mass range of interest shows that for $\theta \lesssim 10^{-4}$ decoupling regime is rather relativistic, while for bigger values it is possible to get a fully-non-relativistic decoupling.</p>
+<h3><a id="decoupling-and-the-qcd-transition" class="header-anchor" href="#decoupling-and-the-qcd-transition"> Decoupling and the QCD transition</a></h3>
+<p>Tuning of the parameters allows to shift the sterile neutrinos decoupling around the QCD transition temperature $~200 MeV$. The strong sector constituents of the plasma change enormously, requiring separate treatment of the quark-gluon and hadron phases and, possibly, the transition itself.</p>
+        </div>
+        <div class='code'>
+          
+        </div>
+        <div class='clearall'></div>
+    </section>
+    </div>
+  </div>
+</body>

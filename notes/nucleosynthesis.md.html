@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>pyBBN v0.1.0: notes/nucleosynthesis.md</title>
+  <link rel="stylesheet" href="../pyccoon.css">
+  <script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+  });
+  </script>
+  <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</head>
+<body>
+<div id='container' class="documentation">
+  <div id="footer">
+    <span id="project-name">
+        <a class="btn" href="../index.html">pyBBN v0.1.0</a>
+    </span>
+    <a class="btn" class="source source-1" href="#top">Back to top</a>
+    <div id="jump_to" class="btn">
+    Contents
+    <div id="jump_wrapper">
+      <div id="jump_page">
+          <a class="source source-2" href="#nucleosynthesis"> Nucleosynthesis</a>
+          <a class="source source-3" href="#deuterium-bottleneck"> Deuterium bottleneck</a>
+          <a class="source source-3" href="#backreaction"> Backreaction</a>
+          <a class="source source-3" href="#computation"> Computation</a>
+      </div>
+    </div>
+    </div>
+    <div class="generation-time">
+        Generated at
+        <code>2015-03-31 16:09</code>
+        by a diligent
+        <a target="_blank" href="http://ckald.github.io/pyccoon/" title="Pyccoon: side-to-side documentation generator">
+            <img id="pyccoon-icon" src="../pyccoon_icon.svg" alt="Pyccoon: side-to-side documentation generator" />pyccoon</a>
+    </div>
+  </div>
+  <a id="top"></a>
+  <div class='section'>
+    <div class='docs nav'>
+      <nav id="breadcrumbs">/ <a href="nucleosynthesis.md.html/../../index.html">.</a> / <a href="nucleosynthesis.md.html/../index.html">notes</a> / <a href="nucleosynthesis.md.html">nucleosynthesis.md</a> </nav>
+      <ul id="children"></ul>
+    </div>
+  </div>
+  <div id="everything" class='clearall'>
+    <div id="background"></div>
+    <div class='section'>
+    <a id="section-0" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-0'>#</a>
+          </div>
+          <h2><a id="nucleosynthesis" class="header-anchor" href="#nucleosynthesis"> Nucleosynthesis</a></h2>
+<p>Big Bang Nucleosynthesis is a process of generation of the light nuclei in the Early Universe from the primordial protons and neutrons. Proton-neutron composition of the plasma and the baryon-to-photon ratio are the main input parameters for the system of nuclear kinetic equations of the BBN.</p>
+<p><center><img src="images/bbn_reactions.png" /></center></p>
+<h3><a id="deuterium-bottleneck" class="header-anchor" href="#deuterium-bottleneck"> Deuterium bottleneck</a></h3>
+<p>Generation of the nuclei is controlled by the balance of the deuterium generation reaction.</p>
+<p>\begin{equation}
+n + p \leftrightarrow D + \gamma
+\end{equation}</p>
+<p>The bounding energy of the deuterium nucleus is $\Delta_D \sim 2.2 MeV$ - the minimal energy requirement for deuterium generation. However, due to extremely small baryon-to-photon ratio, the are plenty high-energetic photons that drive the inverse reaction.</p>
+<p>The number of photons with $p &gt; \Delta_D$ is given by:</p>
+<p>\begin{align}
+n_\gamma (E&gt;\Delta_D) = \frac{1}{\pi^2} \int_{\Delta_D}^\infty \frac{p^2 dp}{e^\frac{p}{T}-1}
+= \frac{T^3}{\pi^2} \int_{\Delta_D/T}^\infty \frac{x^2 dx}{e^x-1}
+\end{align}</p>
+<p>As the first approximation, for efficient deuterium generation to begin, this value has to be comparable with $n_B$</p>
+<p>\begin{equation}
+n_\gamma (E&gt;\Delta_D) \sim n_B = n_\gamma \eta \approx 0.244 T^3 \cdot \eta
+\end{equation}</p>
+<h3><a id="backreaction" class="header-anchor" href="#backreaction"> Backreaction</a></h3>
+<p>Nucleosynthesis is a subleading process in the Early Universe as it governs mostly non-relativistic particles in the radiation dominated epoch. Due to this one can neglect any backreaction of the nuclear reactions on the expansion of the Universe and plasma.</p>
+<h3><a id="computation" class="header-anchor" href="#computation"> Computation</a></h3>
+<p>As all baryons are non-relativistic, their distribution functions are significantly spiked at the zero momentum and it is sufficient to treat them using simplified Boltzmann equations as in the case of sterile neutrinos. Originally nucleosynthesis was considered by Gamow as a system of neutron capture/emission processes (<a href="http://journals.aps.org/pr/pdf/10.1103/PhysRev.73.803"> $\alpha\beta\gamma$ paper</a>):</p>
+<p>\begin{equation}
+\frac{d n_i}{d t} = f(t)( \sigma_{i-1} n_{i-1} - \sigma_{i} n_i)
+\end{equation}</p>
+<p>($f(t)$ - expansion factor, $\sigma_i$ - neutron capture cross-sections).</p>
+<p>More precisely, one can consider a coupled system of ordinary differential equations expressing not only neutron capture processes, but all possible reactions between the nucleons and light nuclei. In conditions of primordial nucleosynthesis it is sufficient to include only 2-particle scatterings and nuclei up to $^7 Li, ^7 Be$. Heavier elements do not generate during the BBN because of absence of stable nuclei with $A=5,8$ and more complicated reactions like $^4 He + ^4 He + ^4 He \to ^{12} C$ are negligible at the densities of the interest.</p>
+        </div>
+        <div class='code'>
+          
+        </div>
+        <div class='clearall'></div>
+    </section>
+    </div>
+  </div>
+</body>

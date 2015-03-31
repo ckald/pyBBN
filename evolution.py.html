@@ -22,21 +22,21 @@
     Contents
     <div id="jump_wrapper">
       <div id="jump_page">
-          <a class="source source-2" href="#universe"> Universe </a>
-          <a class="source source-2" href="#main-computing-routine"> Main computing routine </a>
-          <a class="source source-2" href="#postmortem-debugger"> Postmortem debugger </a>
-          <a class="source source-3" href="#1.-update-particles-state"> 1. Update particles state </a>
-          <a class="source source-3" href="#2.-initialize-non-equilibrium-interactions"> 2. Initialize non-equilibrium interactions </a>
-          <a class="source source-3" href="#3.-calculate-collision-integrals"> 3. Calculate collision integrals </a>
-          <a class="source source-3" href="#4.-update-particles-distributions"> 4. Update particles distributions </a>
-          <a class="source source-3" href="#5.-calculate-temperature-equation-terms"> 5. Calculate temperature equation terms </a>
-          <a class="source source-2" href="#temperature-equation-integrand"> Temperature equation integrand </a>
+          <a class="source source-1" href="#universe"> Universe</a>
+          <a class="source source-1" href="#main-computing-routine"> Main computing routine</a>
+          <a class="source source-1" href="#postmortem-debugger"> Postmortem debugger</a>
+          <a class="source source-2" href="#1.-update-particles-state"> 1. Update particles state</a>
+          <a class="source source-2" href="#2.-initialize-non-equilibrium-interactions"> 2. Initialize non-equilibrium interactions</a>
+          <a class="source source-2" href="#3.-calculate-collision-integrals"> 3. Calculate collision integrals </a>
+          <a class="source source-2" href="#4.-update-particles-distributions"> 4. Update particles distributions </a>
+          <a class="source source-2" href="#5.-calculate-temperature-equation-terms"> 5. Calculate temperature equation terms </a>
+          <a class="source source-1" href="#temperature-equation-integrand"> Temperature equation integrand</a>
       </div>
     </div>
     </div>
     <div class="generation-time">
         Generated at
-        <code>2015-03-26 18:02</code>
+        <code>2015-03-31 16:09</code>
         by a diligent
         <a target="_blank" href="http://ckald.github.io/pyccoon/" title="Pyccoon: side-to-side documentation generator">
             <img id="pyccoon-icon" src="./pyccoon_icon.svg" alt="Pyccoon: side-to-side documentation generator" />pyccoon</a>
@@ -94,8 +94,9 @@
           <div class='octowrap'>
             <a class='octothorpe' href='#section-2'>#</a>
           </div>
-          <h2><a id="universe" class="header-anchor" href="#universe"> Universe </a></h2>
-<p>The master object that governs the calculation. </p>
+          <h1><a id="universe" class="header-anchor" href="#universe"> Universe</a></h1>
+<div class="codehilite"><pre>    <span class="n">The</span> <span class="n">master</span> <span class="n">object</span> <span class="n">that</span> <span class="n">governs</span> <span class="n">the</span> <span class="n">calculation</span><span class="p">.</span>
+</pre></div>
         </div>
         <div class='code'>
           <div class="highlight"><pre><span class="k">class</span> <span class="nc">Universe</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span></pre></div>
@@ -200,7 +201,7 @@
           <div class='octowrap'>
             <a class='octothorpe' href='#section-8'>#</a>
           </div>
-          <h2><a id="main-computing-routine" class="header-anchor" href="#main-computing-routine"> Main computing routine </a></h2>
+          <h1><a id="main-computing-routine" class="header-anchor" href="#main-computing-routine"> Main computing routine</a></h1>
 <p>Modeling is carried in steps of scale factor, starting from the initial conditions defined by a single parameter: the initial temperature.</p>
 <p>Initial temperature (e.g. 10 MeV) corresponds to a point in the history of the Universe long before then BBN. Then most particle species are in the thermodynamical equilibrium.</p>
         </div>
@@ -255,7 +256,7 @@
           <div class='octowrap'>
             <a class='octothorpe' href='#section-9'>#</a>
           </div>
-          <h2><a id="postmortem-debugger" class="header-anchor" href="#postmortem-debugger"> Postmortem debugger </a></h2>
+          <h1><a id="postmortem-debugger" class="header-anchor" href="#postmortem-debugger"> Postmortem debugger</a></h1>
 <p>Invoking <code>pdb</code> debugger after the computation is finished allows to do final adjustments and export the missing data without restarting the whole simulation.</p>
         </div>
         <div class='code'>
@@ -310,8 +311,9 @@
           <div class='octowrap'>
             <a class='octothorpe' href='#section-11'>#</a>
           </div>
-          <h3><a id="1.-update-particles-state" class="header-anchor" href="#1.-update-particles-state"> 1. Update particles state </a></h3>
-<p>Update particle species distribution functions, check for regime switching, update precalculated variables like energy density and pressure. </p>
+          <h2><a id="1.-update-particles-state" class="header-anchor" href="#1.-update-particles-state"> 1. Update particles state</a></h2>
+<div class="codehilite"><pre>        <span class="nx">Update</span> <span class="nx">particle</span> <span class="nx">species</span> <span class="nx">distribution</span> <span class="nx">functions</span><span class="p">,</span> <span class="nx">check</span> <span class="k">for</span> <span class="nx">regime</span> <span class="nx">switching</span><span class="p">,</span> <span class="nx">update</span> <span class="nx">precalculated</span> <span class="nx">variables</span> <span class="nx">like</span> <span class="nx">energy</span> <span class="nx">density</span> <span class="nx">and</span> <span class="nx">pressure</span><span class="p">.</span>
+</pre></div>
         </div>
         <div class='code'>
           <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">update_particles</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -329,9 +331,11 @@
           <div class='octowrap'>
             <a class='octothorpe' href='#section-12'>#</a>
           </div>
-          <h3><a id="2.-initialize-non-equilibrium-interactions" class="header-anchor" href="#2.-initialize-non-equilibrium-interactions"> 2. Initialize non-equilibrium interactions </a></h3>
-<p>Non-equilibrium interactions of different particle species are treated by a numerical integration of the Boltzmann equation for distribution functions in the expanding space-time.</p>
-<p>Depending on the regime of the particle species involved and cosmological parameters, each <code>Interaction</code> object populates <code>Particle.collision_integrals</code> array with currently active <code>Integral</code> objects.</p>
+          <h2><a id="2.-initialize-non-equilibrium-interactions" class="header-anchor" href="#2.-initialize-non-equilibrium-interactions"> 2. Initialize non-equilibrium interactions</a></h2>
+<div class="codehilite"><pre>        <span class="nx">Non</span><span class="o">-</span><span class="nx">equilibrium</span> <span class="nx">interactions</span> <span class="nx">of</span> <span class="nx">different</span> <span class="nx">particle</span> <span class="nx">species</span> <span class="nx">are</span> <span class="nx">treated</span> <span class="nx">by</span> <span class="nx">a</span> <span class="nx">numerical</span> <span class="nx">integration</span> <span class="nx">of</span> <span class="nx">the</span> <span class="nx">Boltzmann</span> <span class="nx">equation</span> <span class="k">for</span> <span class="nx">distribution</span> <span class="nx">functions</span> <span class="k">in</span> <span class="nx">the</span> <span class="nx">expanding</span> <span class="nx">space</span><span class="o">-</span><span class="nx">time</span><span class="p">.</span>
+
+        <span class="nx">Depending</span> <span class="nx">on</span> <span class="nx">the</span> <span class="nx">regime</span> <span class="nx">of</span> <span class="nx">the</span> <span class="nx">particle</span> <span class="nx">species</span> <span class="nx">involved</span> <span class="nx">and</span> <span class="nx">cosmological</span> <span class="nx">parameters</span><span class="p">,</span> <span class="nx">each</span> <span class="err">`</span><span class="nx">Interaction</span><span class="err">`</span> <span class="nx">object</span> <span class="nx">populates</span> <span class="err">`</span><span class="nx">Particle</span><span class="p">.</span><span class="nx">collision_integrals</span><span class="err">`</span> <span class="nx">array</span> <span class="kd">with</span> <span class="nx">currently</span> <span class="nx">active</span> <span class="err">`</span><span class="nx">Integral</span><span class="err">`</span> <span class="nx">objects</span><span class="p">.</span>
+</pre></div>
         </div>
         <div class='code'>
           <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">init_interactions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -349,7 +353,7 @@
           <div class='octowrap'>
             <a class='octothorpe' href='#section-13'>#</a>
           </div>
-          <h3><a id="3.-calculate-collision-integrals" class="header-anchor" href="#3.-calculate-collision-integrals"> 3. Calculate collision integrals </a></h3>
+          <h2><a id="3.-calculate-collision-integrals" class="header-anchor" href="#3.-calculate-collision-integrals"> 3. Calculate collision integrals </a></h2>
         </div>
         <div class='code'>
           <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">calculate_collisions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -377,7 +381,7 @@
           <div class='octowrap'>
             <a class='octothorpe' href='#section-14'>#</a>
           </div>
-          <h3><a id="4.-update-particles-distributions" class="header-anchor" href="#4.-update-particles-distributions"> 4. Update particles distributions </a></h3>
+          <h2><a id="4.-update-particles-distributions" class="header-anchor" href="#4.-update-particles-distributions"> 4. Update particles distributions </a></h2>
         </div>
         <div class='code'>
           <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">update_distributions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -395,7 +399,7 @@
           <div class='octowrap'>
             <a class='octothorpe' href='#section-15'>#</a>
           </div>
-          <h3><a id="5.-calculate-temperature-equation-terms" class="header-anchor" href="#5.-calculate-temperature-equation-terms"> 5. Calculate temperature equation terms </a></h3>
+          <h2><a id="5.-calculate-temperature-equation-terms" class="header-anchor" href="#5.-calculate-temperature-equation-terms"> 5. Calculate temperature equation terms </a></h2>
         </div>
         <div class='code'>
           <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">calculate_temperature_terms</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -419,17 +423,21 @@
           <div class='octowrap'>
             <a class='octothorpe' href='#section-16'>#</a>
           </div>
-          <h2><a id="temperature-equation-integrand" class="header-anchor" href="#temperature-equation-integrand"> Temperature equation integrand </a></h2>
-<p>Master equation for the temperature looks like</p>
-<p>\begin{equation}
-       \frac{d (aT)}{dx} = \frac{\sum_i{N_i}}{\sum_i{D_i}}
-   \end{equation}</p>
-<p>Where $N_i$ and $D_i$ represent contributions from different particle species.</p>
-<p>See definitions for different regimes:
-     * <a href="particles/RadiationParticle.py.html#master-equation-terms">Radiation</a>
-     * <a href="particles/IntermediateParticle.py.html#master-equation-terms">Intermediate</a>
-     * <a href="particles/DustParticle.py.html#master-equation-terms">Dust</a>
-     * <a href="particles/NonEqParticle.py.html#master-equation-terms">Non-equilibrium</a></p>
+          <h1><a id="temperature-equation-integrand" class="header-anchor" href="#temperature-equation-integrand"> Temperature equation integrand</a></h1>
+<div class="codehilite"><pre>        <span class="n">Master</span> <span class="n">equation</span> <span class="k">for</span> <span class="n">the</span> <span class="n">temperature</span> <span class="n">looks</span> <span class="n">like</span>
+
+        <span class="err">\</span><span class="n">begin</span><span class="p">{</span><span class="n">equation</span><span class="p">}</span>
+            <span class="err">\</span><span class="n">frac</span><span class="p">{</span><span class="n">d</span> <span class="p">(</span><span class="n">aT</span><span class="p">)}{</span><span class="n">dx</span><span class="p">}</span> <span class="o">=</span> <span class="err">\</span><span class="n">frac</span><span class="p">{</span><span class="err">\</span><span class="n">sum_i</span><span class="p">{</span><span class="n">N_i</span><span class="p">}}{</span><span class="err">\</span><span class="n">sum_i</span><span class="p">{</span><span class="n">D_i</span><span class="p">}}</span>
+        <span class="err">\</span><span class="n">end</span><span class="p">{</span><span class="n">equation</span><span class="p">}</span>
+
+        <span class="n">Where</span> <span class="err">$</span><span class="n">N_i</span><span class="err">$</span> <span class="n">and</span> <span class="err">$</span><span class="n">D_i</span><span class="err">$</span> <span class="n">represent</span> <span class="n">contributions</span> <span class="n">from</span> <span class="n">different</span> <span class="n">particle</span> <span class="n">species</span><span class="p">.</span>
+
+        <span class="n">See</span> <span class="n">definitions</span> <span class="k">for</span> <span class="n">different</span> <span class="n">regimes</span><span class="o">:</span>
+          <span class="o">*</span> <span class="p">[</span><span class="n">Radiation</span><span class="p">](</span><span class="n">particles</span><span class="o">/</span><span class="n">RadiationParticle</span><span class="p">.</span><span class="n">py</span><span class="p">.</span><span class="n">html</span><span class="err">#</span><span class="n">master</span><span class="o">-</span><span class="n">equation</span><span class="o">-</span><span class="n">terms</span><span class="p">)</span>
+          <span class="o">*</span> <span class="p">[</span><span class="n">Intermediate</span><span class="p">](</span><span class="n">particles</span><span class="o">/</span><span class="n">IntermediateParticle</span><span class="p">.</span><span class="n">py</span><span class="p">.</span><span class="n">html</span><span class="err">#</span><span class="n">master</span><span class="o">-</span><span class="n">equation</span><span class="o">-</span><span class="n">terms</span><span class="p">)</span>
+          <span class="o">*</span> <span class="p">[</span><span class="n">Dust</span><span class="p">](</span><span class="n">particles</span><span class="o">/</span><span class="n">DustParticle</span><span class="p">.</span><span class="n">py</span><span class="p">.</span><span class="n">html</span><span class="err">#</span><span class="n">master</span><span class="o">-</span><span class="n">equation</span><span class="o">-</span><span class="n">terms</span><span class="p">)</span>
+          <span class="o">*</span> <span class="p">[</span><span class="n">Non</span><span class="o">-</span><span class="n">equilibrium</span><span class="p">](</span><span class="n">particles</span><span class="o">/</span><span class="n">NonEqParticle</span><span class="p">.</span><span class="n">py</span><span class="p">.</span><span class="n">html</span><span class="err">#</span><span class="n">master</span><span class="o">-</span><span class="n">equation</span><span class="o">-</span><span class="n">terms</span><span class="p">)</span>
+</pre></div>
         </div>
         <div class='code'>
           <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">integrand</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span></pre></div>

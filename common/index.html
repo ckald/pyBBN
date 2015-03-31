@@ -22,17 +22,16 @@
     Contents
     <div id="jump_wrapper">
       <div id="jump_page">
-          <a class="source source-1" href="#common"> Common </a>
-          <a class="source source-2" href="#units"> Units </a>
-          <a class="source source-3" href="#physical-constants"> Physical constants </a>
-          <a class="source source-2" href="#parameters"> Parameters </a>
-          <a class="source source-3" href="#distribution-functions-grid"> Distribution functions grid </a>
+          <a class="source source-1" href="#units"> Units</a>
+          <a class="source source-2" href="#physical-constants"> Physical constants </a>
+          <a class="source source-1" href="#parameters"> Parameters</a>
+          <a class="source source-2" href="#distribution-functions-grid"> Distribution functions grid</a>
       </div>
     </div>
     </div>
     <div class="generation-time">
         Generated at
-        <code>2015-03-26 18:02</code>
+        <code>2015-03-31 16:09</code>
         by a diligent
         <a target="_blank" href="http://ckald.github.io/pyccoon/" title="Pyccoon: side-to-side documentation generator">
             <img id="pyccoon-icon" src="../pyccoon_icon.svg" alt="Pyccoon: side-to-side documentation generator" />pyccoon</a>
@@ -42,7 +41,7 @@
   <div class='section'>
     <div class='docs nav'>
       <nav id="breadcrumbs">/ <a href="index.html/../../index.html">.</a> / <a href="index.html/../index.html">common</a> / <a href="index.html">__init__.py</a> </nav>
-      <ul id="children"><li><a href="index.html">__init__.py</a></li><li><a href="integrators.py.html">integrators.py</a></li><li><a href="parallelization.py.html">parallelization.py</a></li><li><a href="utils.py.html">utils.py</a></li></ul>
+      <ul id="children"><li><a href="__init__.py.html">__init__.py</a></li><li><a href="integrators.py.html">integrators.py</a></li><li><a href="parallelization.py.html">parallelization.py</a></li><li><a href="utils.py.html">utils.py</a></li></ul>
     </div>
   </div>
   <div id="everything" class='clearall'>
@@ -69,7 +68,7 @@
           <div class='octowrap'>
             <a class='octothorpe' href='#section-1'>#</a>
           </div>
-          <h1><a id="common" class="header-anchor" href="#common"> Common </a></h1>
+          <p>Common</p>
 <p>This file contains constants and utilities shared by all other modules in the project.</p>
         </div>
         <div class='code'>
@@ -87,8 +86,9 @@
           <div class='octowrap'>
             <a class='octothorpe' href='#section-2'>#</a>
           </div>
-          <h2><a id="units" class="header-anchor" href="#units"> Units </a></h2>
-<p>As we use natural units in the project, all units from <code>numericalunits</code> except energy units are useless. Here some useful units are defined in terms of <code>GeV</code>s. </p>
+          <h1><a id="units" class="header-anchor" href="#units"> Units</a></h1>
+<div class="codehilite"><pre>    <span class="n">As</span> <span class="n">we</span> <span class="n">use</span> <span class="n">natural</span> <span class="n">units</span> <span class="n">in</span> <span class="n">the</span> <span class="n">project</span><span class="p">,</span> <span class="n">all</span> <span class="n">units</span> <span class="n">from</span> <span class="err">`</span><span class="n">numericalunits</span><span class="err">`</span> <span class="n">except</span> <span class="n">energy</span> <span class="n">units</span> <span class="n">are</span> <span class="n">useless</span><span class="p">.</span> <span class="n">Here</span> <span class="n">some</span> <span class="n">useful</span> <span class="n">units</span> <span class="n">are</span> <span class="n">defined</span> <span class="n">in</span> <span class="n">terms</span> <span class="n">of</span> <span class="err">`</span><span class="n">GeV</span><span class="err">`</span><span class="n">s</span><span class="p">.</span>
+</pre></div>
         </div>
         <div class='code'>
           <div class="highlight"><pre><span class="k">class</span> <span class="nc">UNITS</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
@@ -145,7 +145,7 @@
           <div class='octowrap'>
             <a class='octothorpe' href='#section-5'>#</a>
           </div>
-          <h3><a id="physical-constants" class="header-anchor" href="#physical-constants"> Physical constants </a></h3>
+          <h2><a id="physical-constants" class="header-anchor" href="#physical-constants"> Physical constants </a></h2>
         </div>
         <div class='code'>
           <div class="highlight"><pre><span class="k">class</span> <span class="nc">CONST</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
@@ -167,8 +167,9 @@
           <div class='octowrap'>
             <a class='octothorpe' href='#section-6'>#</a>
           </div>
-          <h2><a id="parameters" class="header-anchor" href="#parameters"> Parameters </a></h2>
-<p>Master object carrying the cosmological state of the system and initial conditions </p>
+          <h1><a id="parameters" class="header-anchor" href="#parameters"> Parameters</a></h1>
+<div class="codehilite"><pre>    <span class="n">Master</span> <span class="n">object</span> <span class="n">carrying</span> <span class="n">the</span> <span class="n">cosmological</span> <span class="n">state</span> <span class="n">of</span> <span class="n">the</span> <span class="n">system</span> <span class="n">and</span> <span class="n">initial</span> <span class="n">conditions</span>
+</pre></div>
         </div>
         <div class='code'>
           <div class="highlight"><pre><span class="k">class</span> <span class="nc">Params</span><span class="p">(</span><span class="n">PicklableObject</span><span class="p">):</span></pre></div>
@@ -404,11 +405,13 @@
           <div class='octowrap'>
             <a class='octothorpe' href='#section-20'>#</a>
           </div>
-          <h3><a id="distribution-functions-grid" class="header-anchor" href="#distribution-functions-grid"> Distribution functions grid </a></h3>
+          <h2><a id="distribution-functions-grid" class="header-anchor" href="#distribution-functions-grid"> Distribution functions grid</a></h2>
 <p><span class=todo><strong>TODO</strong>: try a log-spaced grid instead of equally-spaced</span>
 <span class=todo><strong>TODO</strong>: try an irregular grid based on the Gauss-Legendre quadrature roots to minimize the interpolation for the massless particles.</span></p>
-<p>To capture non-equilibrium effects in the Early Universe, we work with particle species distribution functions $f(\vec{p}, \vec{r}, t)$. Assuming that the Universe is homogeneous and isotropic, we can forget dependency on the position and the momentum direction: $f(p, t)$.</p>
-<p>Resulting functions are sampled across a wide range of momenta. However, momentum range cannot include both 0 momenta and very large momenta (either leads to numerical overflows and errors).</p>
+<div class="codehilite"><pre>    <span class="nx">To</span> <span class="nx">capture</span> <span class="nx">non</span><span class="o">-</span><span class="nx">equilibrium</span> <span class="nx">effects</span> <span class="k">in</span> <span class="nx">the</span> <span class="nx">Early</span> <span class="nx">Universe</span><span class="p">,</span> <span class="nx">we</span> <span class="nx">work</span> <span class="kd">with</span> <span class="nx">particle</span> <span class="nx">species</span> <span class="nx">distribution</span> <span class="nx">functions</span> <span class="nx">$f</span><span class="p">(</span><span class="err">\</span><span class="nx">vec</span><span class="p">{</span><span class="nx">p</span><span class="p">},</span> <span class="err">\</span><span class="nx">vec</span><span class="p">{</span><span class="nx">r</span><span class="p">},</span> <span class="nx">t</span><span class="p">)</span><span class="nx">$</span><span class="p">.</span> <span class="nx">Assuming</span> <span class="nx">that</span> <span class="nx">the</span> <span class="nx">Universe</span> <span class="nx">is</span> <span class="nx">homogeneous</span> <span class="nx">and</span> <span class="nx">isotropic</span><span class="p">,</span> <span class="nx">we</span> <span class="nx">can</span> <span class="nx">forget</span> <span class="nx">dependency</span> <span class="nx">on</span> <span class="nx">the</span> <span class="nx">position</span> <span class="nx">and</span> <span class="nx">the</span> <span class="nx">momentum</span> <span class="nx">direction</span><span class="o">:</span> <span class="nx">$f</span><span class="p">(</span><span class="nx">p</span><span class="p">,</span> <span class="nx">t</span><span class="p">)</span><span class="nx">$</span><span class="p">.</span>
+
+    <span class="nx">Resulting</span> <span class="nx">functions</span> <span class="nx">are</span> <span class="nx">sampled</span> <span class="nx">across</span> <span class="nx">a</span> <span class="nx">wide</span> <span class="nx">range</span> <span class="nx">of</span> <span class="nx">momenta</span><span class="p">.</span> <span class="nx">However</span><span class="p">,</span> <span class="nx">momentum</span> <span class="nx">range</span> <span class="nx">cannot</span> <span class="nx">include</span> <span class="nx">both</span> <span class="mi">0</span> <span class="nx">momenta</span> <span class="nx">and</span> <span class="nx">very</span> <span class="nx">large</span> <span class="nx">momenta</span> <span class="p">(</span><span class="nx">either</span> <span class="nx">leads</span> <span class="nx">to</span> <span class="nx">numerical</span> <span class="nx">overflows</span> <span class="nx">and</span> <span class="nx">errors</span><span class="p">).</span>
+</pre></div>
         </div>
         <div class='code'>
           <div class="highlight"><pre><span class="k">class</span> <span class="nc">Grid</span><span class="p">(</span><span class="n">PicklableObject</span><span class="p">):</span>

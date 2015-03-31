@@ -18,9 +18,75 @@
         <a class="btn" href="../../index.html">pyBBN v0.1.0</a>
     </span>
     <a class="btn" class="source source-1" href="#top">Back to top</a>
+    <div id="jump_to" class="btn">
+    Contents
+    <div id="jump_wrapper">
+      <div id="jump_page">
+          <a class="source source-1" href="#in-cython-to-enable-them-only-on-the-right-systems."> in Cython to enable them only on the right systems.</a>
+          <a class="source source-1" href="#ctypedef-npy_int96------int96_t">ctypedef npy_int96      int96_t</a>
+          <a class="source source-1" href="#ctypedef-npy_int96------int96_t">ctypedef npy_int96      int96_t</a>
+          <a class="source source-1" href="#ctypedef-npy_int128-----int128_t">ctypedef npy_int128     int128_t</a>
+          <a class="source source-1" href="#ctypedef-npy_int128-----int128_t">ctypedef npy_int128     int128_t</a>
+          <a class="source source-1" href="#ctypedef-npy_uint96-----uint96_t">ctypedef npy_uint96     uint96_t</a>
+          <a class="source source-1" href="#ctypedef-npy_uint96-----uint96_t">ctypedef npy_uint96     uint96_t</a>
+          <a class="source source-1" href="#ctypedef-npy_uint128----uint128_t">ctypedef npy_uint128    uint128_t</a>
+          <a class="source source-1" href="#ctypedef-npy_uint128----uint128_t">ctypedef npy_uint128    uint128_t</a>
+          <a class="source source-1" href="#ctypedef-npy_float80----float80_t">ctypedef npy_float80    float80_t</a>
+          <a class="source source-1" href="#ctypedef-npy_float80----float80_t">ctypedef npy_float80    float80_t</a>
+          <a class="source source-1" href="#ctypedef-npy_float128---float128_t">ctypedef npy_float128   float128_t</a>
+          <a class="source source-1" href="#the-int-types-are-mapped-a-bit-surprising---"> The int types are mapped a bit surprising --</a>
+          <a class="source source-1" href="#numpy.int-corresponds-to-'l'-and-numpy.long-to-'q'"> numpy.int corresponds to 'l' and numpy.long to 'q'</a>
+          <a class="source source-1" href="#numpy.int-corresponds-to-'l'-and-numpy.long-to-'q'"> numpy.int corresponds to 'l' and numpy.long to 'q'</a>
+          <a class="source source-1" href="#every-type-in-the-numpy-module-there's-a-corresponding-compile-time"> every type in the numpy module there's a corresponding compile-time</a>
+          <a class="source source-1" href="#type-with-a-_t-suffix."> type with a _t-suffix.</a>
+          <a class="source source-1" href="#determine-the-closest-grid-points"> Determine the closest grid points</a>
+          <a class="source source-1" href="#determine-the-closest-grid-points"> Determine the closest grid points</a>
+          <a class="source source-1" href="#experimental-exception-made-for-__getbuffer__-and-__releasebuffer__"> experimental exception made for getbuffer and releasebuffer</a>
+          <a class="source source-1" href="#---the-details-of-this-may-change."> -- the details of this may change.</a>
+          <a class="source source-1" href="#this-implementation-of-getbuffer-is-geared-towards-cython"> This implementation of getbuffer is geared towards Cython</a>
+          <a class="source source-1" href="#requirements,-and-does-not-yet-fullfill-the-pep."> requirements, and does not yet fullfill the PEP.</a>
+          <a class="source source-1" href="#of-flags"> of flags</a>
+          <a class="source source-1" href="#allocate-new-buffer-for-strides-and-shape-info."> Allocate new buffer for strides and shape info.</a>
+          <a class="source source-1" href="#allocate-new-buffer-for-strides-and-shape-info."> Allocate new buffer for strides and shape info.</a>
+          <a class="source source-1" href="#this-is-allocated-as-one-block,-strides-first."> This is allocated as one block, strides first.</a>
+          <a class="source source-1" href="#allocate-new-buffer-for-strides-and-shape-info."> Allocate new buffer for strides and shape info.</a>
+          <a class="source source-1" href="#this-is-allocated-as-one-block,-strides-first."> This is allocated as one block, strides first.</a>
+          <a class="source source-1" href="#this-is-allocated-as-one-block,-strides-first."> This is allocated as one block, strides first.</a>
+          <a class="source source-1" href="#do-not-call-releasebuffer"> do not call releasebuffer</a>
+          <a class="source source-1" href="#do-not-call-releasebuffer"> do not call releasebuffer</a>
+          <a class="source source-1" href="#need-to-call-releasebuffer"> need to call releasebuffer</a>
+          <a class="source source-1" href="#need-to-call-releasebuffer"> need to call releasebuffer</a>
+          <a class="source source-1" href="#experimental-exception-made-for-__getbuffer__-and-__releasebuffer__"> experimental exception made for getbuffer and releasebuffer</a>
+          <a class="source source-1" href="#---the-details-of-this-may-change."> -- the details of this may change.</a>
+          <a class="source source-1" href="#this-implementation-of-getbuffer-is-geared-towards-cython"> This implementation of getbuffer is geared towards Cython</a>
+          <a class="source source-1" href="#requirements,-and-does-not-yet-fullfill-the-pep."> requirements, and does not yet fullfill the PEP.</a>
+          <a class="source source-1" href="#info.shape-was-stored-after-info.strides-in-the-same-block"> info.shape was stored after info.strides in the same block</a>
+          <a class="source source-1" href="#info.shape-was-stored-after-info.strides-in-the-same-block"> info.shape was stored after info.strides in the same block</a>
+          <a class="source source-1" href="#recursive-utility-function-used-in-__getbuffer__-to-get-format"> Recursive utility function used in getbuffer to get format</a>
+          <a class="source source-1" href="#string.-the-new-location-in-the-format-string-is-returned."> string. The new location in the format string is returned.</a>
+          <a class="source source-1" href="#one-could-encode-it-in-the-format-string-and-have-cython"> One could encode it in the format string and have Cython</a>
+          <a class="source source-1" href="#one-could-encode-it-in-the-format-string-and-have-cython"> One could encode it in the format string and have Cython</a>
+          <a class="source source-1" href="#complain-instead,-but:-&amp;lt;-and-&amp;gt;-in-format-strings-also-imply"><a id="complain-instead,-but:--in-format-strings-also-imply" class="header-anchor" href="#complain-instead,-but:-&lt;-and-&gt;-in-format-strings-also-imply"&gt; complain instead, BUT: &lt; and &gt; in format strings also imply</a>
+          <a class="source source-1" href="#output-padding-bytes"> Output padding bytes</a>
+          <a class="source source-1" href="#output-padding-bytes"> Output padding bytes</a>
+          <a class="source source-1" href="#cython-ignores-struct-boundary-information-(&quot;t{...}&quot;),&quot;&gt; Cython ignores struct boundary information (&quot;T{...}"> Cython ignores struct boundary information ("T{...}"),</a>
+          <a class="source source-1" href="#cython-ignores-struct-boundary-information-(&quot;t{...}&quot;),&quot;&gt; Cython ignores struct boundary information (&quot;T{...}"> Cython ignores struct boundary information ("T{...}"),</a>
+          <a class="source source-1" href="#so-don't-output-it"> so don't output it</a>
+          <a class="source source-1" href="#so-don't-output-it"> so don't output it</a>
+          <a class="source source-1" href="#recursive-utility-function-used-in-__getbuffer__-to-get-format"> Recursive utility function used in getbuffer to get format</a>
+          <a class="source source-1" href="#string.-the-new-location-in-the-format-string-is-returned."> string. The new location in the format string is returned.</a>
+          <a class="source source-1" href="#one-could-encode-it-in-the-format-string-and-have-cython"> One could encode it in the format string and have Cython</a>
+          <a class="source source-1" href="#complain-instead,-but:-&amp;lt;-and-&amp;gt;-in-format-strings-also-imply"><a id="complain-instead,-but:--in-format-strings-also-imply" class="header-anchor" href="#complain-instead,-but:-&lt;-and-&gt;-in-format-strings-also-imply"&gt; complain instead, BUT: &lt; and &gt; in format strings also imply</a>
+          <a class="source source-1" href="#dtype-for-this,-which-is-assigned-to-the-usual-numpy-runtime"> DTYPE for this, which is assigned to the usual NumPy runtime</a>
+          <a class="source source-1" href="#type-info-object."> type info object.</a>
+          <a class="source source-1" href="#&quot;ctypedef&quot;-assigns-a-corresponding-compile-time-type-to-dtype_t.-for&quot;&gt; &quot;ctypedef"> "ctypedef" assigns a corresponding compile-time type to DTYPE_t. For</a>
+          <a class="source source-1" href="#every-type-in-the-numpy-module-there's-a-corresponding-compile-time"> every type in the numpy module there's a corresponding compile-time</a>
+      </div>
+    </div>
+    </div>
     <div class="generation-time">
         Generated at
-        <code>2015-03-26 18:02</code>
+        <code>2015-03-31 16:09</code>
         by a diligent
         <a target="_blank" href="http://ckald.github.io/pyccoon/" title="Pyccoon: side-to-side documentation generator">
             <img id="pyccoon-icon" src="../../pyccoon_icon.svg" alt="Pyccoon: side-to-side documentation generator" />pyccoon</a>
@@ -597,7 +663,7 @@ a quiet NaN. </p>
             <a class='octothorpe' href='#section-6'>#</a>
           </div>
           <p>"../../../../../../../usr/local/lib/python2.7/site-packages/Cython/Includes/numpy/<strong>init</strong>.pxd":723</p>
-<h1>in Cython to enable them only on the right systems.</h1>
+<h1><a id="in-cython-to-enable-them-only-on-the-right-systems." class="header-anchor" href="#in-cython-to-enable-them-only-on-the-right-systems."> in Cython to enable them only on the right systems.</a></h1>
 <p>ctypedef npy_int8       int8_t             # &lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;
 ctypedef npy_int16      int16_t
 ctypedef npy_int32      int32_t</p>
@@ -639,7 +705,7 @@ ctypedef npy_int8       int8_t
 ctypedef npy_int16      int16_t
 ctypedef npy_int32      int32_t             # &lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;
 ctypedef npy_int64      int64_t</p>
-<h1>ctypedef npy_int96      int96_t</h1>
+<h1><a id="ctypedef-npy_int96------int96_t" class="header-anchor" href="#ctypedef-npy_int96------int96_t">ctypedef npy_int96      int96_t</a></h1>
         </div>
         <div class='code'>
           <div class="highlight"><pre><span class="k">typedef</span> <span class="n">npy_int32</span> <span class="kt">__pyx_t_5numpy_int32_t</span><span class="p">;</span></pre></div>
@@ -658,8 +724,8 @@ ctypedef npy_int64      int64_t</p>
 ctypedef npy_int16      int16_t
 ctypedef npy_int32      int32_t
 ctypedef npy_int64      int64_t             # &lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;</p>
-<h1>ctypedef npy_int96      int96_t</h1>
-<h1>ctypedef npy_int128     int128_t</h1>
+<h1><a id="ctypedef-npy_int96------int96_t" class="header-anchor" href="#ctypedef-npy_int96------int96_t">ctypedef npy_int96      int96_t</a></h1>
+<h1><a id="ctypedef-npy_int128-----int128_t" class="header-anchor" href="#ctypedef-npy_int128-----int128_t">ctypedef npy_int128     int128_t</a></h1>
         </div>
         <div class='code'>
           <div class="highlight"><pre><span class="k">typedef</span> <span class="n">npy_int64</span> <span class="kt">__pyx_t_5numpy_int64_t</span><span class="p">;</span></pre></div>
@@ -675,7 +741,7 @@ ctypedef npy_int64      int64_t             # &lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&l
             <a class='octothorpe' href='#section-10'>#</a>
           </div>
           <p>"../../../../../../../usr/local/lib/python2.7/site-packages/Cython/Includes/numpy/<strong>init</strong>.pxd":730</p>
-<h1>ctypedef npy_int128     int128_t</h1>
+<h1><a id="ctypedef-npy_int128-----int128_t" class="header-anchor" href="#ctypedef-npy_int128-----int128_t">ctypedef npy_int128     int128_t</a></h1>
 <p>ctypedef npy_uint8      uint8_t             # &lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;
 ctypedef npy_uint16     uint16_t
 ctypedef npy_uint32     uint32_t</p>
@@ -717,7 +783,7 @@ ctypedef npy_uint8      uint8_t
 ctypedef npy_uint16     uint16_t
 ctypedef npy_uint32     uint32_t             # &lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;
 ctypedef npy_uint64     uint64_t</p>
-<h1>ctypedef npy_uint96     uint96_t</h1>
+<h1><a id="ctypedef-npy_uint96-----uint96_t" class="header-anchor" href="#ctypedef-npy_uint96-----uint96_t">ctypedef npy_uint96     uint96_t</a></h1>
         </div>
         <div class='code'>
           <div class="highlight"><pre><span class="k">typedef</span> <span class="n">npy_uint32</span> <span class="kt">__pyx_t_5numpy_uint32_t</span><span class="p">;</span></pre></div>
@@ -736,8 +802,8 @@ ctypedef npy_uint64     uint64_t</p>
 ctypedef npy_uint16     uint16_t
 ctypedef npy_uint32     uint32_t
 ctypedef npy_uint64     uint64_t             # &lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;</p>
-<h1>ctypedef npy_uint96     uint96_t</h1>
-<h1>ctypedef npy_uint128    uint128_t</h1>
+<h1><a id="ctypedef-npy_uint96-----uint96_t" class="header-anchor" href="#ctypedef-npy_uint96-----uint96_t">ctypedef npy_uint96     uint96_t</a></h1>
+<h1><a id="ctypedef-npy_uint128----uint128_t" class="header-anchor" href="#ctypedef-npy_uint128----uint128_t">ctypedef npy_uint128    uint128_t</a></h1>
         </div>
         <div class='code'>
           <div class="highlight"><pre><span class="k">typedef</span> <span class="n">npy_uint64</span> <span class="kt">__pyx_t_5numpy_uint64_t</span><span class="p">;</span></pre></div>
@@ -753,10 +819,10 @@ ctypedef npy_uint64     uint64_t             # &lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&
             <a class='octothorpe' href='#section-14'>#</a>
           </div>
           <p>"../../../../../../../usr/local/lib/python2.7/site-packages/Cython/Includes/numpy/<strong>init</strong>.pxd":737</p>
-<h1>ctypedef npy_uint128    uint128_t</h1>
+<h1><a id="ctypedef-npy_uint128----uint128_t" class="header-anchor" href="#ctypedef-npy_uint128----uint128_t">ctypedef npy_uint128    uint128_t</a></h1>
 <p>ctypedef npy_float32    float32_t             # &lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;
 ctypedef npy_float64    float64_t</p>
-<h1>ctypedef npy_float80    float80_t</h1>
+<h1><a id="ctypedef-npy_float80----float80_t" class="header-anchor" href="#ctypedef-npy_float80----float80_t">ctypedef npy_float80    float80_t</a></h1>
         </div>
         <div class='code'>
           <div class="highlight"><pre><span class="k">typedef</span> <span class="n">npy_float32</span> <span class="kt">__pyx_t_5numpy_float32_t</span><span class="p">;</span></pre></div>
@@ -774,8 +840,8 @@ ctypedef npy_float64    float64_t</p>
           <p>"../../../../../../../usr/local/lib/python2.7/site-packages/Cython/Includes/numpy/<strong>init</strong>.pxd":738</p>
 <p>ctypedef npy_float32    float32_t
 ctypedef npy_float64    float64_t             # &lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;</p>
-<h1>ctypedef npy_float80    float80_t</h1>
-<h1>ctypedef npy_float128   float128_t</h1>
+<h1><a id="ctypedef-npy_float80----float80_t" class="header-anchor" href="#ctypedef-npy_float80----float80_t">ctypedef npy_float80    float80_t</a></h1>
+<h1><a id="ctypedef-npy_float128---float128_t" class="header-anchor" href="#ctypedef-npy_float128---float128_t">ctypedef npy_float128   float128_t</a></h1>
         </div>
         <div class='code'>
           <div class="highlight"><pre><span class="k">typedef</span> <span class="n">npy_float64</span> <span class="kt">__pyx_t_5numpy_float64_t</span><span class="p">;</span></pre></div>
@@ -791,8 +857,8 @@ ctypedef npy_float64    float64_t             # &lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;
             <a class='octothorpe' href='#section-16'>#</a>
           </div>
           <p>"../../../../../../../usr/local/lib/python2.7/site-packages/Cython/Includes/numpy/<strong>init</strong>.pxd":747</p>
-<h1>The int types are mapped a bit surprising --</h1>
-<h1>numpy.int corresponds to 'l' and numpy.long to 'q'</h1>
+<h1><a id="the-int-types-are-mapped-a-bit-surprising---" class="header-anchor" href="#the-int-types-are-mapped-a-bit-surprising---"> The int types are mapped a bit surprising --</a></h1>
+<h1><a id="numpy.int-corresponds-to-'l'-and-numpy.long-to-'q'" class="header-anchor" href="#numpy.int-corresponds-to-'l'-and-numpy.long-to-'q'"> numpy.int corresponds to 'l' and numpy.long to 'q'</a></h1>
 <p>ctypedef npy_long       int_t             # &lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;
 ctypedef npy_longlong   long_t
 ctypedef npy_longlong   longlong_t</p>
@@ -811,7 +877,7 @@ ctypedef npy_longlong   longlong_t</p>
             <a class='octothorpe' href='#section-17'>#</a>
           </div>
           <p>"../../../../../../../usr/local/lib/python2.7/site-packages/Cython/Includes/numpy/<strong>init</strong>.pxd":748</p>
-<h1>numpy.int corresponds to 'l' and numpy.long to 'q'</h1>
+<h1><a id="numpy.int-corresponds-to-'l'-and-numpy.long-to-'q'" class="header-anchor" href="#numpy.int-corresponds-to-'l'-and-numpy.long-to-'q'"> numpy.int corresponds to 'l' and numpy.long to 'q'</a></h1>
 <p>ctypedef npy_long       int_t
 ctypedef npy_longlong   long_t             # &lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;
 ctypedef npy_longlong   longlong_t</p>
@@ -997,8 +1063,8 @@ ctypedef npy_longdouble longdouble_t             # &lt;&lt;&lt;&lt;&lt;&lt;&lt;&
             <a class='octothorpe' href='#section-27'>#</a>
           </div>
           <p>"src/particles/interpolation/interpolation.pyx":19</p>
-<h1>every type in the numpy module there's a corresponding compile-time</h1>
-<h1>type with a _t-suffix.</h1>
+<h1><a id="every-type-in-the-numpy-module-there's-a-corresponding-compile-time" class="header-anchor" href="#every-type-in-the-numpy-module-there's-a-corresponding-compile-time"> every type in the numpy module there's a corresponding compile-time</a></h1>
+<h1><a id="type-with-a-_t-suffix." class="header-anchor" href="#type-with-a-_t-suffix."> type with a _t-suffix.</a></h1>
 <p>ctypedef numpy.float_t DTYPE_t             # &lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;</p>
 <p>cdef int exponential_interpolation = True</p>
         </div>
@@ -2425,7 +2491,7 @@ def distribution_interpolation(numpy.ndarray[DTYPE_t, ndim=1] grid,             
           <p>"src/particles/interpolation/interpolation.pyx":48</p>
 <p>if index &gt;= len(grid) - 1:
     return distribution[len(grid) - 1]             # &lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;</p>
-<h1>Determine the closest grid points</h1>
+<h1><a id="determine-the-closest-grid-points" class="header-anchor" href="#determine-the-closest-grid-points"> Determine the closest grid points</a></h1>
         </div>
         <div class='code'>
           <div class="highlight"><pre>    <span class="n">__Pyx_XDECREF</span><span class="p">(</span><span class="n">__pyx_r</span><span class="p">);</span>
@@ -2448,8 +2514,8 @@ def distribution_interpolation(numpy.ndarray[DTYPE_t, ndim=1] grid,             
           <div class='octowrap'>
             <a class='octothorpe' href='#section-72'>#</a>
           </div>
-          <p>"src/particles/interpolation/interpolation.pyx":52
-  # Determine the closest grid points</p>
+          <p>"src/particles/interpolation/interpolation.pyx":52</p>
+<h1><a id="determine-the-closest-grid-points" class="header-anchor" href="#determine-the-closest-grid-points"> Determine the closest grid points</a></h1>
 <p>i_low = index             # &lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;
   p_low = grid[i_low]</p>
         </div>
@@ -3122,14 +3188,16 @@ else:
           <div class='octowrap'>
             <a class='octothorpe' href='#section-98'>#</a>
           </div>
-          <p>"../../../../../../../usr/local/lib/python2.7/site-packages/Cython/Includes/numpy/<strong>init</strong>.pxd":194
-        # experimental exception made for <strong>getbuffer</strong> and <strong>releasebuffer</strong>
-        # -- the details of this may change.
-        def <strong>getbuffer</strong>(ndarray self, Py_buffer* info, int flags)
-        :   # &lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;</p>
-<div class="codehilite"><pre>        <span class="c"># This implementation of getbuffer is geared towards Cython</span>
-        <span class="c"># requirements, and does not yet fullfill the PEP.</span>
+          <p>"../../../../../../../usr/local/lib/python2.7/site-packages/Cython/Includes/numpy/<strong>init</strong>.pxd":194</p>
+<h1><a id="experimental-exception-made-for-__getbuffer__-and-__releasebuffer__" class="header-anchor" href="#experimental-exception-made-for-__getbuffer__-and-__releasebuffer__"> experimental exception made for <strong>getbuffer</strong> and <strong>releasebuffer</strong></a></h1>
+<h1><a id="---the-details-of-this-may-change." class="header-anchor" href="#---the-details-of-this-may-change."> -- the details of this may change.</a></h1>
+<div class="codehilite"><pre>    <span class="n">def</span> <span class="n">__getbuffer__</span><span class="p">(</span><span class="n">ndarray</span> <span class="n">self</span><span class="p">,</span> <span class="n">Py_buffer</span><span class="o">*</span> <span class="n">info</span><span class="p">,</span> <span class="kt">int</span> <span class="n">flags</span><span class="p">)</span>
+    <span class="o">:</span>   <span class="err">#</span> <span class="o">&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;</span>
 </pre></div>
+
+
+<h1><a id="this-implementation-of-getbuffer-is-geared-towards-cython" class="header-anchor" href="#this-implementation-of-getbuffer-is-geared-towards-cython"> This implementation of getbuffer is geared towards Cython</a></h1>
+<h1><a id="requirements,-and-does-not-yet-fullfill-the-pep." class="header-anchor" href="#requirements,-and-does-not-yet-fullfill-the-pep."> requirements, and does not yet fullfill the PEP.</a></h1>
         </div>
         <div class='code'>
           
@@ -3421,8 +3489,8 @@ else:
           <div class='octowrap'>
             <a class='octothorpe' href='#section-116'>#</a>
           </div>
-          <p>"../../../../../../../usr/local/lib/python2.7/site-packages/Cython/Includes/numpy/<strong>init</strong>.pxd":200
-          # of flags</p>
+          <p>"../../../../../../../usr/local/lib/python2.7/site-packages/Cython/Includes/numpy/<strong>init</strong>.pxd":200</p>
+<h1><a id="of-flags" class="header-anchor" href="#of-flags"> of flags</a></h1>
 <div class="codehilite"><pre>      <span class="k">if</span> <span class="n">info</span> <span class="o">==</span> <span class="nb">NULL</span><span class="o">:</span> <span class="k">return</span>             <span class="err">#</span> <span class="o">&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;</span>
 
       <span class="n">cdef</span> <span class="kt">int</span> <span class="n">copy_shape</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">ndim</span>
@@ -3762,8 +3830,10 @@ else:
 <div class="codehilite"><pre>      <span class="n">info</span><span class="p">.</span><span class="n">buf</span> <span class="o">=</span> <span class="n">PyArray_DATA</span><span class="p">(</span><span class="n">self</span><span class="p">)</span>
       <span class="n">info</span><span class="p">.</span><span class="n">ndim</span> <span class="o">=</span> <span class="n">ndim</span>             <span class="err">#</span> <span class="o">&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;</span>
       <span class="k">if</span> <span class="n">copy_shape</span><span class="o">:</span>
-          <span class="err">#</span> <span class="n">Allocate</span> <span class="n">new</span> <span class="n">buffer</span> <span class="k">for</span> <span class="n">strides</span> <span class="n">and</span> <span class="n">shape</span> <span class="n">info</span><span class="p">.</span>
 </pre></div>
+
+
+<h1><a id="allocate-new-buffer-for-strides-and-shape-info." class="header-anchor" href="#allocate-new-buffer-for-strides-and-shape-info."> Allocate new buffer for strides and shape info.</a></h1>
         </div>
         <div class='code'>
           <div class="highlight"><pre>  <span class="n">__pyx_v_info</span><span class="o">-&gt;</span><span class="n">ndim</span> <span class="o">=</span> <span class="n">__pyx_v_ndim</span><span class="p">;</span></pre></div>
@@ -3783,9 +3853,8 @@ else:
           info.ndim = ndim
           if copy_shape
           :   # &lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;</p>
-<div class="codehilite"><pre>          <span class="c"># Allocate new buffer for strides and shape info.</span>
-          <span class="c"># This is allocated as one block, strides first.</span>
-</pre></div>
+<h1><a id="allocate-new-buffer-for-strides-and-shape-info." class="header-anchor" href="#allocate-new-buffer-for-strides-and-shape-info."> Allocate new buffer for strides and shape info.</a></h1>
+<h1><a id="this-is-allocated-as-one-block,-strides-first." class="header-anchor" href="#this-is-allocated-as-one-block,-strides-first."> This is allocated as one block, strides first.</a></h1>
         </div>
         <div class='code'>
           <div class="highlight"><pre>  <span class="n">__pyx_t_1</span> <span class="o">=</span> <span class="p">(</span><span class="n">__pyx_v_copy_shape</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">);</span>
@@ -3801,12 +3870,13 @@ else:
           <div class='octowrap'>
             <a class='octothorpe' href='#section-133'>#</a>
           </div>
-          <p>"../../../../../../../usr/local/lib/python2.7/site-packages/Cython/Includes/numpy/<strong>init</strong>.pxd":226
-            # Allocate new buffer for strides and shape info.
-            # This is allocated as one block, strides first.
-            info.strides = <Py_ssize_t*>stdlib.malloc(sizeof(Py_ssize_t) * <size_t>ndim * 2)             # &lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;
-            info.shape = info.strides + ndim
-            for i in range(ndim):</p>
+          <p>"../../../../../../../usr/local/lib/python2.7/site-packages/Cython/Includes/numpy/<strong>init</strong>.pxd":226</p>
+<h1><a id="allocate-new-buffer-for-strides-and-shape-info." class="header-anchor" href="#allocate-new-buffer-for-strides-and-shape-info."> Allocate new buffer for strides and shape info.</a></h1>
+<h1><a id="this-is-allocated-as-one-block,-strides-first." class="header-anchor" href="#this-is-allocated-as-one-block,-strides-first."> This is allocated as one block, strides first.</a></h1>
+<div class="codehilite"><pre>        <span class="n">info.strides</span> <span class="o">=</span> <span class="o">&lt;</span><span class="nx">Py_ssize_t</span><span class="o">*&gt;</span><span class="nx">stdlib.malloc</span><span class="p">(</span><span class="nx">sizeof</span><span class="p">(</span><span class="nx">Py_ssize_t</span><span class="p">)</span> <span class="o">*</span> <span class="o">&lt;</span><span class="nx">size_t</span><span class="o">&gt;</span><span class="nx">ndim</span> <span class="o">*</span> <span class="mi">2</span><span class="p">)</span>             <span class="err">#</span> <span class="o">&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;</span>
+        <span class="n">info.shape</span> <span class="o">=</span> <span class="nx">info.strides</span> <span class="o">+</span> <span class="nx">ndim</span>
+        <span class="nb">for</span> <span class="n">i</span> <span class="k">in</span> <span class="nb">range</span><span class="p">(</span><span class="nx">ndim</span><span class="p">):</span>
+</pre></div>
         </div>
         <div class='code'>
           <div class="highlight"><pre>    <span class="n">__pyx_v_info</span><span class="o">-&gt;</span><span class="n">strides</span> <span class="o">=</span> <span class="p">((</span><span class="n">Py_ssize_t</span> <span class="o">*</span><span class="p">)</span><span class="n">malloc</span><span class="p">((((</span><span class="k">sizeof</span><span class="p">(</span><span class="n">Py_ssize_t</span><span class="p">))</span> <span class="o">*</span> <span class="p">((</span><span class="kt">size_t</span><span class="p">)</span><span class="n">__pyx_v_ndim</span><span class="p">))</span> <span class="o">*</span> <span class="mi">2</span><span class="p">)));</span></pre></div>
@@ -3821,12 +3891,13 @@ else:
           <div class='octowrap'>
             <a class='octothorpe' href='#section-134'>#</a>
           </div>
-          <p>"../../../../../../../usr/local/lib/python2.7/site-packages/Cython/Includes/numpy/<strong>init</strong>.pxd":227
-            # This is allocated as one block, strides first.
-            info.strides = <Py_ssize_t*>stdlib.malloc(sizeof(Py_ssize_t) * <size_t>ndim * 2)
-            info.shape = info.strides + ndim             # &lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;
-            for i in range(ndim):
-                info.strides[i] = PyArray_STRIDES(self)[i]</p>
+          <p>"../../../../../../../usr/local/lib/python2.7/site-packages/Cython/Includes/numpy/<strong>init</strong>.pxd":227</p>
+<h1><a id="this-is-allocated-as-one-block,-strides-first." class="header-anchor" href="#this-is-allocated-as-one-block,-strides-first."> This is allocated as one block, strides first.</a></h1>
+<div class="codehilite"><pre>        <span class="n">info.strides</span> <span class="o">=</span> <span class="o">&lt;</span><span class="nx">Py_ssize_t</span><span class="o">*&gt;</span><span class="nx">stdlib.malloc</span><span class="p">(</span><span class="nx">sizeof</span><span class="p">(</span><span class="nx">Py_ssize_t</span><span class="p">)</span> <span class="o">*</span> <span class="o">&lt;</span><span class="nx">size_t</span><span class="o">&gt;</span><span class="nx">ndim</span> <span class="o">*</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="n">info.shape</span> <span class="o">=</span> <span class="nx">info.strides</span> <span class="o">+</span> <span class="nx">ndim</span>             <span class="err">#</span> <span class="o">&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;</span>
+        <span class="nb">for</span> <span class="n">i</span> <span class="k">in</span> <span class="nb">range</span><span class="p">(</span><span class="nx">ndim</span><span class="p">):</span>
+            <span class="nx">info.strides</span><span class="err">[</span><span class="nx">i</span><span class="cp">]</span> = PyArray_STRIDES(self)<span class="cp">[</span><span class="nx">i</span><span class="cp">]</span>
+</pre></div>
         </div>
         <div class='code'>
           <div class="highlight"><pre>    <span class="n">__pyx_v_info</span><span class="o">-&gt;</span><span class="n">shape</span> <span class="o">=</span> <span class="p">(</span><span class="n">__pyx_v_info</span><span class="o">-&gt;</span><span class="n">strides</span> <span class="o">+</span> <span class="n">__pyx_v_ndim</span><span class="p">);</span></pre></div>
@@ -4091,9 +4162,11 @@ else:
           cdef bint hasfields = PyDataType_HASFIELDS(descr)</p>
 <div class="codehilite"><pre>      <span class="k">if</span> <span class="n">not</span> <span class="n">hasfields</span> <span class="n">and</span> <span class="n">not</span> <span class="n">copy_shape</span>
       <span class="o">:</span>   <span class="err">#</span> <span class="o">&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;</span>
+</pre></div>
 
-          <span class="err">#</span> <span class="k">do</span> <span class="n">not</span> <span class="n">call</span> <span class="n">releasebuffer</span>
-          <span class="n">info</span><span class="p">.</span><span class="n">obj</span> <span class="o">=</span> <span class="n">None</span>
+
+<h1><a id="do-not-call-releasebuffer" class="header-anchor" href="#do-not-call-releasebuffer"> do not call releasebuffer</a></h1>
+<div class="codehilite"><pre>          <span class="n">info</span><span class="p">.</span><span class="n">obj</span> <span class="o">=</span> <span class="n">None</span>
 </pre></div>
         </div>
         <div class='code'>
@@ -4121,11 +4194,14 @@ else:
             <a class='octothorpe' href='#section-148'>#</a>
           </div>
           <p>"../../../../../../../usr/local/lib/python2.7/site-packages/Cython/Includes/numpy/<strong>init</strong>.pxd":248
-        if not hasfields and not copy_shape:
-            # do not call releasebuffer
-            info.obj = None             # &lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;
-        else:
-            # need to call releasebuffer</p>
+        if not hasfields and not copy_shape:</p>
+<h1><a id="do-not-call-releasebuffer" class="header-anchor" href="#do-not-call-releasebuffer"> do not call releasebuffer</a></h1>
+<div class="codehilite"><pre>        <span class="n">info</span><span class="p">.</span><span class="n">obj</span> <span class="o">=</span> <span class="n">None</span>             <span class="err">#</span> <span class="o">&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;</span>
+    <span class="nl">else:</span>
+</pre></div>
+
+
+<h1><a id="need-to-call-releasebuffer" class="header-anchor" href="#need-to-call-releasebuffer"> need to call releasebuffer</a></h1>
         </div>
         <div class='code'>
           <div class="highlight"><pre>    <span class="n">__Pyx_INCREF</span><span class="p">(</span><span class="n">Py_None</span><span class="p">);</span>
@@ -4162,10 +4238,11 @@ else:
             <a class='octothorpe' href='#section-150'>#</a>
           </div>
           <p>"../../../../../../../usr/local/lib/python2.7/site-packages/Cython/Includes/numpy/<strong>init</strong>.pxd":251
-        else:
-            # need to call releasebuffer
-            info.obj = self             # &lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;</p>
-<div class="codehilite"><pre>    <span class="k">if</span> <span class="n">not</span> <span class="n">hasfields</span><span class="o">:</span>
+        else:</p>
+<h1><a id="need-to-call-releasebuffer" class="header-anchor" href="#need-to-call-releasebuffer"> need to call releasebuffer</a></h1>
+<div class="codehilite"><pre>        <span class="n">info</span><span class="p">.</span><span class="n">obj</span> <span class="o">=</span> <span class="n">self</span>             <span class="err">#</span> <span class="o">&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;</span>
+
+    <span class="k">if</span> <span class="n">not</span> <span class="n">hasfields</span><span class="o">:</span>
 </pre></div>
         </div>
         <div class='code'>
@@ -5060,14 +5137,16 @@ else:
           <div class='octowrap'>
             <a class='octothorpe' href='#section-183'>#</a>
           </div>
-          <p>"../../../../../../../usr/local/lib/python2.7/site-packages/Cython/Includes/numpy/<strong>init</strong>.pxd":194
-      # experimental exception made for <strong>getbuffer</strong> and <strong>releasebuffer</strong>
-      # -- the details of this may change.
-      def <strong>getbuffer</strong>(ndarray self, Py_buffer* info, int flags)
-      :   # &lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;</p>
-<div class="codehilite"><pre>      <span class="c"># This implementation of getbuffer is geared towards Cython</span>
-      <span class="c"># requirements, and does not yet fullfill the PEP.</span>
+          <p>"../../../../../../../usr/local/lib/python2.7/site-packages/Cython/Includes/numpy/<strong>init</strong>.pxd":194</p>
+<h1><a id="experimental-exception-made-for-__getbuffer__-and-__releasebuffer__" class="header-anchor" href="#experimental-exception-made-for-__getbuffer__-and-__releasebuffer__"> experimental exception made for <strong>getbuffer</strong> and <strong>releasebuffer</strong></a></h1>
+<h1><a id="---the-details-of-this-may-change." class="header-anchor" href="#---the-details-of-this-may-change."> -- the details of this may change.</a></h1>
+<div class="codehilite"><pre>  <span class="n">def</span> <span class="n">__getbuffer__</span><span class="p">(</span><span class="n">ndarray</span> <span class="n">self</span><span class="p">,</span> <span class="n">Py_buffer</span><span class="o">*</span> <span class="n">info</span><span class="p">,</span> <span class="kt">int</span> <span class="n">flags</span><span class="p">)</span>
+  <span class="o">:</span>   <span class="err">#</span> <span class="o">&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;</span>
 </pre></div>
+
+
+<h1><a id="this-implementation-of-getbuffer-is-geared-towards-cython" class="header-anchor" href="#this-implementation-of-getbuffer-is-geared-towards-cython"> This implementation of getbuffer is geared towards Cython</a></h1>
+<h1><a id="requirements,-and-does-not-yet-fullfill-the-pep." class="header-anchor" href="#requirements,-and-does-not-yet-fullfill-the-pep."> requirements, and does not yet fullfill the PEP.</a></h1>
         </div>
         <div class='code'>
           
@@ -5246,8 +5325,10 @@ else:
           if sizeof(npy_intp) != sizeof(Py_ssize_t)
           :   # &lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;</p>
 <div class="codehilite"><pre>          <span class="n">stdlib</span><span class="p">.</span><span class="n">free</span><span class="p">(</span><span class="n">info</span><span class="p">.</span><span class="n">strides</span><span class="p">)</span>
-          <span class="err">#</span> <span class="n">info</span><span class="p">.</span><span class="n">shape</span> <span class="n">was</span> <span class="n">stored</span> <span class="n">after</span> <span class="n">info</span><span class="p">.</span><span class="n">strides</span> <span class="n">in</span> <span class="n">the</span> <span class="n">same</span> <span class="n">block</span>
 </pre></div>
+
+
+<h1><a id="info.shape-was-stored-after-info.strides-in-the-same-block" class="header-anchor" href="#info.shape-was-stored-after-info.strides-in-the-same-block"> info.shape was stored after info.strides in the same block</a></h1>
         </div>
         <div class='code'>
           <div class="highlight"><pre>  <span class="n">__pyx_t_1</span> <span class="o">=</span> <span class="p">(((</span><span class="k">sizeof</span><span class="p">(</span><span class="n">npy_intp</span><span class="p">))</span> <span class="o">!=</span> <span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="n">Py_ssize_t</span><span class="p">)))</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">);</span>
@@ -5266,8 +5347,8 @@ else:
           <p>"../../../../../../../usr/local/lib/python2.7/site-packages/Cython/Includes/numpy/<strong>init</strong>.pxd":292
             stdlib.free(info.format)
         if sizeof(npy_intp) != sizeof(Py_ssize_t):
-            stdlib.free(info.strides)             # &lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;
-            # info.shape was stored after info.strides in the same block</p>
+            stdlib.free(info.strides)             # &lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;</p>
+<h1><a id="info.shape-was-stored-after-info.strides-in-the-same-block" class="header-anchor" href="#info.shape-was-stored-after-info.strides-in-the-same-block"> info.shape was stored after info.strides in the same block</a></h1>
         </div>
         <div class='code'>
           <div class="highlight"><pre>    <span class="n">free</span><span class="p">(</span><span class="n">__pyx_v_info</span><span class="o">-&gt;</span><span class="n">strides</span><span class="p">);</span>
@@ -5899,10 +5980,10 @@ ctypedef npy_cdouble     complex_t</p>
 <dt>cdef inline char<em> _util_dtypestring(dtype descr, char</em> f, char<em> end, int</em> offset) except NULL</dt>
 <dd>
 <h1>&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;</h1>
-<h1>Recursive utility function used in <strong>getbuffer</strong> to get format</h1>
-<h1>string. The new location in the format string is returned.</h1>
 </dd>
 </dl>
+<h1><a id="recursive-utility-function-used-in-__getbuffer__-to-get-format" class="header-anchor" href="#recursive-utility-function-used-in-__getbuffer__-to-get-format"> Recursive utility function used in <strong>getbuffer</strong> to get format</a></h1>
+<h1><a id="string.-the-new-location-in-the-format-string-is-returned." class="header-anchor" href="#string.-the-new-location-in-the-format-string-is-returned."> string. The new location in the format string is returned.</a></h1>
         </div>
         <div class='code'>
           <div class="highlight"><pre><span class="k">static</span> <span class="n">CYTHON_INLINE</span> <span class="kt">char</span> <span class="o">*</span><span class="nf">__pyx_f_5numpy__util_dtypestring</span><span class="p">(</span><span class="n">PyArray_Descr</span> <span class="o">*</span><span class="n">__pyx_v_descr</span><span class="p">,</span> <span class="kt">char</span> <span class="o">*</span><span class="n">__pyx_v_f</span><span class="p">,</span> <span class="kt">char</span> <span class="o">*</span><span class="n">__pyx_v_end</span><span class="p">,</span> <span class="kt">int</span> <span class="o">*</span><span class="n">__pyx_v_offset</span><span class="p">)</span> <span class="p">{</span>
@@ -6264,8 +6345,10 @@ for childname in descr.names:
     <span class="o">:</span>   <span class="err">#</span> <span class="o">&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;</span>
 
     <span class="n">raise</span> <span class="n">ValueError</span><span class="p">(</span><span class="n">u</span><span class="s">&quot;Non-native byte order not supported&quot;</span><span class="p">)</span>
-    <span class="err">#</span> <span class="n">One</span> <span class="n">could</span> <span class="n">encode</span> <span class="n">it</span> <span class="n">in</span> <span class="n">the</span> <span class="n">format</span> <span class="n">string</span> <span class="n">and</span> <span class="n">have</span> <span class="n">Cython</span>
 </pre></div>
+
+
+<h1><a id="one-could-encode-it-in-the-format-string-and-have-cython" class="header-anchor" href="#one-could-encode-it-in-the-format-string-and-have-cython"> One could encode it in the format string and have Cython</a></h1>
         </div>
         <div class='code'>
           <div class="highlight"><pre>    <span class="n">__pyx_t_7</span> <span class="o">=</span> <span class="p">((</span><span class="n">__pyx_v_child</span><span class="o">-&gt;</span><span class="n">byteorder</span> <span class="o">==</span> <span class="sc">&#39;&lt;&#39;</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">);</span>
@@ -6294,9 +6377,9 @@ for childname in descr.names:
           <p>"../../../../../../../usr/local/lib/python2.7/site-packages/Cython/Includes/numpy/<strong>init</strong>.pxd":803
   if ((child.byteorder == c'&gt;' and little_endian) or
       (child.byteorder == c'&lt;' and not little_endian)):
-      raise ValueError(u"Non-native byte order not supported")             # &lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;
-      # One could encode it in the format string and have Cython
-      # complain instead, BUT: &lt; and &gt; in format strings also imply</p>
+      raise ValueError(u"Non-native byte order not supported")             # &lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;</p>
+<h1><a id="one-could-encode-it-in-the-format-string-and-have-cython" class="header-anchor" href="#one-could-encode-it-in-the-format-string-and-have-cython"> One could encode it in the format string and have Cython</a></h1>
+<h1><a id="complain-instead,-but:-<-and->-in-format-strings-also-imply" class="header-anchor" href="#complain-instead,-but:-&lt;-and-&gt;-in-format-strings-also-imply"&gt; complain instead, BUT: &lt; and &gt; in format strings also imply</a></h1>
         </div>
         <div class='code'>
           <div class="highlight"><pre>      <span class="n">__pyx_t_3</span> <span class="o">=</span> <span class="n">__Pyx_PyObject_Call</span><span class="p">(</span><span class="n">__pyx_builtin_ValueError</span><span class="p">,</span> <span class="n">__pyx_tuple__5</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span> <span class="k">if</span> <span class="p">(</span><span class="n">unlikely</span><span class="p">(</span><span class="o">!</span><span class="n">__pyx_t_3</span><span class="p">))</span> <span class="p">{</span><span class="n">__pyx_filename</span> <span class="o">=</span> <span class="n">__pyx_f</span><span class="p">[</span><span class="mi">1</span><span class="p">];</span> <span class="n">__pyx_lineno</span> <span class="o">=</span> <span class="mi">803</span><span class="p">;</span> <span class="n">__pyx_clineno</span> <span class="o">=</span> <span class="n">__LINE__</span><span class="p">;</span> <span class="k">goto</span> <span class="n">__pyx_L1_error</span><span class="p">;}</span>
@@ -6317,8 +6400,8 @@ for childname in descr.names:
             <a class='octothorpe' href='#section-237'>#</a>
           </div>
           <p>"../../../../../../../usr/local/lib/python2.7/site-packages/Cython/Includes/numpy/<strong>init</strong>.pxd":813</p>
-<div class="codehilite"><pre><span class="cp"># Output padding bytes</span>
-<span class="k">while</span> <span class="n">offset</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">new_offset</span>
+<h1><a id="output-padding-bytes" class="header-anchor" href="#output-padding-bytes"> Output padding bytes</a></h1>
+<div class="codehilite"><pre><span class="k">while</span> <span class="n">offset</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">new_offset</span>
 <span class="o">:</span>   <span class="err">#</span> <span class="o">&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;</span>
 
     <span class="n">f</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">120</span> <span class="err">#</span> <span class="s">&quot;x&quot;</span><span class="p">;</span> <span class="n">pad</span> <span class="n">byte</span>
@@ -6345,9 +6428,9 @@ for childname in descr.names:
           <div class='octowrap'>
             <a class='octothorpe' href='#section-238'>#</a>
           </div>
-          <p>"../../../../../../../usr/local/lib/python2.7/site-packages/Cython/Includes/numpy/<strong>init</strong>.pxd":814
-  # Output padding bytes
-  while offset[0] &lt; new_offset:
+          <p>"../../../../../../../usr/local/lib/python2.7/site-packages/Cython/Includes/numpy/<strong>init</strong>.pxd":814</p>
+<h1><a id="output-padding-bytes" class="header-anchor" href="#output-padding-bytes"> Output padding bytes</a></h1>
+<p>while offset[0] &lt; new_offset:
       f[0] = 120 # "x"; pad byte             # &lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;
       f += 1
       offset[0] += 1</p>
@@ -7210,8 +7293,8 @@ for childname in descr.names:
       else:
           raise ValueError(u"unknown dtype code in numpy.pxd (%d)" % t)
       f += 1             # &lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;
-  else:
-      # Cython ignores struct boundary information ("T{...}"),</p>
+  else:</p>
+<h1><a id="cython-ignores-struct-boundary-information-("t{...}")," class="header-anchor" href="#cython-ignores-struct-boundary-information-("t{...}"),"> Cython ignores struct boundary information ("T{...}"),</a></h1>
         </div>
         <div class='code'>
           <div class="highlight"><pre>      <span class="n">__pyx_v_f</span> <span class="o">=</span> <span class="p">(</span><span class="n">__pyx_v_f</span> <span class="o">+</span> <span class="mi">1</span><span class="p">);</span>
@@ -7243,11 +7326,12 @@ for childname in descr.names:
           <div class='octowrap'>
             <a class='octothorpe' href='#section-267'>#</a>
           </div>
-          <p>"../../../../../../../usr/local/lib/python2.7/site-packages/Cython/Includes/numpy/<strong>init</strong>.pxd":849
-      # Cython ignores struct boundary information ("T{...}"),
-      # so don't output it
-      f = _util_dtypestring(child, f, end, offset)             # &lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;
-     return f</p>
+          <p>"../../../../../../../usr/local/lib/python2.7/site-packages/Cython/Includes/numpy/<strong>init</strong>.pxd":849</p>
+<h1><a id="cython-ignores-struct-boundary-information-("t{...}")," class="header-anchor" href="#cython-ignores-struct-boundary-information-("t{...}"),"> Cython ignores struct boundary information ("T{...}"),</a></h1>
+<h1><a id="so-don't-output-it" class="header-anchor" href="#so-don't-output-it"> so don't output it</a></h1>
+<div class="codehilite"><pre>  <span class="n">f</span> <span class="o">=</span> <span class="n">_util_dtypestring</span><span class="p">(</span><span class="n">child</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span> <span class="n">offset</span><span class="p">)</span>             <span class="err">#</span> <span class="o">&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;</span>
+ <span class="k">return</span> <span class="n">f</span>
+</pre></div>
         </div>
         <div class='code'>
           <div class="highlight"><pre>      <span class="n">__pyx_t_9</span> <span class="o">=</span> <span class="n">__pyx_f_5numpy__util_dtypestring</span><span class="p">(</span><span class="n">__pyx_v_child</span><span class="p">,</span> <span class="n">__pyx_v_f</span><span class="p">,</span> <span class="n">__pyx_v_end</span><span class="p">,</span> <span class="n">__pyx_v_offset</span><span class="p">);</span> <span class="k">if</span> <span class="p">(</span><span class="n">unlikely</span><span class="p">(</span><span class="n">__pyx_t_9</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">))</span> <span class="p">{</span><span class="n">__pyx_filename</span> <span class="o">=</span> <span class="n">__pyx_f</span><span class="p">[</span><span class="mi">1</span><span class="p">];</span> <span class="n">__pyx_lineno</span> <span class="o">=</span> <span class="mi">849</span><span class="p">;</span> <span class="n">__pyx_clineno</span> <span class="o">=</span> <span class="n">__LINE__</span><span class="p">;</span> <span class="k">goto</span> <span class="n">__pyx_L1_error</span><span class="p">;}</span>
@@ -7290,10 +7374,13 @@ child, new_offset = fields</p>
           <div class='octowrap'>
             <a class='octothorpe' href='#section-269'>#</a>
           </div>
-          <p>"../../../../../../../usr/local/lib/python2.7/site-packages/Cython/Includes/numpy/<strong>init</strong>.pxd":850
-          # so don't output it
-          f = _util_dtypestring(child, f, end, offset)
-  return f             # &lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;</p>
+          <p>"../../../../../../../usr/local/lib/python2.7/site-packages/Cython/Includes/numpy/<strong>init</strong>.pxd":850</p>
+<h1><a id="so-don't-output-it" class="header-anchor" href="#so-don't-output-it"> so don't output it</a></h1>
+<div class="codehilite"><pre>      <span class="n">f</span> <span class="o">=</span> <span class="n">_util_dtypestring</span><span class="p">(</span><span class="n">child</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span> <span class="n">offset</span><span class="p">)</span>
+</pre></div>
+
+
+<p>return f             # &lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;</p>
         </div>
         <div class='code'>
           <div class="highlight"><pre>  <span class="n">__pyx_r</span> <span class="o">=</span> <span class="n">__pyx_v_f</span><span class="p">;</span>
@@ -7317,8 +7404,8 @@ child, new_offset = fields</p>
 <h1>&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;</h1>
 </dd>
 </dl>
-<p># Recursive utility function used in <strong>getbuffer</strong> to get format
-  # string. The new location in the format string is returned.</p>
+<h1><a id="recursive-utility-function-used-in-__getbuffer__-to-get-format" class="header-anchor" href="#recursive-utility-function-used-in-__getbuffer__-to-get-format"> Recursive utility function used in <strong>getbuffer</strong> to get format</a></h1>
+<h1><a id="string.-the-new-location-in-the-format-string-is-returned." class="header-anchor" href="#string.-the-new-location-in-the-format-string-is-returned."> string. The new location in the format string is returned.</a></h1>
         </div>
         <div class='code'>
           
@@ -7920,9 +8007,9 @@ else:
           <p>"../../../../../../../usr/local/lib/python2.7/site-packages/Cython/Includes/numpy/<strong>init</strong>.pxd":803
       if ((child.byteorder == c'&gt;' and little_endian) or
           (child.byteorder == c'&lt;' and not little_endian)):
-          raise ValueError(u"Non-native byte order not supported")             # &lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;
-          # One could encode it in the format string and have Cython
-          # complain instead, BUT: &lt; and &gt; in format strings also imply</p>
+          raise ValueError(u"Non-native byte order not supported")             # &lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;</p>
+<h1><a id="one-could-encode-it-in-the-format-string-and-have-cython" class="header-anchor" href="#one-could-encode-it-in-the-format-string-and-have-cython"> One could encode it in the format string and have Cython</a></h1>
+<h1><a id="complain-instead,-but:-<-and->-in-format-strings-also-imply" class="header-anchor" href="#complain-instead,-but:-&lt;-and-&gt;-in-format-strings-also-imply"&gt; complain instead, BUT: &lt; and &gt; in format strings also imply</a></h1>
         </div>
         <div class='code'>
           <div class="highlight"><pre>  <span class="n">__pyx_tuple__5</span> <span class="o">=</span> <span class="n">PyTuple_Pack</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">__pyx_kp_u_Non_native_byte_order_not_suppor</span><span class="p">);</span> <span class="k">if</span> <span class="p">(</span><span class="n">unlikely</span><span class="p">(</span><span class="o">!</span><span class="n">__pyx_tuple__5</span><span class="p">))</span> <span class="p">{</span><span class="n">__pyx_filename</span> <span class="o">=</span> <span class="n">__pyx_f</span><span class="p">[</span><span class="mi">1</span><span class="p">];</span> <span class="n">__pyx_lineno</span> <span class="o">=</span> <span class="mi">803</span><span class="p">;</span> <span class="n">__pyx_clineno</span> <span class="o">=</span> <span class="n">__LINE__</span><span class="p">;</span> <span class="k">goto</span> <span class="n">__pyx_L1_error</span><span class="p">;}</span>
@@ -8360,12 +8447,12 @@ else:
           <div class='octowrap'>
             <a class='octothorpe' href='#section-315'>#</a>
           </div>
-          <p>"src/particles/interpolation/interpolation.pyx":15
- # DTYPE for this, which is assigned to the usual NumPy runtime
- # type info object.
- DTYPE = numpy.float_             # &lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;
- # "ctypedef" assigns a corresponding compile-time type to DTYPE_t. For
- # every type in the numpy module there's a corresponding compile-time</p>
+          <p>"src/particles/interpolation/interpolation.pyx":15</p>
+<h1><a id="dtype-for-this,-which-is-assigned-to-the-usual-numpy-runtime" class="header-anchor" href="#dtype-for-this,-which-is-assigned-to-the-usual-numpy-runtime"> DTYPE for this, which is assigned to the usual NumPy runtime</a></h1>
+<h1><a id="type-info-object." class="header-anchor" href="#type-info-object."> type info object.</a></h1>
+<p>DTYPE = numpy.float_             # &lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;</p>
+<h1><a id=""ctypedef"-assigns-a-corresponding-compile-time-type-to-dtype_t.-for" class="header-anchor" href="#"ctypedef"-assigns-a-corresponding-compile-time-type-to-dtype_t.-for"> "ctypedef" assigns a corresponding compile-time type to DTYPE_t. For</a></h1>
+<h1><a id="every-type-in-the-numpy-module-there's-a-corresponding-compile-time" class="header-anchor" href="#every-type-in-the-numpy-module-there's-a-corresponding-compile-time"> every type in the numpy module there's a corresponding compile-time</a></h1>
         </div>
         <div class='code'>
           <div class="highlight"><pre>  <span class="n">__pyx_t_1</span> <span class="o">=</span> <span class="n">__Pyx_GetModuleGlobalName</span><span class="p">(</span><span class="n">__pyx_n_s_numpy</span><span class="p">);</span> <span class="k">if</span> <span class="p">(</span><span class="n">unlikely</span><span class="p">(</span><span class="o">!</span><span class="n">__pyx_t_1</span><span class="p">))</span> <span class="p">{</span><span class="n">__pyx_filename</span> <span class="o">=</span> <span class="n">__pyx_f</span><span class="p">[</span><span class="mi">0</span><span class="p">];</span> <span class="n">__pyx_lineno</span> <span class="o">=</span> <span class="mi">15</span><span class="p">;</span> <span class="n">__pyx_clineno</span> <span class="o">=</span> <span class="n">__LINE__</span><span class="p">;</span> <span class="k">goto</span> <span class="n">__pyx_L1_error</span><span class="p">;}</span>

@@ -22,13 +22,6 @@
     Contents
     <div id="jump_wrapper">
       <div id="jump_page">
-          <a class="source source-1" href="#project-outline"> Project outline </a>
-          <a class="source source-2" href="#what-particles-can-influence-the-primordial-nucleosynthesis?"> What particles can influence the primordial nucleosynthesis? </a>
-          <a class="source source-2" href="#the-models-considered"> The models considered </a>
-          <a class="source source-3" href="#number-of-sterile-neutrinos"> Number of sterile neutrinos </a>
-          <a class="source source-3" href="#coupling-constants"> Coupling constants </a>
-          <a class="source source-3" href="#mixing-angle-temperature-dependence"> Mixing angle temperature dependence </a>
-          <a class="source source-2" href="#sterile-neutrinos-generation-and-decoupling"> Sterile neutrinos generation and decoupling </a>
           <a class="source source-2" href="#sterile-neutrinos-streaming-and-decay"> Sterile neutrinos streaming and decay </a>
           <a class="source source-3" href="#plasma-heating-by-decaying-non-relativistic-sterile-neutrinos"> Plasma heating by decaying non-relativistic sterile neutrinos </a>
           <a class="source source-2" href="#neutrinos,-neutrons-decoupling-and-bbn-setup"> Neutrinos, neutrons decoupling and BBN setup </a>
@@ -41,7 +34,7 @@
     </div>
     <div class="generation-time">
         Generated at
-        <code>2015-03-26 18:02</code>
+        <code>2015-03-30 17:27</code>
         by a diligent
         <a target="_blank" href="http://ckald.github.io/pyccoon/" title="Pyccoon: side-to-side documentation generator">
             <img id="pyccoon-icon" src="../pyccoon_icon.svg" alt="Pyccoon: side-to-side documentation generator" />pyccoon</a>
@@ -63,122 +56,7 @@
           <div class='octowrap'>
             <a class='octothorpe' href='#section-0'>#</a>
           </div>
-          <h1><a id="project-outline" class="header-anchor" href="#project-outline"> Project outline </a></h1>
-<h2><a id="what-particles-can-influence-the-primordial-nucleosynthesis?" class="header-anchor" href="#what-particles-can-influence-the-primordial-nucleosynthesis?"> What particles can influence the primordial nucleosynthesis? </a></h2>
-<p>Equilibrium observables in the Early Universe follow the Markov evolution - the future state of the system is determined only by the current state. The reason for the word "equilibrium" is that any statistical state of the system is uniquely determined by the temperature while non-equilibrium parts of the plasma have memory about the dynamics of the past.</p>
-<p>In particular, for the Standard BBN theory we assume that all the relevant constituents of the plasma are equilibrated at the temperatures above few $MeV$ (influence of possible non-equilibrium particles is held to be negligible). This means that any particles existing before, but vanished by the time of BBN, cannot influence its predictions.</p>
-<p>The basic analogy to keep in mind comes from the electron-positron annihilation at $T \sim m_e$, that changes the expansion rate of the Universe and the number of relativistic degrees of freedom, but can be mimicked in the later moments by the initial conditions of some different radiation-dominated physics where these particles never existed (leaving the particle physics paradoxes aside).</p>
-<p>This creates a constraint on the non-stable non-equilibrium particles that might influence the BBN: their lifetime has to be at least of the same order as the time of decoupling of the first particle species (namely, neutrinos at $T \sim 1 MeV$). As BBN itself is not sensitive to the history of expansion before this moment, it in principle can be freely shifted in time. The particular mapping of the expansion rate and the temperature to some time axis is fixed by the particle physics model being studied.</p>
-<p>Rough estimate for the non-equilibrium decaying particles:</p>
-<p>\begin{equation}
-    \tau \gtrsim 0.01 sec
-\end{equation}</p>
-<p>Only models that satisfy this estimate might influence the BBN either by changing the expansion law of the Universe or by adding corrections to the spectra of decoupled species that can affect the equilibrium of specific interactions.</p>
-<h2><a id="the-models-considered" class="header-anchor" href="#the-models-considered"> The models considered </a></h2>
-<p>We are interested in constraining the arbitrary sterile neutrino model, which is defined by the See-Saw Lagrangian:</p>
-<p>\begin{equation}
-     \mathcal{L} = \mathcal{L}_{SM}+ i \bar N_I \partial_\mu \gamma^\mu N_I -
-          \left(F_{\alpha I} \,\bar L_\alpha N_I \tilde \phi
-        - \frac{M_I}{2} \; \bar {N_I^c} N_I + h.c.\right)
-\end{equation}</p>
-<h3><a id="number-of-sterile-neutrinos" class="header-anchor" href="#number-of-sterile-neutrinos"> Number of sterile neutrinos </a></h3>
-<p>We are free to consider an arbitrary number of sterile neutrinos species, but the most interest comprise the case of 1 light sterile neutrino with negligible in the context of the BBN coupling constant and 2 heavy degenerate in mass sterile neutrinos. The first specie won't affect the observables, but heavier particles with higher interaction rates might survive until the BBN.</p>
-<p>Degeneracy in mass also allows to treat 2 Majorana fermions as a single Dirac particle - effectively substituting the doubling of the reactions due to charge conjugation with the notion of the antiparticle.</p>
-<p>However, more heavy sterile neutrino generations can be considered.</p>
-<h3><a id="coupling-constants" class="header-anchor" href="#coupling-constants"> Coupling constants </a></h3>
-<p>There are 3 mixing angles corresponding to each sterile neutrino specie (Dirac or Majorana). The lifetime of the particle depends on them in a non-trivial way, but for any given set of mixing angles it is possible to derive the mass range in which this particular realization of the sterile neutrino will survive until the BBN.</p>
-<p>Particular values for the coupling constants can be determined from neutrino oscillations experiments, so it is useful to use similar parametrization.</p>
-<p>It is convenient to define the sterile neutrino mixing angles as running with mass:</p>
-<p>$$
-    \theta_{M_N} = \theta_{M'} \sqrt{\frac{M'}{M_N}}
-$$</p>
-<p>And normalized by some parameter on which resulting neutrino masses do not depend:</p>
-<p>$$
-    \theta_{M_N} \propto |z|
-$$</p>
-<p>Particular choice of $|z|$, $M'$ and $\theta_M'$s ratios correspond to specific active neutrinos masses.</p>
-<p>Typical decay width and lifetime in such parametrization look like:</p>
-<p>$$
-    \theta_e = 1.14 \cdot 10^{-4} \frac{|z|}{\sqrt{M_N}} \\ \theta_\mu = 6.16 \cdot 10^{-4} \frac{|z|}{\sqrt{M_N}} \\ \theta_\tau = 5.65 \cdot 10^{-4} \frac{|z|}{\sqrt{M_N}}
-$$</p>
-<p><center>
-<img src="images/sterile_neutrino_decay_width.png" width=350 /><img src="images/sterile_neutrino_lifetime.png" width=350 />
-</center></p>
-<p>By allowing the variation of normalization of mixing angles, one can determine the models affecting BBN predictions:</p>
-<p><center><img src="images/lifetime_contour_plot.png"/></center></p>
-<p>Meaning that all the sterile neutrinos models below the $0.01$ contour will survive at the times of BBN and might affect the observables.</p>
-<p>Of course, this is just a single projection of the multidimensional parameter space, but it is a useful one to compare with oscillation experiments.</p>
-<h3><a id="mixing-angle-temperature-dependence" class="header-anchor" href="#mixing-angle-temperature-dependence"> Mixing angle temperature dependence </a></h3>
-<p>A simple example of influence of the medium on sterile neutrino mixing (as well as active neutrinos oscillations) is the Miheev-Smirnov-Wolfenstein (MSW) effect. It is discussed in the theory of solar neutrinos oscillations and captures the influence of the solar $e^-$-$e^+$ plasma on the propagation of neutrinos.</p>
-<p>However, the MSW correction is proportional to electron-positron density difference and becomes prominent only in highly asymmetric medium like the Sun. An approach of the quantum field theory at finite temperatures allows to obtain more general result for the temperature dependence of the $\theta$:</p>
-<p><center><img src="images/0901.0011.png" /></center></p>
-<p>We assume no significant lepton asymmetry, so the main contribution comes from the $b$ function.</p>
-<p><img src="images/temperature_dependance_2D.png" /><img src="images/temperature_dependance_3D.png" /></p>
-<p>From these plots we can that temperature corrections become significant only at temperatures of the order of couple $GeV$s, so as long as sterile neutrinos decouple at later times, we can assume the mixing angles equal to the vacuum ones.</p>
-<p><span class=todo><strong>TODO</strong>: looks like this effect can be derived simply by calculating a single correction of the neutrino propagator (in the flavor basis there are no corrections sterile neutrinos) through the $W-e$ loop. $W$-boson propagator leading term gives MSW-like correction and a term, suppressed by $m_e / m_N$. The subleading term will hopefully give the desired $b$-function. The only thermal QFT information used is the electron thermal propagator.</span></p>
-<h2><a id="sterile-neutrinos-generation-and-decoupling" class="header-anchor" href="#sterile-neutrinos-generation-and-decoupling"> Sterile neutrinos generation and decoupling </a></h2>
-<p>Heavy sterile neutrinos ($N_{1,2}$) are produced thermally at the temperatures $\gtrsim 10^2 MeV$ (vaguely, depending on the mixing angle and the mass). Influence on the universe expansion at the later stages depends on the regime in which sterile neutrinos decouple from the plasma.</p>
-<p>Decoupling happens when the interaction rate of the equilibrium-supporting reactions drops below the Hubble rate. In the radiation dominated epoch, Hubble rate can be conveniently approximated:</p>
-<p>\begin{equation}
-    H \approx \frac{T^2}{M_*}
-\end{equation}</p>
-<p>Typical interaction rate for 2-to-2 scattering ($N + \nu \to N + \nu$) of the sterile neutrino with the coupling constant $g$ is of the form</p>
-<p>\begin{equation}
-    \Gamma_N = \left&lt; \sigma n_\nu v\right&gt;
-\end{equation}</p>
-<p>where $\sigma$ is the cross-section of the reaction $\propto g^2$, and $v$ is the relative velocity.</p>
-<p>Coupling constant for sterile neutrinos is $G_F |\theta|$, so cross-section from dimensional considerations looks like</p>
-<p>\begin{equation}
-    \sigma \sim [E]^{-2} = G_F^2 |\theta|^2 \cdot [E]^2
-\end{equation}</p>
-<p>Kinematically considered reaction contains few parameters: invariant mass and scattering angles The total cross-section does not depend on the angle, so $\sigma = \sigma(s)$.</p>
-<p>\begin{equation}
-    s \sim
-    \begin{cases}
-        m^2 &amp; \text{for non-relativistic N} \\ T^2 &amp; \text{for ultra-relativistic}
-    \end{cases}
-\end{equation}</p>
-<p>Then</p>
-<p>\begin{equation}
-    \Gamma_N \sim
-    \begin{cases}
-        G_F^2 |\theta|^2 T^3 m^2 \\ G_F^2 |\theta|^2 T^5
-    \end{cases}
-\end{equation}</p>
-<p>$$
-    \Gamma_N \sim \frac{T^2}{M_*}
-$$</p>
-<p>This gives us corresponding decoupling temperatures for sterile neutrinos:</p>
-<p>\begin{equation}
-    T^{-1} \sim
-    \begin{cases}
-        G_F^2 |\theta|^2 M_* m^2
-        \\ (G_F^2 |\theta|^2 M_*)^\frac13
-    \end{cases}
-\end{equation}</p>
-<p>For $|\theta|^2 \approx 10^{-8}$ and $m = 0.3 GeV$</p>
-<p>\begin{equation}
-    T \sim
-     \begin{cases}
-        45 \left( \frac{|\theta|^2}{10^{-8}} \right) \left( \frac{m}{0.3 GeV} \right)^2 MeV
-        \\ 166 \left( \frac{|\theta|^2}{10^{-8}} \right)^\frac13 MeV
-    \end{cases}
-\end{equation}</p>
-<p>Hence, the distribution function of sterile neutrinos at the later times highly depends on the following factors:</p>
-<ul>
-<li>sterile-active mixing angle temperature dependence</li>
-<li>mass of the sterile neutrino</li>
-<li>regime of decoupling (relativistic/non-relativistic)</li>
-</ul>
-<p>For example, if thermal corrections of $\theta$ are significant at the time of relativistic decoupling "in vacuum", sterile neutrinos might stay in the equilibrium longer and decouple being non-relativistic.</p>
-<p>Using the analysis above, we assume no significant thermal corrections for the mixing angles and, for given mass and temperature, find the decoupling regime:</p>
-<p>For $ \theta \approx 10^{-4} $
-<img src="images/decoupling_regimes_10^-4.png" >
-For $ \theta \approx 10^{-2} $
-<img src="images/decoupling_regimes_10^-2.png" ></p>
-<p>The plotted regions correspond to non-equilibrium species in different regimes. In practice, as the temperature drops, when particle with given mass enters any of the regions - it decouples in the corresponding regime. For the sakes of certainty, the "intermediate" regime corresponds to the particle specie with $\frac15 T &lt; m &lt; 5 T$.</p>
-<p>Analysis of the decoupling regimes for the mass range of interest shows that for $\theta \lesssim 10^{-4}$ decoupling regime is rather relativistic, while for bigger values it is possible to get a fully-non-relativistic decoupling.</p>
-<h2><a id="sterile-neutrinos-streaming-and-decay" class="header-anchor" href="#sterile-neutrinos-streaming-and-decay"> Sterile neutrinos streaming and decay </a></h2>
+          <h2><a id="sterile-neutrinos-streaming-and-decay" class="header-anchor" href="#sterile-neutrinos-streaming-and-decay"> Sterile neutrinos streaming and decay </a></h2>
 <p>After sterile neutrinos had decoupled from the plasma, their distribution as a function of conformal momentum stays constant. During this time sterile neutrinos do not scatter with the equilibrated plasma but they do decay.</p>
 <p>Main decays channels for sterile neutrinos with masses $m_N &lt; m_K$ range are:</p>
 <p>\begin{align}
