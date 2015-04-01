@@ -20,7 +20,7 @@
     <a class="btn" class="source source-1" href="#top">Back to top</a>
     <div class="generation-time">
         Generated at
-        <code>2015-03-31 16:43</code>
+        <code>2015-04-01 15:39</code>
         by a diligent
         <a target="_blank" href="http://ckald.github.io/pyccoon/" title="Pyccoon: side-to-side documentation generator">
             <img id="pyccoon-icon" src="../../pyccoon_icon.svg" alt="Pyccoon: side-to-side documentation generator" />pyccoon</a>
@@ -71,7 +71,7 @@
 <span class="k">def</span> <span class="nf">init_distribution_test</span><span class="p">():</span>
 
     <span class="n">photon</span> <span class="o">=</span> <span class="n">Particle</span><span class="p">(</span><span class="o">**</span><span class="n">SMP</span><span class="o">.</span><span class="n">photon</span><span class="p">)</span>
-    <span class="n">neutrino</span> <span class="o">=</span> <span class="n">Particle</span><span class="p">(</span><span class="o">**</span><span class="n">SMP</span><span class="o">.</span><span class="n">neutrino_e</span><span class="p">)</span>
+    <span class="n">neutrino</span> <span class="o">=</span> <span class="n">Particle</span><span class="p">(</span><span class="o">**</span><span class="n">SMP</span><span class="o">.</span><span class="n">leptons</span><span class="o">.</span><span class="n">neutrino_e</span><span class="p">)</span>
 
     <span class="k">print</span> <span class="n">neutrino</span><span class="o">.</span><span class="n">_distribution</span> <span class="o">-</span> <span class="n">numpy</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="n">neutrino</span><span class="o">.</span><span class="n">distribution</span><span class="p">)(</span><span class="n">GRID</span><span class="o">.</span><span class="n">TEMPLATE</span><span class="p">)</span>
 
@@ -94,7 +94,7 @@
           <div class="highlight"><pre><span class="nd">@with_setup</span><span class="p">(</span><span class="n">setup</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">distribution_interpolation_accuracy_test</span><span class="p">():</span>
 
-    <span class="n">neutrino</span> <span class="o">=</span> <span class="n">Particle</span><span class="p">(</span><span class="o">**</span><span class="n">SMP</span><span class="o">.</span><span class="n">neutrino_e</span><span class="p">)</span>
+    <span class="n">neutrino</span> <span class="o">=</span> <span class="n">Particle</span><span class="p">(</span><span class="o">**</span><span class="n">SMP</span><span class="o">.</span><span class="n">leptons</span><span class="o">.</span><span class="n">neutrino_e</span><span class="p">)</span>
 
     <span class="n">detailed_grid</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">GRID</span><span class="o">.</span><span class="n">MIN_MOMENTUM</span><span class="p">,</span> <span class="n">GRID</span><span class="o">.</span><span class="n">MAX_MOMENTUM</span><span class="o">*</span><span class="mi">2</span><span class="p">,</span>
                                    <span class="n">num</span><span class="o">=</span><span class="n">GRID</span><span class="o">.</span><span class="n">MOMENTUM_SAMPLES</span><span class="o">*</span><span class="mi">10</span><span class="p">,</span> <span class="n">endpoint</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
