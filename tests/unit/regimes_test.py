@@ -29,7 +29,7 @@ def radiation_regime_test(params):
 @with_setup_args(setup)
 def intermediate_regime_test(params):
 
-    electron = Particle(params=params, **SMP.electron)
+    electron = Particle(params=params, **SMP.leptons.electron)
     assert electron.in_equilibrium, "Electron must always stay in equilibrium"
     assert not electron.decoupling_temperature, "Electron can't decouple"
     assert electron.regime == REGIMES.INTERMEDIATE, \
@@ -43,7 +43,7 @@ def intermediate_regime_test(params):
 @with_setup_args(setup)
 def dust_regime_test(params):
 
-    proton = Particle(**SMP.proton)
+    proton = Particle(**SMP.hadrons.proton)
     assert proton.in_equilibrium, "Proton must always stay in equilibrium"
     assert not proton.decoupling_temperature, "Proton can't decouple"
     assert proton.regime == REGIMES.DUST, \
@@ -57,7 +57,7 @@ def dust_regime_test(params):
 @with_setup_args(setup)
 def mass_regime_switching_test(params):
 
-    electron = Particle(params=params, **SMP.electron)
+    electron = Particle(params=params, **SMP.leptons.electron)
     assert electron.regime == REGIMES.INTERMEDIATE
 
     electron.mass = 0
@@ -70,7 +70,7 @@ def mass_regime_switching_test(params):
 @with_setup_args(setup)
 def temperature_regime_switching_test(params):
 
-    electron = Particle(params=params, **SMP.electron)
+    electron = Particle(params=params, **SMP.leptons.electron)
     assert electron.regime == REGIMES.INTERMEDIATE
 
     params.T = 100 * UNITS.MeV
@@ -86,7 +86,7 @@ def temperature_regime_switching_test(params):
 def statistics_consistency_test(params):
 
     photon = Particle(params=params, **SMP.photon)
-    neutrino = Particle(params=params, **SMP.neutrino_e)
+    neutrino = Particle(params=params, **SMP.leptons.neutrino_e)
 
     assert 7./8. - neutrino.energy_density() / photon.energy_density() < eps
 
@@ -97,7 +97,7 @@ def decoupling_test(params):
     params.T_initial *= 2
     params.infer()
 
-    neutrino = Particle(params=params, **SMP.neutrino_e)
+    neutrino = Particle(params=params, **SMP.leptons.neutrino_e)
 
     assert neutrino.in_equilibrium
     eq_distribution = neutrino._distribution
@@ -121,7 +121,7 @@ def homeostasis_test(params):
     params.T_initial *= 2
     params.infer()
 
-    neutrino = Particle(params=params, **SMP.neutrino_e)
+    neutrino = Particle(params=params, **SMP.leptons.neutrino_e)
 
     energy_density = neutrino.energy_density()
     density = neutrino.density()
@@ -143,7 +143,7 @@ def homeostasis_test(params):
 @with_setup_args(setup)
 def smooth_decoupling_test(params):
 
-    neutrino = Particle(params=params, **SMP.neutrino_e)
+    neutrino = Particle(params=params, **SMP.leptons.neutrino_e)
 
     energy_density = REGIMES.RADIATION.energy_density(neutrino)
     density = REGIMES.RADIATION.density(neutrino)

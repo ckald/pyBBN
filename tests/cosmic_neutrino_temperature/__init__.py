@@ -27,14 +27,14 @@ params = Params(T_initial=10 * UNITS.MeV,
 
 Particles = []
 photon = Particle(params=params, **SMP.photon)
-neutron = Particle(params=params, **SMP.neutron)
-proton = Particle(params=params, **SMP.proton)
-neutrino_e = Particle(params=params, **SMP.neutrino_e)
-neutrino_mu = Particle(params=params, **SMP.neutrino_mu)
-neutrino_tau = Particle(params=params, **SMP.neutrino_tau)
-electron = Particle(params=params, **SMP.electron)
-muon = Particle(params=params, **SMP.muon)
-tau = Particle(params=params, **SMP.tau)
+neutron = Particle(params=params, **SMP.hadrons.neutron)
+proton = Particle(params=params, **SMP.hadrons.proton)
+neutrino_e = Particle(params=params, **SMP.leptons.neutrino_e)
+neutrino_mu = Particle(params=params, **SMP.leptons.neutrino_mu)
+neutrino_tau = Particle(params=params, **SMP.leptons.neutrino_tau)
+electron = Particle(params=params, **SMP.leptons.electron)
+muon = Particle(params=params, **SMP.leptons.muon)
+tau = Particle(params=params, **SMP.leptons.tau)
 
 Particles += [
     photon,

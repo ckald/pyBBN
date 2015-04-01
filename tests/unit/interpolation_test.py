@@ -12,7 +12,7 @@ from . import eps, setup
 def init_distribution_test():
 
     photon = Particle(**SMP.photon)
-    neutrino = Particle(**SMP.neutrino_e)
+    neutrino = Particle(**SMP.leptons.neutrino_e)
 
     print neutrino._distribution - numpy.vectorize(neutrino.distribution)(GRID.TEMPLATE)
 
@@ -23,7 +23,7 @@ def init_distribution_test():
 @with_setup(setup)
 def distribution_interpolation_accuracy_test():
 
-    neutrino = Particle(**SMP.neutrino_e)
+    neutrino = Particle(**SMP.leptons.neutrino_e)
 
     detailed_grid = numpy.linspace(GRID.MIN_MOMENTUM, GRID.MAX_MOMENTUM*2,
                                    num=GRID.MOMENTUM_SAMPLES*10, endpoint=True)

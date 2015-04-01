@@ -18,10 +18,10 @@ universe = Universe(params=params,
                     logfile='tests/standard_model_bbn/log.txt')
 
 photon = Particle(params, **SMP.photon)
-electron = Particle(params, **SMP.electron)
-neutrino_e = Particle(params, **SMP.neutrino_e)
-neutrino_mu = Particle(params, **SMP.neutrino_mu)
-neutrino_tau = Particle(params, **SMP.neutrino_tau)
+electron = Particle(params, **SMP.leptons.electron)
+neutrino_e = Particle(params, **SMP.leptons.neutrino_e)
+neutrino_mu = Particle(params, **SMP.leptons.neutrino_mu)
+neutrino_tau = Particle(params, **SMP.leptons.neutrino_tau)
 sterile_neutrino = Particle(params, **NuP.sterile_neutrino())
 
 universe.particles += [

@@ -33,62 +33,111 @@ class particles(object):
         'statistics': STATISTICS.BOSON,
         'dof': 2
     }
-    neutrino_e = {
-        'name': 'Electron neutrino',
-        'symbol': 'ν_e',
-        'statistics': STATISTICS.FERMION,
-        'dof': 2,
-        'decoupling_temperature': 5 * UNITS.MeV
-    }
-    neutrino_mu = {
-        'name': 'Muon neutrino',
-        'symbol': 'ν_μ',
-        'statistics': STATISTICS.FERMION,
-        'dof': 2,
-        'decoupling_temperature': 5 * UNITS.MeV
-    }
-    neutrino_tau = {
-        'name': 'Tau neutrino',
-        'symbol': 'ν_τ',
-        'statistics': STATISTICS.FERMION,
-        'dof': 2,
-        'decoupling_temperature': 5 * UNITS.MeV
-    }
-    neutron = {
-        'name': 'Neutron',
-        'symbol': 'n',
-        'statistics': STATISTICS.FERMION,
-        'mass': 0.939 * UNITS.GeV,
-        'dof': 4
-    }
-    proton = {
-        'name': 'Proton',
-        'symbol': 'p',
-        'statistics': STATISTICS.FERMION,
-        'mass': 0.938 * UNITS.GeV,
-        'dof': 4
-    }
-    electron = {
-        'name': 'Electron',
-        'symbol': 'e',
-        'statistics': STATISTICS.FERMION,
-        'mass': 0.511 * UNITS.MeV,
-        'dof': 4
-    }
-    muon = {
-        'name': 'Muon',
-        'symbol': 'μ',
-        'statistics': STATISTICS.FERMION,
-        'mass': 105.7 * UNITS.MeV,
-        'dof': 4
-    }
-    tau = {
-        'name': 'Tau',
-        'symbol': 'τ',
-        'statistics': STATISTICS.FERMION,
-        'mass': 1777 * UNITS.MeV,
-        'dof': 4
-    }
+
+    class hadrons(object):
+        neutron = {
+            'name': 'Neutron',
+            'symbol': 'n',
+            'statistics': STATISTICS.FERMION,
+            'mass': 0.939 * UNITS.GeV,
+            'dof': 4
+        }
+        proton = {
+            'name': 'Proton',
+            'symbol': 'p',
+            'statistics': STATISTICS.FERMION,
+            'mass': 0.938 * UNITS.GeV,
+            'dof': 4
+        }
+
+    class leptons(object):
+        neutrino_e = {
+            'name': 'Electron neutrino',
+            'symbol': 'ν_e',
+            'statistics': STATISTICS.FERMION,
+            'dof': 2,
+            'decoupling_temperature': 5 * UNITS.MeV
+        }
+        neutrino_mu = {
+            'name': 'Muon neutrino',
+            'symbol': 'ν_μ',
+            'statistics': STATISTICS.FERMION,
+            'dof': 2,
+            'decoupling_temperature': 5 * UNITS.MeV
+        }
+        neutrino_tau = {
+            'name': 'Tau neutrino',
+            'symbol': 'ν_τ',
+            'statistics': STATISTICS.FERMION,
+            'dof': 2,
+            'decoupling_temperature': 5 * UNITS.MeV
+        }
+
+        electron = {
+            'name': 'Electron',
+            'symbol': 'e',
+            'statistics': STATISTICS.FERMION,
+            'mass': 0.511 * UNITS.MeV,
+            'dof': 4
+        }
+        muon = {
+            'name': 'Muon',
+            'symbol': 'μ',
+            'statistics': STATISTICS.FERMION,
+            'mass': 105.7 * UNITS.MeV,
+            'dof': 4
+        }
+        tau = {
+            'name': 'Tau',
+            'symbol': 'τ',
+            'statistics': STATISTICS.FERMION,
+            'mass': 1777 * UNITS.MeV,
+            'dof': 4
+        }
+
+    class quarks(object):
+        up = {
+            'name': 'up',
+            'symbol': 'u',
+            'statistics': STATISTICS.FERMION,
+            'mass': 3 * UNITS.MeV,
+            'dof': 2
+        }
+        down = {
+            'name': 'down',
+            'symbol': 'd',
+            'statistics': STATISTICS.FERMION,
+            'mass': 5 * UNITS.MeV,
+            'dof': 2
+        }
+        charm = {
+            'name': 'charm',
+            'symbol': 'c',
+            'statistics': STATISTICS.FERMION,
+            'mass': 1300 * UNITS.MeV,
+            'dof': 2
+        }
+        strange = {
+            'name': 'strange',
+            'symbol': 's',
+            'statistics': STATISTICS.FERMION,
+            'mass': 200 * UNITS.MeV,
+            'dof': 2
+        }
+        top = {
+            'name': 'top',
+            'symbol': 't',
+            'statistics': STATISTICS.FERMION,
+            'mass': 180 * UNITS.GeV,
+            'dof': 2
+        }
+        bottom = {
+            'name': 'bottom',
+            'symbol': 'b',
+            'statistics': STATISTICS.FERMION,
+            'mass': 4.3 * UNITS.GeV,
+            'dof': 2
+        }
 
 
 class interactions(object):

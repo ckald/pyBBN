@@ -10,7 +10,7 @@ params = Params(T_initial=2 * UNITS.MeV,
                 dx=1e-1 * UNITS.MeV)
 
 photon = Particle(params=params, **SMP.photon)
-neutrino = Particle(params=params, **SMP.neutrino_e)
+neutrino = Particle(params=params, **SMP.leptons.neutrino_e)
 
 neutrino_scattering = Interaction(
     in_particles=[neutrino, neutrino],

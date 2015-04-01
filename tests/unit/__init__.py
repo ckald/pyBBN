@@ -6,7 +6,7 @@ eps = 1e-5
 
 
 def setup():
-    params = Params(T_initial=SMP.neutrino_e['decoupling_temperature'],
+    params = Params(T_initial=SMP.leptons.neutrino_e['decoupling_temperature'],
                     T_final=0.075 * UNITS.MeV,
                     dx=1e-4 * UNITS.MeV)
     return [params], {}

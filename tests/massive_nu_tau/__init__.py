@@ -34,10 +34,10 @@ universe = Universe(params=params,
                     logfile='tests/massive_nu_tau/log.txt')
 
 photon = Particle(params, **SMP.photon)
-electron = Particle(params, **SMP.electron)
-neutrino_e = Particle(params, **SMP.neutrino_e)
-neutrino_mu = Particle(params, **SMP.neutrino_mu)
-neutrino_tau = Particle(params, **SMP.neutrino_tau)
+electron = Particle(params, **SMP.leptons.electron)
+neutrino_e = Particle(params, **SMP.leptons.neutrino_e)
+neutrino_mu = Particle(params, **SMP.leptons.neutrino_mu)
+neutrino_tau = Particle(params, **SMP.leptons.neutrino_tau)
 neutrino_tau.mass = 20 * UNITS.MeV
 
 neutrino_e.decoupling_temperature = params.T_initial
