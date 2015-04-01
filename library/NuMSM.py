@@ -135,3 +135,75 @@ class interactions(object):
                 SterileWeakM(K1=1., theta=theta, order=(0, 3, 1, 2)),
             ]
         )
+
+    # ## Quark interactions
+
+    @staticmethod
+    def sterile_quark_interactions(thetas=(1., 0, 0), sterile=None, neutrinos=None, leptons=None,
+                                   up_quarks=None, down_quarks=None):
+
+        inters = []
+
+        for up in up_quarks:
+            for i, active in enumerate(neutrinos):
+                if thetas[i]:
+                    inters += interactions.sterile_quark_neutral(
+                        theta=thetas[i], sterile=sterile, active=active, up=up
+                    )
+        for down in down_quarks:
+            for i, active in enumerate(neutrinos):
+                if thetas[i]:
+                    inters += interactions.sterile_quark_neutral(
+                        theta=thetas[i], sterile=sterile, active=active, down=down
+                    )
+
+        for up, down in zip(up_quarks, down_quarks):
+            for i, lepton in enumerate(leptons):
+                if thetas[i]:
+                    inters += interactions.sterile_quark_charged(theta=thetas[i], sterile=sterile,
+                                                                 lepton=lepton, up=up, down=down)
+
+        return inters
+
+    @staticmethod
+    def sterile_quark_neutral(theta=1., sterile=None, active=None, up=None, down=None):
+        """ \begin{align}
+                N_S + \overline{\nu} &\to q + \overline{q} \\\\
+                N_S + \nu &\to \overline{q} + q
+            \end{align}
+        """
+
+        if up:
+            x = (3-4*CONST.g_R)
+            quark = up
+        if down:
+            x = (3-2*CONST.g_R)
+            quark = down
+
+        return Interaction(
+            name="Sterile-quarks neutral channel interaction",
+            in_particles=[sterile, active],
+            out_particles=[quark, quark],
+            Ms=[
+                SterileWeakM(K1=2/9 * (x**2 + 16 * CONST.g_R), theta=theta, order(0, 3, 1, 2)),
+                SterileWeakM(K1=2/9 * (x**2 + 16 * CONST.g_R), theta=theta, order(0, 2, 1, 3)),
+                SterileWeakM(K2=16/9 * CONST.g_R * x, theta=theta, order(0, 1, 2, 3)),
+            ]
+        )
+
+    @staticmethod
+    def sterile_quark_charged(theta=1., sterile=None, lepton=None, up=None, down=None):
+        """ \begin{align}
+                N_S + l^+ &\to u + \overline{d}
+            \end{align}
+        """
+
+        return Interaction(
+            name="Sterile-quarks charged channel interaction",
+            in_particles=[sterile, lepton],
+            out_particles=[up, down],
+            Ms=[
+                SterileWeakM(K1=1/2, theta=theta, order(0, 2, 1, 3)),
+                SterileWeakM(K1=1/2, theta=theta, order(0, 3, 1, 2)),
+            ]
+        )
