@@ -1,5 +1,5 @@
 """
-== Functioning tests: ==
+## Functioning tests:
 
   * [Photon universe](photon_universe/index.html) (perfect)
     :   radiation equilibrium physics and expansion
@@ -12,7 +12,7 @@
   * [Standard Model BBN](standard_model_bbn/index.html) (good)
     :   verify the Standard Model neutrino decoupling
 
-== Planned tests: ==
+## Planned tests:
 
   * Neutron decay test
   * Check previous results for single sterile neutrino species

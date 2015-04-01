@@ -4,9 +4,9 @@ from common import PicklableObject, GRID, integrators
 
 
 class DistributionFunctional(object):
-    """ == $\mathcal{F}(f_\alpha)$ functional == """
+    """ ## $\mathcal{F}(f_\alpha)$ functional """
 
-    """ === Naive form ===
+    """ ### Naive form
 
         \begin{align}
             \mathcal{F} &= (1 \pm f_1)(1 \pm f_2) f_3 f_4 - f_1 f_2 (1 \pm f_3) (1 \pm f_4)
@@ -57,7 +57,7 @@ class DistributionFunctional(object):
         return temp
 
     """
-    === Linearized in $\, f_1$ form ===
+    ### Linearized in $\, f_1$ form
 
     \begin{equation}
         \mathcal{F}(f) = f_3 f_4 (1 \pm f_1) (1 \pm f_2) - f_1 f_2 (1 \pm f_3) (1 \pm f_4)
@@ -88,7 +88,7 @@ class DistributionFunctional(object):
 
 class BoltzmannIntegral(PicklableObject, DistributionFunctional):
 
-    """ == Integral ==
+    """ ## Integral
         Representation of the concrete collision integral for a specific particle \
         `Integral.particles[0]` """
 
@@ -101,7 +101,7 @@ class BoltzmannIntegral(PicklableObject, DistributionFunctional):
     out_particles = []  # Outgoing particles
     particles = []  # All particles involved
 
-    """ === Energy conservation law of the integral ===
+    """ ### Energy conservation law of the integral
 
         \begin{equation}
             0 = \vec{s} \cdot \vec{E} = \sum_i s_i E_i \sim E_0 + E_1 - E_2 - E_3
@@ -166,7 +166,7 @@ class BoltzmannIntegral(PicklableObject, DistributionFunctional):
         return p, E, m
 
     def correction(self, p0):
-        """ === Particle collisions integration === """
+        """ ### Particle collisions integration """
 
         particle = self.particles[0]
 
@@ -204,7 +204,7 @@ class BoltzmannIntegral(PicklableObject, DistributionFunctional):
         kwargs['fau'] = self.F_f
         return self.integrand(*args, **kwargs)
 
-    """ === Integration region bounds methods === """
+    """ ### Integration region bounds methods """
 
     def in_bounds(self, p, E=None, m=None):
         raise NotImplementedError()

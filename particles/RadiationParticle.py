@@ -11,7 +11,7 @@ name = 'radiation'
 
 
 def density(particle):
-    """ == Density ==
+    """ ## Density
         \begin{equation}
             n = \frac{g}{\pi^2} (aT)^3 \zeta(3)
         \end{equation}
@@ -24,7 +24,7 @@ def density(particle):
 
 
 def energy_density(particle):
-    """ == Energy density ==
+    """ ## Energy density
 
         \begin{equation}
             \rho = \frac{\pi^2}{30} g T^4
@@ -38,7 +38,7 @@ def energy_density(particle):
 
 
 def pressure(particle):
-    """ == Pressure ==
+    """ ## Pressure
 
         \begin{equation}
             P = \frac{\rho}{3}
@@ -47,7 +47,7 @@ def pressure(particle):
     return 1. * energy_density(particle) / 3.
 
 
-# == Master equation terms ==
+# ## Master equation terms
 
 def numerator(particle):
     """ \begin{equation}0\end{equation} """

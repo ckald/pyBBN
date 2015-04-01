@@ -1,5 +1,5 @@
 """
-== Standard Model BBN test ==
+## Standard Model BBN test
 
 <img src="plots.png" width=100% />
 <img src="particles.png" width=100% />
@@ -62,12 +62,12 @@ universe.evolve()
 universe.graphics.save(__file__)
 
 
-""" == Plots for comparison with articles == """
+""" ## Plots for comparison with articles """
 
 folder = os.path.split(__file__)[0]
 plt.ion()
 
-""" === JCAP10(2012)014, Figure 9 ===
+""" ### JCAP10(2012)014, Figure 9
     <img src="figure_9.png" width=100% /> """
 
 plt.figure(9)
@@ -82,7 +82,7 @@ plt.plot(UNITS.MeV / numpy.array(universe.data['T']), numpy.array(universe.data[
 plt.show()
 plt.savefig(os.path.join(folder, 'figure_9.png'))
 
-""" === JCAP10(2012)014, Figure 10 ===
+""" ### JCAP10(2012)014, Figure 10
     <img src="figure_10.png" width=100% />
     <img src="figure_10_full.png" width=100% /> """
 

@@ -1,5 +1,5 @@
 """
-== Photon universe test ==
+## Photon universe test
 
 <img src="plots.png" width=100% />
 

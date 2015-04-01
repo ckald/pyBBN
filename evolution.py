@@ -13,7 +13,7 @@ from plotting import Plotting
 
 class Universe(object):
 
-    """ == Universe ==
+    """ ## Universe
         The master object that governs the calculation. """
 
     # System state is rendered to the log file each `log_freq` steps
@@ -49,7 +49,7 @@ class Universe(object):
 
     def evolve(self):
         """
-        == Main computing routine ==
+        ## Main computing routine
 
         Modeling is carried in steps of scale factor, starting from the initial conditions defined\
         by a single parameter: the initial temperature.
@@ -98,7 +98,7 @@ class Universe(object):
         print "Data saved to file {}".format(self.logfile)
 
         """
-        == Postmortem debugger ==
+        ## Postmortem debugger
         Invoking `pdb` debugger after the computation is finished allows to do final adjustments \
         and export the missing data without restarting the whole simulation.
         """
@@ -132,14 +132,14 @@ class Universe(object):
         self.step += 1
 
     def update_particles(self):
-        """ === 1. Update particles state ===
+        """ ### 1. Update particles state
             Update particle species distribution functions, check for regime switching,\
             update precalculated variables like energy density and pressure. """
         for particle in self.particles:
             particle.update()
 
     def init_interactions(self):
-        """ === 2. Initialize non-equilibrium interactions ===
+        """ ### 2. Initialize non-equilibrium interactions
             Non-equilibrium interactions of different particle species are treated by a\
             numerical integration of the Boltzmann equation for distribution functions in\
             the expanding space-time.
@@ -152,7 +152,7 @@ class Universe(object):
             interaction.initialize()
 
     def calculate_collisions(self):
-        """ === 3. Calculate collision integrals === """
+        """ ### 3. Calculate collision integrals """
         for particle in self.particles:
             if not particle.collision_integrals:
                 continue
@@ -167,13 +167,13 @@ class Universe(object):
             print particle.symbol, "I =", particle.collision_integral
 
     def update_distributions(self):
-        """ === 4. Update particles distributions === """
+        """ ### 4. Update particles distributions """
 
         for particle in self.particles:
             particle.update_distribution()
 
     def calculate_temperature_terms(self):
-        """ === 5. Calculate temperature equation terms === """
+        """ ### 5. Calculate temperature equation terms """
 
         numerator = 0
         denominator = 0
@@ -185,7 +185,7 @@ class Universe(object):
         return numerator, denominator
 
     def integrand(self, t, y):
-        """ == Temperature equation integrand ==
+        """ ## Temperature equation integrand
 
             Master equation for the temperature looks like
 

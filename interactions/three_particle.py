@@ -6,7 +6,7 @@ from interactions.boltzmann import BoltzmannIntegral
 
 class ThreeParticleM(object):
 
-    """ == Three-particle interaction matrix element ==
+    """ ## Three-particle interaction matrix element
         Matrix elements of the interest for three-particle interactions are constant """
 
     K = 0.
@@ -79,7 +79,7 @@ class ThreeParticleIntegral(BoltzmannIntegral):
 
         return integrand
 
-    """ === Integration region bounds methods === """
+    """ ### Integration region bounds methods """
 
     def in_bounds(self, p, E=None, m=None):
         """ $D$-functions involved in the interactions imply a cut-off region for the collision\

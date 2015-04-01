@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-= Particles =
+# Particles
 
 This file contains `Particle` class definition and code governing the switching of the dynamical\
 regimes
@@ -19,7 +19,7 @@ from particles import DustParticle, RadiationParticle, IntermediateParticle, Non
 
 
 class STATISTICS(object):
-    """ == Particle species statistics == """
+    """ ## Particle species statistics """
 
     @staticmethod
     @numpy.vectorize
@@ -46,7 +46,7 @@ class STATISTICS(object):
 
 
 class REGIMES(dict):
-    """ == Particle dynamical regimes ==
+    """ ## Particle dynamical regimes
         Radiation (ultra-relativistic) `RADIATION`
         :   particle mass is neglected, all values obtained analytically
         Dust (non-relativistic) `DUST`
@@ -67,7 +67,7 @@ class REGIMES(dict):
 
 class Particle(PicklableObject):
 
-    """ == Particle ==
+    """ ## Particle
         Master-class for particle species. Realized as finite state machine that switches to\
         different regime when temperature becomes comparable to the particle mass or drops below\
         particle `decoupling_temperature`
@@ -164,7 +164,7 @@ class Particle(PicklableObject):
         return numpy.vectorize(self.calculate_collision_integral)(GRID.TEMPLATE)
 
     def calculate_collision_integral(self, p0):
-        """ === Particle collisions integration === """
+        """ ### Particle collisions integration """
 
         if not self.collision_integrals:
             return 0
@@ -210,7 +210,7 @@ class Particle(PicklableObject):
     @property
     def regime(self):
         """
-        === Regime-switching ratio ===
+        ### Regime-switching ratio
         For ultra-relativistic particles the mass is effectively `0`. This implies that all\
         computed numerically values can be as well obtained analytically: energy density, pressure,\
         etc.
@@ -253,7 +253,7 @@ class Particle(PicklableObject):
 
     def distribution(self, p):
         """
-        == Distribution function interpolation ==
+        ## Distribution function interpolation
 
         Two possible strategies for the distribution function interpolation are implemented:
 
@@ -301,7 +301,7 @@ class Particle(PicklableObject):
         p_high = GRID.TEMPLATE[i_high]
 
         if exponential_interpolation:
-            """ === Exponential interpolation === """
+            """ ### Exponential interpolation """
             E_p = self.conformal_energy(p)
             E_low = self.conformal_energy(p_low)
             E_high = self.conformal_energy(p_high)
@@ -329,7 +329,7 @@ class Particle(PicklableObject):
             return 1. / (numpy.exp(g) + self.eta)
 
         else:
-            """ === Linear interpolation === """
+            """ ### Linear interpolation """
             return (
                 self._distribution[i_low] * (p_high - p) + self._distribution[i_high] * (p - p_low)
             ) / (p_high - p_low)

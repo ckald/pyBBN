@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 """
-= Common =
+# Common
 
 This file contains constants and utilities shared by all other modules in the project.
 """
@@ -12,7 +12,7 @@ from utils import PicklableObject
 
 class UNITS(object):
 
-    """ == Units ==
+    """ ## Units
         As we use natural units in the project, all units from `numericalunits` except energy units\
         are useless. Here some useful units are defined in terms of `GeV`s. """
 
@@ -34,7 +34,7 @@ UNITS.reset_units()
 
 
 class CONST(object):
-    """ === Physical constants === """
+    """ ### Physical constants """
 
     G = 6.67 * 1e-11 * (UNITS.N / UNITS.kg**2 * UNITS.m**2)
     M_p = 1.2209 * 1e19 * UNITS.GeV
@@ -46,7 +46,7 @@ class CONST(object):
 
 class Params(PicklableObject):
 
-    """ == Parameters ==
+    """ ## Parameters
         Master object carrying the cosmological state of the system and initial conditions """
 
     # Temperature bounds define the simulations boundaries of the system
@@ -117,7 +117,7 @@ class Params(PicklableObject):
 
 class Grid(PicklableObject):
 
-    """ === Distribution functions grid ===
+    """ ### Distribution functions grid
 
         TODO: try a log-spaced grid instead of equally-spaced
         TODO: try an irregular grid based on the Gauss-Legendre quadrature roots to minimize \

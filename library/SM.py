@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-== Standard Model particles and interactions ==
+# Standard Model particles and interactions
 """
 
 from common import UNITS, CONST
@@ -11,7 +11,7 @@ from interactions.four_particle import FourParticleM
 
 class WeakM(FourParticleM):
 
-    """ == Weak interactions matrix element ==
+    """ ## Weak interactions matrix element
         Weak processes usually include a common factor of $32 G_F^2$ """
 
     def __init__(self, *args, **kwargs):

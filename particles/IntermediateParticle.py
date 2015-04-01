@@ -11,7 +11,7 @@ name = 'intermediate'
 
 
 def density(particle):
-    """ == Particle density ==
+    """ ## Particle density
 
         \begin{equation}
             g \int \frac{p^2 dp}{2 \pi^2} f\left( \frac{p}{T} \right)
@@ -28,7 +28,7 @@ def density(particle):
     return density
 
 
-# == Particle energy density ==
+# ## Particle energy density
 
 def energy_density_integrand(p, particle):
     """ \begin{equation}
@@ -56,7 +56,7 @@ def energy_density(particle):
     return energy_density
 
 
-# == Particle pressure ==
+# ## Particle pressure
 
 def pressure_integrand(p, particle):
     """ \begin{equation}
@@ -84,7 +84,7 @@ def pressure(particle):
     return pressure
 
 
-# == Master equation terms ==
+# ## Master equation terms
 
 def numerator(particle):
     """ \begin{equation}

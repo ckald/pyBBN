@@ -1,5 +1,5 @@
 """
-== C$\nu$B temperature test ==
+## C$\nu$B temperature test
 
 <img src="plots.png" width=100% />
 

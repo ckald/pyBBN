@@ -9,7 +9,7 @@ name = 'dust'
 
 
 def density(particle):
-    """ == Density ==
+    """ ## Density
         \begin{equation}
             n = g \left(\frac{M T}{2 \pi}\right)^{3/2} e^{-\frac{M}{T}}
         \end{equation}
@@ -22,7 +22,7 @@ def density(particle):
 
 
 def energy_density(particle):
-    """ == Energy density ==
+    """ ## Energy density
         \begin{equation}
             \rho = n \left(M + \frac32 T\right)
         \end{equation}
@@ -31,7 +31,7 @@ def energy_density(particle):
 
 
 def pressure(particle):
-    """ == Pressure ==
+    """ ## Pressure
         \begin{equation}
             p = n T
         \end{equation}
@@ -39,7 +39,7 @@ def pressure(particle):
     return density(particle) * particle.T
 
 
-# == Master equation terms ==
+# ## Master equation terms
 # Dust regime does not differ from intermediate regime here.
 numerator = IntermediateParticle.numerator
 denominator = IntermediateParticle.denominator

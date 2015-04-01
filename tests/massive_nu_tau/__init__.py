@@ -1,5 +1,5 @@
 """
-== Massive $\nu_\tau$ ($20 MeV$) test ==
+## Massive $\nu_\tau$ ($20 MeV$) test
 
 <img src="plots.png" width=100% />
 <img src="particles.png" width=100% />
@@ -69,12 +69,12 @@ universe.evolve()
 universe.graphics.save(__file__)
 
 
-""" == Plots for comparison with articles == """
+""" ## Plots for comparison with articles """
 
 folder = os.path.split(__file__)[0]
 plt.ion()
 
-""" === 1202.2841, Figure 13 ===
+""" ### 1202.2841, Figure 13
     <img src="figure_13.png" width=100% /> """
 
 plt.figure(13)
@@ -89,7 +89,7 @@ plt.plot(UNITS.MeV / numpy.array(universe.data['T']), numpy.array(universe.data[
 plt.show()
 plt.savefig(os.path.join(folder, 'figure_13.png'))
 
-""" === 1202.2841, Figure 14 ===
+""" ### 1202.2841, Figure 14
     <img src="figure_14.png" width=100% /> """
 
 plt.figure(14)

@@ -7,7 +7,7 @@ from interactions.ds import D, Db1, Db2
 
 class FourParticleM(object):
 
-    """ == Matrix element ==
+    """ ## Matrix element
         All four-particle interactions of the interest can be rewritten in a form
 
         \begin{equation}
@@ -107,7 +107,7 @@ class FourParticleIntegral(BoltzmannIntegral):
 
         return integrand
 
-    """ === Integration region bounds methods === """
+    """ ### Integration region bounds methods """
 
     def in_bounds(self, p, E=None, m=None):
         """ $D$-functions involved in the interactions imply a cut-off region for the collision\

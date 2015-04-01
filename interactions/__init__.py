@@ -7,7 +7,7 @@ from interactions.four_particle import FourParticleIntegral
 
 
 """
-== Boltzmann collision integral ==
+## Boltzmann collision integral
 
 \begin{multline}
     I_{coll}(t,p_i) = \frac{1}{2 E_i} \sum_{reactions} \int \cdots \int
@@ -22,7 +22,7 @@ from interactions.four_particle import FourParticleIntegral
 class Interaction(PicklableObject):
 
     """
-    == Interaction ==
+    ## Interaction
     Helper class that takes care of creating all necessary `Integral`s for the actual interaction.
     """
 
@@ -63,20 +63,20 @@ class Interaction(PicklableObject):
         # Remember all particle species we've already considered to avoid double-counting
         accounted_particles = set()
 
-        # === Interaction integrals initialization strategy ===
+        # ### Interaction integrals initialization strategy
 
-        # ==== 1. Permute all in_particles ====
+        # #### 1. Permute all in_particles
         in_particles = self.in_particles
         out_particles = self.out_particles
         accounted_particles = self.init_integrals(in_particles, out_particles,
                                                   Ms, accounted_particles)
 
-        # ==== 2. Turn to the backward process ====
+        # #### 2. Turn to the backward process
         # `(0, 1, 2, 3) -> (2, 3, 0, 1)`
         for M in Ms:
             M.order = M.order[len(self.in_particles):] + M.order[:len(self.in_particles)]
 
-        # ==== 3. Permute all new `in_particles` (former `out_particles`) ====
+        # #### 3. Permute all new `in_particles` (former `out_particles`)
         accounted_particles = self.init_integrals(out_particles, in_particles,
                                                   Ms, accounted_particles)
 

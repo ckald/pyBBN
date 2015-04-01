@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 """
-== Installation ==
+## Installation
 
  1. Download the project source or clone the repository https://github.com/ckald/pyBBN
 
@@ -19,7 +19,7 @@
     sudo pip install -r requirements.txt
 ```
 
-== Usage ==
+## Usage
 
 To run some script in the context of the code, one should temporarily alter the `PYTHONPATH`\
 environment variable:

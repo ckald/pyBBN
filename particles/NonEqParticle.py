@@ -1,5 +1,5 @@
 """
-= Non-equilibrium particles =
+# Non-equilibrium particles
 """
 from __future__ import division
 import functools
@@ -49,7 +49,7 @@ def density(particle):
 
 @lambda_integrate
 def energy_density(particle):
-    """ === Energy density ===
+    """ ### Energy density
 
         \begin{equation}
             \rho = \frac{g}{2 \pi^2} \frac{m^4}{x^4} \int dy y^2 \sqrt{y^2 +\
@@ -65,7 +65,7 @@ def energy_density(particle):
 
 @lambda_integrate
 def pressure(particle):
-    """ === Pressure ===
+    """ ### Pressure
 
         \begin{equation}
             p = \frac{g}{6 \pi^2} \frac{m^4}{x^4} \int \frac{dy \, y^4 f(y)}\
@@ -79,9 +79,9 @@ def pressure(particle):
     ), otypes=[numpy.float_])
 
 
-""" == Master equation terms == """
+""" ## Master equation terms """
 
-""" === Numerator ===
+""" ### Numerator
 
     \begin{equation}
         -\frac{g}{2 \pi^2} \int dy \, y^2 \sqrt{y^2 + \frac{M_N^2 x^2}{m^2}} I_{coll}(y)
@@ -102,7 +102,7 @@ def numerator(particle):
 
 def denominator(particle):
     """
-    === Denominator ===
+    ### Denominator
 
     \begin{equation}
         0
