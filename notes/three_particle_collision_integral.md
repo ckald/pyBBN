@@ -1,4 +1,4 @@
-= Three-particle collision integral =
+# Three-particle collision integral
 
 \begin{multline}
     I_{coll}(t,p_1) = \frac{1}{2 E_1} \int

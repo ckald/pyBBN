@@ -1,4 +1,4 @@
-= Sterile neutrinos in the mass range $m_\pi \div m_K$ =
+# Sterile neutrinos in the mass range $m_\pi \div m_K$
 
 Interactions of sterile neutrinos mostly mimic the weak interactions of active neutrinos. However, \
 non-zero mass of $N$ allows many channels previously forbidden by kinematics \
@@ -12,7 +12,7 @@ To account efficiently for all new interactions of sterile neutrinos with $m_N \
 we need to list all possible effective interaction terms in the Lagrangian and take into \
 consideration the thermodynamical state of the Universe at the moment of interest.
 
-== Primordial plasma ==
+## Primordial plasma
 
 We consider the Early Universe at temperatures around few $MeV$. Plasma mostly consists of photons,\
 active neutrinos, electrons and positrons - and tiny additions of long-living heavier particles \
@@ -30,7 +30,7 @@ fast EM interactions dominate. Here is the tentative hierarchy of interaction ra
     \Gamma_{EM} \gg H \ge \Gamma_{Weak} > \Gamma_{Sterile}
 \end{equation}
 
-== Processes of interest ==
+## Processes of interest
 
 For our discussion it is sufficient to consider only processes where only a single sterile neutrino\
 is present. This narrows our list to processes of 2 kinds:
@@ -38,7 +38,7 @@ is present. This narrows our list to processes of 2 kinds:
  * $N \to 1 + 2 + \dotsc$
  * $N + 2 \to 3 + 4 + \dotsc$
 
-=== Kinematics ===
+### Kinematics
 
 In case of sterile neutrino decay, allowed processes are limited solely the the masses of the final\
 states:
@@ -95,14 +95,14 @@ The backreaction of the pions on the plasma is dominated by few decay modes:
     \\\\ \pi^+ &\to e^+ + \nu_e
 \end{align}
 
-== Pion interactions ==
+## Pion interactions
 
 According to the quark model, mesons are bound states formed by quark pairs and gluons. In practice\
 this means that quark quantum states inside mesons are deformed and one cannot directly apply the\
 Feynman calculus. However, in case of electroweak interactions, only the quarks carry the \
 corresponding quantum numbers and the influence of gluons can be omitted.
 
-=== Phenomenological model ===
+### Phenomenological model
 
 According to experimental evidence, pi-mesons constitute a pseudoscalar triplet. Simplest possible\
 interactions for a pion with fermionic current then have to be of the form
@@ -123,7 +123,7 @@ However, this multiplier can differ for neutral and charged pions.
     F^\mu = f_\pm p^\mu
 \end{equation}
 
-=== Gauge bosons interactions ===
+### Gauge bosons interactions
 
 According to the phenomenological model, pi-mesons is gradiently coupled to SM currents, thus we\
 assume that this interaction has a form analogous to the regular current interactions. In \
@@ -132,7 +132,7 @@ the observed lifetime of the meson.
 
 <center><img src="pion_decay.png" width=200 /></center>
 
-=== Feynman rules ===
+### Feynman rules
 
 \begin{align}
     \Delta \mathcal{L}\_{CC} = \frac{g}{2 \sqrt{2}}
@@ -163,7 +163,7 @@ or
 
 \begin{align}
     \Delta \mathcal{L}\_{NC} = \frac{g}{\cos \theta_W}
-    \overline{f} (v_f - a_f \gamma^5) f \; Z\_\lambda
+    \overline{f} \gamma^\lambda (v_f - a_f \gamma^5) f \; Z\_\lambda
 \end{align}
 
 \begin{align}
@@ -190,9 +190,9 @@ Relation between $f_\pm$ and $f_0$ can be related to the fact that precise quark
 $\pi^0$ is $\frac{1}{\sqrt{2}}(u \overline{u} + d \overline{d})$
 
 
-== Matrix elements ==
+## Matrix elements
 
-=== Pions production ===
+### Pions production
 
 \begin{align}
     N &\to \pi^0 + \nu_\alpha
@@ -245,7 +245,7 @@ The sign in the lepton spin sum depends on the side, where this particle occurs 
 For the outgoing lepton it will be $+$ and $-$ for incoming antilepton. However, lepton mass occurs\
 only in a term with an odd number of gamma matrices in a trace - hence, it vanishes.
 
-=== Reaction kinematics ===
+### Reaction kinematics
 
 \begin{align}
     &p^\mu = k^\mu + \pi^\mu \\\\
@@ -261,7 +261,7 @@ only in a term with an odd number of gamma matrices in a trace - hence, it vanis
     \end{cases}
 \end{align}
 
-=== Trace computation ===
+### Trace computation
 
 As the trace expression is the same between both diagrams, we will compute it in assumption $m_l \neq 0$
 
@@ -276,7 +276,7 @@ As the trace expression is the same between both diagrams, we will compute it in
         \\\\ &= m_N^4 (m_N^2 - m_\pi^2) - m_l^2 m_N^2 (2 m_N^2 + m_\pi^2 - m_l^2)
 \end{align}
 
-=== Neutral current and neutrino scattering ===
+### Neutral current and neutrino scattering
 
 Putting that back to the squared amplitude with $m_l = 0$
 
@@ -288,7 +288,7 @@ Putting that back to the squared amplitude with $m_l = 0$
         = G_F^2 \theta^2 f_\pi^2 m_N^2 (m_N^2 - m_\pi^2)
 \end{align}
 
-=== Charged current and lepton scattering ===
+### Charged current and lepton scattering
 
 For the diagrams with charged leptons we need to include the mass of the lepton and modify \
 the coupling constants ($g' \to g$, $M_Z \to M_W$ and multiply the whole amplitude by $|V_{ud}|$)
