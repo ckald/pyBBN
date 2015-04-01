@@ -2,7 +2,8 @@
 For intermediate regime equilibrium particles, density, energy density and pressure\
 are obtained through integration of distribution function
 """
-from scipy import integrate
+
+from common import integrators
 import numpy
 from common import GRID
 
@@ -17,13 +18,12 @@ def density(particle):
             g \int \frac{p^2 dp}{2 \pi^2} f\left( \frac{p}{T} \right)
         \end{equation}
     """
-    density, _ = integrate.quad(
+    density, _ = integrators.integrate_1D(
         lambda p: (
             particle.equilibrium_distribution_function(
                 particle.energy(p) / particle.T
             ) * p**2 * particle.dof / 2. / numpy.pi**2
-        ), GRID.MIN_MOMENTUM / particle.params.a, GRID.MAX_MOMENTUM / particle.params.a,
-        epsrel=1e-8, epsabs=0
+        ), (GRID.MIN_MOMENTUM / particle.params.a, GRID.MAX_MOMENTUM / particle.params.a)
     )
     return density
 
@@ -48,10 +48,9 @@ def energy_density(particle):
             \rho = \int dp I_\rho
         \end{equation}
     """
-    energy_density, _ = integrate.quad(
+    energy_density, _ = integrators.integrate_1D(
         lambda p: energy_density_integrand(p, particle),
-        GRID.MIN_MOMENTUM / particle.params.a, GRID.MAX_MOMENTUM / particle.params.a,
-        epsrel=1e-8, epsabs=0
+        (GRID.MIN_MOMENTUM / particle.params.a, GRID.MAX_MOMENTUM / particle.params.a)
     )
     return energy_density
 
@@ -76,10 +75,9 @@ def pressure(particle):
             P = \int dp I_P
         \end{equation}
     """
-    pressure, _ = integrate.quad(
+    pressure, _ = integrators.integrate_1D(
         lambda p: pressure_integrand(p, particle),
-        GRID.MIN_MOMENTUM / particle.params.a, GRID.MAX_MOMENTUM / particle.params.a,
-        epsrel=1e-8, epsabs=0
+        (GRID.MIN_MOMENTUM / particle.params.a, GRID.MAX_MOMENTUM / particle.params.a)
     )
     return pressure
 
@@ -109,11 +107,10 @@ def I(particle, y_power=2):
             { \left(e^{-\frac{E_N(y)}{a T}} + \eta \right)^2 }
         \end{equation}
     """
-    return particle.dof / 2. / numpy.pi**2 * integrate.quad(
+    return particle.dof / 2. / numpy.pi**2 * integrators.integrate_1D(
         lambda y: (
             y**y_power * numpy.exp(-particle.conformal_energy(y) / particle.aT)
             / (numpy.exp(-particle.conformal_energy(y) / particle.aT) + particle.eta) ** 2
         ),
-        GRID.MIN_MOMENTUM, GRID.MAX_MOMENTUM,
-        epsrel=1e-8, epsabs=0
+        (GRID.MIN_MOMENTUM, GRID.MAX_MOMENTUM)
     )[0]
