@@ -185,9 +185,9 @@ class interactions(object):
             in_particles=[sterile, active],
             out_particles=[quark, quark],
             Ms=[
-                SterileWeakM(K1=2/9 * (x**2 + 16 * CONST.g_R), theta=theta, order(0, 3, 1, 2)),
-                SterileWeakM(K1=2/9 * (x**2 + 16 * CONST.g_R), theta=theta, order(0, 2, 1, 3)),
-                SterileWeakM(K2=16/9 * CONST.g_R * x, theta=theta, order(0, 1, 2, 3)),
+                SterileWeakM(K1=2/9 * (x**2 + 16 * CONST.g_R), theta=theta, order=(0, 3, 1, 2)),
+                SterileWeakM(K1=2/9 * (x**2 + 16 * CONST.g_R), theta=theta, order=(0, 2, 1, 3)),
+                SterileWeakM(K2=16/9 * CONST.g_R * x, theta=theta, order=(0, 1, 2, 3)),
             ]
         )
 
@@ -203,7 +203,7 @@ class interactions(object):
             in_particles=[sterile, lepton],
             out_particles=[up, down],
             Ms=[
-                SterileWeakM(K1=1/2, theta=theta, order(0, 2, 1, 3)),
-                SterileWeakM(K1=1/2, theta=theta, order(0, 3, 1, 2)),
+                SterileWeakM(K1=1/2, theta=theta, order=(0, 2, 1, 3)),
+                SterileWeakM(K1=1/2, theta=theta, order=(0, 3, 1, 2)),
             ]
         )
