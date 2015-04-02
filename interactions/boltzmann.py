@@ -109,6 +109,22 @@ class BoltzmannIntegral(PicklableObject, DistributionFunctional):
     """
     signs = [1, 1, -1, -1]
 
+    """ ### Crossed particles in the integral
+
+        If the Boltzmann integral is obtained as a crossing of some other process, the mass of the\
+        crossed fermion in the matrix element has to change sign.
+
+        For example, compare the matrix elements of reactions
+
+        \begin{align}
+            \nu + e &\to \nu + e \\\\
+            \nu + \overline{\nu} &\to e + e^+
+        \end{align}
+
+        In particular, this has something to do with the `K2` term in the `FourParticleIntegral`.
+    """
+    crosses = None
+
     # Temperature when the typical interaction time exceeds the Hubble expansion time
     decoupling_temperature = 0.
     constant = 0.
@@ -130,6 +146,8 @@ class BoltzmannIntegral(PicklableObject, DistributionFunctional):
 
         self.particles = self.in_particles + self.out_particles
         self.signs = [1] * len(self.in_particles) + [-1] * len(self.out_particles)
+        if not self.crosses:
+            self.crosses = [1] * len(self.particles)
 
         self.integrand = numpy.vectorize(self.integrand, otypes=[numpy.float_])
 

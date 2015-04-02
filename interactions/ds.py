@@ -1,4 +1,8 @@
-def D(p=None, E=None, m=None, K1=0., K2=0., signs=None, order=(0, 1, 2, 3)):
+
+
+def D(p, E, m, K1=0., K2=0.,
+      signs=(1, 1, -1, -1), crosses=(1, 1, 1, 1),
+      order=(0, 1, 2, 3)):
     """ Dimensionality: energy """
 
     i, j, k, l = order
@@ -14,7 +18,8 @@ def D(p=None, E=None, m=None, K1=0., K2=0., signs=None, order=(0, 1, 2, 3)):
                         + E[k]*E[l] * sksl * D2(p[k], p[l], p[i], p[j]))
 
     if K2 != 0:
-        result += K2 * m[i]*m[j] * (E[k]*E[l] * D1(*p) + sksl * D2(p[i], p[j], p[k], p[l]))
+        cicj = crosses[i] * crosses[j]
+        result += K2 * cicj * m[i]*m[j] * (E[k]*E[l] * D1(*p) + sksl * D2(p[i], p[j], p[k], p[l]))
 
     return result
 
