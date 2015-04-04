@@ -19,17 +19,7 @@ from interactions.three_particle import ThreeParticleIntegral
 \end{multline}
 """
 
-
-class IntegralItem(namedtuple('IntegralItem', ['side', 'specie', 'antiparticle', 'index',
-                                               'crossed'])):
-    def __new__(cls, **kwargs):
-        for field in cls._fields:
-            if field not in kwargs:
-                kwargs[field] = None
-        return super(IntegralItem, cls).__new__(cls, **kwargs)
-
-    def __repr__(self):
-        return repr(tuple(self))
+IntegralItem = namedtuple('IntegralItem', ['side', 'specie', 'antiparticle', 'index', 'crossed'])
 
 
 class Interaction(PicklableObject):
@@ -87,17 +77,19 @@ class Interaction(PicklableObject):
 
         perms = itertools.permutations(
             [
-                IntegralItem(specie=particle,
+                IntegralItem(side=-1,
+                             specie=particle,
                              antiparticle=antiparticle,
-                             side=-1,
-                             index=i)
+                             index=i,
+                             crossed=False)
                 for i, (particle, antiparticle)
                 in enumerate(zip(self.particles[0], self.antiparticles[0]))
             ] + [
-                IntegralItem(specie=particle,
+                IntegralItem(side=1,
+                             specie=particle,
                              antiparticle=antiparticle,
-                             side=1,
-                             index=i+len(self.particles[0]))
+                             index=i+len(self.particles[0]),
+                             crossed=False)
                 for i, (particle, antiparticle)
                 in enumerate(zip(self.particles[1], self.antiparticles[1]))
             ]
