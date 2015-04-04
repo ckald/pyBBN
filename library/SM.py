@@ -32,7 +32,8 @@ class particles(object):
         'name': 'Photon',
         'symbol': 'γ',
         'statistics': STATISTICS.BOSON,
-        'dof': 2
+        'dof': 2,
+        'majorana': True
     }
 
     class hadrons(object):
@@ -41,14 +42,16 @@ class particles(object):
             'symbol': 'n',
             'statistics': STATISTICS.FERMION,
             'mass': 0.939 * UNITS.GeV,
-            'dof': 4
+            'dof': 4,
+            'majorana': False
         }
         proton = {
             'name': 'Proton',
             'symbol': 'p',
             'statistics': STATISTICS.FERMION,
             'mass': 0.938 * UNITS.GeV,
-            'dof': 4
+            'dof': 4,
+            'majorana': False
         }
 
     class leptons(object):
@@ -56,22 +59,31 @@ class particles(object):
             'name': 'Electron neutrino',
             'symbol': 'ν_e',
             'statistics': STATISTICS.FERMION,
+            'mass': 0.1 * UNITS.eV,
             'dof': 2,
-            'decoupling_temperature': 5 * UNITS.MeV
+            'decoupling_temperature': 5 * UNITS.MeV,
+            'majorana': False,
+            'flavour': 'electron'
         }
         neutrino_mu = {
             'name': 'Muon neutrino',
             'symbol': 'ν_μ',
             'statistics': STATISTICS.FERMION,
+            'mass': 0.1 * UNITS.eV,
             'dof': 2,
-            'decoupling_temperature': 5 * UNITS.MeV
+            'decoupling_temperature': 5 * UNITS.MeV,
+            'majorana': False,
+            'flavour': 'muon'
         }
         neutrino_tau = {
             'name': 'Tau neutrino',
             'symbol': 'ν_τ',
             'statistics': STATISTICS.FERMION,
+            'mass': 0.1 * UNITS.eV,
             'dof': 2,
-            'decoupling_temperature': 5 * UNITS.MeV
+            'decoupling_temperature': 5 * UNITS.MeV,
+            'majorana': False,
+            'flavour': 'tau'
         }
 
         electron = {
@@ -79,21 +91,27 @@ class particles(object):
             'symbol': 'e',
             'statistics': STATISTICS.FERMION,
             'mass': 0.511 * UNITS.MeV,
-            'dof': 4
+            'dof': 4,
+            'majorana': False,
+            'flavour': 'electron'
         }
         muon = {
             'name': 'Muon',
             'symbol': 'μ',
             'statistics': STATISTICS.FERMION,
             'mass': 105.7 * UNITS.MeV,
-            'dof': 4
+            'dof': 4,
+            'majorana': False,
+            'flavour': 'muon'
         }
         tau = {
             'name': 'Tau',
             'symbol': 'τ',
             'statistics': STATISTICS.FERMION,
             'mass': 1777 * UNITS.MeV,
-            'dof': 4
+            'dof': 4,
+            'majorana': False,
+            'flavour': 'tau'
         }
 
     class quarks(object):
@@ -102,42 +120,54 @@ class particles(object):
             'symbol': 'u',
             'statistics': STATISTICS.FERMION,
             'mass': 3 * UNITS.MeV,
-            'dof': 2
+            'dof': 2,
+            'majorana': False,
+            'family': 1
         }
         down = {
             'name': 'down',
             'symbol': 'd',
             'statistics': STATISTICS.FERMION,
             'mass': 5 * UNITS.MeV,
-            'dof': 2
+            'dof': 2,
+            'majorana': False,
+            'family': 1
         }
         charm = {
             'name': 'charm',
             'symbol': 'c',
             'statistics': STATISTICS.FERMION,
             'mass': 1300 * UNITS.MeV,
-            'dof': 2
+            'dof': 2,
+            'majorana': False,
+            'family': 2
         }
         strange = {
             'name': 'strange',
             'symbol': 's',
             'statistics': STATISTICS.FERMION,
             'mass': 200 * UNITS.MeV,
-            'dof': 2
+            'dof': 2,
+            'majorana': False,
+            'family': 2
         }
         top = {
             'name': 'top',
             'symbol': 't',
             'statistics': STATISTICS.FERMION,
             'mass': 180 * UNITS.GeV,
-            'dof': 2
+            'dof': 2,
+            'majorana': False,
+            'family': 3
         }
         bottom = {
             'name': 'bottom',
             'symbol': 'b',
             'statistics': STATISTICS.FERMION,
             'mass': 4.3 * UNITS.GeV,
-            'dof': 2
+            'dof': 2,
+            'majorana': False,
+            'family': 3
         }
 
 
