@@ -26,9 +26,9 @@ class DistributionFunctional(object):
         """
         temp = -1.
 
-        for i, particle in enumerate(self.particles):
+        for i, particle in enumerate(self.reaction):
             if skip_index is None or i != skip_index:
-                if self.signs[i] == 1:
+                if self.reaction[i].side == 1:
                     temp *= particle.distribution(p[i])
                 else:
                     temp *= 1. - particle.eta * particle.distribution(p[i])
@@ -47,9 +47,9 @@ class DistributionFunctional(object):
         """
         temp = 1.
 
-        for i, particle in enumerate(self.particles):
+        for i, particle in enumerate(self.reaction):
             if skip_index is None or i != skip_index:
-                if self.signs[i] == -1:
+                if self.reaction[i].side == -1:
                     temp *= particle.distribution(p[i])
                 else:
                     temp *= 1. - particle.eta * particle.distribution(p[i])
@@ -78,7 +78,7 @@ class DistributionFunctional(object):
     def F_f(self, p):
         """ Variable part of the distribution functional """
         return (
-            self.F_A(p=p, skip_index=0) - self.in_particles[0].eta * self.F_B(p=p, skip_index=0)
+            self.F_A(p=p, skip_index=0) - self.particle.eta * self.F_B(p=p, skip_index=0)
         )
 
     def F_1(self, p):
@@ -90,24 +90,13 @@ class BoltzmannIntegral(PicklableObject, DistributionFunctional):
 
     """ ## Integral
         Representation of the concrete collision integral for a specific particle \
-        `Integral.particles[0]` """
+        `Integral.reaction[0]` """
 
     _saveable_fields = [
-        'particles', 'in_particles', 'out_particles',
-        'signs', 'decoupling_temperature', 'constant', 'Ms',
+        'reaction', 'decoupling_temperature', 'constant', 'Ms',
     ]
 
-    in_particles = []  # Incoming particles
-    out_particles = []  # Outgoing particles
-    particles = []  # All particles involved
-
-    """ ### Energy conservation law of the integral
-
-        \begin{equation}
-            0 = \vec{s} \cdot \vec{E} = \sum_i s_i E_i \sim E_0 + E_1 - E_2 - E_3
-        \end{equation}
-    """
-    signs = [1, 1, -1, -1]
+    reaction = []  # All particles involved
 
     """ ### Crossed particles in the integral
 
@@ -123,7 +112,6 @@ class BoltzmannIntegral(PicklableObject, DistributionFunctional):
 
         In particular, this has something to do with the `K2` term in the `FourParticleIntegral`.
     """
-    crosses = None
 
     # Temperature when the typical interaction time exceeds the Hubble expansion time
     decoupling_temperature = 0.
@@ -144,18 +132,18 @@ class BoltzmannIntegral(PicklableObject, DistributionFunctional):
         for key in kwargs:
             setattr(self, key, kwargs[key])
 
-        self.particles = self.in_particles + self.out_particles
-        self.signs = [1] * len(self.in_particles) + [-1] * len(self.out_particles)
-        if not self.crosses:
-            self.crosses = [1] * len(self.particles)
-
         self.integrand = numpy.vectorize(self.integrand, otypes=[numpy.float_])
 
     def __str__(self):
         """ String-like representation of the integral. Corresponds to the first particle """
-        return " + ".join([p.symbol for p in self.in_particles]) \
-            + " ⟶  " + " + ".join([p.symbol for p in self.out_particles]) \
-            + "\t({})".format(len(self.Ms))
+        return (
+            " + ".join([p.specie.symbol + ('\'' if p.antiparticle else '')
+                        for p in self.reaction if p.side == -1])
+            + " ⟶  "
+            + " + ".join([p.specie.symbol + ('\'' if p.antiparticle else '')
+                          for p in self.reaction if p.side == 1])
+            + "\t({})".format(', '.join([str(M) for M in self.Ms]))
+        )
 
     def __repr__(self):
         return self.__str__()
@@ -167,42 +155,40 @@ class BoltzmannIntegral(PicklableObject, DistributionFunctional):
         raise NotImplementedError()
 
     def calculate_kinematics(self, p):
-        """ Helper procedure that caches conformal energies and masses of the particles """
-        particle_count = len(self.particles)
+        """ Helper procedure that caches conformal energies and masses of the reaction """
+        particle_count = len(self.reaction)
         p = (p + [0., 0., 0., 0.])[:particle_count]
         E = []
         m = []
-        for i, particle in enumerate(self.particles):
+        for i, particle in enumerate(self.reaction):
             E.append(particle.conformal_energy(p[i]))
             m.append(particle.conformal_mass)
 
         """ Parameters of one particle can be inferred from the energy conservation law
             \begin{equation}E_3 = -s_3 \sum_{i \neq 3} s_i E_i \end{equation} """
-        E[particle_count-1] = -self.signs[particle_count-1] \
-            * sum([self.signs[i] * E[i] for i in range(particle_count-1)])
+        E[particle_count-1] = -self.reaction[particle_count-1].side \
+            * sum([self.reaction[i].side * E[i] for i in range(particle_count-1)])
         p[particle_count-1] = numpy.sqrt(numpy.abs(E[particle_count-1]**2 - m[particle_count-1]**2))
         return p, E, m
 
     def correction(self, p0):
         """ ### Particle collisions integration """
 
-        particle = self.particles[0]
-
         integral_1, _ = self.integral_1(p0)
         integral_f, _ = self.integral_f(p0)
 
-        order = min(len(particle.data['collision_integral']) + 1, 5)
+        order = min(len(self.particle.data['collision_integral']) + 1, 5)
 
         index = numpy.argwhere(GRID.TEMPLATE == p0)[0][0]
-        fs = [i[index] for i in particle.data['collision_integral'][-order:]]
+        fs = [i[index] for i in self.particle.data['collision_integral'][-order:]]
 
         prediction = integrators.adams_moulton_solver(
-            y=particle.distribution(p0), fs=fs,
+            y=self.particle.distribution(p0), fs=fs,
             A=integral_1, B=integral_f,
-            h=particle.params.dy, order=order
+            h=self.particle.params.dy, order=order
         )
 
-        total_integral = (prediction - particle.distribution(p0)) / particle.params.dy
+        total_integral = (prediction - self.particle.distribution(p0)) / self.particle.params.dy
 
         return total_integral
 

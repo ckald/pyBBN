@@ -179,54 +179,19 @@ class interactions(object):
     def neutrino_scattering(neutrino_a, neutrino_b):
         """ \begin{align}
                 \nu_\alpha + \nu_\beta &\to \nu_\alpha + \nu_\beta
-                \\\\ \nu_\alpha + \overline{\nu_\beta} &\to \nu_\alpha + \overline{\nu_\beta}
             \end{align}
 
             \begin{equation}
-                |\mathcal{M}|^2 = 32 G_F^2 \left( (p_0 \cdot p_1) (p_2 \cdot p_3) +
-                    (p_0 \cdot p_3) (p_1 \cdot p_2) \right)
-            \end{equation}
-
-            \begin{align}
-                \nu_\alpha + \nu_\alpha &\to \nu_\alpha + \nu_\alpha
-                \\\\ \nu_\alpha + \overline{\nu_\alpha} &\to \nu_\alpha + \overline{\nu_\alpha}
-            \end{align}
-
-            \begin{equation}
-                |\mathcal{M}|^2 = 32 G_F^2 \left( 2 (p_0 \cdot p_1) (p_2 \cdot p_3) +
-                    4 (p_0 \cdot p_3) (p_1 \cdot p_2) \right)
+                |\mathcal{M}|^2 = 32 G_F^2 (p_0 \cdot p_1) (p_2 \cdot p_3)
             \end{equation}
         """
-
-        K1 = [2., 4.] if neutrino_a == neutrino_b else [1., 1.]
 
         return Interaction(
             name="Neutrino species scattering",
-            in_particles=[neutrino_a, neutrino_b],
-            out_particles=[neutrino_a, neutrino_b],
+            particles=((neutrino_a, neutrino_b), (neutrino_a, neutrino_b)),
+            antiparticles=((False, False), (False, False)),
             decoupling_temperature=0 * UNITS.MeV,
-            Ms=[
-                WeakM(K1=K1[0], order=(0, 1, 2, 3)),
-                WeakM(K1=K1[1], order=(0, 3, 1, 2)),
-            ]
-        )
-
-    @staticmethod
-    def neutrino_pair_flavour_change(neutrino_a, neutrino_b):
-        """ \begin{align}
-                \nu_\alpha + \overline{\nu_\alpha} &\to \nu_\beta + \overline{\nu_\beta}
-            \end{align}
-
-            \begin{equation}
-                |\mathcal{M}|^2 = 32 G_F^2 (p_0 \cdot p_3) (p_1 \cdot p_2)
-            \end{equation}
-        """
-        return Interaction(
-            name="Neutrino pair flavor change",
-            in_particles=[neutrino_a, neutrino_a],
-            out_particles=[neutrino_b, neutrino_b],
-            decoupling_temperature=0 * UNITS.MeV,
-            Ms=[WeakM(K1=1., order=(0, 3, 1, 2))]
+            Ms=(WeakM(K1=1., order=(0, 1, 2, 3)),)
         )
 
     @staticmethod
@@ -248,45 +213,15 @@ class interactions(object):
         """
         return Interaction(
             name="Neutrino pair annihilation into lepton pair",
-            in_particles=[neutrino, neutrino],
-            out_particles=[lepton, lepton],
+            particles=((neutrino, neutrino), (lepton, lepton)),
+            antiparticles=((False, True), (False, True)),
             decoupling_temperature=0 * UNITS.MeV,
-            Ms=[
+            Ms=(
                 WeakM(K1=4 * g_L**2, order=(0, 3, 1, 2)),
                 WeakM(K1=4 * CONST.g_R**2, order=(0, 2, 1, 3)),
                 WeakM(K2=4 * g_L * CONST.g_R, order=(2, 3, 0, 1)),
-            ]
+            )
         )
-
-    # @staticmethod
-    # def neutrino_electron_scattering(neutrino=None, electron=None, g_L=CONST.g_R + 0.5):
-    #     """ \begin{align}
-    #             \nu_\alpha + e^- &\to \nu_\alpha + e^-
-    #             \\\\ \nu_\alpha + e^+ &\to \nu_\alpha + e^+
-    #         \end{align}
-
-    #         \begin{align}
-    #             |\mathcal{M}|^2 = 32 G_F^2 \left(
-    #             \\\\ 4 \, (g_L^2 + g_R^2) \, (p_0 \cdot p_1) (p_2 \cdot p_3) +
-    #             \\\\ +4 \, (g_R^2 + g_L^2) \, (p_0 \cdot p_3) (p_1 \cdot p_2) -
-    #             \\\\ -8 \, g_L g_R \, m_1 m_3 (p_0 \cdot p_2)
-    #             \\\\ \right)
-    #         \end{align}
-
-    #         Depending of the neutrino generations involved, $g_L$ can either be equal to \
-    #         $g_R + \frac12$ (for $\nu_e$) or $g_R - \frac12$ (for others).
-    #     """
-    #     return Interaction(
-    #         name="Neutrino-electron scattering",
-    #         in_particles=[neutrino, electron],
-    #         out_particles=[neutrino, electron],
-    #         decoupling_temperature=0 * UNITS.MeV,
-    #         Ms=[
-    #             WeakM(K1=4 * (g_L**2 + CONST.g_R**2), order=(0, 1, 2, 3)),
-    #             WeakM(K1=4 * (g_L**2 + CONST.g_R**2), order=(0, 3, 1, 2)),
-    #             WeakM(K2=-8 * g_L * CONST.g_R, order=(1, 3, 0, 2)),
-    #         ]
-    #     )
 
     @classmethod
     def neutrino_interactions(cls, leptons=None, neutrinos=None):
@@ -294,13 +229,14 @@ class interactions(object):
         g_R = CONST.g_R
         inters = []
 
+        # Neutrinos scatterings
         for neutrino_a, neutrino_b in itertools.combinations_with_replacement(neutrinos, 2):
             inters.append(cls.neutrino_scattering(neutrino_a, neutrino_b))
 
-        for neutrino_a, neutrino_b in itertools.combinations(neutrinos, 2):
-            inters.append(cls.neutrino_pair_flavour_change(neutrino_a, neutrino_b))
-
-        for i, lepton in enumerate(leptons):
-            for j, neutrino in enumerate(neutrinos):
-                g_L = g_R + 0.5 if i == j else g_R - 0.5
+        # Interactions of neutrinos and leptons
+        for lepton in leptons:
+            for neutrino in neutrinos:
+                g_L = g_R - 0.5 if lepton.flavour == neutrino.flavour else g_R + 0.5
                 inters.append(cls.neutrinos_to_leptons(g_L=g_L, lepton=lepton, neutrino=neutrino))
+
+        return inters

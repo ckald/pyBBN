@@ -28,9 +28,36 @@ class FourParticleM(object):
             raise Exception("Meaningless order of momenta of the matrix element: {}"
                             .format(self.order))
 
+    def __iadd__(self, M):
+        self.K1 += M.K1
+        self.K2 += M.K2
+        return self
+
+    def __setattr__(self, name, value):
+        if name != 'order':
+            return super(FourParticleM, self).__setattr__(name, value)
+
+        self.__dict__['order'] = tuple(sorted(value[:2]) + sorted(value[2:]))
+
     def __str__(self):
         """ String-like representation of the matrix element """
-        return "K1={: .2e}, K2={: .2e}, {}".format(self.K1, self.K2, self.order)
+        ret = ""
+        if self.K1:
+            ret += "K1={} ".format(self.K1)
+        if self.K2:
+            ret += "K2={} ".format(self.K2)
+        return ret + "{}".format(self.order)
+
+    def apply_order(self, order, reaction):
+        self.order = order
+
+        # Change the sign of the mass term if related particle has crossed (but not both)
+        if bool(reaction[order[0]].crossed) ^ bool(reaction[order[1]].crossed):
+            self.K2 *= -1.
+
+    def stackable(self, other):
+        return self.order == other.order or \
+            (tuple(self.order[2:] + self.order[:2]) == other.order and self.K2 == other.K2 == 0)
 
 
 class FourParticleIntegral(BoltzmannIntegral):
@@ -39,10 +66,10 @@ class FourParticleIntegral(BoltzmannIntegral):
         """
         Initialize collision integral constants and save them to the first involved particle
         """
-        params = self.in_particles[0].params
-        if params.T > self.decoupling_temperature and not self.in_particles[0].in_equilibrium:
+        params = self.particle.params
+        if params.T > self.decoupling_temperature and not self.particle.in_equilibrium:
             self.constant = 1./64. / numpy.pi**3 * params.m**5 / params.x**5 / params.H
-            self.particles[0].collision_integrals.append(self)
+            self.particle.collision_integrals.append(self)
 
     @staticmethod
     def integrate(p0, integrand, bounds=None, kwargs=None):
