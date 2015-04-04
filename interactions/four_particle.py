@@ -114,9 +114,7 @@ class FourParticleIntegral(BoltzmannIntegral):
         ds = 0.
         if p[0] != 0:
             for M in self.Ms:
-                ds += D(p=p, E=E, m=m, K1=M.K1, K2=M.K2,
-                        signs=self.signs, crosses=self.crosses,
-                        order=M.order)
+                ds += D(p=p, E=E, m=m, M=M, reaction=self.reaction)
             ds = ds / p[0] / E[0]
         else:
             for M in self.Ms:
