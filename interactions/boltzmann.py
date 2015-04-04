@@ -161,8 +161,8 @@ class BoltzmannIntegral(PicklableObject, DistributionFunctional):
         E = []
         m = []
         for i, particle in enumerate(self.reaction):
-            E.append(particle.conformal_energy(p[i]))
-            m.append(particle.conformal_mass)
+            E.append(particle.specie.conformal_energy(p[i]))
+            m.append(particle.specie.conformal_mass)
 
         """ Parameters of one particle can be inferred from the energy conservation law
             \begin{equation}E_3 = -s_3 \sum_{i \neq 3} s_i E_i \end{equation} """
