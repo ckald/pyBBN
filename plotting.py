@@ -84,7 +84,8 @@ class Plotting(object):
                 self.particles_plots[i][0].set_ylabel(u"ρ/ρ_eq")
 
                 self.particles_plots[i][1].set_xlabel("y, MeV")
-                self.particles_plots[i][1].set_xlim(GRID.MIN_MOMENTUM, GRID.MAX_MOMENTUM)
+                self.particles_plots[i][1].set_xlim(GRID.MIN_MOMENTUM / UNITS.MeV,
+                                                    GRID.MAX_MOMENTUM / UNITS.MeV)
                 self.particles_plots[i][1].set_ylabel("f/f_eq")
 
             self.particles_figure.show()
