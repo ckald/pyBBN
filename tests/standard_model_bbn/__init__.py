@@ -47,8 +47,7 @@ universe.particles += [
 ]
 
 universe.interactions += \
-    SMI.neutrino_interactions(electron=electron, neutrino_e=neutrino_e,
-                              neutrino_mu=neutrino_mu, neutrino_tau=neutrino_tau)
+    SMI.neutrino_interactions(leptons=[electron], neutrinos=[neutrino_e, neutrino_mu, neutrino_tau])
 
 universe.graphics.monitor(particles=[
     neutrino_e,
