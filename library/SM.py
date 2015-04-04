@@ -236,7 +236,7 @@ class interactions(object):
         # Interactions of neutrinos and leptons
         for lepton in leptons:
             for neutrino in neutrinos:
-                g_L = g_R - 0.5 if lepton.flavour == neutrino.flavour else g_R + 0.5
+                g_L = g_R + 0.5 if lepton.flavour == neutrino.flavour else g_R - 0.5
                 inters.append(cls.neutrinos_to_leptons(g_L=g_L, lepton=lepton, neutrino=neutrino))
 
         return inters
