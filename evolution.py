@@ -8,7 +8,6 @@ from datetime import datetime
 from common import UNITS, Params, Grid
 from common import integrators, parallelization, utils
 # from common.utils import PicklableObject
-from plotting import Plotting
 
 
 class Universe(object):
@@ -41,7 +40,10 @@ class Universe(object):
         self.params = Params() if not params else params
         self.grid = Grid() if not grid else grid
 
-        self.graphics = Plotting() if plotting else None
+        self.graphics = None
+        if plotting:
+            from plotting import Plotting
+            self.graphics = Plotting()
         self.postmortem_debugger = postmortem_debugger
 
         self.logfile = logfile
