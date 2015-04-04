@@ -83,6 +83,15 @@ class Particle(PicklableObject):
         'T', 'aT', 'params'
     ]
 
+    _defaults = {
+        'mass': 0 * UNITS.eV,
+        'decoupling_temperature': 0 * UNITS.eV,
+        'name': 'Particle',
+        'symbol': 'p',
+        'dof': 2,
+        'statistics': STATISTICS.FERMION,
+    }
+
     INTEGRATION_ORDER = ['sum-first', 'integral-first'][0]
 
     def __init__(self, params=None, **kwargs):
@@ -92,14 +101,13 @@ class Particle(PicklableObject):
 
         self.T = self.params.T
         self.aT = self.params.aT
-        self.mass = kwargs.get('mass', 0 * UNITS.eV)
-        self.decoupling_temperature = kwargs.get('decoupling_temperature', 0 * UNITS.eV)
-        self.name = kwargs.get('name', 'Particle')
-        self.symbol = kwargs.get('symbol', 'p')
 
-        self.dof = kwargs.get('dof', 2)  # particle species degeneracy (e.g., spin-degeneracy)
+        settings = dict(self._defaults)
+        settings.update(kwargs)
 
-        self.statistics = kwargs.get('statistics', STATISTICS.FERMION)
+        for key, value in settings.items():
+            setattr(self, key, value)
+
         self.eta = 1. if self.statistics == STATISTICS.FERMION else -1.
 
         """ For equilibrium particles distribution function is by definition given by its\
