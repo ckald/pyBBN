@@ -93,7 +93,7 @@ class BoltzmannIntegral(PicklableObject, DistributionFunctional):
         `Integral.reaction[0]` """
 
     _saveable_fields = [
-        'reaction', 'decoupling_temperature', 'constant', 'Ms',
+        'particle', 'reaction', 'decoupling_temperature', 'constant', 'Ms',
     ]
 
     reaction = []  # All particles involved
@@ -124,13 +124,16 @@ class BoltzmannIntegral(PicklableObject, DistributionFunctional):
                  + K_2 m_i m_j (p_k \cdot p_l)
         \end{equation} """
 
-    Ms = []
+    Ms = None
 
     def __init__(self, **kwargs):
         """ Update self with configuration `kwargs`, construct particles list and \
             energy conservation law of the integral. """
         for key in kwargs:
             setattr(self, key, kwargs[key])
+
+        if not self.Ms:
+            self.Ms = []
 
         self.integrand = numpy.vectorize(self.integrand, otypes=[numpy.float_])
 
