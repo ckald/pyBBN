@@ -169,8 +169,8 @@ class BoltzmannIntegral(PicklableObject, DistributionFunctional):
 
         """ Parameters of one particle can be inferred from the energy conservation law
             \begin{equation}E_3 = -s_3 \sum_{i \neq 3} s_i E_i \end{equation} """
-        E[particle_count-1] = -self.reaction[particle_count-1].side \
-            * sum([self.reaction[i].side * E[i] for i in range(particle_count-1)])
+        E[particle_count-1] = self.reaction[particle_count-1].side \
+            * sum([-self.reaction[i].side * E[i] for i in range(particle_count-1)])
         p[particle_count-1] = numpy.sqrt(numpy.abs(E[particle_count-1]**2 - m[particle_count-1]**2))
         return p, E, m
 
