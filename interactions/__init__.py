@@ -139,9 +139,9 @@ class Interaction(PicklableObject):
 
                 # Skip kinematically impossible reactions
                 if (
-                    (len(lhs) == 1 and lhs[0].specie.mass < sum([item.specie.mass for item in rhs]))
+                    (len(lhs) == 1 and lhs[0].specie.mass <= sum(item.specie.mass for item in rhs))
                     or
-                    (len(rhs) == 1 and rhs[0].specie.mass < sum([item.specie.mass for item in lhs]))
+                    (len(rhs) == 1 and rhs[0].specie.mass <= sum(item.specie.mass for item in lhs))
                 ):
                     continue
 
