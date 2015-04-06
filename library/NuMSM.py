@@ -34,7 +34,7 @@ class particles(object):
             'statistics': STATISTICS.FERMION,
             'mass': mass,
             'dof': 2,
-            'decoupling_temperature': 50 * UNITS.MeV,
+            'decoupling_temperature': 1. * UNITS.GeV,
             'majorana': True
         }
 
@@ -127,7 +127,6 @@ class interactions(object):
 
         for up, down in itertools.product([q for q in quarks if q.Q == 2./3.],
                                           [q for q in quarks if q.Q == -1./3.]):
-            print (up, down)
             for lepton in leptons:
                 if thetas[lepton.flavour]:
                     inters.append(interactions.sterile_quark_charged(
