@@ -7,13 +7,15 @@ from interactions.ds import D, Db1, Db2
 
 class FourParticleM(object):
 
-    """ ## Matrix element
-        All four-particle interactions of the interest can be rewritten in a form
+    """
+    ## Matrix element
+    All four-particle interactions of the interest can be rewritten in a form
 
-        \begin{equation}
-            |\mathcal{M}|^2 = \sum_{\{i \neq j \neq k \neq l\}} K_1 (p_i \cdot p_j) (p_k \cdot p_l)\
-                 + K_2 m_i m_j (p_k \cdot p_l)
-        \end{equation} """
+    \begin{equation}
+        |\mathcal{M}|^2 = \sum_{\{i \neq j \neq k \neq l\}} K_1 (p_i \cdot p_j) (p_k \cdot p_l)\
+             + K_2 m_i m_j (p_k \cdot p_l)
+    \end{equation}
+    """
     K1 = 0.
     K2 = 0.
     # Order defines the values of the $(i, j, k, l)$ indices
@@ -31,6 +33,16 @@ class FourParticleM(object):
     def __iadd__(self, M):
         self.K1 += M.K1
         self.K2 += M.K2
+        return self
+
+    def __idiv__(self, div):
+        self.K1 /= div
+        self.K2 /= div
+        return self
+
+    def __imul__(self, mul):
+        self.K1 *= mul
+        self.K2 *= mul
         return self
 
     def __setattr__(self, name, value):
