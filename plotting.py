@@ -101,15 +101,15 @@ class Plotting(object):
             ymin, ymax = plot.get_ylim()
 
             if last_t >= xmax:
-                plot.set_xlim(self.times[0], last_t * 1.5)
+                plot.set_xlim(self.times[0], last_t * 1.1)
 
             last_data = data[self.plot_map[i]][-1] / self.divider_map[i]
             self.plots_data[i].append(last_data)
 
             if last_data >= ymax:
-                plot.set_ylim(self.plots_data[i].min, 1.5 * last_data)
+                plot.set_ylim(self.plots_data[i].min, 1.1 * last_data)
             if last_data <= ymin:
-                plot.set_ylim(last_data / 1.5, self.plots_data[i].max)
+                plot.set_ylim(last_data / 1.1, self.plots_data[i].max)
 
             self.lines[i].set_data(self.times, self.plots_data[i])
 
