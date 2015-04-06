@@ -26,7 +26,7 @@ from evolution import Universe
 from common import UNITS, Params, GRID
 
 
-params = Params(T_initial=1. * UNITS.GeV,
+params = Params(T_initial=1.2 * UNITS.GeV,
                 T_final=100 * UNITS.MeV)
 
 universe = Universe(params=params,
@@ -50,7 +50,7 @@ strange = Particle(params=params, **SMP.quarks.strange)
 # bottom = Particle(params=params, **SMP.quarks.bottom)
 
 sterile = Particle(params=params,
-                   **NuP.sterile_neutrino(400 * UNITS.MeV))
+                   **NuP.sterile_neutrino(300 * UNITS.MeV))
 
 universe.particles += [
     photon,
