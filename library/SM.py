@@ -3,7 +3,10 @@
 # Standard Model particles and interactions
 """
 
+from __future__ import division
+
 import itertools
+
 from common import UNITS, CONST
 from particles import STATISTICS
 from interactions import Interaction
@@ -59,7 +62,7 @@ class particles(object):
             'name': 'Electron neutrino',
             'symbol': 'ν_e',
             'statistics': STATISTICS.FERMION,
-            'mass': 0.1 * UNITS.eV,
+            'mass': 0,
             'dof': 2,
             'decoupling_temperature': 5 * UNITS.MeV,
             'majorana': False,
@@ -69,7 +72,7 @@ class particles(object):
             'name': 'Muon neutrino',
             'symbol': 'ν_μ',
             'statistics': STATISTICS.FERMION,
-            'mass': 0.1 * UNITS.eV,
+            'mass': 0,
             'dof': 2,
             'decoupling_temperature': 5 * UNITS.MeV,
             'majorana': False,
@@ -79,7 +82,7 @@ class particles(object):
             'name': 'Tau neutrino',
             'symbol': 'ν_τ',
             'statistics': STATISTICS.FERMION,
-            'mass': 0.1 * UNITS.eV,
+            'mass': 0,
             'dof': 2,
             'decoupling_temperature': 5 * UNITS.MeV,
             'majorana': False,
@@ -115,59 +118,78 @@ class particles(object):
         }
 
     class quarks(object):
+
+        CKM = {
+            (1, 1): 0.974,
+            (1, 2): 0.225,
+            (1, 3): 0.003,
+            (2, 1): 0.225,
+            (2, 2): 0.973,
+            (2, 3): 0.041,
+            (3, 1): 0.009,
+            (3, 2): 0.040,
+            (3, 3): 0.999,
+        }
+
         up = {
-            'name': 'up',
+            'name': 'Up quark',
             'symbol': 'u',
             'statistics': STATISTICS.FERMION,
             'mass': 3 * UNITS.MeV,
             'dof': 2,
             'majorana': False,
-            'family': 1
+            'family': 1,
+            'Q': 2./3.
         }
         down = {
-            'name': 'down',
+            'name': 'Down quark',
             'symbol': 'd',
             'statistics': STATISTICS.FERMION,
             'mass': 5 * UNITS.MeV,
             'dof': 2,
             'majorana': False,
-            'family': 1
+            'family': 1,
+            'Q': -1./3.
         }
         charm = {
-            'name': 'charm',
+            'name': 'Charm quark',
             'symbol': 'c',
             'statistics': STATISTICS.FERMION,
             'mass': 1300 * UNITS.MeV,
             'dof': 2,
             'majorana': False,
-            'family': 2
+            'family': 2,
+            'Q': 2./3.
         }
         strange = {
-            'name': 'strange',
+            'name': 'Strange quark',
             'symbol': 's',
             'statistics': STATISTICS.FERMION,
             'mass': 200 * UNITS.MeV,
             'dof': 2,
             'majorana': False,
-            'family': 2
+            'family': 2,
+            'Q': -1./3.
         }
         top = {
-            'name': 'top',
+            'name': 'Top quark',
             'symbol': 't',
             'statistics': STATISTICS.FERMION,
             'mass': 180 * UNITS.GeV,
             'dof': 2,
             'majorana': False,
-            'family': 3
+            'family': 3,
+            'Q': 2./3.
         }
         bottom = {
-            'name': 'bottom',
+            'name': 'Bottom quark',
             'symbol': 'b',
             'statistics': STATISTICS.FERMION,
             'mass': 4.3 * UNITS.GeV,
             'dof': 2,
             'majorana': False,
-            'family': 3
+            'family': 3,
+            'Q': -1./3.
         }
 
 
