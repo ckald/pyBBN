@@ -26,8 +26,9 @@ from evolution import Universe
 from common import UNITS, Params, GRID
 
 
-params = Params(T_initial=1.2 * UNITS.GeV,
-                T_final=100 * UNITS.MeV)
+params = Params(T_initial=1.5 * UNITS.GeV,
+                T_final=100 * UNITS.MeV,
+                dy=0.025)
 
 universe = Universe(params=params,
                     logfile='tests/sterile_decoupling_quarks/log.txt')
@@ -51,6 +52,7 @@ strange = Particle(params=params, **SMP.quarks.strange)
 
 sterile = Particle(params=params,
                    **NuP.sterile_neutrino(300 * UNITS.MeV))
+sterile.decoupling_temperature = params.T_initial
 
 universe.particles += [
     photon,
