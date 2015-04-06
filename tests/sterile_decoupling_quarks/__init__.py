@@ -97,9 +97,7 @@ universe.interactions += (
 )
 
 universe.graphics.monitor(particles=[
-    neutrino_e,
-    neutrino_mu,
-    neutrino_tau
+    sterile
 ])
 
 
