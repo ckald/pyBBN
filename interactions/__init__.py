@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import math
 import copy
 import itertools
 from collections import namedtuple, Counter
@@ -68,14 +69,16 @@ class Interaction(PicklableObject):
         """ String-like representation of the interaction and all its integral """
         return self.name + "\n\t" + "\n\t".join([str(integral) for integral in self.integrals])
 
-    def reactions_map(self):
-        """ Return all relevant collision integrals involving `count` particles """
-        reactions = {}
+    @classmethod
+    def cross_particle(cls, item):
+        return item._replace(
+            crossed=not item.crossed,
+            antiparticle=not item.antiparticle if not item.specie.majorana else False,
+            side=-item.side
+        )
 
-        def key(reaction, arrow):
-            return tuple(map(tuple, reaction))
-
-        perms = itertools.permutations(
+    def permutations(self, particles, antiparticles):
+        return itertools.permutations(
             [
                 IntegralItem(side=-1,
                              specie=particle,
@@ -83,17 +86,34 @@ class Interaction(PicklableObject):
                              index=i,
                              crossed=False)
                 for i, (particle, antiparticle)
-                in enumerate(zip(self.particles[0], self.antiparticles[0]))
+                in enumerate(zip(particles[0], antiparticles[0]))
             ] + [
                 IntegralItem(side=1,
                              specie=particle,
                              antiparticle=antiparticle,
-                             index=i+len(self.particles[0]),
+                             index=i+len(particles[0]),
                              crossed=False)
                 for i, (particle, antiparticle)
-                in enumerate(zip(self.particles[1], self.antiparticles[1]))
+                in enumerate(zip(particles[1], antiparticles[1]))
             ]
         )
+
+    def reactions_map(self):
+        """ Return all relevant collision integrals involving `count` particles """
+        reactions = {}
+
+        perms = self.permutations(self.particles, self.antiparticles)
+
+        # if any(specie.majorana for specie in itertools.chain.from_iterable(self.particles)):
+        #     print "There is Majorana in da house!"
+        #     conjugated_antiparticles = (
+        #         tuple(not antip if not specie.majorana else False
+        #               for specie, antip in zip(self.particles[0], self.antiparticles[0])),
+        #         tuple(not antip if not specie.majorana else False
+        #               for specie, antip in zip(self.particles[1], self.antiparticles[1]))
+        #     )
+        #     perms = itertools.chain(perms,
+        #                             self.permutations(self.particles, conjugated_antiparticles))
 
         # Generate all possible permutations of particles
         for perm in perms:
@@ -102,11 +122,10 @@ class Interaction(PicklableObject):
 
                 # Cross particles according to their position relative to the reaction arrow
                 reaction = tuple(
-                    item._replace(crossed=True,
-                                  antiparticle=not item.antiparticle,
-                                  side=-item.side)
+                    Interaction.cross_particle(item)
                     if (item.side > 0 and j <= i) or (item.side < 0 and j > i)
-                    else item for j, item in enumerate(perm)
+                    else item
+                    for j, item in enumerate(perm)
                 )
 
                 lhs = [item for item in reaction if item.side == -1]
@@ -114,6 +133,9 @@ class Interaction(PicklableObject):
 
                 lhs = lhs[0:1] + sorted(lhs[1:])
                 rhs = sorted(rhs)
+
+                if lhs[0].antiparticle:
+                    continue
 
                 # Skip kinematically impossible reactions
                 if (
@@ -123,12 +145,9 @@ class Interaction(PicklableObject):
                 ):
                     continue
 
-                if lhs[0].antiparticle:
-                    continue
-
-                k = key(lhs+rhs, i + 1)
+                k = tuple(map(tuple, lhs + rhs))
                 if k not in reactions:
-                    reactions[k] = lhs + rhs
+                    reactions[k] = tuple(lhs + rhs)
 
         return reactions.values()
 
