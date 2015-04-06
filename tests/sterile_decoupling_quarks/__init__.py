@@ -50,9 +50,11 @@ strange = Particle(params=params, **SMP.quarks.strange)
 # top = Particle(params=params, **SMP.quarks.top)
 # bottom = Particle(params=params, **SMP.quarks.bottom)
 
-sterile = Particle(params=params,
-                   **NuP.sterile_neutrino(300 * UNITS.MeV))
+sterile = Particle(params=params, **NuP.sterile_neutrino(300 * UNITS.MeV))
 sterile.decoupling_temperature = params.T_initial
+
+completely_sterile = Particle(params=params, **NuP.sterile_neutrino(300 * UNITS.MeV))
+completely_sterile.decoupling_temperature = params.T_initial
 
 universe.particles += [
     photon,
@@ -72,7 +74,8 @@ universe.particles += [
     # top,
     # bottom,
 
-    sterile
+    sterile,
+    completely_sterile,
 ]
 
 thetas = defaultdict(float, {
@@ -80,10 +83,10 @@ thetas = defaultdict(float, {
 })
 
 universe.interactions += (
-    SMI.neutrino_interactions(
-        leptons=[electron, muon, tau],
-        neutrinos=[neutrino_e, neutrino_mu, neutrino_tau]
-    ) +
+    # SMI.neutrino_interactions(
+    #     leptons=[electron, muon, tau],
+    #     neutrinos=[neutrino_e, neutrino_mu, neutrino_tau]
+    # ) +
     NuI.sterile_leptons_interactions(
         thetas=thetas, sterile=sterile,
         neutrinos=[neutrino_e, neutrino_mu, neutrino_tau],
@@ -100,7 +103,8 @@ universe.interactions += (
 
 universe.graphics.monitor(particles=[
     neutrino_e,
-    sterile
+    completely_sterile,
+    sterile,
 ])
 
 
