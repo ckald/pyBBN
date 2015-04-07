@@ -24,12 +24,13 @@ from evolution import Universe
 from common import UNITS, Params, GRID
 
 
+folder = os.path.split(__file__)[0]
+
 params = Params(T_initial=50. * UNITS.MeV,
                 T_final=10 * UNITS.MeV,
                 dy=0.025)
 
-universe = Universe(params=params,
-                    logfile='tests/standard_model_bbn/log.txt')
+universe = Universe(params=params, logfile=os.path.join(folder, 'log.txt'))
 
 photon = Particle(params=params, **SMP.photon)
 electron = Particle(params=params, **SMP.leptons.electron)
@@ -62,7 +63,6 @@ universe.graphics.save(__file__)
 
 """ ## Plots for comparison with articles """
 
-folder = os.path.split(__file__)[0]
 plt.ion()
 
 """ ### JCAP10(2012)014, Figure 9
