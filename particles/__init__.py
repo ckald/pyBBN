@@ -342,14 +342,16 @@ class Particle(PicklableObject):
                 self._distribution[i_low] * (p_high - p) + self._distribution[i_high] * (p - p_low)
             ) / (p_high - p_low)
 
-    def equilibrium_distribution(self, y=None):
+    def equilibrium_distribution(self, y=None, aT=None):
         """ Equilibrium distribution that corresponds to the particle internal temperature """
+        if aT is None:
+            aT = self.aT
         if y is None:
             return self.equilibrium_distribution_function(
-                numpy.vectorize(self.conformal_energy)(GRID.TEMPLATE) / self.aT
+                numpy.vectorize(self.conformal_energy)(GRID.TEMPLATE) / aT
             )
         else:
-            return self.equilibrium_distribution_function(self.conformal_energy(y) / self.aT)
+            return self.equilibrium_distribution_function(self.conformal_energy(y) / aT)
 
     @property
     def equilibrium_distribution_function(self):

@@ -68,16 +68,17 @@ class Plotting(object):
             plt.figure(2)
             plt.savefig(os.path.join(folder, 'particles.png'))
 
-    def monitor(self, particles=None):
+    def monitor(self, particles=None, plasma_distribution=False):
         """ Setup the detailed distribution function and energy density plots for specific \
             particle species """
 
         self.particles = particles if particles else []
+        self.particles = [(particle, plasma_distribution) for particle in particles]
         if self.particles:
             self.particles_figure, self.particles_plots = plt.subplots(len(particles), 2, num=2)
             self.particles_figure.subplots_adjust(hspace=0.5, wspace=0.5)
 
-            for i, particle in enumerate(self.particles):
+            for i, (particle, _) in enumerate(self.particles):
                 self.particles_plots[i][0].set_title(particle.name)
                 self.particles_plots[i][0].set_xlabel("a")
                 self.particles_plots[i][0].set_xscale("log")
@@ -117,15 +118,22 @@ class Plotting(object):
         plt.draw()
 
         if self.particles:
-            for i, particle in enumerate(self.particles):
+            for i, (particle, plasma_distribution) in enumerate(self.particles):
+                if not plasma_distribution:
+                    a = particle.params.a
+                    aT = particle.params.aT
+                else:
+                    a = data['a'][-1]
+                    aT = data['aT'][-1]
+
                 self.particles_plots[i][0].scatter(
-                    particle.params.a,
+                    a,
                     particle.energy_density() / (
                         7. * particle.dof * numpy.pi**2
-                        * (particle.params.m / particle.params.a)**4 / 240.
+                        * (particle.params.m / a)**4 / 240.
                     ), s=1)
 
-                feq = particle.equilibrium_distribution()
+                feq = particle.equilibrium_distribution(aT=aT)
 
                 self.age_lines(self.particles_plots[i][1].get_axes().lines)
 
