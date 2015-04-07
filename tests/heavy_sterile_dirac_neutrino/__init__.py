@@ -153,6 +153,8 @@ for distribution, a in itertools.izip(sterile.data['distribution'], universe.dat
     sterile._distribution = distribution
     plt.scatter(a, energy_density(sterile) / (sterile.mass * density(sterile)), s=1)
 
+plt.savefig(os.path.join(folder, 'figure_12.png'))
+
 # Distribution functions arrays
 distributions_file = open(os.path.join(folder, 'distributions.txt'), "w")
 numpy.savetxt(distributions_file, (f_e, feq_e, f_e/feq_e), header=str(neutrino_e),
