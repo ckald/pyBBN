@@ -126,9 +126,7 @@ plt.title('Figure 9')
 plt.xlabel('MeV/T')
 plt.ylabel(u'aT')
 plt.xscale('log')
-plt.xlim(0.5, UNITS.MeV/universe.params.T_final)
-plt.xticks([1, 2, 3, 5, 10, 20])
-plt.axes().get_xaxis().set_major_formatter(matplotlib.ticker.ScalarFormatter())
+plt.xlim(UNITS.MeV/universe.params.T_initial, UNITS.MeV/universe.params.T_final)
 plt.plot(UNITS.MeV / numpy.array(universe.data['T']), numpy.array(universe.data['aT']) / UNITS.MeV)
 plt.show()
 plt.savefig(os.path.join(folder, 'figure_9.png'))
@@ -143,17 +141,13 @@ plt.xlabel('Conformal momentum y = pa')
 plt.ylabel('f/f_eq')
 plt.xlim(0, 20)
 
-f_e = neutrino_e._distribution
-feq_e = neutrino_e.equilibrium_distribution()
-plt.plot(GRID.TEMPLATE/UNITS.MeV, f_e/feq_e, label="nu_e")
+f_sterile = sterile._distribution
+feq_sterile = sterile.equilibrium_distribution()
+plt.plot(GRID.TEMPLATE/UNITS.MeV, f_sterile/feq_sterile, label="sterile")
 
-f_mu = neutrino_mu._distribution
-feq_mu = neutrino_mu.equilibrium_distribution()
-plt.plot(GRID.TEMPLATE/UNITS.MeV, f_mu/feq_mu, label="nu_mu")
-
-f_tau = neutrino_tau._distribution
-feq_tau = neutrino_tau.equilibrium_distribution()
-plt.plot(GRID.TEMPLATE/UNITS.MeV, f_tau/feq_tau, label="nu_tau")
+f_inert = completely_sterile._distribution
+feq_inert = completely_sterile.equilibrium_distribution()
+plt.plot(GRID.TEMPLATE/UNITS.MeV, f_inert/feq_inert, label="inert")
 
 plt.legend()
 plt.draw()
@@ -168,12 +162,10 @@ plt.savefig(os.path.join(folder, 'figure_10.png'))
 
 # Distribution functions arrays
 distributions_file = open(os.path.join(folder, 'distributions.txt'), "w")
-numpy.savetxt(distributions_file, (f_e, feq_e, f_e/feq_e), header=str(neutrino_e),
-              footer='-'*80, fmt="%1.5e")
-numpy.savetxt(distributions_file, (f_mu, feq_mu, f_mu/feq_mu), header=str(neutrino_mu),
-              footer='-'*80, fmt="%1.5e")
-numpy.savetxt(distributions_file, (f_tau, feq_tau, f_tau/feq_tau), header=str(neutrino_tau),
-              footer='-'*80, fmt="%1.5e")
+numpy.savetxt(distributions_file, (f_sterile, feq_sterile, f_sterile/feq_sterile),
+              header=str(sterile), footer='-'*80, fmt="%1.5e")
+numpy.savetxt(distributions_file, (f_inert, feq_inert, f_inert/feq_inert),
+              header=str(completely_sterile), footer='-'*80, fmt="%1.5e")
 
 distributions_file.close()
 
