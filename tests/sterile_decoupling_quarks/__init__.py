@@ -155,7 +155,7 @@ plt.show()
 plt.savefig(os.path.join(folder, 'figure_10_full.png'))
 
 plt.xlim(0, 10)
-plt.ylim(0.99, 1.06)
+# plt.ylim(0.99, 1.06)
 plt.draw()
 plt.show()
 plt.savefig(os.path.join(folder, 'figure_10.png'))
