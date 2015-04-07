@@ -45,14 +45,14 @@ universe.particles += [
     neutrino_tau,
 ]
 
-universe.interactions += \
-    SMI.neutrino_interactions(leptons=[electron], neutrinos=[neutrino_e, neutrino_mu, neutrino_tau])
+neutrinos = [neutrino_e, neutrino_mu, neutrino_tau]
+for neutrino in neutrinos:
+    neutrino.decoupling_temperature = params.T_initial
 
-universe.graphics.monitor(particles=[
-    neutrino_e,
-    neutrino_mu,
-    neutrino_tau
-])
+universe.interactions += \
+    SMI.neutrino_interactions(leptons=[electron], neutrinos=neutrinos)
+
+universe.graphics.monitor(particles=neutrinos)
 
 
 universe.evolve()
