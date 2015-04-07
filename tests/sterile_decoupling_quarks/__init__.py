@@ -20,18 +20,18 @@ from collections import defaultdict
 
 from plotting import plt
 from particles import Particle
-from library.SM import particles as SMP, interactions as SMI
+from library.SM import particles as SMP  # , interactions as SMI
 from library.NuMSM import particles as NuP, interactions as NuI
 from evolution import Universe
 from common import UNITS, Params, GRID
 
+folder = os.path.split(__file__)[0]
 
 params = Params(T_initial=1.5 * UNITS.GeV,
                 T_final=100 * UNITS.MeV,
                 dy=0.025)
 
-universe = Universe(params=params,
-                    logfile='tests/sterile_decoupling_quarks/log.txt')
+universe = Universe(params=params, logfile=os.path.join(folder, 'log.txt'))
 
 photon = Particle(params=params, **SMP.photon)
 
@@ -115,7 +115,6 @@ universe.graphics.save(__file__)
 
 """ ## Plots for comparison with articles """
 
-folder = os.path.split(__file__)[0]
 plt.ion()
 
 """ ### JCAP10(2012)014, Figure 9
