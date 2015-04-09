@@ -62,7 +62,8 @@ class particles(object):
             'statistics': STATISTICS.BOSON,
             'mass': 134.98 * UNITS.MeV,
             'dof': 1,
-            'majorana': False
+            'majorana': False,
+            'Q': 0
         }
         charged_pion = {
             'name': 'Charged pion',
@@ -70,7 +71,8 @@ class particles(object):
             'statistics': STATISTICS.BOSON,
             'mass': 139.57 * UNITS.MeV,
             'dof': 1,
-            'majorana': False
+            'majorana': False,
+            'Q': -1
         }
 
     class leptons(object):
