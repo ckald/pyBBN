@@ -55,9 +55,9 @@ class FourParticleM(object):
         """ String-like representation of the matrix element """
         ret = ""
         if self.K1:
-            ret += "K1={} ".format(self.K1)
+            ret += "K1={: .2e} ".format(self.K1)
         if self.K2:
-            ret += "K2={} ".format(self.K2)
+            ret += "K2={: .2e} ".format(self.K2)
         return ret + "{}".format(self.order)
 
     def apply_order(self, order, reaction):
