@@ -161,14 +161,6 @@ class Interaction(PicklableObject):
         """ Starting from the single representation of the interaction, create integrals objects\
             to be computed for every particle specie involved """
 
-        particle_count = len(lhs) + len(rhs)
-        if particle_count == 4:
-            integral = FourParticleIntegral
-        elif particle_count == 3:
-            integral = ThreeParticleIntegral
-        else:
-            raise Exception("{}-particle integrals are not supported".format(particle_count))
-
         particle = item.specie
         particle_Ms = copy.deepcopy(self.Ms)
 
@@ -177,7 +169,7 @@ class Interaction(PicklableObject):
             M.apply_order(tuple(map[val] for val in M.order), reaction)
 
         # Add interaction integrals by putting each incoming particle as the first one
-        self.integrals.append(integral(
+        self.integrals.append(self.integral(
             particle=particle,
             reaction=reaction,
             decoupling_temperature=self.decoupling_temperature,

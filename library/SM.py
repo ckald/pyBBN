@@ -10,7 +10,7 @@ import itertools
 from common import UNITS, CONST
 from particles import STATISTICS
 from interactions import Interaction
-from interactions.four_particle import FourParticleM
+from interactions.four_particle import FourParticleM, FourParticleIntegral
 
 
 class WeakM(FourParticleM):
@@ -213,7 +213,8 @@ class interactions(object):
             particles=((neutrino_a, neutrino_b), (neutrino_a, neutrino_b)),
             antiparticles=((False, False), (False, False)),
             decoupling_temperature=0 * UNITS.MeV,
-            Ms=(WeakM(K1=1., order=(0, 1, 2, 3)),)
+            Ms=(WeakM(K1=1., order=(0, 1, 2, 3)),),
+            integral=FourParticleIntegral
         )
 
     @staticmethod
@@ -242,7 +243,8 @@ class interactions(object):
                 WeakM(K1=4 * g_L**2, order=(0, 3, 1, 2)),
                 WeakM(K1=4 * CONST.g_R**2, order=(0, 2, 1, 3)),
                 WeakM(K2=4 * g_L * CONST.g_R, order=(2, 3, 0, 1)),
-            )
+            ),
+            integral=FourParticleIntegral
         )
 
     @classmethod
