@@ -36,12 +36,18 @@ UNITS.reset_units()
 class CONST(object):
     """ ### Physical constants """
 
+    # Gravitational constant
     G = 6.67 * 1e-11 * (UNITS.N / UNITS.kg**2 * UNITS.m**2)
+    # Planck mass
     M_p = 1.2209 * 1e19 * UNITS.GeV
+    # Fermi constant
     G_F = 1.166 * 1e-5 / UNITS.GeV**2
+    # Weinberg angle
     sin_theta_w_2 = 0.2312
     g_R = sin_theta_w_2
     g_L = sin_theta_w_2 + 0.5
+    # Pion decay constant
+    f_pi = 130. * UNITS.MeV
 
 
 class Params(PicklableObject):
