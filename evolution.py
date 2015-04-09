@@ -27,15 +27,12 @@ class Universe(object):
     interactions = []
 
     def __init__(self, logfile='logs/' + str(datetime.now()) + '.txt',
-                 plotting=True, postmortem_debugger=True,
-                 params=None, grid=None):
+                 plotting=True, params=None, grid=None):
         """
         :param particles: Set of `particle.Particle` to model
         :param interactions: Set of `interaction.Interaction` - quantum interactions \
                              between particle species
         :param logfile: Log file path (current `datetime` by default)
-        :param postmortem_debugger: Boolean, whether to invoke the `pdb` debugger at the end of\
-                                    computation
         """
         self.params = Params() if not params else params
         self.grid = Grid() if not grid else grid
@@ -44,7 +41,6 @@ class Universe(object):
         if plotting:
             from plotting import Plotting
             self.graphics = Plotting()
-        self.postmortem_debugger = postmortem_debugger
 
         self.logfile = logfile
         self.init_log()
@@ -98,16 +94,6 @@ class Universe(object):
             print particle
 
         print "Data saved to file {}".format(self.logfile)
-
-        """
-        ## Postmortem debugger
-        Invoking `pdb` debugger after the computation is finished allows to do final adjustments \
-        and export the missing data without restarting the whole simulation.
-        """
-
-        if self.postmortem_debugger:
-            import ipdb
-            ipdb.set_trace()
 
         parallelization.pool.close()
 
