@@ -174,4 +174,41 @@ class interactions(object):
             integral=FourParticleIntegral
         )
 
+    @staticmethod
+    def sterile_pion_neutral(theta=1., sterile=None, active=None, pion=None):
+        """ \begin{align}
+                N \to \nu + \pi^0
+            \end{align}
+        """
+
+        return Interaction(
+            name="Sterile neutrino decay to neutral pion and neutrino",
+            particles=((sterile), (active, pion)),
+            antiparticles=((False), (False, False)),
+            Ms=(ThreeParticleM(K=(CONST.G_F * theta * CONST.f_pi)**2
+                               * sterile.mass**2 * (sterile.mass**2 - pion.mass**2)), ),
+            integral=ThreeParticleIntegral
+        )
+
+    @staticmethod
+    def sterile_pion_charged(theta=1., sterile=None, lepton=None, pion=None):
+        """ \begin{align}
+                N \to l + \pi^+
+            \end{align}
+        """
+
+        CKM = SM_particles.quarks.CKM[(1, 1)]
+
+        return Interaction(
+            name="Sterile neutrino decay to charged pion and lepton",
+            particles=((sterile), (lepton, pion)),
+            antiparticles=((False), (False, True)),
+            Ms=(ThreeParticleM(
+                K=(CONST.G_F * theta * CONST.f_pi * CKM)**2
+                * (
+                   (sterile.mass**2 - lepton.mass**2)**2
+                   - pion.mass**2 * (sterile.mass**2 + lepton.mass**2)
+                )
+            ),),
+            integral=ThreeParticleIntegral
         )

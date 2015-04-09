@@ -56,6 +56,22 @@ class particles(object):
             'dof': 4,
             'majorana': False
         }
+        neutral_pion = {
+            'name': 'Neutral pion',
+            'symbol': u'π0',
+            'statistics': STATISTICS.BOSON,
+            'mass': 134.98 * UNITS.MeV,
+            'dof': 1,
+            'majorana': False
+        }
+        charged_pion = {
+            'name': 'Charged pion',
+            'symbol': u'π',
+            'statistics': STATISTICS.BOSON,
+            'mass': 139.57 * UNITS.MeV,
+            'dof': 1,
+            'majorana': False
+        }
 
     class leptons(object):
         neutrino_e = {
