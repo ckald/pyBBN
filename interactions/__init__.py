@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-import math
 import copy
 import itertools
 from collections import namedtuple, Counter
@@ -61,7 +60,14 @@ class Interaction(PicklableObject):
         self.integrals = []
 
         for reaction in self.reactions_map():
-            self.init_integrals(reaction)
+            lhs = [item for item in reaction if item.side == -1]
+            item = lhs[0]
+
+            # Skip collision integrals for anti-particles
+            if item.antiparticle:
+                continue
+
+            self.init_integrals(reaction, item)
 
         self.integrals = IntegralSet(self.integrals).integrals
 
@@ -151,14 +157,9 @@ class Interaction(PicklableObject):
 
         return reactions.values()
 
-    def init_integrals(self, reaction):
+    def init_integrals(self, reaction, item):
         """ Starting from the single representation of the interaction, create integrals objects\
             to be computed for every particle specie involved """
-
-        lhs = [item for item in reaction if item.side == -1]
-        rhs = [item for item in reaction if item.side == 1]
-
-        accounted_particles = set()
 
         particle_count = len(lhs) + len(rhs)
         if particle_count == 4:
@@ -168,13 +169,7 @@ class Interaction(PicklableObject):
         else:
             raise Exception("{}-particle integrals are not supported".format(particle_count))
 
-        item = lhs[0]
         particle = item.specie
-
-        # Skip already accounted species and collision integrals for anti-particles
-        if particle in accounted_particles or item.antiparticle:
-            return
-
         particle_Ms = copy.deepcopy(self.Ms)
 
         for M in particle_Ms:
@@ -188,7 +183,6 @@ class Interaction(PicklableObject):
             decoupling_temperature=self.decoupling_temperature,
             Ms=particle_Ms,
         ))
-        accounted_particles.add(particle)
 
     def initialize(self):
         """ Proxy method """
