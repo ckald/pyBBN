@@ -18,6 +18,18 @@ class ThreeParticleM(object):
     def __str__(self):
         return "K={: .2e}".format(self.K)
 
+    def __iadd__(self, M):
+        self.K += M.K
+        return self
+
+    def __idiv__(self, div):
+        self.K /= div
+        return self
+
+    def __imul__(self, mul):
+        self.K *= mul
+        return self
+
 
 class ThreeParticleIntegral(BoltzmannIntegral):
 
