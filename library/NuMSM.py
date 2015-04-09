@@ -174,6 +174,34 @@ class interactions(object):
             integral=FourParticleIntegral
         )
 
+    @classmethod
+    def sterile_hardons_interactions(cls, thetas=None, sterile=None, neutrinos=None,
+                                     leptons=None, hadrons=None):
+
+        inters = []
+
+        for neutrino in neutrinos:
+            if thetas[neutrino.flavour]:
+                for meson in hadrons:
+                    if meson.Q == 0:
+                        inters.append(cls.sterile_pion_neutral(
+                            theta=thetas[neutrino.flavour],
+                            sterile=sterile,
+                            active=neutrino,
+                            pion=meson))
+
+        for lepton in leptons:
+            if thetas[lepton.flavour]:
+                for meson in hadrons:
+                    if meson.Q == -1:
+                        inters.append(cls.sterile_pion_charged(
+                            theta=thetas[lepton.flavour],
+                            sterile=sterile,
+                            lepton=lepton,
+                            pion=meson))
+
+        return inters
+
     @staticmethod
     def sterile_pion_neutral(theta=1., sterile=None, active=None, pion=None):
         """ \begin{align}
