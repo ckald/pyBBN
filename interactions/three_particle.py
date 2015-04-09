@@ -41,7 +41,7 @@ class ThreeParticleIntegral(BoltzmannIntegral):
         if params.T > self.decoupling_temperature and not self.in_particles[0].in_equilibrium:
             MM = 0
             for M in self.Ms:
-                MM += M.K**2
+                MM += M.K
             self.constant = MM / 16. / numpy.pi * params.m / params.x / params.H
             self.particles[0].collision_integrals.append(self)
 
