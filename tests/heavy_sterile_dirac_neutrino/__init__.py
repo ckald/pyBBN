@@ -142,7 +142,7 @@ plt.savefig(os.path.join(folder, 'figure_10.png'))
 plt.figure(12)
 plt.title("Figure 12")
 plt.xlabel("Scale factor a, 1")
-plt.ylabel("ρ/(n M)")
+plt.ylabel("rho/(n M)")
 plt.xlim(params.a_initial, 1)
 plt.ylim(0.99, 4.01)
 
