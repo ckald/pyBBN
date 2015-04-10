@@ -187,7 +187,7 @@ class MassiveParticleMonitor(ParticleMonitor):
 
         self.plots[1].set_xlabel("y, MeV")
         self.plots[1].set_xlim(GRID.MIN_MOMENTUM / UNITS.MeV, GRID.MAX_MOMENTUM / UNITS.MeV)
-        self.plots[1].set_ylabel("(f-f_eq)/f_eq y^2")
+        self.plots[1].set_ylabel("(f-f_eq) y^2")
 
     def plot(self, data):
         a = data['a'][-1]
