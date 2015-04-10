@@ -19,7 +19,7 @@ import os
 import numpy
 import matplotlib
 
-from plotting import plt
+from plotting import plt, RadiationParticleMonitor
 from particles import Particle
 from library.SM import particles as SMP, interactions as SMI
 from evolution import Universe
@@ -57,9 +57,9 @@ universe.interactions += \
     SMI.neutrino_interactions(leptons=[electron], neutrinos=[neutrino_e, neutrino_mu, neutrino_tau])
 
 universe.graphics.monitor([
-    neutrino_e,
-    neutrino_mu,
-    neutrino_tau
+    (neutrino_e, RadiationParticleMonitor),
+    (neutrino_mu, RadiationParticleMonitor),
+    (neutrino_tau, RadiationParticleMonitor)
 ])
 
 
