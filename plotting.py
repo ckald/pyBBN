@@ -75,6 +75,8 @@ class Plotting(object):
         self.particles_figure, self.particles_plots = plt.subplots(len(map), 2, num=2)
         self.particles_figure.subplots_adjust(hspace=0.5, wspace=0.5)
 
+        self.particles = self.particles if self.particles else []
+
         for i, (particle, monitor) in enumerate(map):
             self.particles.append((particle, monitor(particle, self.particles_plots[i])))
 
