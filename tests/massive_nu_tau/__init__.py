@@ -25,13 +25,13 @@ from library.SM import particles as SMP, interactions as SMI
 from evolution import Universe
 from common import UNITS, Params, GRID
 
+folder = os.path.split(__file__)[0]
 
 params = Params(T_initial=20. * UNITS.MeV,
                 T_final=0.015 * UNITS.MeV,
                 dy=0.05)
 
-universe = Universe(params=params,
-                    logfile='tests/massive_nu_tau/log.txt')
+universe = Universe(params=params, logfile=os.path.join(folder, 'log.txt'))
 
 photon = Particle(params, **SMP.photon)
 electron = Particle(params, **SMP.leptons.electron)
@@ -54,8 +54,7 @@ universe.particles += [
 ]
 
 universe.interactions += \
-    SMI.neutrino_interactions(electron=electron, neutrino_e=neutrino_e,
-                              neutrino_mu=neutrino_mu, neutrino_tau=neutrino_tau)
+    SMI.neutrino_interactions(leptons=[electron], neutrinos=[neutrino_e, neutrino_mu, neutrino_tau])
 
 universe.graphics.monitor(particles=[
     neutrino_e,
@@ -71,7 +70,6 @@ universe.graphics.save(__file__)
 
 """ ## Plots for comparison with articles """
 
-folder = os.path.split(__file__)[0]
 plt.ion()
 
 """ ### 1202.2841, Figure 13
@@ -100,17 +98,15 @@ plt.xlim(0, 10)
 
 yy = GRID.TEMPLATE * GRID.TEMPLATE / UNITS.MeV**2
 
-f_e = neutrino_e._distribution
-feq_e = neutrino_e.equilibrium_distribution()
-plt.plot(GRID.TEMPLATE/UNITS.MeV, yy*(f_e-feq_e), label="nu_e")
+distributions_file = open(os.path.join(folder, 'distributions.txt'), "w")
 
-f_mu = neutrino_mu._distribution
-feq_mu = neutrino_mu.equilibrium_distribution()
-plt.plot(GRID.TEMPLATE/UNITS.MeV, yy*(f_mu-feq_mu), label="nu_mu")
+for neutrino in (neutrino_e, neutrino_mu, neutrino_tau):
+    f = neutrino._distribution
+    feq = neutrino.equilibrium_distribution()
+    plt.plot(GRID.TEMPLATE/UNITS.MeV, yy*(f-feq), label=neutrino.flavour)
 
-f_tau = neutrino_tau._distribution
-feq_tau = neutrino_tau.equilibrium_distribution()
-plt.plot(GRID.TEMPLATE/UNITS.MeV, yy*(f_tau-feq_tau), label="nu_tau")
+    numpy.savetxt(distributions_file, (f, feq, f/feq), header=str(neutrino),
+                  footer='-'*80, fmt="%1.5e")
 
 plt.legend()
 plt.draw()
@@ -118,14 +114,6 @@ plt.show()
 plt.savefig(os.path.join(folder, 'figure_14.png'))
 
 # Distribution functions arrays
-distributions_file = open(os.path.join(folder, 'distributions.txt'), "w")
-numpy.savetxt(distributions_file, (f_e, feq_e, f_e/feq_e), header=str(neutrino_e),
-              footer='-'*80, fmt="%1.5e")
-numpy.savetxt(distributions_file, (f_mu, feq_mu, f_mu/feq_mu), header=str(neutrino_mu),
-              footer='-'*80, fmt="%1.5e")
-numpy.savetxt(distributions_file, (f_tau, feq_tau, f_tau/feq_tau), header=str(neutrino_tau),
-              footer='-'*80, fmt="%1.5e")
-
 distributions_file.close()
 
 # Just to be sure everything is okay
