@@ -50,7 +50,7 @@ universe.particles += [
 universe.interactions += \
     SMI.neutrino_interactions(leptons=[electron], neutrinos=[neutrino_e, neutrino_mu, neutrino_tau])
 
-universe.graphics.monitor(particles=[
+universe.graphics.monitor([
     (neutrino_e, RadiationParticleMonitor),
     (neutrino_mu, RadiationParticleMonitor),
     (neutrino_tau, RadiationParticleMonitor)
