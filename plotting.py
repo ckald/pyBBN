@@ -68,28 +68,17 @@ class Plotting(object):
             plt.figure(2)
             plt.savefig(os.path.join(folder, 'particles.png'))
 
-    def monitor(self, particles=None, plasma_distribution=False):
+    def monitor(self, map):
         """ Setup the detailed distribution function and energy density plots for specific \
             particle species """
 
-        self.particles = particles if particles else []
-        self.particles = [(particle, plasma_distribution) for particle in particles]
-        if self.particles:
-            self.particles_figure, self.particles_plots = plt.subplots(len(particles), 2, num=2)
-            self.particles_figure.subplots_adjust(hspace=0.5, wspace=0.5)
+        self.particles_figure, self.particles_plots = plt.subplots(len(map), 2, num=2)
+        self.particles_figure.subplots_adjust(hspace=0.5, wspace=0.5)
 
-            for i, (particle, _) in enumerate(self.particles):
-                self.particles_plots[i][0].set_title(particle.name)
-                self.particles_plots[i][0].set_xlabel("a")
-                self.particles_plots[i][0].set_xscale("log")
-                self.particles_plots[i][0].set_ylabel(u"ρ/ρ_eq")
+        for i, (particle, monitor) in enumerate(map):
+            self.particles.append((particle, monitor(particle, self.particles_plots[i])))
 
-                self.particles_plots[i][1].set_xlabel("y, MeV")
-                self.particles_plots[i][1].set_xlim(GRID.MIN_MOMENTUM / UNITS.MeV,
-                                                    GRID.MAX_MOMENTUM / UNITS.MeV)
-                self.particles_plots[i][1].set_ylabel("f/f_eq")
-
-            self.particles_figure.show()
+        self.particles_figure.show()
 
     def plot(self, data):
         """ Plot cosmological parameters and monitored particles distribution functions """
@@ -118,42 +107,112 @@ class Plotting(object):
         plt.draw()
 
         if self.particles:
-            for i, (particle, plasma_distribution) in enumerate(self.particles):
-                if not plasma_distribution:
-                    a = particle.params.a
-                    aT = particle.params.aT
-                else:
-                    a = data['a'][-1]
-                    aT = data['aT'][-1]
-
-                self.particles_plots[i][0].scatter(
-                    a,
-                    particle.energy_density() / (
-                        7. * particle.dof * numpy.pi**2
-                        * (particle.params.m / a)**4 / 240.
-                    ), s=1)
-
-                feq = particle.equilibrium_distribution(aT=aT)
-
-                self.age_lines(self.particles_plots[i][1].get_axes().lines)
-
-                self.particles_plots[i][1].plot(
-                    GRID.TEMPLATE / UNITS.MeV,
-                    numpy.vectorize(particle.distribution)(GRID.TEMPLATE) / feq
-                )
+            for i, (particle, monitor) in enumerate(self.particles):
+                monitor.plot(data)
 
             plt.figure(2)
             plt.draw()
 
-    def age_lines(self, lines):
-        """ Slightly decrease the opacity of plotted lines until they are barely visible.\
-            Then, remove them. Saves up on memory and clears the view of the plots. """
-        for line in lines:
-            alpha = line.get_alpha() or 1.
-            if alpha < 0.1:
-                line.remove()
-            else:
-                line.set_alpha((line.get_alpha() or 1.) * 0.8)
+
+class ParticleMonitor(object):
+    def __init__(self, particle, plots):
+        raise NotImplementedError()
+
+    def plot(self, data):
+        raise NotImplementedError()
+
+
+class RadiationParticleMonitor(ParticleMonitor):
+    def __init__(self, particle, plots):
+        self.particle, self.plots = particle, plots
+
+        self.plots[0].set_title(particle.name)
+        self.plots[0].set_xlabel("a")
+        self.plots[0].set_xscale("log")
+        self.plots[0].set_ylabel("rho/rho_eq")
+
+        self.plots[1].set_xlabel("y, MeV")
+        self.plots[1].set_xlim(GRID.MIN_MOMENTUM / UNITS.MeV, GRID.MAX_MOMENTUM / UNITS.MeV)
+        self.plots[1].set_ylabel("f/f_eq")
+
+    def comparison_distributions(self, data):
+        a = self.particle.params.a
+        aT = self.particle.params.aT
+
+        rhoeq = self.particle.energy_density() / (
+            7. * self.particle.dof * numpy.pi**2
+            * (self.particle.params.m / a)**4 / 240.
+        )
+        feq = self.particle.equilibrium_distribution(aT=aT)
+
+        return (a, rhoeq), feq
+
+    def plot(self, data):
+        (a, rhoeq), feq = self.comparison_distributions(data)
+
+        self.plots[0].scatter(a, rhoeq, s=1)
+
+        age_lines(self.plots[1].get_axes().lines)
+
+        self.plots[1].plot(
+            GRID.TEMPLATE / UNITS.MeV,
+            numpy.vectorize(self.particle.distribution)(GRID.TEMPLATE) / feq
+        )
+
+
+class EquilibriumRadiationParticleMonitor(RadiationParticleMonitor):
+    def comparison_distributions(self, data):
+        a = data['a'][-1]
+        aT = data['aT'][-1]
+
+        rhoeq = self.particle.energy_density() / (
+            7. * self.particle.dof * numpy.pi**2
+            * (self.particle.params.m / a)**4 / 240.
+        )
+        feq = self.particle.equilibrium_distribution(aT=aT)
+
+        return (a, rhoeq), feq
+
+
+class MassiveParticleMonitor(ParticleMonitor):
+    def __init__(self, particle, plots):
+        self.particle, self.plots = particle, plots
+
+        self.plots[0].set_title(particle.name)
+        self.plots[0].set_xlabel("a")
+        self.plots[0].set_xscale("log")
+        self.plots[0].set_ylabel("rho/(n M)")
+
+        self.plots[1].set_xlabel("y, MeV")
+        self.plots[1].set_xlim(GRID.MIN_MOMENTUM / UNITS.MeV, GRID.MAX_MOMENTUM / UNITS.MeV)
+        self.plots[1].set_ylabel("(f-f_eq)/f_eq y^2")
+
+    def plot(self, data):
+        a = data['a'][-1]
+
+        from particles.NonEqParticle import energy_density, density
+
+        self.plots[0].scatter(a, energy_density(self.particle)
+                              / (self.particle.mass * density(self.particle)), s=1)
+
+        age_lines(self.plots[1].get_axes().lines)
+
+        yy = GRID.TEMPLATE * GRID.TEMPLATE / UNITS.MeV**2
+
+        f = self.particle._distribution
+        feq = self.particle.equilibrium_distribution()
+        self.plots[1].plot(GRID.TEMPLATE / UNITS.MeV, yy*(f-feq)/feq)
+
+
+def age_lines(lines):
+    """ Slightly decrease the opacity of plotted lines until they are barely visible.\
+        Then, remove them. Saves up on memory and clears the view of the plots. """
+    for line in lines:
+        alpha = line.get_alpha() or 1.
+        if alpha < 0.1:
+            line.remove()
+        else:
+            line.set_alpha((line.get_alpha() or 1.) * 0.8)
 
 
 def plot_integrand(integrand, name, p0, filename=__file__):
