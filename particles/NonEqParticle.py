@@ -41,8 +41,8 @@ def lambda_integrate(func):
 
 @lambda_integrate
 def density(particle):
-    return numpy.vectorize(lambda p: (
-        particle.distribution(p) * p**2
+    return numpy.vectorize(lambda y: (
+        particle.distribution(y) * y**2
         * particle.dof / 2. / numpy.pi**2 / particle.params.a**3
     ), otypes=[numpy.float_])
 

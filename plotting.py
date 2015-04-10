@@ -203,7 +203,7 @@ class MassiveParticleMonitor(ParticleMonitor):
 
         f = self.particle._distribution
         feq = self.particle.equilibrium_distribution()
-        self.plots[1].plot(GRID.TEMPLATE / UNITS.MeV, yy*(f-feq)/feq)
+        self.plots[1].plot(GRID.TEMPLATE / UNITS.MeV, yy*(f-feq))
 
 
 def age_lines(lines):
