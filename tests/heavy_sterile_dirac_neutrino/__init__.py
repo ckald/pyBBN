@@ -15,7 +15,7 @@ import numpy
 import matplotlib
 from collections import defaultdict
 
-from plotting import plt
+from plotting import plt, RadiationParticleMonitor, MassiveParticleMonitor
 from particles import Particle
 from library.SM import particles as SMP, interactions as SMI
 from library.NuMSM import particles as NuP, interactions as NuI
@@ -66,13 +66,12 @@ universe.interactions += (
     )
 )
 
-universe.graphics.monitor(particles=[
-    neutrino_e,
-    neutrino_mu,
-    neutrino_tau,
-    sterile
+universe.graphics.monitor([
+    (neutrino_e, RadiationParticleMonitor),
+    (neutrino_mu, RadiationParticleMonitor),
+    (neutrino_tau, RadiationParticleMonitor),
+    (sterile, MassiveParticleMonitor)
 ])
-
 
 universe.evolve()
 
@@ -134,26 +133,6 @@ plt.ylim(0.99, 1.06)
 plt.draw()
 plt.show()
 plt.savefig(os.path.join(folder, 'figure_10.png'))
-
-
-""" ### JCAP10(2012)014, Figure 12
-    <img src="figure_12.png" width=100% /> """
-
-plt.figure(12)
-plt.title("Figure 12")
-plt.xlabel("Scale factor a, 1")
-plt.ylabel("rho/(n M)")
-plt.xlim(params.a_initial, 1)
-plt.ylim(0.99, 4.01)
-
-import itertools
-from particles.NonEqParticle import energy_density, density
-
-for distribution, a in itertools.izip(sterile.data['distribution'], universe.data['a']):
-    sterile._distribution = distribution
-    plt.scatter(a, energy_density(sterile) / (sterile.mass * density(sterile)), s=1)
-
-plt.savefig(os.path.join(folder, 'figure_12.png'))
 
 # Distribution functions arrays
 distributions_file = open(os.path.join(folder, 'distributions.txt'), "w")
