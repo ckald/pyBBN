@@ -91,17 +91,10 @@ plt.xlabel('Conformal momentum y = pa')
 plt.ylabel('f/f_eq')
 plt.xlim(0, 20)
 
-f_e = neutrino_e._distribution
-feq_e = neutrino_e.equilibrium_distribution()
-plt.plot(GRID.TEMPLATE/UNITS.MeV, f_e/feq_e, label="nu_e")
-
-f_mu = neutrino_mu._distribution
-feq_mu = neutrino_mu.equilibrium_distribution()
-plt.plot(GRID.TEMPLATE/UNITS.MeV, f_mu/feq_mu, label="nu_mu")
-
-f_tau = neutrino_tau._distribution
-feq_tau = neutrino_tau.equilibrium_distribution()
-plt.plot(GRID.TEMPLATE/UNITS.MeV, f_tau/feq_tau, label="nu_tau")
+for neutrino in (neutrino_e, neutrino_mu, neutrino_tau):
+    f = neutrino._distribution
+    feq = neutrino.equilibrium_distribution()
+    plt.plot(GRID.TEMPLATE/UNITS.MeV, f/feq, label=neutrino.flavour)
 
 plt.legend()
 plt.draw()

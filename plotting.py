@@ -139,7 +139,7 @@ class RadiationParticleMonitor(ParticleMonitor):
 
     def comparison_distributions(self, data):
         a = self.particle.params.a
-        aT = self.particle.params.aT
+        aT = self.particle.aT
 
         rhoeq = self.particle.energy_density() / (
             7. * self.particle.dof * numpy.pi**2
