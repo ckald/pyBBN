@@ -27,7 +27,7 @@ folder = os.path.split(__file__)[0]
 
 params = Params(T_initial=100. * UNITS.MeV,
                 T_final=1. * UNITS.MeV,
-                dy=0.025)
+                dy=0.05)
 
 universe = Universe(params=params, logfile=os.path.join(folder, 'log.txt'))
 
