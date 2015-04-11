@@ -18,7 +18,7 @@ import matplotlib
 
 from collections import defaultdict
 
-from plotting import plt
+from plotting import plt, RadiationParticleMonitor, MassiveParticleMonitor
 from particles import Particle
 from library.SM import particles as SMP  # , interactions as SMI
 from library.NuMSM import particles as NuP, interactions as NuI
@@ -53,9 +53,6 @@ strange = Particle(params=params, **SMP.quarks.strange)
 sterile = Particle(params=params, **NuP.sterile_neutrino(300 * UNITS.MeV))
 sterile.decoupling_temperature = params.T_initial
 
-completely_sterile = Particle(params=params, **NuP.sterile_neutrino(300 * UNITS.MeV))
-completely_sterile.decoupling_temperature = params.T_initial
-
 universe.particles += [
     photon,
 
@@ -75,7 +72,6 @@ universe.particles += [
     # bottom,
 
     sterile,
-    completely_sterile,
 ]
 
 thetas = defaultdict(float, {
@@ -102,9 +98,8 @@ universe.interactions += (
 )
 
 universe.graphics.monitor(particles=[
-    neutrino_e,
-    completely_sterile,
-    sterile,
+    (neutrino_e, RadiationParticleMonitor),
+    (sterile, MassiveParticleMonitor),
 ])
 
 
@@ -144,10 +139,6 @@ f_sterile = sterile._distribution
 feq_sterile = sterile.equilibrium_distribution()
 plt.plot(GRID.TEMPLATE/UNITS.MeV, f_sterile/feq_sterile, label="sterile")
 
-f_inert = completely_sterile._distribution
-feq_inert = completely_sterile.equilibrium_distribution()
-plt.plot(GRID.TEMPLATE/UNITS.MeV, f_inert/feq_inert, label="inert")
-
 plt.legend()
 plt.draw()
 plt.show()
@@ -163,8 +154,6 @@ plt.savefig(os.path.join(folder, 'figure_10.png'))
 distributions_file = open(os.path.join(folder, 'distributions.txt'), "w")
 numpy.savetxt(distributions_file, (f_sterile, feq_sterile, f_sterile/feq_sterile),
               header=str(sterile), footer='-'*80, fmt="%1.5e")
-numpy.savetxt(distributions_file, (f_inert, feq_inert, f_inert/feq_inert),
-              header=str(completely_sterile), footer='-'*80, fmt="%1.5e")
 
 distributions_file.close()
 
