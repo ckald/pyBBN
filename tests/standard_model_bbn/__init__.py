@@ -91,10 +91,16 @@ plt.xlabel('Conformal momentum y = pa')
 plt.ylabel('f/f_eq')
 plt.xlim(0, 20)
 
+# Distribution functions arrays
+distributions_file = open(os.path.join(folder, 'distributions.txt'), "w")
+
 for neutrino in (neutrino_e, neutrino_mu, neutrino_tau):
     f = neutrino._distribution
     feq = neutrino.equilibrium_distribution()
     plt.plot(GRID.TEMPLATE/UNITS.MeV, f/feq, label=neutrino.flavour)
+
+    numpy.savetxt(distributions_file, (f, feq, f/feq), header=str(neutrino),
+                  footer='-'*80, fmt="%1.5e")
 
 plt.legend()
 plt.draw()
@@ -107,14 +113,6 @@ plt.draw()
 plt.show()
 plt.savefig(os.path.join(folder, 'figure_10.png'))
 
-# Distribution functions arrays
-distributions_file = open(os.path.join(folder, 'distributions.txt'), "w")
-numpy.savetxt(distributions_file, (f_e, feq_e, f_e/feq_e), header=str(neutrino_e),
-              footer='-'*80, fmt="%1.5e")
-numpy.savetxt(distributions_file, (f_mu, feq_mu, f_mu/feq_mu), header=str(neutrino_mu),
-              footer='-'*80, fmt="%1.5e")
-numpy.savetxt(distributions_file, (f_tau, feq_tau, f_tau/feq_tau), header=str(neutrino_tau),
-              footer='-'*80, fmt="%1.5e")
 
 distributions_file.close()
 
