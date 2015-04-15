@@ -58,7 +58,7 @@ class particles(object):
         }
         neutral_pion = {
             'name': 'Neutral pion',
-            'symbol': u'π0',
+            'symbol': 'π0',
             'statistics': STATISTICS.BOSON,
             'mass': 134.98 * UNITS.MeV,
             'dof': 1,
@@ -67,7 +67,7 @@ class particles(object):
         }
         charged_pion = {
             'name': 'Charged pion',
-            'symbol': u'π',
+            'symbol': 'π',
             'statistics': STATISTICS.BOSON,
             'mass': 139.57 * UNITS.MeV,
             'dof': 1,

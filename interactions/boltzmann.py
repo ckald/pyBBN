@@ -140,12 +140,12 @@ class BoltzmannIntegral(PicklableObject, DistributionFunctional):
     def __str__(self):
         """ String-like representation of the integral. Corresponds to the first particle """
         return (
-            u" + ".join([p.specie.symbol + (u'\'' if p.antiparticle else u'')
+            " + ".join([p.specie.symbol + ('\'' if p.antiparticle else '')
                         for p in self.reaction if p.side == -1])
-            + u" ⟶  "
-            + u" + ".join([p.specie.symbol + (u'\'' if p.antiparticle else u'')
+            + " ⟶  "
+            + " + ".join([p.specie.symbol + ('\'' if p.antiparticle else '')
                           for p in self.reaction if p.side == 1])
-            + u"\t({})".format(u', '.join([unicode(M) for M in self.Ms]))
+            + "\t({})".format(', '.join([str(M) for M in self.Ms]))
         )
 
     def __repr__(self):
