@@ -3,8 +3,7 @@ import copy
 import itertools
 from collections import namedtuple, Counter
 from common.utils import PicklableObject
-from interactions.four_particle import FourParticleIntegral
-from interactions.three_particle import ThreeParticleIntegral
+from interactions.four_particle import FourParticleM
 
 
 """
@@ -165,8 +164,9 @@ class Interaction(PicklableObject):
         particle_Ms = copy.deepcopy(self.Ms)
 
         for M in particle_Ms:
-            map = {item.index: i for i, item in enumerate(reaction)}
-            M.apply_order(tuple(map[val] for val in M.order), reaction)
+            if M.__class__ is FourParticleM:
+                map = {item.index: i for i, item in enumerate(reaction)}
+                M.apply_order(tuple(map[val] for val in M.order), reaction)
 
         # Add interaction integrals by putting each incoming particle as the first one
         self.integrals.append(self.integral(
