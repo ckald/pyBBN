@@ -4,3 +4,6 @@ max-line-length: 100
 pylint:
   disable:
     - pointless-string-statement
+pep8:
+  disable:
+    - W503
