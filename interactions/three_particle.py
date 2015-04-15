@@ -37,13 +37,13 @@ class ThreeParticleIntegral(BoltzmannIntegral):
         """
         Initialize collision integral constants and save them to the first involved particle
         """
-        params = self.in_particles[0].params
-        if params.T > self.decoupling_temperature and not self.in_particles[0].in_equilibrium:
+        params = self.particle.params
+        if params.T > self.decoupling_temperature and not self.particle.in_equilibrium:
             MM = 0
             for M in self.Ms:
                 MM += M.K
             self.constant = MM / 16. / numpy.pi * params.m / params.x / params.H
-            self.particles[0].collision_integrals.append(self)
+            self.particle.collision_integrals.append(self)
 
     @staticmethod
     def integrate(p0, integrand, bounds=None, kwargs=None):
