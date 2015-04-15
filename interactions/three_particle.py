@@ -102,9 +102,9 @@ class ThreeParticleIntegral(BoltzmannIntegral):
         if not E or not m:
             p, E, m = self.calculate_kinematics(p)
 
-        is_in = E[2] >= m[2] \
-            and p[0] + p[1] > p[2] \
-            and p[0] + p[2] > p[1] \
-            and p[1] + p[2] > p[0]
+        is_in = (E[2] >= m[2]
+                 and p[0] + p[1] > p[2]
+                 and p[0] + p[2] > p[1]
+                 and p[1] + p[2] > p[0])
 
         return is_in
