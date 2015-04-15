@@ -211,8 +211,8 @@ class interactions(object):
 
         return Interaction(
             name="Sterile neutrino decay to neutral pion and neutrino",
-            particles=((sterile), (active, pion)),
-            antiparticles=((False), (False, False)),
+            particles=((sterile, ), (active, pion)),
+            antiparticles=((False, ), (False, False)),
             Ms=(ThreeParticleM(K=(CONST.G_F * theta * CONST.f_pi)**2
                                * sterile.mass**2 * (sterile.mass**2 - pion.mass**2)), ),
             integral=ThreeParticleIntegral
@@ -229,8 +229,8 @@ class interactions(object):
 
         return Interaction(
             name="Sterile neutrino decay to charged pion and lepton",
-            particles=((sterile), (lepton, pion)),
-            antiparticles=((False), (False, True)),
+            particles=((sterile, ), (lepton, pion)),
+            antiparticles=((False, ), (False, True)),
             Ms=(ThreeParticleM(
                 K=(CONST.G_F * theta * CONST.f_pi * CKM)**2
                 * (
