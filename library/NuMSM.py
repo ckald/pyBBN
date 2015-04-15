@@ -175,7 +175,7 @@ class interactions(object):
         )
 
     @classmethod
-    def sterile_hardons_interactions(cls, thetas=None, sterile=None, neutrinos=None,
+    def sterile_hadrons_interactions(cls, thetas=None, sterile=None, neutrinos=None,
                                      leptons=None, hadrons=None):
 
         inters = []
