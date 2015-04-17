@@ -160,7 +160,7 @@ class BoltzmannIntegral(PicklableObject, DistributionFunctional):
     def calculate_kinematics(self, p):
         """ Helper procedure that caches conformal energies and masses of the reaction """
         particle_count = len(self.reaction)
-        p = (p + [0., 0., 0., 0.])[:particle_count]
+        p = (p + [0.]*particle_count)[:particle_count]
         E = []
         m = []
         for i, particle in enumerate(self.reaction):
