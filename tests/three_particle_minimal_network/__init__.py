@@ -46,6 +46,8 @@ universe = Universe(params=params, logfile=os.path.join(folder, 'log.txt'))
 
 photon = Particle(params=params, **SMP.photon)
 
+electron = Particle(params=params, **SMP.leptons.electron)
+
 neutrino_e = Particle(params=params, **SMP.leptons.neutrino_e)
 
 neutral_pion = Particle(params=params, **SMP.hadrons.neutral_pion)
@@ -55,6 +57,8 @@ sterile.decoupling_temperature = params.T_initial
 
 universe.particles += [
     photon,
+
+    electron,
 
     neutrino_e,
 
@@ -69,24 +73,25 @@ thetas = defaultdict(float, {
 
 universe.interactions += (
     SMI.neutrino_interactions(
-        leptons=[],
+        leptons=[electron],
         neutrinos=[neutrino_e]
     ) +
     NuI.sterile_leptons_interactions(
         thetas=thetas, sterile=sterile,
         neutrinos=[neutrino_e],
-        leptons=[]
+        leptons=[electron]
     )
     + NuI.sterile_hadrons_interactions(
         thetas=thetas, sterile=sterile,
         neutrinos=[neutrino_e],
-        leptons=[],
+        leptons=[electron],
         hadrons=[neutral_pion]
     )
 )
 
 universe.graphics.monitor([
     (neutrino_e, RadiationParticleMonitor),
+    (sterile, RadiationParticleMonitor),
     (sterile, MassiveParticleMonitor),
 ])
 
