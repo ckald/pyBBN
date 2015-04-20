@@ -17,8 +17,6 @@ class Universe(object):
 
     # System state is rendered to the log file each `log_freq` steps
     log_freq = 1
-    """ Temperature equation integration method: explicit Euler or two-step Heun's method """
-    INTEGRATION_METHOD = ['euler', 'heun'][0]
 
     # Controls parallelization of the collision integrals calculations
     PARALLELIZE = True
