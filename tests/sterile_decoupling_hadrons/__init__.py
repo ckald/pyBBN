@@ -90,6 +90,7 @@ universe.interactions += (
 
 universe.graphics.monitor([
     (neutrino_e, RadiationParticleMonitor),
+    (sterile, RadiationParticleMonitor),
     (sterile, MassiveParticleMonitor),
 ])
 
