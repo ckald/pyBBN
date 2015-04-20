@@ -121,6 +121,8 @@ class Universe(object):
         for particle in particles:
             particle.set_params(self.params)
 
+        self.particles += particles
+
     def update_particles(self):
         """ ### 1. Update particles state
             Update particle species distribution functions, check for regime switching,\
