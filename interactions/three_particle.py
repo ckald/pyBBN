@@ -75,17 +75,11 @@ class ThreeParticleIntegral(BoltzmannIntegral):
         p = [p0, p1, 0]
         p, E, m = self.calculate_kinematics(p)
 
-        # if not self.in_bounds(p, E, m):
-        #     return 0.
-
         integrand = self.in_bounds(p, E, m) * self.constant / p[0] / E[0]
 
         # Avoid rounding errors and division by zero
         if m[1] != 0:
             integrand *= p[1] / E[1]
-
-        # if integrand == 0:
-        #     return 0
 
         integrand *= fau(p)
 
@@ -94,11 +88,7 @@ class ThreeParticleIntegral(BoltzmannIntegral):
     """ ### Integration region bounds methods """
 
     def in_bounds(self, p, E=None, m=None):
-        """ $D$-functions involved in the interactions imply a cut-off region for the collision\
-            integrand. In the general case of arbitrary particle masses, this is a set of \
-            irrational inequalities that can hardly be solved (at least, Wolfram Mathematica does\
-            not succeed in this). To avoid excessive computations, it is convenient to do an early\
-            `return 0` when the particles kinematics lay out of the cut-off region """
+        """ The kinematically allowed region in momentum space """
         if not E or not m:
             p, E, m = self.calculate_kinematics(p)
 

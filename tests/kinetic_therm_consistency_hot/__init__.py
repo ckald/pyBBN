@@ -31,15 +31,15 @@ params = Params(T_initial=1000. * UNITS.MeV,
 
 universe = Universe(params=params, logfile=os.path.join(folder, 'log.txt'))
 
-photon = Particle(params=params, **SMP.photon)
-electron = Particle(params=params, **SMP.leptons.electron)
-muon = Particle(params=params, **SMP.leptons.muon)
-tau = Particle(params=params, **SMP.leptons.tau)
-neutrino_e = Particle(params=params, **SMP.leptons.neutrino_e)
-neutrino_mu = Particle(params=params, **SMP.leptons.neutrino_mu)
-neutrino_tau = Particle(params=params, **SMP.leptons.neutrino_tau)
+photon = Particle(**SMP.photon)
+electron = Particle(**SMP.leptons.electron)
+muon = Particle(**SMP.leptons.muon)
+tau = Particle(**SMP.leptons.tau)
+neutrino_e = Particle(**SMP.leptons.neutrino_e)
+neutrino_mu = Particle(**SMP.leptons.neutrino_mu)
+neutrino_tau = Particle(**SMP.leptons.neutrino_tau)
 
-universe.particles += [
+universe.add_particles([
     photon,
     electron,
     muon,
@@ -47,7 +47,7 @@ universe.particles += [
     neutrino_e,
     neutrino_mu,
     neutrino_tau,
-]
+])
 
 neutrinos = [neutrino_e, neutrino_mu, neutrino_tau]
 for neutrino in neutrinos:

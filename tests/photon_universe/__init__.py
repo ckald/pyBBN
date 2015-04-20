@@ -24,10 +24,11 @@ params = Params(T_initial=100 * UNITS.MeV,
                 T_final=100 * UNITS.keV,
                 dx=1e-2 * UNITS.MeV)
 
-photon = Particle(params=params, **SMP.photon)
-
 universe = Universe(params=params, logfile="tests/photon_universe/log.txt")
-universe.particles.append(photon)
+
+photon = Particle(**SMP.photon)
+
+universe.add_particles(photon)
 universe.evolve()
 
 initial_aT = universe.data['aT'][0]

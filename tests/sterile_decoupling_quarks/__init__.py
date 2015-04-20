@@ -33,27 +33,27 @@ params = Params(T_initial=1.5 * UNITS.GeV,
 
 universe = Universe(params=params, logfile=os.path.join(folder, 'log.txt'))
 
-photon = Particle(params=params, **SMP.photon)
+photon = Particle(**SMP.photon)
 
-electron = Particle(params=params, **SMP.leptons.electron)
-muon = Particle(params=params, **SMP.leptons.muon)
-tau = Particle(params=params, **SMP.leptons.tau)
+electron = Particle(**SMP.leptons.electron)
+muon = Particle(**SMP.leptons.muon)
+tau = Particle(**SMP.leptons.tau)
 
-neutrino_e = Particle(params=params, **SMP.leptons.neutrino_e)
-neutrino_mu = Particle(params=params, **SMP.leptons.neutrino_mu)
-neutrino_tau = Particle(params=params, **SMP.leptons.neutrino_tau)
+neutrino_e = Particle(**SMP.leptons.neutrino_e)
+neutrino_mu = Particle(**SMP.leptons.neutrino_mu)
+neutrino_tau = Particle(**SMP.leptons.neutrino_tau)
 
-up = Particle(params=params, **SMP.quarks.up)
-down = Particle(params=params, **SMP.quarks.down)
-# charm = Particle(params=params, **SMP.quarks.charm)
-strange = Particle(params=params, **SMP.quarks.strange)
-# top = Particle(params=params, **SMP.quarks.top)
-# bottom = Particle(params=params, **SMP.quarks.bottom)
+up = Particle(**SMP.quarks.up)
+down = Particle(**SMP.quarks.down)
+# charm = Particle(**SMP.quarks.charm)
+strange = Particle(**SMP.quarks.strange)
+# top = Particle(**SMP.quarks.top)
+# bottom = Particle(**SMP.quarks.bottom)
 
-sterile = Particle(params=params, **NuP.sterile_neutrino(300 * UNITS.MeV))
+sterile = Particle(**NuP.sterile_neutrino(300 * UNITS.MeV))
 sterile.decoupling_temperature = params.T_initial
 
-universe.particles += [
+universe.add_particles([
     photon,
 
     electron,
@@ -72,7 +72,7 @@ universe.particles += [
     # bottom,
 
     sterile,
-]
+])
 
 thetas = defaultdict(float, {
     'electron': 1e-4,

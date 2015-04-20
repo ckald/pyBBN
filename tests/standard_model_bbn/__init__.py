@@ -33,19 +33,19 @@ params = Params(T_initial=5. * UNITS.MeV,
 
 universe = Universe(params=params, logfile=os.path.join(folder, 'log.txt'))
 
-photon = Particle(params=params, **SMP.photon)
-electron = Particle(params=params, **SMP.leptons.electron)
-neutrino_e = Particle(params=params, **SMP.leptons.neutrino_e)
-neutrino_mu = Particle(params=params, **SMP.leptons.neutrino_mu)
-neutrino_tau = Particle(params=params, **SMP.leptons.neutrino_tau)
+photon = Particle(**SMP.photon)
+electron = Particle(**SMP.leptons.electron)
+neutrino_e = Particle(**SMP.leptons.neutrino_e)
+neutrino_mu = Particle(**SMP.leptons.neutrino_mu)
+neutrino_tau = Particle(**SMP.leptons.neutrino_tau)
 
-universe.particles += [
+universe.add_particles([
     photon,
     electron,
     neutrino_e,
     neutrino_mu,
     neutrino_tau,
-]
+])
 
 universe.interactions += \
     SMI.neutrino_interactions(leptons=[electron], neutrinos=[neutrino_e, neutrino_mu, neutrino_tau])

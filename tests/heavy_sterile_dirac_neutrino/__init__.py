@@ -31,17 +31,17 @@ params = Params(T_initial=100. * UNITS.MeV,
 
 universe = Universe(params=params, logfile=os.path.join(folder, 'log.txt'))
 
-photon = Particle(params, **SMP.photon)
-electron = Particle(params, **SMP.leptons.electron)
-muon = Particle(params, **SMP.leptons.muon)
-neutrino_e = Particle(params, **SMP.leptons.neutrino_e)
-neutrino_mu = Particle(params, **SMP.leptons.neutrino_mu)
-neutrino_tau = Particle(params, **SMP.leptons.neutrino_tau)
-sterile = Particle(params, **NuP.sterile_neutrino(33.9 * UNITS.MeV))
+photon = Particle(**SMP.photon)
+electron = Particle(**SMP.leptons.electron)
+muon = Particle(**SMP.leptons.muon)
+neutrino_e = Particle(**SMP.leptons.neutrino_e)
+neutrino_mu = Particle(**SMP.leptons.neutrino_mu)
+neutrino_tau = Particle(**SMP.leptons.neutrino_tau)
+sterile = Particle(**NuP.sterile_neutrino(33.9 * UNITS.MeV))
 
 sterile.decoupling_temperature = params.T_initial
 
-universe.particles += [
+universe.add_particles([
     photon,
     electron,
     muon,
@@ -49,7 +49,7 @@ universe.particles += [
     neutrino_mu,
     neutrino_tau,
     sterile,
-]
+])
 
 thetas = defaultdict(float, {
     'tau': 7.6 * 1e-4,

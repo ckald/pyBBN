@@ -23,11 +23,12 @@ from common import Params, UNITS
 params = Params(T_initial=100 * UNITS.MeV,
                 dx=1e-1 * UNITS.MeV)
 
-photon = Particle(params=params, **SMP.photon)
-electron = Particle(params=params, **SMP.leptons.electron)
-
 universe = Universe(params=params, logfile="tests/photon_electron_universe/log.txt")
-universe.particles += [photon, electron]
+
+photon = Particle(**SMP.photon)
+electron = Particle(**SMP.leptons.electron)
+
+universe.add_particles([photon, electron])
 universe.evolve()
 
 initial_aT = universe.data['aT'][0]

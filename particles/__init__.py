@@ -94,13 +94,7 @@ class Particle(PicklableObject):
 
     INTEGRATION_ORDER = ['sum-first', 'integral-first'][0]
 
-    def __init__(self, params=None, **kwargs):
-
-        """ Set internal parameters using arguments or default values """
-        self.params = params if params else Params()
-
-        self.T = self.params.T
-        self.aT = self.params.aT
+    def __init__(self, **kwargs):
 
         settings = dict(self._defaults)
         settings.update(kwargs)
@@ -122,9 +116,6 @@ class Particle(PicklableObject):
             'collision_integral': []
         }
 
-        self.update()
-        self.init_distribution()
-
     def __str__(self):
         """ String-like representation of particle species it's regime and parameters """
         return "%s (%s, %s)\nn = %s, rho = %s\n" % (
@@ -137,6 +128,15 @@ class Particle(PicklableObject):
 
     def __repr__(self):
         return self.symbol
+
+    def set_params(self, params):
+        """ Set internal parameters using arguments or default values """
+        self.params = params
+        self.T = params.T
+        self.aT = params.aT
+
+        self.update()
+        self.init_distribution()
 
     def update(self, force_print=False):
         """ Update the particle parameters according to the new state of the system """

@@ -33,23 +33,23 @@ params = Params(T_initial=200 * UNITS.MeV,
 
 universe = Universe(params=params, logfile=os.path.join(folder, 'log.txt'))
 
-photon = Particle(params=params, **SMP.photon)
+photon = Particle(**SMP.photon)
 
-electron = Particle(params=params, **SMP.leptons.electron)
-muon = Particle(params=params, **SMP.leptons.muon)
-tau = Particle(params=params, **SMP.leptons.tau)
+electron = Particle(**SMP.leptons.electron)
+muon = Particle(**SMP.leptons.muon)
+tau = Particle(**SMP.leptons.tau)
 
-neutrino_e = Particle(params=params, **SMP.leptons.neutrino_e)
-neutrino_mu = Particle(params=params, **SMP.leptons.neutrino_mu)
-neutrino_tau = Particle(params=params, **SMP.leptons.neutrino_tau)
+neutrino_e = Particle(**SMP.leptons.neutrino_e)
+neutrino_mu = Particle(**SMP.leptons.neutrino_mu)
+neutrino_tau = Particle(**SMP.leptons.neutrino_tau)
 
-neutral_pion = Particle(params=params, **SMP.hadrons.neutral_pion)
-charged_pion = Particle(params=params, **SMP.hadrons.charged_pion)
+neutral_pion = Particle(**SMP.hadrons.neutral_pion)
+charged_pion = Particle(**SMP.hadrons.charged_pion)
 
-sterile = Particle(params=params, **NuP.sterile_neutrino(300 * UNITS.MeV))
+sterile = Particle(**NuP.sterile_neutrino(300 * UNITS.MeV))
 sterile.decoupling_temperature = params.T_initial
 
-universe.particles += [
+universe.add_particles([
     photon,
 
     electron,
@@ -64,7 +64,7 @@ universe.particles += [
     charged_pion,
 
     sterile,
-]
+])
 
 thetas = defaultdict(float, {
     'electron': 1e-2,
