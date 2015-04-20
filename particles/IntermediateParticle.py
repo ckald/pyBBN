@@ -89,8 +89,9 @@ def numerator(particle):
             \frac{M^2 x}{m^2 a T} * I(2)
         \end{equation}
     """
-    return particle.mass**2 * particle.params.x / particle.params.m**2 \
-        / particle.aT * I(particle, 2)
+    return (particle.mass**2 * particle.params.x
+            / particle.params.m**2 / particle.aT
+            * I(particle, 2))
 
 
 def denominator(particle):
