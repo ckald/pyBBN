@@ -29,7 +29,7 @@
     </div>
     <div class="generation-time">
         Generated at
-        <code>2015-04-01 15:55</code>
+        <code>2015-04-22 14:29</code>
         by a diligent
         <a target="_blank" href="http://ckald.github.io/pyccoon/" title="Pyccoon: side-to-side documentation generator">
             <img id="pyccoon-icon" src="../pyccoon_icon.svg" alt="Pyccoon: side-to-side documentation generator" />pyccoon</a>
@@ -69,7 +69,7 @@
             <a class='octothorpe' href='#section-1'>#</a>
           </div>
           <h1><a id="three-particle-interaction-matrix-element" class="header-anchor" href="#three-particle-interaction-matrix-element"> Three-particle interaction matrix element</a></h1>
-<div class="codehilite"><pre>    <span class="n">Matrix</span> <span class="n">elements</span> <span class="n">of</span> <span class="n">the</span> <span class="n">interest</span> <span class="k">for</span> <span class="n">three</span><span class="o">-</span><span class="n">particle</span> <span class="n">interactions</span> <span class="n">are</span> <span class="n">constant</span>
+<div class="codehilite"><pre>    Matrix elements of the interest for three-particle interactions are constant
 </pre></div>
         </div>
         <div class='code'>
@@ -123,7 +123,9 @@
           
         </div>
         <div class='code'>
-          <div class="highlight"><pre><span class="k">class</span> <span class="nc">ThreeParticleIntegral</span><span class="p">(</span><span class="n">BoltzmannIntegral</span><span class="p">):</span></pre></div>
+          <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">__iadd__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">M</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">K</span> <span class="o">+=</span> <span class="n">M</span><span class="o">.</span><span class="n">K</span>
+        <span class="k">return</span> <span class="bp">self</span></pre></div>
         </div>
         <div class='clearall'></div>
     </section>
@@ -135,18 +137,12 @@
           <div class='octowrap'>
             <a class='octothorpe' href='#section-5'>#</a>
           </div>
-          <p>Initialize collision integral constants and save them to the first involved particle</p>
+          
         </div>
         <div class='code'>
-          <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-
-        <span class="n">params</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">in_particles</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">params</span>
-        <span class="k">if</span> <span class="n">params</span><span class="o">.</span><span class="n">T</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">decoupling_temperature</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">in_particles</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">in_equilibrium</span><span class="p">:</span>
-            <span class="n">MM</span> <span class="o">=</span> <span class="mi">0</span>
-            <span class="k">for</span> <span class="n">M</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">Ms</span><span class="p">:</span>
-                <span class="n">MM</span> <span class="o">+=</span> <span class="n">M</span><span class="o">.</span><span class="n">K</span><span class="o">**</span><span class="mi">2</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">constant</span> <span class="o">=</span> <span class="n">MM</span> <span class="o">/</span> <span class="mf">16.</span> <span class="o">/</span> <span class="n">numpy</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">params</span><span class="o">.</span><span class="n">m</span> <span class="o">/</span> <span class="n">params</span><span class="o">.</span><span class="n">x</span> <span class="o">/</span> <span class="n">params</span><span class="o">.</span><span class="n">H</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">particles</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">collision_integrals</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></pre></div>
+          <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">__idiv__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">div</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">K</span> <span class="o">/=</span> <span class="n">div</span>
+        <span class="k">return</span> <span class="bp">self</span></pre></div>
         </div>
         <div class='clearall'></div>
     </section>
@@ -157,6 +153,61 @@
         <div class='docs'>
           <div class='octowrap'>
             <a class='octothorpe' href='#section-6'>#</a>
+          </div>
+          
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">__imul__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mul</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">K</span> <span class="o">*=</span> <span class="n">mul</span>
+        <span class="k">return</span> <span class="bp">self</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+    </div>
+    <div class='section'>
+    <a id="section-7" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-7'>#</a>
+          </div>
+          
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre><span class="k">class</span> <span class="nc">ThreeParticleIntegral</span><span class="p">(</span><span class="n">BoltzmannIntegral</span><span class="p">):</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+    </div>
+    <div class='section'>
+    <a id="section-8" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-8'>#</a>
+          </div>
+          <p>Initialize collision integral constants and save them to the first involved particle</p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="n">params</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">particle</span><span class="o">.</span><span class="n">params</span>
+        <span class="k">if</span> <span class="n">params</span><span class="o">.</span><span class="n">T</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">decoupling_temperature</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">particle</span><span class="o">.</span><span class="n">in_equilibrium</span><span class="p">:</span>
+            <span class="n">MM</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">for</span> <span class="n">M</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">Ms</span><span class="p">:</span>
+                <span class="n">MM</span> <span class="o">+=</span> <span class="n">M</span><span class="o">.</span><span class="n">K</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">constant</span> <span class="o">=</span> <span class="n">MM</span> <span class="o">/</span> <span class="mf">16.</span> <span class="o">/</span> <span class="n">numpy</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">params</span><span class="o">.</span><span class="n">m</span> <span class="o">/</span> <span class="n">params</span><span class="o">.</span><span class="n">x</span> <span class="o">/</span> <span class="n">params</span><span class="o">.</span><span class="n">H</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">particle</span><span class="o">.</span><span class="n">collision_integrals</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+    </div>
+    <div class='section'>
+    <a id="section-9" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-9'>#</a>
           </div>
           
         </div>
@@ -177,11 +228,11 @@
     </section>
     </div>
     <div class='section'>
-    <a id="section-7" class="section-anchor"></a>
+    <a id="section-10" class="section-anchor"></a>
     <section>
         <div class='docs'>
           <div class='octowrap'>
-            <a class='octothorpe' href='#section-7'>#</a>
+            <a class='octothorpe' href='#section-10'>#</a>
           </div>
           
         </div>
@@ -195,11 +246,11 @@
     </section>
     </div>
     <div class='section'>
-    <a id="section-8" class="section-anchor"></a>
+    <a id="section-11" class="section-anchor"></a>
     <section>
         <div class='docs'>
           <div class='octowrap'>
-            <a class='octothorpe' href='#section-8'>#</a>
+            <a class='octothorpe' href='#section-11'>#</a>
           </div>
           
         </div>
@@ -215,11 +266,11 @@
     </section>
     </div>
     <div class='section'>
-    <a id="section-9" class="section-anchor"></a>
+    <a id="section-12" class="section-anchor"></a>
     <section>
         <div class='docs'>
           <div class='octowrap'>
-            <a class='octothorpe' href='#section-9'>#</a>
+            <a class='octothorpe' href='#section-12'>#</a>
           </div>
           <p>Collision integral interior.</p>
         </div>
@@ -229,29 +280,23 @@
         <span class="n">p</span> <span class="o">=</span> <span class="p">[</span><span class="n">p0</span><span class="p">,</span> <span class="n">p1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
         <span class="n">p</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">m</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">calculate_kinematics</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">in_bounds</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">m</span><span class="p">):</span>
-            <span class="k">return</span> <span class="mf">0.</span>
-
-        <span class="n">integrand</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">constant</span> <span class="o">/</span> <span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="n">E</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span></pre></div>
+        <span class="n">integrand</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">in_bounds</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">m</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">constant</span> <span class="o">/</span> <span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="n">E</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span></pre></div>
         </div>
         <div class='clearall'></div>
     </section>
     </div>
     <div class='section'>
-    <a id="section-10" class="section-anchor"></a>
+    <a id="section-13" class="section-anchor"></a>
     <section>
         <div class='docs'>
           <div class='octowrap'>
-            <a class='octothorpe' href='#section-10'>#</a>
+            <a class='octothorpe' href='#section-13'>#</a>
           </div>
           <p>Avoid rounding errors and division by zero</p>
         </div>
         <div class='code'>
           <div class="highlight"><pre>        <span class="k">if</span> <span class="n">m</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">integrand</span> <span class="o">*=</span> <span class="n">p</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="n">E</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-
-        <span class="k">if</span> <span class="n">integrand</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">return</span> <span class="mi">0</span>
 
         <span class="n">integrand</span> <span class="o">*=</span> <span class="n">fau</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
 
@@ -261,11 +306,11 @@
     </section>
     </div>
     <div class='section'>
-    <a id="section-11" class="section-anchor"></a>
+    <a id="section-14" class="section-anchor"></a>
     <section>
         <div class='docs'>
           <div class='octowrap'>
-            <a class='octothorpe' href='#section-11'>#</a>
+            <a class='octothorpe' href='#section-14'>#</a>
           </div>
           <h2><a id="integration-region-bounds-methods" class="header-anchor" href="#integration-region-bounds-methods"> Integration region bounds methods </a></h2>
         </div>
@@ -276,13 +321,13 @@
     </section>
     </div>
     <div class='section'>
-    <a id="section-12" class="section-anchor"></a>
+    <a id="section-15" class="section-anchor"></a>
     <section>
         <div class='docs'>
           <div class='octowrap'>
-            <a class='octothorpe' href='#section-12'>#</a>
+            <a class='octothorpe' href='#section-15'>#</a>
           </div>
-          <p>$D$-functions involved in the interactions imply a cut-off region for the collision integrand. In the general case of arbitrary particle masses, this is a set of irrational inequalities that can hardly be solved (at least, Wolfram Mathematica does not succeed in this). To avoid excessive computations, it is convenient to do an early <code>return 0</code> when the particles kinematics lay out of the cut-off region </p>
+          <p>The kinematically allowed region in momentum space </p>
         </div>
         <div class='code'>
           <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">in_bounds</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">E</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">m</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
@@ -290,10 +335,12 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="n">E</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">m</span><span class="p">:</span>
             <span class="n">p</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">m</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">calculate_kinematics</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
 
-        <span class="n">is_in</span> <span class="o">=</span> <span class="n">E</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">m</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> \
-            <span class="ow">and</span> <span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">p</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">p</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> \
-            <span class="ow">and</span> <span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">p</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">p</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> \
-            <span class="ow">and</span> <span class="n">p</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">p</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">is_in</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="p">(</span><span class="n">E</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">m</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+            <span class="o">*</span> <span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">p</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">p</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+            <span class="o">*</span> <span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">p</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">p</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+            <span class="o">*</span> <span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">p</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="p">)</span>
 
         <span class="k">return</span> <span class="n">is_in</span>
 

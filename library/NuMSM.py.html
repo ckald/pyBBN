@@ -22,14 +22,13 @@
     Contents
     <div id="jump_wrapper">
       <div id="jump_page">
-          <a class="source source-1" href="#weak-interactions-matrix-element"> Weak interactions matrix element</a>
-          <a class="source source-4" href="#something-fishy-is-going-on-here"> SOMETHING FISHY IS GOING ON HERE</a>
+          <a class="source source-1" href="#quark-interactions"> Quark interactions</a>
       </div>
     </div>
     </div>
     <div class="generation-time">
         Generated at
-        <code>2015-04-01 15:55</code>
+        <code>2015-04-22 14:29</code>
         by a diligent
         <a target="_blank" href="http://ckald.github.io/pyccoon/" title="Pyccoon: side-to-side documentation generator">
             <img id="pyccoon-icon" src="../pyccoon_icon.svg" alt="Pyccoon: side-to-side documentation generator" />pyccoon</a>
@@ -69,10 +68,16 @@
           <p>Neutrino Minimal Standard Model particles and interactions</p>
         </div>
         <div class='code'>
-          <div class="highlight"><pre><span class="kn">from</span> <span class="nn">common</span> <span class="kn">import</span> <span class="n">UNITS</span><span class="p">,</span> <span class="n">CONST</span>
+          <div class="highlight"><pre><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">division</span>
+
+<span class="kn">import</span> <span class="nn">itertools</span>
+
+<span class="kn">from</span> <span class="nn">common</span> <span class="kn">import</span> <span class="n">UNITS</span><span class="p">,</span> <span class="n">CONST</span>
 <span class="kn">from</span> <span class="nn">particles</span> <span class="kn">import</span> <span class="n">STATISTICS</span>
 <span class="kn">from</span> <span class="nn">interactions</span> <span class="kn">import</span> <span class="n">Interaction</span>
-<span class="kn">from</span> <span class="nn">library.SM</span> <span class="kn">import</span> <span class="n">WeakM</span></pre></div>
+<span class="kn">from</span> <span class="nn">interactions.three_particle</span> <span class="kn">import</span> <span class="n">ThreeParticleM</span><span class="p">,</span> <span class="n">ThreeParticleIntegral</span>
+<span class="kn">from</span> <span class="nn">interactions.four_particle</span> <span class="kn">import</span> <span class="n">FourParticleIntegral</span>
+<span class="kn">from</span> <span class="nn">library.SM</span> <span class="kn">import</span> <span class="n">WeakM</span><span class="p">,</span> <span class="n">particles</span> <span class="k">as</span> <span class="n">SM_particles</span></pre></div>
         </div>
         <div class='clearall'></div>
     </section>
@@ -83,29 +88,6 @@
         <div class='docs'>
           <div class='octowrap'>
             <a class='octothorpe' href='#section-2'>#</a>
-          </div>
-          <h1><a id="weak-interactions-matrix-element" class="header-anchor" href="#weak-interactions-matrix-element"> Weak interactions matrix element</a></h1>
-<div class="codehilite"><pre>    <span class="n">Weak</span> <span class="n">processes</span> <span class="n">usually</span> <span class="n">include</span> <span class="n">a</span> <span class="n">common</span> <span class="n">factor</span> <span class="n">of</span> <span class="err">$</span><span class="mi">32</span> <span class="n">G_F</span><span class="o">^</span><span class="mi">2</span><span class="err">$</span>
-</pre></div>
-        </div>
-        <div class='code'>
-          <div class="highlight"><pre><span class="k">class</span> <span class="nc">SterileWeakM</span><span class="p">(</span><span class="n">WeakM</span><span class="p">):</span>
-
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">SterileWeakM</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">K1</span> <span class="o">*=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s">&#39;theta&#39;</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">K2</span> <span class="o">*=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s">&#39;theta&#39;</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span></pre></div>
-        </div>
-        <div class='clearall'></div>
-    </section>
-    </div>
-    <div class='section'>
-    <a id="section-3" class="section-anchor"></a>
-    <section>
-        <div class='docs'>
-          <div class='octowrap'>
-            <a class='octothorpe' href='#section-3'>#</a>
           </div>
           
         </div>
@@ -120,8 +102,24 @@
             <span class="s">&#39;statistics&#39;</span><span class="p">:</span> <span class="n">STATISTICS</span><span class="o">.</span><span class="n">FERMION</span><span class="p">,</span>
             <span class="s">&#39;mass&#39;</span><span class="p">:</span> <span class="n">mass</span><span class="p">,</span>
             <span class="s">&#39;dof&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
-            <span class="s">&#39;decoupling_temperature&#39;</span><span class="p">:</span> <span class="mi">50</span> <span class="o">*</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">MeV</span>
+            <span class="s">&#39;decoupling_temperature&#39;</span><span class="p">:</span> <span class="mf">1.</span> <span class="o">*</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">GeV</span><span class="p">,</span>
+            <span class="s">&#39;majorana&#39;</span><span class="p">:</span> <span class="bp">True</span>
         <span class="p">}</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+    </div>
+    <div class='section'>
+    <a id="section-3" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-3'>#</a>
+          </div>
+          
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre><span class="k">class</span> <span class="nc">interactions</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span></pre></div>
         </div>
         <div class='clearall'></div>
     </section>
@@ -133,10 +131,13 @@
           <div class='octowrap'>
             <a class='octothorpe' href='#section-4'>#</a>
           </div>
-          
+          <p>\begin{align}
+       N_S + \nu_{\beta} &amp;\to \nu_{\alpha} + \nu_{\beta}
+   \end{align}</p>
         </div>
         <div class='code'>
-          <div class="highlight"><pre><span class="k">class</span> <span class="nc">interactions</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span></pre></div>
+          <div class="highlight"><pre>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">sterile_active_scattering</span><span class="p">(</span><span class="n">theta</span><span class="o">=</span><span class="mf">1.</span><span class="p">,</span> <span class="n">sterile</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">active_a</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">active_b</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span></pre></div>
         </div>
         <div class='clearall'></div>
     </section>
@@ -148,19 +149,17 @@
           <div class='octowrap'>
             <a class='octothorpe' href='#section-5'>#</a>
           </div>
-          <p>\begin{align}
-       N_S \to \nu_{\alpha} + \nu_{\alpha} + \overline{\nu_{\alpha}}
-   \end{align}</p>
+          <p>SOMETHING IS CLEARLY NOT RIGHT</p>
         </div>
         <div class='code'>
-          <div class="highlight"><pre>    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">sterile_decay_one_flavour</span><span class="p">(</span><span class="n">theta</span><span class="o">=</span><span class="mf">1.</span><span class="p">,</span> <span class="n">sterile</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">active</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+          <div class="highlight"><pre>        <span class="n">K1</span> <span class="o">=</span> <span class="mf">2.</span> <span class="k">if</span> <span class="n">active_a</span> <span class="o">==</span> <span class="n">active_b</span> <span class="k">else</span> <span class="mi">1</span>
 
         <span class="k">return</span> <span class="n">Interaction</span><span class="p">(</span>
-            <span class="n">name</span><span class="o">=</span><span class="s">&quot;Sterile decay into neutrinos (1 flavour)&quot;</span><span class="p">,</span>
-            <span class="n">in_particles</span><span class="o">=</span><span class="p">[</span><span class="n">sterile</span><span class="p">],</span>
-            <span class="n">out_particles</span><span class="o">=</span><span class="p">[</span><span class="n">active</span><span class="p">,</span> <span class="n">active</span><span class="p">,</span> <span class="n">active</span><span class="p">],</span>
-            <span class="n">Ms</span><span class="o">=</span><span class="p">[</span><span class="n">SterileWeakM</span><span class="p">(</span><span class="n">K1</span><span class="o">=</span><span class="mf">2.</span><span class="p">,</span> <span class="n">theta</span><span class="o">=</span><span class="n">theta</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">))]</span>
+            <span class="n">name</span><span class="o">=</span><span class="s">&quot;Sterile-active neutrino scattering&quot;</span><span class="p">,</span>
+            <span class="n">particles</span><span class="o">=</span><span class="p">((</span><span class="n">sterile</span><span class="p">,</span> <span class="n">active_b</span><span class="p">),</span> <span class="p">(</span><span class="n">active_a</span><span class="p">,</span> <span class="n">active_b</span><span class="p">)),</span>
+            <span class="n">antiparticles</span><span class="o">=</span><span class="p">((</span><span class="bp">False</span><span class="p">,</span> <span class="bp">True</span><span class="p">),</span> <span class="p">(</span><span class="bp">False</span><span class="p">,</span> <span class="bp">True</span><span class="p">)),</span>
+            <span class="n">Ms</span><span class="o">=</span><span class="p">(</span><span class="n">WeakM</span><span class="p">(</span><span class="n">K1</span><span class="o">=</span><span class="n">theta</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="n">K1</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">)),</span> <span class="p">),</span>
+            <span class="n">integral</span><span class="o">=</span><span class="n">FourParticleIntegral</span>
         <span class="p">)</span></pre></div>
         </div>
         <div class='clearall'></div>
@@ -173,20 +172,12 @@
           <div class='octowrap'>
             <a class='octothorpe' href='#section-6'>#</a>
           </div>
-          <p>\begin{align}
-       N_S \to \nu_{\alpha} + \nu_{\beta} + \overline{\nu_{\beta}}
-   \end{align}</p>
+          
         </div>
         <div class='code'>
           <div class="highlight"><pre>    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">sterile_decay_two_flavours</span><span class="p">(</span><span class="n">theta</span><span class="o">=</span><span class="mf">1.</span><span class="p">,</span> <span class="n">sterile</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">active_a</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">active_b</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
-
-        <span class="k">return</span> <span class="n">Interaction</span><span class="p">(</span>
-            <span class="n">name</span><span class="o">=</span><span class="s">&quot;Sterile decay into neutrinos (2 flavours)&quot;</span><span class="p">,</span>
-            <span class="n">in_particles</span><span class="o">=</span><span class="p">[</span><span class="n">sterile</span><span class="p">],</span>
-            <span class="n">out_particles</span><span class="o">=</span><span class="p">[</span><span class="n">active_a</span><span class="p">,</span> <span class="n">active_b</span><span class="p">,</span> <span class="n">active_b</span><span class="p">],</span>
-            <span class="n">Ms</span><span class="o">=</span><span class="p">[</span><span class="n">SterileWeakM</span><span class="p">(</span><span class="n">K1</span><span class="o">=</span><span class="mf">1.</span><span class="p">,</span> <span class="n">theta</span><span class="o">=</span><span class="n">theta</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">))]</span>
-        <span class="p">)</span></pre></div>
+    <span class="k">def</span> <span class="nf">sterile_active_to_leptons</span><span class="p">(</span><span class="n">theta</span><span class="o">=</span><span class="mf">1.</span><span class="p">,</span> <span class="n">g_L</span><span class="o">=</span><span class="n">CONST</span><span class="o">.</span><span class="n">g_R</span><span class="o">+</span><span class="mf">0.5</span><span class="p">,</span>
+                                  <span class="n">sterile</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">active</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">lepton</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span></pre></div>
         </div>
         <div class='clearall'></div>
     </section>
@@ -198,12 +189,22 @@
           <div class='octowrap'>
             <a class='octothorpe' href='#section-7'>#</a>
           </div>
-          
+          <p>\begin{align}
+       N_S + \overline{\nu_{\alpha}} \to l^+ + l^-
+   \end{align}</p>
         </div>
         <div class='code'>
-          <div class="highlight"><pre>    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">sterile_decay_to_leptons</span><span class="p">(</span><span class="n">theta</span><span class="o">=</span><span class="mf">1.</span><span class="p">,</span> <span class="n">g_L</span><span class="o">=</span><span class="n">CONST</span><span class="o">.</span><span class="n">g_R</span><span class="o">+</span><span class="mf">0.5</span><span class="p">,</span>
-                                 <span class="n">sterile</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">active</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">lepton</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span></pre></div>
+          <div class="highlight"><pre>        <span class="k">return</span> <span class="n">Interaction</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="s">&quot;Sterile decay into neutrino and leptons pair&quot;</span><span class="p">,</span>
+            <span class="n">particles</span><span class="o">=</span><span class="p">((</span><span class="n">sterile</span><span class="p">,</span> <span class="n">active</span><span class="p">),</span> <span class="p">(</span><span class="n">lepton</span><span class="p">,</span> <span class="n">lepton</span><span class="p">)),</span>
+            <span class="n">antiparticles</span><span class="o">=</span><span class="p">((</span><span class="bp">False</span><span class="p">,</span> <span class="bp">True</span><span class="p">),</span> <span class="p">(</span><span class="bp">True</span><span class="p">,</span> <span class="bp">False</span><span class="p">)),</span>
+            <span class="n">Ms</span><span class="o">=</span><span class="p">(</span>
+                <span class="n">WeakM</span><span class="p">(</span><span class="n">K1</span><span class="o">=</span><span class="mf">4.</span> <span class="o">*</span> <span class="n">g_L</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="n">theta</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)),</span>
+                <span class="n">WeakM</span><span class="p">(</span><span class="n">K1</span><span class="o">=</span><span class="mf">4.</span> <span class="o">*</span> <span class="n">CONST</span><span class="o">.</span><span class="n">g_R</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="n">theta</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">)),</span>
+                <span class="n">WeakM</span><span class="p">(</span><span class="n">K2</span><span class="o">=</span><span class="mf">4.</span> <span class="o">*</span> <span class="n">CONST</span><span class="o">.</span><span class="n">g_R</span> <span class="o">*</span> <span class="n">g_L</span> <span class="o">*</span> <span class="n">theta</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+            <span class="p">),</span>
+            <span class="n">integral</span><span class="o">=</span><span class="n">FourParticleIntegral</span>
+        <span class="p">)</span></pre></div>
         </div>
         <div class='clearall'></div>
     </section>
@@ -215,21 +216,15 @@
           <div class='octowrap'>
             <a class='octothorpe' href='#section-8'>#</a>
           </div>
-          <p>\begin{align}
-       N_S \to \nu_{\alpha} + l^+ + l^-
-   \end{align}</p>
+          
         </div>
         <div class='code'>
-          <div class="highlight"><pre>        <span class="k">return</span> <span class="n">Interaction</span><span class="p">(</span>
-            <span class="n">name</span><span class="o">=</span><span class="s">&quot;Sterile decay into neutrino and leptons pair&quot;</span><span class="p">,</span>
-            <span class="n">in_particles</span><span class="o">=</span><span class="p">[</span><span class="n">sterile</span><span class="p">],</span>
-            <span class="n">out_particles</span><span class="o">=</span><span class="p">[</span><span class="n">active</span><span class="p">,</span> <span class="n">lepton</span><span class="p">,</span> <span class="n">lepton</span><span class="p">],</span>
-            <span class="n">Ms</span><span class="o">=</span><span class="p">[</span>
-                <span class="n">SterileWeakM</span><span class="p">(</span><span class="n">K1</span><span class="o">=</span><span class="mf">4.</span> <span class="o">*</span> <span class="n">g_L</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="n">theta</span><span class="o">=</span><span class="n">theta</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">)),</span>
-                <span class="n">SterileWeakM</span><span class="p">(</span><span class="n">K1</span><span class="o">=</span><span class="mf">4.</span> <span class="o">*</span> <span class="n">CONST</span><span class="o">.</span><span class="n">g_R</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="n">theta</span><span class="o">=</span><span class="n">theta</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)),</span>
-                <span class="n">SterileWeakM</span><span class="p">(</span><span class="n">K2</span><span class="o">=</span><span class="mf">4.</span> <span class="o">*</span> <span class="n">CONST</span><span class="o">.</span><span class="n">g_R</span> <span class="o">*</span> <span class="n">g_L</span><span class="p">,</span> <span class="n">theta</span><span class="o">=</span><span class="n">theta</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
-            <span class="p">]</span>
-        <span class="p">)</span></pre></div>
+          <div class="highlight"><pre>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">sterile_leptons_interactions</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">thetas</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">sterile</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                                     <span class="n">neutrinos</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">leptons</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+
+        <span class="n">g_R</span> <span class="o">=</span> <span class="n">CONST</span><span class="o">.</span><span class="n">g_R</span>
+        <span class="n">inters</span> <span class="o">=</span> <span class="p">[]</span></pre></div>
         </div>
         <div class='clearall'></div>
     </section>
@@ -241,24 +236,17 @@
           <div class='octowrap'>
             <a class='octothorpe' href='#section-9'>#</a>
           </div>
-          <p>\begin{align}
-       N_S + \nu_{\alpha} &amp;\to \nu_{\alpha} + \nu_{\alpha}
-       \\ N_S + \overline{\nu_{\alpha}} &amp;\to \nu_{\alpha} + \overline{\nu_{\alpha}}
-   \end{align}</p>
+          <p>Neutrinos scatterings</p>
         </div>
         <div class='code'>
-          <div class="highlight"><pre>    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">sterile_active_mixing</span><span class="p">(</span><span class="n">theta</span><span class="o">=</span><span class="mf">1.</span><span class="p">,</span> <span class="n">sterile</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">active</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
-
-        <span class="k">return</span> <span class="n">Interaction</span><span class="p">(</span>
-            <span class="n">name</span><span class="o">=</span><span class="s">&quot;Sterile-active neutrino mixing&quot;</span><span class="p">,</span>
-            <span class="n">in_particles</span><span class="o">=</span><span class="p">[</span><span class="n">sterile</span><span class="p">,</span> <span class="n">active</span><span class="p">],</span>
-            <span class="n">out_particles</span><span class="o">=</span><span class="p">[</span><span class="n">active</span><span class="p">,</span> <span class="n">active</span><span class="p">],</span>
-            <span class="n">Ms</span><span class="o">=</span><span class="p">[</span>
-                <span class="n">SterileWeakM</span><span class="p">(</span><span class="n">K1</span><span class="o">=</span><span class="mf">2.</span><span class="p">,</span> <span class="n">theta</span><span class="o">=</span><span class="n">theta</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">)),</span>
-                <span class="n">SterileWeakM</span><span class="p">(</span><span class="n">K1</span><span class="o">=</span><span class="mf">4.</span><span class="p">,</span> <span class="n">theta</span><span class="o">=</span><span class="n">theta</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)),</span>
-            <span class="p">]</span>
-        <span class="p">)</span></pre></div>
+          <div class="highlight"><pre>        <span class="k">for</span> <span class="n">neutrino_a</span><span class="p">,</span> <span class="n">neutrino_b</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">combinations_with_replacement</span><span class="p">(</span><span class="n">neutrinos</span><span class="p">,</span> <span class="mi">2</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">thetas</span><span class="p">[</span><span class="n">neutrino_b</span><span class="o">.</span><span class="n">flavour</span><span class="p">]:</span>
+                <span class="n">inters</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cls</span><span class="o">.</span><span class="n">sterile_active_scattering</span><span class="p">(</span>
+                    <span class="n">theta</span><span class="o">=</span><span class="n">thetas</span><span class="p">[</span><span class="n">neutrino_b</span><span class="o">.</span><span class="n">flavour</span><span class="p">],</span>
+                    <span class="n">sterile</span><span class="o">=</span><span class="n">sterile</span><span class="p">,</span>
+                    <span class="n">active_a</span><span class="o">=</span><span class="n">neutrino_a</span><span class="p">,</span>
+                    <span class="n">active_b</span><span class="o">=</span><span class="n">neutrino_b</span>
+                <span class="p">))</span></pre></div>
         </div>
         <div class='clearall'></div>
     </section>
@@ -270,26 +258,22 @@
           <div class='octowrap'>
             <a class='octothorpe' href='#section-10'>#</a>
           </div>
-          <h4><a id="something-fishy-is-going-on-here" class="header-anchor" href="#something-fishy-is-going-on-here"> SOMETHING FISHY IS GOING ON HERE</a></h4>
-<p>\begin{align}
-       N_S + \nu_{\alpha} &amp;\to \nu_{\beta} + \overline{\nu_{\beta}}
-       \\ N_S + \nu_{\alpha} &amp;\to \nu_{\alpha} + \nu_{\alpha}
-   \end{align}</p>
+          <p>Interactions of neutrinos and leptons</p>
         </div>
         <div class='code'>
-          <div class="highlight"><pre>    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">sterile_flavour_change</span><span class="p">(</span><span class="n">theta</span><span class="o">=</span><span class="mf">1.</span><span class="p">,</span> <span class="n">sterile</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">active_a</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">active_b</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+          <div class="highlight"><pre>        <span class="k">for</span> <span class="n">lepton</span> <span class="ow">in</span> <span class="n">leptons</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">neutrino</span> <span class="ow">in</span> <span class="n">neutrinos</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">thetas</span><span class="p">[</span><span class="n">neutrino</span><span class="o">.</span><span class="n">flavour</span><span class="p">]:</span>
+                    <span class="n">g_L</span> <span class="o">=</span> <span class="n">g_R</span> <span class="o">+</span> <span class="mf">0.5</span> <span class="k">if</span> <span class="n">lepton</span><span class="o">.</span><span class="n">flavour</span> <span class="o">==</span> <span class="n">neutrino</span><span class="o">.</span><span class="n">flavour</span> <span class="k">else</span> <span class="n">g_R</span> <span class="o">-</span> <span class="mf">0.5</span>
+                    <span class="n">inters</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cls</span><span class="o">.</span><span class="n">sterile_active_to_leptons</span><span class="p">(</span>
+                        <span class="n">theta</span><span class="o">=</span><span class="n">thetas</span><span class="p">[</span><span class="n">neutrino</span><span class="o">.</span><span class="n">flavour</span><span class="p">],</span>
+                        <span class="n">g_L</span><span class="o">=</span><span class="n">g_L</span><span class="p">,</span>
+                        <span class="n">sterile</span><span class="o">=</span><span class="n">sterile</span><span class="p">,</span>
+                        <span class="n">active</span><span class="o">=</span><span class="n">neutrino</span><span class="p">,</span>
+                        <span class="n">lepton</span><span class="o">=</span><span class="n">lepton</span>
+                    <span class="p">))</span>
 
-        <span class="n">K1</span> <span class="o">=</span> <span class="mf">1.</span> <span class="k">if</span> <span class="n">active_a</span> <span class="o">!=</span> <span class="n">active_b</span> <span class="k">else</span> <span class="mf">4.</span>
-
-        <span class="k">return</span> <span class="n">Interaction</span><span class="p">(</span>
-            <span class="n">name</span><span class="o">=</span><span class="s">&quot;Sterile-active neutrino mixing&quot;</span><span class="p">,</span>
-            <span class="n">in_particles</span><span class="o">=</span><span class="p">[</span><span class="n">sterile</span><span class="p">,</span> <span class="n">active_a</span><span class="p">],</span>
-            <span class="n">out_particles</span><span class="o">=</span><span class="p">[</span><span class="n">active_b</span><span class="p">,</span> <span class="n">active_b</span><span class="p">],</span>
-            <span class="n">Ms</span><span class="o">=</span><span class="p">[</span>
-                <span class="n">SterileWeakM</span><span class="p">(</span><span class="n">K1</span><span class="o">=</span><span class="n">K1</span><span class="p">,</span> <span class="n">theta</span><span class="o">=</span><span class="n">theta</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)),</span>
-            <span class="p">]</span>
-        <span class="p">)</span></pre></div>
+        <span class="k">return</span> <span class="n">inters</span></pre></div>
         </div>
         <div class='clearall'></div>
     </section>
@@ -301,23 +285,202 @@
           <div class='octowrap'>
             <a class='octothorpe' href='#section-11'>#</a>
           </div>
+          <h1><a id="quark-interactions" class="header-anchor" href="#quark-interactions"> Quark interactions</a></h1>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">sterile_quark_interactions</span><span class="p">(</span><span class="n">thetas</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">sterile</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                                   <span class="n">neutrinos</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">leptons</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">quarks</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+
+        <span class="n">inters</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">quark</span> <span class="ow">in</span> <span class="n">quarks</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">active</span> <span class="ow">in</span> <span class="n">neutrinos</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">thetas</span><span class="p">[</span><span class="n">active</span><span class="o">.</span><span class="n">flavour</span><span class="p">]:</span>
+                    <span class="n">inters</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">interactions</span><span class="o">.</span><span class="n">sterile_quark_neutral</span><span class="p">(</span>
+                        <span class="n">theta</span><span class="o">=</span><span class="n">thetas</span><span class="p">[</span><span class="n">active</span><span class="o">.</span><span class="n">flavour</span><span class="p">],</span> <span class="n">sterile</span><span class="o">=</span><span class="n">sterile</span><span class="p">,</span>
+                        <span class="n">active</span><span class="o">=</span><span class="n">active</span><span class="p">,</span> <span class="n">quark</span><span class="o">=</span><span class="n">quark</span>
+                    <span class="p">))</span>
+
+        <span class="k">for</span> <span class="n">up</span><span class="p">,</span> <span class="n">down</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">product</span><span class="p">([</span><span class="n">q</span> <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="n">quarks</span> <span class="k">if</span> <span class="n">q</span><span class="o">.</span><span class="n">Q</span> <span class="o">==</span> <span class="mf">2.</span><span class="o">/</span><span class="mf">3.</span><span class="p">],</span>
+                                          <span class="p">[</span><span class="n">q</span> <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="n">quarks</span> <span class="k">if</span> <span class="n">q</span><span class="o">.</span><span class="n">Q</span> <span class="o">==</span> <span class="o">-</span><span class="mf">1.</span><span class="o">/</span><span class="mf">3.</span><span class="p">]):</span>
+            <span class="k">for</span> <span class="n">lepton</span> <span class="ow">in</span> <span class="n">leptons</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">thetas</span><span class="p">[</span><span class="n">lepton</span><span class="o">.</span><span class="n">flavour</span><span class="p">]:</span>
+                    <span class="n">inters</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">interactions</span><span class="o">.</span><span class="n">sterile_quark_charged</span><span class="p">(</span>
+                         <span class="n">theta</span><span class="o">=</span><span class="n">thetas</span><span class="p">[</span><span class="n">lepton</span><span class="o">.</span><span class="n">flavour</span><span class="p">],</span> <span class="n">sterile</span><span class="o">=</span><span class="n">sterile</span><span class="p">,</span>
+                         <span class="n">lepton</span><span class="o">=</span><span class="n">lepton</span><span class="p">,</span> <span class="n">up</span><span class="o">=</span><span class="n">up</span><span class="p">,</span> <span class="n">down</span><span class="o">=</span><span class="n">down</span>
+                     <span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">inters</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+    </div>
+    <div class='section'>
+    <a id="section-12" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-12'>#</a>
+          </div>
           <p>\begin{align}
-       N_S + \nu_{\beta} &amp;\to \nu_{\alpha} + \nu_{\beta}
-       \\ N_S + \overline{\nu_{\beta}} &amp;\to \nu_{\alpha} + \overline{\nu_{\beta}}
+       N_S + \overline{\nu} &amp;\to q + \overline{q}
    \end{align}</p>
         </div>
         <div class='code'>
           <div class="highlight"><pre>    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">sterile_scattering</span><span class="p">(</span><span class="n">theta</span><span class="o">=</span><span class="mf">1.</span><span class="p">,</span> <span class="n">sterile</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">active_a</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">active_b</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">sterile_quark_neutral</span><span class="p">(</span><span class="n">theta</span><span class="o">=</span><span class="mf">1.</span><span class="p">,</span> <span class="n">sterile</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">active</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">quark</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+
+        <span class="n">g_R</span> <span class="o">=</span> <span class="n">CONST</span><span class="o">.</span><span class="n">g_R</span>
+
+        <span class="k">if</span> <span class="n">quark</span><span class="o">.</span><span class="n">Q</span> <span class="o">==</span> <span class="mf">2.</span><span class="o">/</span><span class="mf">3.</span><span class="p">:</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="p">(</span><span class="mi">3</span> <span class="o">-</span> <span class="mi">4</span> <span class="o">*</span> <span class="n">g_R</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">quark</span><span class="o">.</span><span class="n">Q</span> <span class="o">==</span> <span class="o">-</span><span class="mf">1.</span><span class="o">/</span><span class="mf">3.</span><span class="p">:</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="p">(</span><span class="mi">3</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">g_R</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">Interaction</span><span class="p">(</span>
-            <span class="n">name</span><span class="o">=</span><span class="s">&quot;Sterile-active neutrino mixing&quot;</span><span class="p">,</span>
-            <span class="n">in_particles</span><span class="o">=</span><span class="p">[</span><span class="n">sterile</span><span class="p">,</span> <span class="n">active_a</span><span class="p">],</span>
-            <span class="n">out_particles</span><span class="o">=</span><span class="p">[</span><span class="n">active_b</span><span class="p">,</span> <span class="n">active_b</span><span class="p">],</span>
-            <span class="n">Ms</span><span class="o">=</span><span class="p">[</span>
-                <span class="n">SterileWeakM</span><span class="p">(</span><span class="n">K1</span><span class="o">=</span><span class="mf">1.</span><span class="p">,</span> <span class="n">theta</span><span class="o">=</span><span class="n">theta</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">)),</span>
-                <span class="n">SterileWeakM</span><span class="p">(</span><span class="n">K1</span><span class="o">=</span><span class="mf">1.</span><span class="p">,</span> <span class="n">theta</span><span class="o">=</span><span class="n">theta</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)),</span>
-            <span class="p">]</span>
+            <span class="n">name</span><span class="o">=</span><span class="s">&quot;Sterile-quarks neutral channel interaction&quot;</span><span class="p">,</span>
+            <span class="n">particles</span><span class="o">=</span><span class="p">((</span><span class="n">sterile</span><span class="p">,</span> <span class="n">active</span><span class="p">),</span> <span class="p">(</span><span class="n">quark</span><span class="p">,</span> <span class="n">quark</span><span class="p">)),</span>
+            <span class="n">antiparticles</span><span class="o">=</span><span class="p">((</span><span class="bp">False</span><span class="p">,</span> <span class="bp">True</span><span class="p">),</span> <span class="p">(</span><span class="bp">False</span><span class="p">,</span> <span class="bp">True</span><span class="p">)),</span>
+            <span class="n">Ms</span><span class="o">=</span><span class="p">(</span>
+                <span class="n">WeakM</span><span class="p">(</span><span class="n">K1</span><span class="o">=</span><span class="mf">32.</span><span class="o">/</span><span class="mf">9.</span> <span class="o">*</span> <span class="n">g_R</span> <span class="o">*</span> <span class="n">theta</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)),</span>
+                <span class="n">WeakM</span><span class="p">(</span><span class="n">K1</span><span class="o">=</span><span class="mf">2.</span><span class="o">/</span><span class="mf">9.</span> <span class="o">*</span> <span class="n">x</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="n">theta</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">)),</span>
+                <span class="n">WeakM</span><span class="p">(</span><span class="n">K2</span><span class="o">=</span><span class="mf">16.</span><span class="o">/</span><span class="mf">9.</span> <span class="o">*</span> <span class="n">g_R</span> <span class="o">*</span> <span class="n">x</span> <span class="o">*</span> <span class="n">theta</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">)),</span>
+            <span class="p">),</span>
+            <span class="n">integral</span><span class="o">=</span><span class="n">FourParticleIntegral</span>
+        <span class="p">)</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+    </div>
+    <div class='section'>
+    <a id="section-13" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-13'>#</a>
+          </div>
+          <p>\begin{align}
+       N_S + l^+ &amp;\to u + \overline{d}
+   \end{align}</p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">sterile_quark_charged</span><span class="p">(</span><span class="n">theta</span><span class="o">=</span><span class="mf">1.</span><span class="p">,</span> <span class="n">sterile</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">lepton</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">up</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">down</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+
+        <span class="n">CKM</span> <span class="o">=</span> <span class="n">SM_particles</span><span class="o">.</span><span class="n">quarks</span><span class="o">.</span><span class="n">CKM</span><span class="p">[(</span><span class="n">up</span><span class="o">.</span><span class="n">family</span><span class="p">,</span> <span class="n">down</span><span class="o">.</span><span class="n">family</span><span class="p">)]</span>
+
+        <span class="k">return</span> <span class="n">Interaction</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="s">&quot;Sterile-quarks charged channel interaction&quot;</span><span class="p">,</span>
+            <span class="n">particles</span><span class="o">=</span><span class="p">((</span><span class="n">sterile</span><span class="p">,</span> <span class="n">lepton</span><span class="p">),</span> <span class="p">(</span><span class="n">up</span><span class="p">,</span> <span class="n">down</span><span class="p">)),</span>
+            <span class="n">antiparticles</span><span class="o">=</span><span class="p">((</span><span class="bp">False</span><span class="p">,</span> <span class="bp">True</span><span class="p">),</span> <span class="p">(</span><span class="bp">False</span><span class="p">,</span> <span class="bp">True</span><span class="p">)),</span>
+            <span class="n">Ms</span><span class="o">=</span><span class="p">(</span>
+                <span class="n">WeakM</span><span class="p">(</span><span class="n">K1</span><span class="o">=.</span><span class="mi">5</span> <span class="o">*</span> <span class="n">CKM</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="n">theta</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">)),</span>
+                <span class="n">WeakM</span><span class="p">(</span><span class="n">K1</span><span class="o">=.</span><span class="mi">5</span> <span class="o">*</span> <span class="n">CKM</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="n">theta</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)),</span>
+            <span class="p">),</span>
+            <span class="n">integral</span><span class="o">=</span><span class="n">FourParticleIntegral</span>
+        <span class="p">)</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+    </div>
+    <div class='section'>
+    <a id="section-14" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-14'>#</a>
+          </div>
+          
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">sterile_hadrons_interactions</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">thetas</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">sterile</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">neutrinos</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                                     <span class="n">leptons</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">hadrons</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+
+        <span class="n">inters</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">neutrino</span> <span class="ow">in</span> <span class="n">neutrinos</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">thetas</span><span class="p">[</span><span class="n">neutrino</span><span class="o">.</span><span class="n">flavour</span><span class="p">]:</span>
+                <span class="k">for</span> <span class="n">meson</span> <span class="ow">in</span> <span class="n">hadrons</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">meson</span><span class="o">.</span><span class="n">Q</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="n">inters</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cls</span><span class="o">.</span><span class="n">sterile_pion_neutral</span><span class="p">(</span>
+                            <span class="n">theta</span><span class="o">=</span><span class="n">thetas</span><span class="p">[</span><span class="n">neutrino</span><span class="o">.</span><span class="n">flavour</span><span class="p">],</span>
+                            <span class="n">sterile</span><span class="o">=</span><span class="n">sterile</span><span class="p">,</span>
+                            <span class="n">active</span><span class="o">=</span><span class="n">neutrino</span><span class="p">,</span>
+                            <span class="n">pion</span><span class="o">=</span><span class="n">meson</span><span class="p">))</span>
+
+        <span class="k">for</span> <span class="n">lepton</span> <span class="ow">in</span> <span class="n">leptons</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">thetas</span><span class="p">[</span><span class="n">lepton</span><span class="o">.</span><span class="n">flavour</span><span class="p">]:</span>
+                <span class="k">for</span> <span class="n">meson</span> <span class="ow">in</span> <span class="n">hadrons</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">meson</span><span class="o">.</span><span class="n">Q</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+                        <span class="n">inters</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cls</span><span class="o">.</span><span class="n">sterile_pion_charged</span><span class="p">(</span>
+                            <span class="n">theta</span><span class="o">=</span><span class="n">thetas</span><span class="p">[</span><span class="n">lepton</span><span class="o">.</span><span class="n">flavour</span><span class="p">],</span>
+                            <span class="n">sterile</span><span class="o">=</span><span class="n">sterile</span><span class="p">,</span>
+                            <span class="n">lepton</span><span class="o">=</span><span class="n">lepton</span><span class="p">,</span>
+                            <span class="n">pion</span><span class="o">=</span><span class="n">meson</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">inters</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+    </div>
+    <div class='section'>
+    <a id="section-15" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-15'>#</a>
+          </div>
+          <p>\begin{align}
+       N \to \nu + \pi^0
+   \end{align}</p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">sterile_pion_neutral</span><span class="p">(</span><span class="n">theta</span><span class="o">=</span><span class="mf">1.</span><span class="p">,</span> <span class="n">sterile</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">active</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">pion</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+
+        <span class="k">return</span> <span class="n">Interaction</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="s">&quot;Sterile neutrino decay to neutral pion and neutrino&quot;</span><span class="p">,</span>
+            <span class="n">particles</span><span class="o">=</span><span class="p">((</span><span class="n">sterile</span><span class="p">,</span> <span class="p">),</span> <span class="p">(</span><span class="n">active</span><span class="p">,</span> <span class="n">pion</span><span class="p">)),</span>
+            <span class="n">antiparticles</span><span class="o">=</span><span class="p">((</span><span class="bp">False</span><span class="p">,</span> <span class="p">),</span> <span class="p">(</span><span class="bp">False</span><span class="p">,</span> <span class="bp">False</span><span class="p">)),</span>
+            <span class="n">Ms</span><span class="o">=</span><span class="p">(</span><span class="n">ThreeParticleM</span><span class="p">(</span><span class="n">K</span><span class="o">=</span><span class="p">(</span><span class="n">CONST</span><span class="o">.</span><span class="n">G_F</span> <span class="o">*</span> <span class="n">theta</span> <span class="o">*</span> <span class="n">CONST</span><span class="o">.</span><span class="n">f_pi</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
+                               <span class="o">*</span> <span class="n">sterile</span><span class="o">.</span><span class="n">mass</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="n">sterile</span><span class="o">.</span><span class="n">mass</span><span class="o">**</span><span class="mi">2</span> <span class="o">-</span> <span class="n">pion</span><span class="o">.</span><span class="n">mass</span><span class="o">**</span><span class="mi">2</span><span class="p">)),</span> <span class="p">),</span>
+            <span class="n">integral</span><span class="o">=</span><span class="n">ThreeParticleIntegral</span>
+        <span class="p">)</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+    </div>
+    <div class='section'>
+    <a id="section-16" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-16'>#</a>
+          </div>
+          <p>\begin{align}
+       N \to l + \pi^+
+   \end{align}</p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">sterile_pion_charged</span><span class="p">(</span><span class="n">theta</span><span class="o">=</span><span class="mf">1.</span><span class="p">,</span> <span class="n">sterile</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">lepton</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">pion</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+
+        <span class="n">CKM</span> <span class="o">=</span> <span class="n">SM_particles</span><span class="o">.</span><span class="n">quarks</span><span class="o">.</span><span class="n">CKM</span><span class="p">[(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)]</span>
+
+        <span class="k">return</span> <span class="n">Interaction</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="s">&quot;Sterile neutrino decay to charged pion and lepton&quot;</span><span class="p">,</span>
+            <span class="n">particles</span><span class="o">=</span><span class="p">((</span><span class="n">sterile</span><span class="p">,</span> <span class="p">),</span> <span class="p">(</span><span class="n">lepton</span><span class="p">,</span> <span class="n">pion</span><span class="p">)),</span>
+            <span class="n">antiparticles</span><span class="o">=</span><span class="p">((</span><span class="bp">False</span><span class="p">,</span> <span class="p">),</span> <span class="p">(</span><span class="bp">False</span><span class="p">,</span> <span class="bp">True</span><span class="p">)),</span>
+            <span class="n">Ms</span><span class="o">=</span><span class="p">(</span><span class="n">ThreeParticleM</span><span class="p">(</span>
+                <span class="n">K</span><span class="o">=</span><span class="p">(</span><span class="n">CONST</span><span class="o">.</span><span class="n">G_F</span> <span class="o">*</span> <span class="n">theta</span> <span class="o">*</span> <span class="n">CONST</span><span class="o">.</span><span class="n">f_pi</span> <span class="o">*</span> <span class="n">CKM</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
+                <span class="o">*</span> <span class="p">(</span>
+                   <span class="p">(</span><span class="n">sterile</span><span class="o">.</span><span class="n">mass</span><span class="o">**</span><span class="mi">2</span> <span class="o">-</span> <span class="n">lepton</span><span class="o">.</span><span class="n">mass</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
+                   <span class="o">-</span> <span class="n">pion</span><span class="o">.</span><span class="n">mass</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="n">sterile</span><span class="o">.</span><span class="n">mass</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">lepton</span><span class="o">.</span><span class="n">mass</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+                <span class="p">)</span>
+            <span class="p">),),</span>
+            <span class="n">integral</span><span class="o">=</span><span class="n">ThreeParticleIntegral</span>
         <span class="p">)</span>
 
 </pre></div>

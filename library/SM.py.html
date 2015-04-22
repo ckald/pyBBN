@@ -28,7 +28,7 @@
     </div>
     <div class="generation-time">
         Generated at
-        <code>2015-04-01 15:55</code>
+        <code>2015-04-22 14:29</code>
         by a diligent
         <a target="_blank" href="http://ckald.github.io/pyccoon/" title="Pyccoon: side-to-side documentation generator">
             <img id="pyccoon-icon" src="../pyccoon_icon.svg" alt="Pyccoon: side-to-side documentation generator" />pyccoon</a>
@@ -68,10 +68,14 @@
           <p>Standard Model particles and interactions</p>
         </div>
         <div class='code'>
-          <div class="highlight"><pre><span class="kn">from</span> <span class="nn">common</span> <span class="kn">import</span> <span class="n">UNITS</span><span class="p">,</span> <span class="n">CONST</span>
+          <div class="highlight"><pre><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">division</span>
+
+<span class="kn">import</span> <span class="nn">itertools</span>
+
+<span class="kn">from</span> <span class="nn">common</span> <span class="kn">import</span> <span class="n">UNITS</span><span class="p">,</span> <span class="n">CONST</span>
 <span class="kn">from</span> <span class="nn">particles</span> <span class="kn">import</span> <span class="n">STATISTICS</span>
 <span class="kn">from</span> <span class="nn">interactions</span> <span class="kn">import</span> <span class="n">Interaction</span>
-<span class="kn">from</span> <span class="nn">interactions.four_particle</span> <span class="kn">import</span> <span class="n">FourParticleM</span></pre></div>
+<span class="kn">from</span> <span class="nn">interactions.four_particle</span> <span class="kn">import</span> <span class="n">FourParticleM</span><span class="p">,</span> <span class="n">FourParticleIntegral</span></pre></div>
         </div>
         <div class='clearall'></div>
     </section>
@@ -84,7 +88,7 @@
             <a class='octothorpe' href='#section-2'>#</a>
           </div>
           <h1><a id="weak-interactions-matrix-element" class="header-anchor" href="#weak-interactions-matrix-element"> Weak interactions matrix element</a></h1>
-<div class="codehilite"><pre>    <span class="n">Weak</span> <span class="n">processes</span> <span class="n">usually</span> <span class="n">include</span> <span class="n">a</span> <span class="n">common</span> <span class="n">factor</span> <span class="n">of</span> <span class="err">$</span><span class="mi">32</span> <span class="n">G_F</span><span class="o">^</span><span class="mi">2</span><span class="err">$</span>
+<div class="codehilite"><pre>    Weak processes usually include a common factor of $32 G_F^2$
 </pre></div>
         </div>
         <div class='code'>
@@ -115,7 +119,8 @@
         <span class="s">&#39;name&#39;</span><span class="p">:</span> <span class="s">&#39;Photon&#39;</span><span class="p">,</span>
         <span class="s">&#39;symbol&#39;</span><span class="p">:</span> <span class="s">&#39;γ&#39;</span><span class="p">,</span>
         <span class="s">&#39;statistics&#39;</span><span class="p">:</span> <span class="n">STATISTICS</span><span class="o">.</span><span class="n">BOSON</span><span class="p">,</span>
-        <span class="s">&#39;dof&#39;</span><span class="p">:</span> <span class="mi">2</span>
+        <span class="s">&#39;dof&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+        <span class="s">&#39;majorana&#39;</span><span class="p">:</span> <span class="bp">True</span>
     <span class="p">}</span></pre></div>
         </div>
         <div class='clearall'></div>
@@ -137,14 +142,34 @@
             <span class="s">&#39;symbol&#39;</span><span class="p">:</span> <span class="s">&#39;n&#39;</span><span class="p">,</span>
             <span class="s">&#39;statistics&#39;</span><span class="p">:</span> <span class="n">STATISTICS</span><span class="o">.</span><span class="n">FERMION</span><span class="p">,</span>
             <span class="s">&#39;mass&#39;</span><span class="p">:</span> <span class="mf">0.939</span> <span class="o">*</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">GeV</span><span class="p">,</span>
-            <span class="s">&#39;dof&#39;</span><span class="p">:</span> <span class="mi">4</span>
+            <span class="s">&#39;dof&#39;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span>
+            <span class="s">&#39;majorana&#39;</span><span class="p">:</span> <span class="bp">False</span>
         <span class="p">}</span>
         <span class="n">proton</span> <span class="o">=</span> <span class="p">{</span>
             <span class="s">&#39;name&#39;</span><span class="p">:</span> <span class="s">&#39;Proton&#39;</span><span class="p">,</span>
             <span class="s">&#39;symbol&#39;</span><span class="p">:</span> <span class="s">&#39;p&#39;</span><span class="p">,</span>
             <span class="s">&#39;statistics&#39;</span><span class="p">:</span> <span class="n">STATISTICS</span><span class="o">.</span><span class="n">FERMION</span><span class="p">,</span>
             <span class="s">&#39;mass&#39;</span><span class="p">:</span> <span class="mf">0.938</span> <span class="o">*</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">GeV</span><span class="p">,</span>
-            <span class="s">&#39;dof&#39;</span><span class="p">:</span> <span class="mi">4</span>
+            <span class="s">&#39;dof&#39;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span>
+            <span class="s">&#39;majorana&#39;</span><span class="p">:</span> <span class="bp">False</span>
+        <span class="p">}</span>
+        <span class="n">neutral_pion</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s">&#39;name&#39;</span><span class="p">:</span> <span class="s">&#39;Neutral pion&#39;</span><span class="p">,</span>
+            <span class="s">&#39;symbol&#39;</span><span class="p">:</span> <span class="s">&#39;π0&#39;</span><span class="p">,</span>
+            <span class="s">&#39;statistics&#39;</span><span class="p">:</span> <span class="n">STATISTICS</span><span class="o">.</span><span class="n">BOSON</span><span class="p">,</span>
+            <span class="s">&#39;mass&#39;</span><span class="p">:</span> <span class="mf">134.98</span> <span class="o">*</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">MeV</span><span class="p">,</span>
+            <span class="s">&#39;dof&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+            <span class="s">&#39;majorana&#39;</span><span class="p">:</span> <span class="bp">False</span><span class="p">,</span>
+            <span class="s">&#39;Q&#39;</span><span class="p">:</span> <span class="mi">0</span>
+        <span class="p">}</span>
+        <span class="n">charged_pion</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s">&#39;name&#39;</span><span class="p">:</span> <span class="s">&#39;Charged pion&#39;</span><span class="p">,</span>
+            <span class="s">&#39;symbol&#39;</span><span class="p">:</span> <span class="s">&#39;π&#39;</span><span class="p">,</span>
+            <span class="s">&#39;statistics&#39;</span><span class="p">:</span> <span class="n">STATISTICS</span><span class="o">.</span><span class="n">BOSON</span><span class="p">,</span>
+            <span class="s">&#39;mass&#39;</span><span class="p">:</span> <span class="mf">139.57</span> <span class="o">*</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">MeV</span><span class="p">,</span>
+            <span class="s">&#39;dof&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+            <span class="s">&#39;majorana&#39;</span><span class="p">:</span> <span class="bp">False</span><span class="p">,</span>
+            <span class="s">&#39;Q&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span>
         <span class="p">}</span></pre></div>
         </div>
         <div class='clearall'></div>
@@ -165,22 +190,31 @@
             <span class="s">&#39;name&#39;</span><span class="p">:</span> <span class="s">&#39;Electron neutrino&#39;</span><span class="p">,</span>
             <span class="s">&#39;symbol&#39;</span><span class="p">:</span> <span class="s">&#39;ν_e&#39;</span><span class="p">,</span>
             <span class="s">&#39;statistics&#39;</span><span class="p">:</span> <span class="n">STATISTICS</span><span class="o">.</span><span class="n">FERMION</span><span class="p">,</span>
+            <span class="s">&#39;mass&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
             <span class="s">&#39;dof&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
-            <span class="s">&#39;decoupling_temperature&#39;</span><span class="p">:</span> <span class="mi">5</span> <span class="o">*</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">MeV</span>
+            <span class="s">&#39;decoupling_temperature&#39;</span><span class="p">:</span> <span class="mi">5</span> <span class="o">*</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">MeV</span><span class="p">,</span>
+            <span class="s">&#39;majorana&#39;</span><span class="p">:</span> <span class="bp">False</span><span class="p">,</span>
+            <span class="s">&#39;flavour&#39;</span><span class="p">:</span> <span class="s">&#39;electron&#39;</span>
         <span class="p">}</span>
         <span class="n">neutrino_mu</span> <span class="o">=</span> <span class="p">{</span>
             <span class="s">&#39;name&#39;</span><span class="p">:</span> <span class="s">&#39;Muon neutrino&#39;</span><span class="p">,</span>
             <span class="s">&#39;symbol&#39;</span><span class="p">:</span> <span class="s">&#39;ν_μ&#39;</span><span class="p">,</span>
             <span class="s">&#39;statistics&#39;</span><span class="p">:</span> <span class="n">STATISTICS</span><span class="o">.</span><span class="n">FERMION</span><span class="p">,</span>
+            <span class="s">&#39;mass&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
             <span class="s">&#39;dof&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
-            <span class="s">&#39;decoupling_temperature&#39;</span><span class="p">:</span> <span class="mi">5</span> <span class="o">*</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">MeV</span>
+            <span class="s">&#39;decoupling_temperature&#39;</span><span class="p">:</span> <span class="mi">5</span> <span class="o">*</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">MeV</span><span class="p">,</span>
+            <span class="s">&#39;majorana&#39;</span><span class="p">:</span> <span class="bp">False</span><span class="p">,</span>
+            <span class="s">&#39;flavour&#39;</span><span class="p">:</span> <span class="s">&#39;muon&#39;</span>
         <span class="p">}</span>
         <span class="n">neutrino_tau</span> <span class="o">=</span> <span class="p">{</span>
             <span class="s">&#39;name&#39;</span><span class="p">:</span> <span class="s">&#39;Tau neutrino&#39;</span><span class="p">,</span>
             <span class="s">&#39;symbol&#39;</span><span class="p">:</span> <span class="s">&#39;ν_τ&#39;</span><span class="p">,</span>
             <span class="s">&#39;statistics&#39;</span><span class="p">:</span> <span class="n">STATISTICS</span><span class="o">.</span><span class="n">FERMION</span><span class="p">,</span>
+            <span class="s">&#39;mass&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
             <span class="s">&#39;dof&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
-            <span class="s">&#39;decoupling_temperature&#39;</span><span class="p">:</span> <span class="mi">5</span> <span class="o">*</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">MeV</span>
+            <span class="s">&#39;decoupling_temperature&#39;</span><span class="p">:</span> <span class="mi">5</span> <span class="o">*</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">MeV</span><span class="p">,</span>
+            <span class="s">&#39;majorana&#39;</span><span class="p">:</span> <span class="bp">False</span><span class="p">,</span>
+            <span class="s">&#39;flavour&#39;</span><span class="p">:</span> <span class="s">&#39;tau&#39;</span>
         <span class="p">}</span>
 
         <span class="n">electron</span> <span class="o">=</span> <span class="p">{</span>
@@ -188,21 +222,27 @@
             <span class="s">&#39;symbol&#39;</span><span class="p">:</span> <span class="s">&#39;e&#39;</span><span class="p">,</span>
             <span class="s">&#39;statistics&#39;</span><span class="p">:</span> <span class="n">STATISTICS</span><span class="o">.</span><span class="n">FERMION</span><span class="p">,</span>
             <span class="s">&#39;mass&#39;</span><span class="p">:</span> <span class="mf">0.511</span> <span class="o">*</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">MeV</span><span class="p">,</span>
-            <span class="s">&#39;dof&#39;</span><span class="p">:</span> <span class="mi">4</span>
+            <span class="s">&#39;dof&#39;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span>
+            <span class="s">&#39;majorana&#39;</span><span class="p">:</span> <span class="bp">False</span><span class="p">,</span>
+            <span class="s">&#39;flavour&#39;</span><span class="p">:</span> <span class="s">&#39;electron&#39;</span>
         <span class="p">}</span>
         <span class="n">muon</span> <span class="o">=</span> <span class="p">{</span>
             <span class="s">&#39;name&#39;</span><span class="p">:</span> <span class="s">&#39;Muon&#39;</span><span class="p">,</span>
             <span class="s">&#39;symbol&#39;</span><span class="p">:</span> <span class="s">&#39;μ&#39;</span><span class="p">,</span>
             <span class="s">&#39;statistics&#39;</span><span class="p">:</span> <span class="n">STATISTICS</span><span class="o">.</span><span class="n">FERMION</span><span class="p">,</span>
             <span class="s">&#39;mass&#39;</span><span class="p">:</span> <span class="mf">105.7</span> <span class="o">*</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">MeV</span><span class="p">,</span>
-            <span class="s">&#39;dof&#39;</span><span class="p">:</span> <span class="mi">4</span>
+            <span class="s">&#39;dof&#39;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span>
+            <span class="s">&#39;majorana&#39;</span><span class="p">:</span> <span class="bp">False</span><span class="p">,</span>
+            <span class="s">&#39;flavour&#39;</span><span class="p">:</span> <span class="s">&#39;muon&#39;</span>
         <span class="p">}</span>
         <span class="n">tau</span> <span class="o">=</span> <span class="p">{</span>
             <span class="s">&#39;name&#39;</span><span class="p">:</span> <span class="s">&#39;Tau&#39;</span><span class="p">,</span>
             <span class="s">&#39;symbol&#39;</span><span class="p">:</span> <span class="s">&#39;τ&#39;</span><span class="p">,</span>
             <span class="s">&#39;statistics&#39;</span><span class="p">:</span> <span class="n">STATISTICS</span><span class="o">.</span><span class="n">FERMION</span><span class="p">,</span>
             <span class="s">&#39;mass&#39;</span><span class="p">:</span> <span class="mi">1777</span> <span class="o">*</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">MeV</span><span class="p">,</span>
-            <span class="s">&#39;dof&#39;</span><span class="p">:</span> <span class="mi">4</span>
+            <span class="s">&#39;dof&#39;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span>
+            <span class="s">&#39;majorana&#39;</span><span class="p">:</span> <span class="bp">False</span><span class="p">,</span>
+            <span class="s">&#39;flavour&#39;</span><span class="p">:</span> <span class="s">&#39;tau&#39;</span>
         <span class="p">}</span></pre></div>
         </div>
         <div class='clearall'></div>
@@ -219,47 +259,78 @@
         </div>
         <div class='code'>
           <div class="highlight"><pre>    <span class="k">class</span> <span class="nc">quarks</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+
+        <span class="n">CKM</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">):</span> <span class="mf">0.974</span><span class="p">,</span>
+            <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">):</span> <span class="mf">0.225</span><span class="p">,</span>
+            <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">):</span> <span class="mf">0.003</span><span class="p">,</span>
+            <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">):</span> <span class="mf">0.225</span><span class="p">,</span>
+            <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">):</span> <span class="mf">0.973</span><span class="p">,</span>
+            <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">):</span> <span class="mf">0.041</span><span class="p">,</span>
+            <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">):</span> <span class="mf">0.009</span><span class="p">,</span>
+            <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">):</span> <span class="mf">0.040</span><span class="p">,</span>
+            <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">):</span> <span class="mf">0.999</span><span class="p">,</span>
+        <span class="p">}</span>
+
         <span class="n">up</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s">&#39;name&#39;</span><span class="p">:</span> <span class="s">&#39;up&#39;</span><span class="p">,</span>
+            <span class="s">&#39;name&#39;</span><span class="p">:</span> <span class="s">&#39;Up quark&#39;</span><span class="p">,</span>
             <span class="s">&#39;symbol&#39;</span><span class="p">:</span> <span class="s">&#39;u&#39;</span><span class="p">,</span>
             <span class="s">&#39;statistics&#39;</span><span class="p">:</span> <span class="n">STATISTICS</span><span class="o">.</span><span class="n">FERMION</span><span class="p">,</span>
             <span class="s">&#39;mass&#39;</span><span class="p">:</span> <span class="mi">3</span> <span class="o">*</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">MeV</span><span class="p">,</span>
-            <span class="s">&#39;dof&#39;</span><span class="p">:</span> <span class="mi">2</span>
+            <span class="s">&#39;dof&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+            <span class="s">&#39;majorana&#39;</span><span class="p">:</span> <span class="bp">False</span><span class="p">,</span>
+            <span class="s">&#39;family&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+            <span class="s">&#39;Q&#39;</span><span class="p">:</span> <span class="mf">2.</span><span class="o">/</span><span class="mf">3.</span>
         <span class="p">}</span>
         <span class="n">down</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s">&#39;name&#39;</span><span class="p">:</span> <span class="s">&#39;down&#39;</span><span class="p">,</span>
+            <span class="s">&#39;name&#39;</span><span class="p">:</span> <span class="s">&#39;Down quark&#39;</span><span class="p">,</span>
             <span class="s">&#39;symbol&#39;</span><span class="p">:</span> <span class="s">&#39;d&#39;</span><span class="p">,</span>
             <span class="s">&#39;statistics&#39;</span><span class="p">:</span> <span class="n">STATISTICS</span><span class="o">.</span><span class="n">FERMION</span><span class="p">,</span>
             <span class="s">&#39;mass&#39;</span><span class="p">:</span> <span class="mi">5</span> <span class="o">*</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">MeV</span><span class="p">,</span>
-            <span class="s">&#39;dof&#39;</span><span class="p">:</span> <span class="mi">2</span>
+            <span class="s">&#39;dof&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+            <span class="s">&#39;majorana&#39;</span><span class="p">:</span> <span class="bp">False</span><span class="p">,</span>
+            <span class="s">&#39;family&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+            <span class="s">&#39;Q&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mf">1.</span><span class="o">/</span><span class="mf">3.</span>
         <span class="p">}</span>
         <span class="n">charm</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s">&#39;name&#39;</span><span class="p">:</span> <span class="s">&#39;charm&#39;</span><span class="p">,</span>
+            <span class="s">&#39;name&#39;</span><span class="p">:</span> <span class="s">&#39;Charm quark&#39;</span><span class="p">,</span>
             <span class="s">&#39;symbol&#39;</span><span class="p">:</span> <span class="s">&#39;c&#39;</span><span class="p">,</span>
             <span class="s">&#39;statistics&#39;</span><span class="p">:</span> <span class="n">STATISTICS</span><span class="o">.</span><span class="n">FERMION</span><span class="p">,</span>
             <span class="s">&#39;mass&#39;</span><span class="p">:</span> <span class="mi">1300</span> <span class="o">*</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">MeV</span><span class="p">,</span>
-            <span class="s">&#39;dof&#39;</span><span class="p">:</span> <span class="mi">2</span>
+            <span class="s">&#39;dof&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+            <span class="s">&#39;majorana&#39;</span><span class="p">:</span> <span class="bp">False</span><span class="p">,</span>
+            <span class="s">&#39;family&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+            <span class="s">&#39;Q&#39;</span><span class="p">:</span> <span class="mf">2.</span><span class="o">/</span><span class="mf">3.</span>
         <span class="p">}</span>
         <span class="n">strange</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s">&#39;name&#39;</span><span class="p">:</span> <span class="s">&#39;strange&#39;</span><span class="p">,</span>
+            <span class="s">&#39;name&#39;</span><span class="p">:</span> <span class="s">&#39;Strange quark&#39;</span><span class="p">,</span>
             <span class="s">&#39;symbol&#39;</span><span class="p">:</span> <span class="s">&#39;s&#39;</span><span class="p">,</span>
             <span class="s">&#39;statistics&#39;</span><span class="p">:</span> <span class="n">STATISTICS</span><span class="o">.</span><span class="n">FERMION</span><span class="p">,</span>
             <span class="s">&#39;mass&#39;</span><span class="p">:</span> <span class="mi">200</span> <span class="o">*</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">MeV</span><span class="p">,</span>
-            <span class="s">&#39;dof&#39;</span><span class="p">:</span> <span class="mi">2</span>
+            <span class="s">&#39;dof&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+            <span class="s">&#39;majorana&#39;</span><span class="p">:</span> <span class="bp">False</span><span class="p">,</span>
+            <span class="s">&#39;family&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+            <span class="s">&#39;Q&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mf">1.</span><span class="o">/</span><span class="mf">3.</span>
         <span class="p">}</span>
         <span class="n">top</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s">&#39;name&#39;</span><span class="p">:</span> <span class="s">&#39;top&#39;</span><span class="p">,</span>
+            <span class="s">&#39;name&#39;</span><span class="p">:</span> <span class="s">&#39;Top quark&#39;</span><span class="p">,</span>
             <span class="s">&#39;symbol&#39;</span><span class="p">:</span> <span class="s">&#39;t&#39;</span><span class="p">,</span>
             <span class="s">&#39;statistics&#39;</span><span class="p">:</span> <span class="n">STATISTICS</span><span class="o">.</span><span class="n">FERMION</span><span class="p">,</span>
             <span class="s">&#39;mass&#39;</span><span class="p">:</span> <span class="mi">180</span> <span class="o">*</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">GeV</span><span class="p">,</span>
-            <span class="s">&#39;dof&#39;</span><span class="p">:</span> <span class="mi">2</span>
+            <span class="s">&#39;dof&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+            <span class="s">&#39;majorana&#39;</span><span class="p">:</span> <span class="bp">False</span><span class="p">,</span>
+            <span class="s">&#39;family&#39;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
+            <span class="s">&#39;Q&#39;</span><span class="p">:</span> <span class="mf">2.</span><span class="o">/</span><span class="mf">3.</span>
         <span class="p">}</span>
         <span class="n">bottom</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s">&#39;name&#39;</span><span class="p">:</span> <span class="s">&#39;bottom&#39;</span><span class="p">,</span>
+            <span class="s">&#39;name&#39;</span><span class="p">:</span> <span class="s">&#39;Bottom quark&#39;</span><span class="p">,</span>
             <span class="s">&#39;symbol&#39;</span><span class="p">:</span> <span class="s">&#39;b&#39;</span><span class="p">,</span>
             <span class="s">&#39;statistics&#39;</span><span class="p">:</span> <span class="n">STATISTICS</span><span class="o">.</span><span class="n">FERMION</span><span class="p">,</span>
             <span class="s">&#39;mass&#39;</span><span class="p">:</span> <span class="mf">4.3</span> <span class="o">*</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">GeV</span><span class="p">,</span>
-            <span class="s">&#39;dof&#39;</span><span class="p">:</span> <span class="mi">2</span>
+            <span class="s">&#39;dof&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+            <span class="s">&#39;majorana&#39;</span><span class="p">:</span> <span class="bp">False</span><span class="p">,</span>
+            <span class="s">&#39;family&#39;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
+            <span class="s">&#39;Q&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mf">1.</span><span class="o">/</span><span class="mf">3.</span>
         <span class="p">}</span></pre></div>
         </div>
         <div class='clearall'></div>
@@ -289,36 +360,22 @@
           </div>
           <p>\begin{align}
        \nu_\alpha + \nu_\beta &amp;\to \nu_\alpha + \nu_\beta
-       \\ \nu_\alpha + \overline{\nu_\beta} &amp;\to \nu_\alpha + \overline{\nu_\beta}
    \end{align}</p>
 <p>\begin{equation}
-       |\mathcal{M}|^2 = 32 G_F^2 \left( (p_0 \cdot p_1) (p_2 \cdot p_3) +
-           (p_0 \cdot p_3) (p_1 \cdot p_2) \right)
-   \end{equation}</p>
-<p>\begin{align}
-       \nu_\alpha + \nu_\alpha &amp;\to \nu_\alpha + \nu_\alpha
-       \\ \nu_\alpha + \overline{\nu_\alpha} &amp;\to \nu_\alpha + \overline{\nu_\alpha}
-   \end{align}</p>
-<p>\begin{equation}
-       |\mathcal{M}|^2 = 32 G_F^2 \left( 2 (p_0 \cdot p_1) (p_2 \cdot p_3) +
-           4 (p_0 \cdot p_3) (p_1 \cdot p_2) \right)
+       |\mathcal{M}|^2 = 32 G_F^2 (p_0 \cdot p_1) (p_2 \cdot p_3)
    \end{equation}</p>
         </div>
         <div class='code'>
           <div class="highlight"><pre>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">neutrino_scattering</span><span class="p">(</span><span class="n">neutrino_a</span><span class="p">,</span> <span class="n">neutrino_b</span><span class="p">):</span>
 
-        <span class="n">K1</span> <span class="o">=</span> <span class="p">[</span><span class="mf">2.</span><span class="p">,</span> <span class="mf">4.</span><span class="p">]</span> <span class="k">if</span> <span class="n">neutrino_a</span> <span class="o">==</span> <span class="n">neutrino_b</span> <span class="k">else</span> <span class="p">[</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">]</span>
-
         <span class="k">return</span> <span class="n">Interaction</span><span class="p">(</span>
             <span class="n">name</span><span class="o">=</span><span class="s">&quot;Neutrino species scattering&quot;</span><span class="p">,</span>
-            <span class="n">in_particles</span><span class="o">=</span><span class="p">[</span><span class="n">neutrino_a</span><span class="p">,</span> <span class="n">neutrino_b</span><span class="p">],</span>
-            <span class="n">out_particles</span><span class="o">=</span><span class="p">[</span><span class="n">neutrino_a</span><span class="p">,</span> <span class="n">neutrino_b</span><span class="p">],</span>
+            <span class="n">particles</span><span class="o">=</span><span class="p">((</span><span class="n">neutrino_a</span><span class="p">,</span> <span class="n">neutrino_b</span><span class="p">),</span> <span class="p">(</span><span class="n">neutrino_a</span><span class="p">,</span> <span class="n">neutrino_b</span><span class="p">)),</span>
+            <span class="n">antiparticles</span><span class="o">=</span><span class="p">((</span><span class="bp">False</span><span class="p">,</span> <span class="bp">False</span><span class="p">),</span> <span class="p">(</span><span class="bp">False</span><span class="p">,</span> <span class="bp">False</span><span class="p">)),</span>
             <span class="n">decoupling_temperature</span><span class="o">=</span><span class="mi">0</span> <span class="o">*</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">MeV</span><span class="p">,</span>
-            <span class="n">Ms</span><span class="o">=</span><span class="p">[</span>
-                <span class="n">WeakM</span><span class="p">(</span><span class="n">K1</span><span class="o">=</span><span class="n">K1</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">order</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">)),</span>
-                <span class="n">WeakM</span><span class="p">(</span><span class="n">K1</span><span class="o">=</span><span class="n">K1</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">order</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)),</span>
-            <span class="p">]</span>
+            <span class="n">Ms</span><span class="o">=</span><span class="p">(</span><span class="n">WeakM</span><span class="p">(</span><span class="n">K1</span><span class="o">=</span><span class="mf">1.</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">)),),</span>
+            <span class="n">integral</span><span class="o">=</span><span class="n">FourParticleIntegral</span>
         <span class="p">)</span></pre></div>
         </div>
         <div class='clearall'></div>
@@ -330,35 +387,6 @@
         <div class='docs'>
           <div class='octowrap'>
             <a class='octothorpe' href='#section-9'>#</a>
-          </div>
-          <p>\begin{align}
-       \nu_\alpha + \overline{\nu_\alpha} &amp;\to \nu_\beta + \overline{\nu_\beta}
-   \end{align}</p>
-<p>\begin{equation}
-       |\mathcal{M}|^2 = 32 G_F^2 (p_0 \cdot p_3) (p_1 \cdot p_2)
-   \end{equation}</p>
-        </div>
-        <div class='code'>
-          <div class="highlight"><pre>    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">neutrino_pair_flavour_change</span><span class="p">(</span><span class="n">neutrino_a</span><span class="p">,</span> <span class="n">neutrino_b</span><span class="p">):</span>
-
-        <span class="k">return</span> <span class="n">Interaction</span><span class="p">(</span>
-            <span class="n">name</span><span class="o">=</span><span class="s">&quot;Neutrino pair flavor change&quot;</span><span class="p">,</span>
-            <span class="n">in_particles</span><span class="o">=</span><span class="p">[</span><span class="n">neutrino_a</span><span class="p">,</span> <span class="n">neutrino_a</span><span class="p">],</span>
-            <span class="n">out_particles</span><span class="o">=</span><span class="p">[</span><span class="n">neutrino_b</span><span class="p">,</span> <span class="n">neutrino_b</span><span class="p">],</span>
-            <span class="n">decoupling_temperature</span><span class="o">=</span><span class="mi">0</span> <span class="o">*</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">MeV</span><span class="p">,</span>
-            <span class="n">Ms</span><span class="o">=</span><span class="p">[</span><span class="n">WeakM</span><span class="p">(</span><span class="n">K1</span><span class="o">=</span><span class="mf">1.</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">))]</span>
-        <span class="p">)</span></pre></div>
-        </div>
-        <div class='clearall'></div>
-    </section>
-    </div>
-    <div class='section'>
-    <a id="section-10" class="section-anchor"></a>
-    <section>
-        <div class='docs'>
-          <div class='octowrap'>
-            <a class='octothorpe' href='#section-10'>#</a>
           </div>
           <p>\begin{align}
        \nu_\alpha + \overline{\nu_\alpha} &amp;\to e^- + e^+
@@ -374,19 +402,39 @@
         </div>
         <div class='code'>
           <div class="highlight"><pre>    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">neutrinos_to_electrons</span><span class="p">(</span><span class="n">neutrino</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">electron</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">g_L</span><span class="o">=</span><span class="n">CONST</span><span class="o">.</span><span class="n">g_R</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">neutrinos_to_leptons</span><span class="p">(</span><span class="n">neutrino</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">lepton</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">g_L</span><span class="o">=</span><span class="n">CONST</span><span class="o">.</span><span class="n">g_R</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">):</span>
 
         <span class="k">return</span> <span class="n">Interaction</span><span class="p">(</span>
-            <span class="n">name</span><span class="o">=</span><span class="s">&quot;Neutrino-anti-neutrino annihilation to electron-positron pair&quot;</span><span class="p">,</span>
-            <span class="n">in_particles</span><span class="o">=</span><span class="p">[</span><span class="n">neutrino</span><span class="p">,</span> <span class="n">neutrino</span><span class="p">],</span>
-            <span class="n">out_particles</span><span class="o">=</span><span class="p">[</span><span class="n">electron</span><span class="p">,</span> <span class="n">electron</span><span class="p">],</span>
+            <span class="n">name</span><span class="o">=</span><span class="s">&quot;Neutrino pair annihilation into lepton pair&quot;</span><span class="p">,</span>
+            <span class="n">particles</span><span class="o">=</span><span class="p">((</span><span class="n">neutrino</span><span class="p">,</span> <span class="n">neutrino</span><span class="p">),</span> <span class="p">(</span><span class="n">lepton</span><span class="p">,</span> <span class="n">lepton</span><span class="p">)),</span>
+            <span class="n">antiparticles</span><span class="o">=</span><span class="p">((</span><span class="bp">False</span><span class="p">,</span> <span class="bp">True</span><span class="p">),</span> <span class="p">(</span><span class="bp">False</span><span class="p">,</span> <span class="bp">True</span><span class="p">)),</span>
             <span class="n">decoupling_temperature</span><span class="o">=</span><span class="mi">0</span> <span class="o">*</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">MeV</span><span class="p">,</span>
-            <span class="n">Ms</span><span class="o">=</span><span class="p">[</span>
+            <span class="n">Ms</span><span class="o">=</span><span class="p">(</span>
                 <span class="n">WeakM</span><span class="p">(</span><span class="n">K1</span><span class="o">=</span><span class="mi">4</span> <span class="o">*</span> <span class="n">g_L</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)),</span>
                 <span class="n">WeakM</span><span class="p">(</span><span class="n">K1</span><span class="o">=</span><span class="mi">4</span> <span class="o">*</span> <span class="n">CONST</span><span class="o">.</span><span class="n">g_R</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">)),</span>
                 <span class="n">WeakM</span><span class="p">(</span><span class="n">K2</span><span class="o">=</span><span class="mi">4</span> <span class="o">*</span> <span class="n">g_L</span> <span class="o">*</span> <span class="n">CONST</span><span class="o">.</span><span class="n">g_R</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)),</span>
-            <span class="p">]</span>
+            <span class="p">),</span>
+            <span class="n">integral</span><span class="o">=</span><span class="n">FourParticleIntegral</span>
         <span class="p">)</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+    </div>
+    <div class='section'>
+    <a id="section-10" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-10'>#</a>
+          </div>
+          
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">neutrino_interactions</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">leptons</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">neutrinos</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+
+        <span class="n">g_R</span> <span class="o">=</span> <span class="n">CONST</span><span class="o">.</span><span class="n">g_R</span>
+        <span class="n">inters</span> <span class="o">=</span> <span class="p">[]</span></pre></div>
         </div>
         <div class='clearall'></div>
     </section>
@@ -398,34 +446,11 @@
           <div class='octowrap'>
             <a class='octothorpe' href='#section-11'>#</a>
           </div>
-          <p>\begin{align}
-       \nu_\alpha + e^- &amp;\to \nu_\alpha + e^-
-       \\ \nu_\alpha + e^+ &amp;\to \nu_\alpha + e^+
-   \end{align}</p>
-<p>\begin{align}
-       |\mathcal{M}|^2 = 32 G_F^2 \left(
-       \\ 4 \, (g_L^2 + g_R^2) \, (p_0 \cdot p_1) (p_2 \cdot p_3) +
-       \\ +4 \, (g_R^2 + g_L^2) \, (p_0 \cdot p_3) (p_1 \cdot p_2) -
-       \\ -8 \, g_L g_R \, m_1 m_3 (p_0 \cdot p_2)
-       \\ \right)
-   \end{align}</p>
-<p>Depending of the neutrino generations involved, $g_L$ can either be equal to $g_R + \frac12$ (for $\nu_e$) or $g_R - \frac12$ (for others).</p>
+          <p>Neutrinos scatterings</p>
         </div>
         <div class='code'>
-          <div class="highlight"><pre>    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">neutrino_electron_scattering</span><span class="p">(</span><span class="n">neutrino</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">electron</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">g_L</span><span class="o">=</span><span class="n">CONST</span><span class="o">.</span><span class="n">g_R</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">):</span>
-
-        <span class="k">return</span> <span class="n">Interaction</span><span class="p">(</span>
-            <span class="n">name</span><span class="o">=</span><span class="s">&quot;Neutrino-electron scattering&quot;</span><span class="p">,</span>
-            <span class="n">in_particles</span><span class="o">=</span><span class="p">[</span><span class="n">neutrino</span><span class="p">,</span> <span class="n">electron</span><span class="p">],</span>
-            <span class="n">out_particles</span><span class="o">=</span><span class="p">[</span><span class="n">neutrino</span><span class="p">,</span> <span class="n">electron</span><span class="p">],</span>
-            <span class="n">decoupling_temperature</span><span class="o">=</span><span class="mi">0</span> <span class="o">*</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">MeV</span><span class="p">,</span>
-            <span class="n">Ms</span><span class="o">=</span><span class="p">[</span>
-                <span class="n">WeakM</span><span class="p">(</span><span class="n">K1</span><span class="o">=</span><span class="mi">4</span> <span class="o">*</span> <span class="p">(</span><span class="n">g_L</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">CONST</span><span class="o">.</span><span class="n">g_R</span><span class="o">**</span><span class="mi">2</span><span class="p">),</span> <span class="n">order</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">)),</span>
-                <span class="n">WeakM</span><span class="p">(</span><span class="n">K1</span><span class="o">=</span><span class="mi">4</span> <span class="o">*</span> <span class="p">(</span><span class="n">g_L</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">CONST</span><span class="o">.</span><span class="n">g_R</span><span class="o">**</span><span class="mi">2</span><span class="p">),</span> <span class="n">order</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)),</span>
-                <span class="n">WeakM</span><span class="p">(</span><span class="n">K2</span><span class="o">=-</span><span class="mi">8</span> <span class="o">*</span> <span class="n">g_L</span> <span class="o">*</span> <span class="n">CONST</span><span class="o">.</span><span class="n">g_R</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">)),</span>
-            <span class="p">]</span>
-        <span class="p">)</span></pre></div>
+          <div class="highlight"><pre>        <span class="k">for</span> <span class="n">neutrino_a</span><span class="p">,</span> <span class="n">neutrino_b</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">combinations_with_replacement</span><span class="p">(</span><span class="n">neutrinos</span><span class="p">,</span> <span class="mi">2</span><span class="p">):</span>
+            <span class="n">inters</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cls</span><span class="o">.</span><span class="n">neutrino_scattering</span><span class="p">(</span><span class="n">neutrino_a</span><span class="p">,</span> <span class="n">neutrino_b</span><span class="p">))</span></pre></div>
         </div>
         <div class='clearall'></div>
     </section>
@@ -437,31 +462,15 @@
           <div class='octowrap'>
             <a class='octothorpe' href='#section-12'>#</a>
           </div>
-          
+          <p>Interactions of neutrinos and leptons</p>
         </div>
         <div class='code'>
-          <div class="highlight"><pre>    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">neutrino_interactions</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">electron</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
-                              <span class="n">neutrino_e</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">neutrino_mu</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">neutrino_tau</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+          <div class="highlight"><pre>        <span class="k">for</span> <span class="n">lepton</span> <span class="ow">in</span> <span class="n">leptons</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">neutrino</span> <span class="ow">in</span> <span class="n">neutrinos</span><span class="p">:</span>
+                <span class="n">g_L</span> <span class="o">=</span> <span class="n">g_R</span> <span class="o">+</span> <span class="mf">0.5</span> <span class="k">if</span> <span class="n">lepton</span><span class="o">.</span><span class="n">flavour</span> <span class="o">==</span> <span class="n">neutrino</span><span class="o">.</span><span class="n">flavour</span> <span class="k">else</span> <span class="n">g_R</span> <span class="o">-</span> <span class="mf">0.5</span>
+                <span class="n">inters</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cls</span><span class="o">.</span><span class="n">neutrinos_to_leptons</span><span class="p">(</span><span class="n">g_L</span><span class="o">=</span><span class="n">g_L</span><span class="p">,</span> <span class="n">lepton</span><span class="o">=</span><span class="n">lepton</span><span class="p">,</span> <span class="n">neutrino</span><span class="o">=</span><span class="n">neutrino</span><span class="p">))</span>
 
-        <span class="n">g_R</span> <span class="o">=</span> <span class="n">CONST</span><span class="o">.</span><span class="n">g_R</span>
-        <span class="k">return</span> <span class="p">[</span>
-            <span class="n">cls</span><span class="o">.</span><span class="n">neutrino_scattering</span><span class="p">(</span><span class="n">neutrino_e</span><span class="p">,</span> <span class="n">neutrino_e</span><span class="p">),</span>
-            <span class="n">cls</span><span class="o">.</span><span class="n">neutrino_scattering</span><span class="p">(</span><span class="n">neutrino_mu</span><span class="p">,</span> <span class="n">neutrino_mu</span><span class="p">),</span>
-            <span class="n">cls</span><span class="o">.</span><span class="n">neutrino_scattering</span><span class="p">(</span><span class="n">neutrino_tau</span><span class="p">,</span> <span class="n">neutrino_tau</span><span class="p">),</span>
-            <span class="n">cls</span><span class="o">.</span><span class="n">neutrino_scattering</span><span class="p">(</span><span class="n">neutrino_e</span><span class="p">,</span> <span class="n">neutrino_mu</span><span class="p">),</span>
-            <span class="n">cls</span><span class="o">.</span><span class="n">neutrino_scattering</span><span class="p">(</span><span class="n">neutrino_mu</span><span class="p">,</span> <span class="n">neutrino_tau</span><span class="p">),</span>
-            <span class="n">cls</span><span class="o">.</span><span class="n">neutrino_scattering</span><span class="p">(</span><span class="n">neutrino_tau</span><span class="p">,</span> <span class="n">neutrino_e</span><span class="p">),</span>
-            <span class="n">cls</span><span class="o">.</span><span class="n">neutrino_pair_flavour_change</span><span class="p">(</span><span class="n">neutrino_e</span><span class="p">,</span> <span class="n">neutrino_mu</span><span class="p">),</span>
-            <span class="n">cls</span><span class="o">.</span><span class="n">neutrino_pair_flavour_change</span><span class="p">(</span><span class="n">neutrino_mu</span><span class="p">,</span> <span class="n">neutrino_tau</span><span class="p">),</span>
-            <span class="n">cls</span><span class="o">.</span><span class="n">neutrino_pair_flavour_change</span><span class="p">(</span><span class="n">neutrino_tau</span><span class="p">,</span> <span class="n">neutrino_e</span><span class="p">),</span>
-            <span class="n">cls</span><span class="o">.</span><span class="n">neutrinos_to_electrons</span><span class="p">(</span><span class="n">g_L</span><span class="o">=</span><span class="n">g_R</span><span class="o">+</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">electron</span><span class="o">=</span><span class="n">electron</span><span class="p">,</span> <span class="n">neutrino</span><span class="o">=</span><span class="n">neutrino_e</span><span class="p">),</span>
-            <span class="n">cls</span><span class="o">.</span><span class="n">neutrinos_to_electrons</span><span class="p">(</span><span class="n">g_L</span><span class="o">=</span><span class="n">g_R</span><span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">electron</span><span class="o">=</span><span class="n">electron</span><span class="p">,</span> <span class="n">neutrino</span><span class="o">=</span><span class="n">neutrino_mu</span><span class="p">),</span>
-            <span class="n">cls</span><span class="o">.</span><span class="n">neutrinos_to_electrons</span><span class="p">(</span><span class="n">g_L</span><span class="o">=</span><span class="n">g_R</span><span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">electron</span><span class="o">=</span><span class="n">electron</span><span class="p">,</span> <span class="n">neutrino</span><span class="o">=</span><span class="n">neutrino_tau</span><span class="p">),</span>
-            <span class="n">cls</span><span class="o">.</span><span class="n">neutrino_electron_scattering</span><span class="p">(</span><span class="n">g_L</span><span class="o">=</span><span class="n">g_R</span><span class="o">+</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">electron</span><span class="o">=</span><span class="n">electron</span><span class="p">,</span> <span class="n">neutrino</span><span class="o">=</span><span class="n">neutrino_e</span><span class="p">),</span>
-            <span class="n">cls</span><span class="o">.</span><span class="n">neutrino_electron_scattering</span><span class="p">(</span><span class="n">g_L</span><span class="o">=</span><span class="n">g_R</span><span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">electron</span><span class="o">=</span><span class="n">electron</span><span class="p">,</span> <span class="n">neutrino</span><span class="o">=</span><span class="n">neutrino_mu</span><span class="p">),</span>
-            <span class="n">cls</span><span class="o">.</span><span class="n">neutrino_electron_scattering</span><span class="p">(</span><span class="n">g_L</span><span class="o">=</span><span class="n">g_R</span><span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">electron</span><span class="o">=</span><span class="n">electron</span><span class="p">,</span> <span class="n">neutrino</span><span class="o">=</span><span class="n">neutrino_tau</span><span class="p">),</span>
-        <span class="p">]</span>
+        <span class="k">return</span> <span class="n">inters</span>
 
 </pre></div>
         </div>

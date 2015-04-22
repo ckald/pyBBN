@@ -26,7 +26,7 @@
           <a class="source source-2" href="#naive-form"> Naive form</a>
           <a class="source source-2" href="#linearized-in-$\,-f_1$-form"> Linearized in $\, f_1$ form</a>
           <a class="source source-1" href="#integral"> Integral</a>
-          <a class="source source-2" href="#energy-conservation-law-of-the-integral"> Energy conservation law of the integral</a>
+          <a class="source source-2" href="#crossed-particles-in-the-integral"> Crossed particles in the integral</a>
           <a class="source source-2" href="#particle-collisions-integration"> Particle collisions integration </a>
           <a class="source source-2" href="#integration-region-bounds-methods"> Integration region bounds methods </a>
       </div>
@@ -34,7 +34,7 @@
     </div>
     <div class="generation-time">
         Generated at
-        <code>2015-04-01 15:55</code>
+        <code>2015-04-22 14:29</code>
         by a diligent
         <a target="_blank" href="http://ckald.github.io/pyccoon/" title="Pyccoon: side-to-side documentation generator">
             <img id="pyccoon-icon" src="../pyccoon_icon.svg" alt="Pyccoon: side-to-side documentation generator" />pyccoon</a>
@@ -88,10 +88,10 @@
             <a class='octothorpe' href='#section-2'>#</a>
           </div>
           <h2><a id="naive-form" class="header-anchor" href="#naive-form"> Naive form</a></h2>
-<div class="codehilite"><pre>    <span class="err">\</span><span class="n">begin</span><span class="p">{</span><span class="n">align</span><span class="p">}</span>
-        <span class="err">\</span><span class="n">mathcal</span><span class="p">{</span><span class="n">F</span><span class="p">}</span> <span class="o">&amp;=</span> <span class="p">(</span><span class="mi">1</span> <span class="err">\</span><span class="n">pm</span> <span class="n">f_1</span><span class="p">)(</span><span class="mi">1</span> <span class="err">\</span><span class="n">pm</span> <span class="n">f_2</span><span class="p">)</span> <span class="n">f_3</span> <span class="n">f_4</span> <span class="o">-</span> <span class="n">f_1</span> <span class="n">f_2</span> <span class="p">(</span><span class="mi">1</span> <span class="err">\</span><span class="n">pm</span> <span class="n">f_3</span><span class="p">)</span> <span class="p">(</span><span class="mi">1</span> <span class="err">\</span><span class="n">pm</span> <span class="n">f_4</span><span class="p">)</span>
-        <span class="err">\\\\</span> <span class="o">&amp;=</span> <span class="err">\</span><span class="n">mathcal</span><span class="p">{</span><span class="n">F</span><span class="p">}</span><span class="n">_B</span> <span class="o">+</span> <span class="err">\</span><span class="n">mathcal</span><span class="p">{</span><span class="n">F</span><span class="p">}</span><span class="n">_A</span>
-    <span class="err">\</span><span class="n">end</span><span class="p">{</span><span class="n">align</span><span class="p">}</span>
+<div class="codehilite"><pre>    \begin{align}
+        \mathcal{F} &amp;= (1 \pm f_1)(1 \pm f_2) f_3 f_4 - f_1 f_2 (1 \pm f_3) (1 \pm f_4)
+        \\\\ &amp;= \mathcal{F}_B + \mathcal{F}_A
+    \end{align}
 </pre></div>
         </div>
         <div class='code'>
@@ -118,12 +118,12 @@
 
         <span class="n">temp</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1.</span>
 
-        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">particle</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">particles</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">particle</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reaction</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">skip_index</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">or</span> <span class="n">i</span> <span class="o">!=</span> <span class="n">skip_index</span><span class="p">:</span>
-                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">signs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-                    <span class="n">temp</span> <span class="o">*=</span> <span class="n">particle</span><span class="o">.</span><span class="n">distribution</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">reaction</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">side</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+                    <span class="n">temp</span> <span class="o">*=</span> <span class="n">particle</span><span class="o">.</span><span class="n">specie</span><span class="o">.</span><span class="n">distribution</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="n">temp</span> <span class="o">*=</span> <span class="mf">1.</span> <span class="o">-</span> <span class="n">particle</span><span class="o">.</span><span class="n">eta</span> <span class="o">*</span> <span class="n">particle</span><span class="o">.</span><span class="n">distribution</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+                    <span class="n">temp</span> <span class="o">*=</span> <span class="mf">1.</span> <span class="o">-</span> <span class="n">particle</span><span class="o">.</span><span class="n">specie</span><span class="o">.</span><span class="n">eta</span> <span class="o">*</span> <span class="n">particle</span><span class="o">.</span><span class="n">specie</span><span class="o">.</span><span class="n">distribution</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
 
         <span class="k">return</span> <span class="n">temp</span></pre></div>
         </div>
@@ -148,12 +148,12 @@
 
         <span class="n">temp</span> <span class="o">=</span> <span class="mf">1.</span>
 
-        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">particle</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">particles</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">particle</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reaction</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">skip_index</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">or</span> <span class="n">i</span> <span class="o">!=</span> <span class="n">skip_index</span><span class="p">:</span>
-                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">signs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
-                    <span class="n">temp</span> <span class="o">*=</span> <span class="n">particle</span><span class="o">.</span><span class="n">distribution</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">reaction</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">side</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="n">temp</span> <span class="o">*=</span> <span class="n">particle</span><span class="o">.</span><span class="n">specie</span><span class="o">.</span><span class="n">distribution</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="n">temp</span> <span class="o">*=</span> <span class="mf">1.</span> <span class="o">-</span> <span class="n">particle</span><span class="o">.</span><span class="n">eta</span> <span class="o">*</span> <span class="n">particle</span><span class="o">.</span><span class="n">distribution</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+                    <span class="n">temp</span> <span class="o">*=</span> <span class="mf">1.</span> <span class="o">-</span> <span class="n">particle</span><span class="o">.</span><span class="n">specie</span><span class="o">.</span><span class="n">eta</span> <span class="o">*</span> <span class="n">particle</span><span class="o">.</span><span class="n">specie</span><span class="o">.</span><span class="n">distribution</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
 
         <span class="k">return</span> <span class="n">temp</span></pre></div>
         </div>
@@ -198,7 +198,7 @@
           <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">F_f</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span>
 
         <span class="k">return</span> <span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">F_A</span><span class="p">(</span><span class="n">p</span><span class="o">=</span><span class="n">p</span><span class="p">,</span> <span class="n">skip_index</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">in_particles</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">eta</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">F_B</span><span class="p">(</span><span class="n">p</span><span class="o">=</span><span class="n">p</span><span class="p">,</span> <span class="n">skip_index</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">F_A</span><span class="p">(</span><span class="n">p</span><span class="o">=</span><span class="n">p</span><span class="p">,</span> <span class="n">skip_index</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">particle</span><span class="o">.</span><span class="n">eta</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">F_B</span><span class="p">(</span><span class="n">p</span><span class="o">=</span><span class="n">p</span><span class="p">,</span> <span class="n">skip_index</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
         <span class="p">)</span></pre></div>
         </div>
         <div class='clearall'></div>
@@ -229,20 +229,17 @@
             <a class='octothorpe' href='#section-8'>#</a>
           </div>
           <h1><a id="integral" class="header-anchor" href="#integral"> Integral</a></h1>
-<div class="codehilite"><pre>    <span class="n">Representation</span> <span class="n">of</span> <span class="n">the</span> <span class="n">concrete</span> <span class="n">collision</span> <span class="n">integral</span> <span class="k">for</span> <span class="n">a</span> <span class="n">specific</span> <span class="n">particle</span> <span class="err">`</span><span class="n">Integral</span><span class="p">.</span><span class="n">particles</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="err">`</span>
+<div class="codehilite"><pre>    Representation of the concrete collision integral for a specific particle `Integral.reaction[0]`
 </pre></div>
         </div>
         <div class='code'>
           <div class="highlight"><pre><span class="k">class</span> <span class="nc">BoltzmannIntegral</span><span class="p">(</span><span class="n">PicklableObject</span><span class="p">,</span> <span class="n">DistributionFunctional</span><span class="p">):</span>
 
     <span class="n">_saveable_fields</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="s">&#39;particles&#39;</span><span class="p">,</span> <span class="s">&#39;in_particles&#39;</span><span class="p">,</span> <span class="s">&#39;out_particles&#39;</span><span class="p">,</span>
-        <span class="s">&#39;signs&#39;</span><span class="p">,</span> <span class="s">&#39;decoupling_temperature&#39;</span><span class="p">,</span> <span class="s">&#39;constant&#39;</span><span class="p">,</span> <span class="s">&#39;Ms&#39;</span><span class="p">,</span>
+        <span class="s">&#39;particle&#39;</span><span class="p">,</span> <span class="s">&#39;reaction&#39;</span><span class="p">,</span> <span class="s">&#39;decoupling_temperature&#39;</span><span class="p">,</span> <span class="s">&#39;constant&#39;</span><span class="p">,</span> <span class="s">&#39;Ms&#39;</span><span class="p">,</span>
     <span class="p">]</span>
 
-    <span class="n">in_particles</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c"># Incoming particles</span>
-    <span class="n">out_particles</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c"># Outgoing particles</span>
-    <span class="n">particles</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c"># All particles involved</span></pre></div>
+    <span class="n">reaction</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c"># All particles involved</span></pre></div>
         </div>
         <div class='clearall'></div>
     </section>
@@ -254,14 +251,20 @@
           <div class='octowrap'>
             <a class='octothorpe' href='#section-9'>#</a>
           </div>
-          <h2><a id="energy-conservation-law-of-the-integral" class="header-anchor" href="#energy-conservation-law-of-the-integral"> Energy conservation law of the integral</a></h2>
-<div class="codehilite"><pre>    <span class="err">\</span><span class="n">begin</span><span class="p">{</span><span class="n">equation</span><span class="p">}</span>
-        <span class="mi">0</span> <span class="o">=</span> <span class="err">\</span><span class="n">vec</span><span class="p">{</span><span class="n">s</span><span class="p">}</span> <span class="err">\</span><span class="n">cdot</span> <span class="err">\</span><span class="n">vec</span><span class="p">{</span><span class="n">E</span><span class="p">}</span> <span class="o">=</span> <span class="err">\</span><span class="n">sum_i</span> <span class="n">s_i</span> <span class="n">E_i</span> <span class="err">\</span><span class="n">sim</span> <span class="n">E_0</span> <span class="o">+</span> <span class="n">E_1</span> <span class="o">-</span> <span class="n">E_2</span> <span class="o">-</span> <span class="n">E_3</span>
-    <span class="err">\</span><span class="n">end</span><span class="p">{</span><span class="n">equation</span><span class="p">}</span>
+          <h2><a id="crossed-particles-in-the-integral" class="header-anchor" href="#crossed-particles-in-the-integral"> Crossed particles in the integral</a></h2>
+<div class="codehilite"><pre>    If the Boltzmann integral is obtained as a crossing of some other process, the mass of the crossed fermion in the matrix element has to change sign.
+
+    For example, compare the matrix elements of reactions
+
+    \begin{align}
+        \nu + e &amp;\to \nu + e \\\ \nu + \overline{\nu} &amp;\to e + e^+
+    \end{align}
+
+    In particular, this has something to do with the `K2` term in the `FourParticleIntegral`.
 </pre></div>
         </div>
         <div class='code'>
-          <div class="highlight"><pre>    <span class="n">signs</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span></pre></div>
+          
         </div>
         <div class='clearall'></div>
     </section>
@@ -295,7 +298,7 @@
    \end{equation} </p>
         </div>
         <div class='code'>
-          <div class="highlight"><pre>    <span class="n">Ms</span> <span class="o">=</span> <span class="p">[]</span></pre></div>
+          <div class="highlight"><pre>    <span class="n">Ms</span> <span class="o">=</span> <span class="bp">None</span></pre></div>
         </div>
         <div class='clearall'></div>
     </section>
@@ -315,8 +318,8 @@
         <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
             <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">particles</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">in_particles</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">out_particles</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">signs</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">in_particles</span><span class="p">)</span> <span class="o">+</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">out_particles</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">Ms</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">Ms</span> <span class="o">=</span> <span class="p">[]</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">integrand</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">integrand</span><span class="p">,</span> <span class="n">otypes</span><span class="o">=</span><span class="p">[</span><span class="n">numpy</span><span class="o">.</span><span class="n">float_</span><span class="p">])</span></pre></div>
         </div>
@@ -335,9 +338,14 @@
         <div class='code'>
           <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 
-        <span class="k">return</span> <span class="s">&quot; + &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">p</span><span class="o">.</span><span class="n">symbol</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">in_particles</span><span class="p">])</span> \
-            <span class="o">+</span> <span class="s">&quot; ⟶  &quot;</span> <span class="o">+</span> <span class="s">&quot; + &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">p</span><span class="o">.</span><span class="n">symbol</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">out_particles</span><span class="p">])</span> \
-            <span class="o">+</span> <span class="s">&quot;</span><span class="se">\t</span><span class="s">({})&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Ms</span><span class="p">))</span></pre></div>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="s">&quot; + &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">p</span><span class="o">.</span><span class="n">specie</span><span class="o">.</span><span class="n">symbol</span> <span class="o">+</span> <span class="p">(</span><span class="s">&#39;</span><span class="se">\&#39;</span><span class="s">&#39;</span> <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">antiparticle</span> <span class="k">else</span> <span class="s">&#39;&#39;</span><span class="p">)</span>
+                        <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">reaction</span> <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">side</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+            <span class="o">+</span> <span class="s">&quot; ⟶  &quot;</span>
+            <span class="o">+</span> <span class="s">&quot; + &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">p</span><span class="o">.</span><span class="n">specie</span><span class="o">.</span><span class="n">symbol</span> <span class="o">+</span> <span class="p">(</span><span class="s">&#39;</span><span class="se">\&#39;</span><span class="s">&#39;</span> <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">antiparticle</span> <span class="k">else</span> <span class="s">&#39;&#39;</span><span class="p">)</span>
+                          <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">reaction</span> <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">side</span> <span class="o">==</span> <span class="mi">1</span><span class="p">])</span>
+            <span class="o">+</span> <span class="s">&quot;</span><span class="se">\t</span><span class="s">({})&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">M</span><span class="p">)</span> <span class="k">for</span> <span class="n">M</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">Ms</span><span class="p">]))</span>
+        <span class="p">)</span></pre></div>
         </div>
         <div class='clearall'></div>
     </section>
@@ -382,18 +390,18 @@
           <div class='octowrap'>
             <a class='octothorpe' href='#section-16'>#</a>
           </div>
-          <p>Helper procedure that caches conformal energies and masses of the particles </p>
+          <p>Helper procedure that caches conformal energies and masses of the reaction </p>
         </div>
         <div class='code'>
           <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">calculate_kinematics</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span>
 
-        <span class="n">particle_count</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">particles</span><span class="p">)</span>
-        <span class="n">p</span> <span class="o">=</span> <span class="p">(</span><span class="n">p</span> <span class="o">+</span> <span class="p">[</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">])[:</span><span class="n">particle_count</span><span class="p">]</span>
+        <span class="n">particle_count</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reaction</span><span class="p">)</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="p">(</span><span class="n">p</span> <span class="o">+</span> <span class="p">[</span><span class="mf">0.</span><span class="p">]</span><span class="o">*</span><span class="n">particle_count</span><span class="p">)[:</span><span class="n">particle_count</span><span class="p">]</span>
         <span class="n">E</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">m</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">particle</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">particles</span><span class="p">):</span>
-            <span class="n">E</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">particle</span><span class="o">.</span><span class="n">conformal_energy</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span>
-            <span class="n">m</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">particle</span><span class="o">.</span><span class="n">conformal_mass</span><span class="p">)</span></pre></div>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">particle</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reaction</span><span class="p">):</span>
+            <span class="n">E</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">particle</span><span class="o">.</span><span class="n">specie</span><span class="o">.</span><span class="n">conformal_energy</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span>
+            <span class="n">m</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">particle</span><span class="o">.</span><span class="n">specie</span><span class="o">.</span><span class="n">conformal_mass</span><span class="p">)</span></pre></div>
         </div>
         <div class='clearall'></div>
     </section>
@@ -409,8 +417,8 @@
    \begin{equation}E_3 = -s_3 \sum_{i \neq 3} s_i E_i \end{equation} </p>
         </div>
         <div class='code'>
-          <div class="highlight"><pre>        <span class="n">E</span><span class="p">[</span><span class="n">particle_count</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">signs</span><span class="p">[</span><span class="n">particle_count</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> \
-            <span class="o">*</span> <span class="nb">sum</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">signs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">E</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">particle_count</span><span class="o">-</span><span class="mi">1</span><span class="p">)])</span>
+          <div class="highlight"><pre>        <span class="n">E</span><span class="p">[</span><span class="n">particle_count</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reaction</span><span class="p">[</span><span class="n">particle_count</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">side</span> \
+            <span class="o">*</span> <span class="nb">sum</span><span class="p">([</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">reaction</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">side</span> <span class="o">*</span> <span class="n">E</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">particle_count</span><span class="o">-</span><span class="mi">1</span><span class="p">)])</span>
         <span class="n">p</span><span class="p">[</span><span class="n">particle_count</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">E</span><span class="p">[</span><span class="n">particle_count</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span> <span class="o">-</span> <span class="n">m</span><span class="p">[</span><span class="n">particle_count</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">p</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">m</span></pre></div>
         </div>
@@ -429,23 +437,21 @@
         <div class='code'>
           <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">correction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p0</span><span class="p">):</span>
 
-        <span class="n">particle</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">particles</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-
         <span class="n">integral_1</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">integral_1</span><span class="p">(</span><span class="n">p0</span><span class="p">)</span>
         <span class="n">integral_f</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">integral_f</span><span class="p">(</span><span class="n">p0</span><span class="p">)</span>
 
-        <span class="n">order</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">particle</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s">&#39;collision_integral&#39;</span><span class="p">])</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+        <span class="n">order</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">particle</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s">&#39;collision_integral&#39;</span><span class="p">])</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
 
         <span class="n">index</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">argwhere</span><span class="p">(</span><span class="n">GRID</span><span class="o">.</span><span class="n">TEMPLATE</span> <span class="o">==</span> <span class="n">p0</span><span class="p">)[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
-        <span class="n">fs</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">particle</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s">&#39;collision_integral&#39;</span><span class="p">][</span><span class="o">-</span><span class="n">order</span><span class="p">:]]</span>
+        <span class="n">fs</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">particle</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s">&#39;collision_integral&#39;</span><span class="p">][</span><span class="o">-</span><span class="n">order</span><span class="p">:]]</span>
 
         <span class="n">prediction</span> <span class="o">=</span> <span class="n">integrators</span><span class="o">.</span><span class="n">adams_moulton_solver</span><span class="p">(</span>
-            <span class="n">y</span><span class="o">=</span><span class="n">particle</span><span class="o">.</span><span class="n">distribution</span><span class="p">(</span><span class="n">p0</span><span class="p">),</span> <span class="n">fs</span><span class="o">=</span><span class="n">fs</span><span class="p">,</span>
+            <span class="n">y</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">particle</span><span class="o">.</span><span class="n">distribution</span><span class="p">(</span><span class="n">p0</span><span class="p">),</span> <span class="n">fs</span><span class="o">=</span><span class="n">fs</span><span class="p">,</span>
             <span class="n">A</span><span class="o">=</span><span class="n">integral_1</span><span class="p">,</span> <span class="n">B</span><span class="o">=</span><span class="n">integral_f</span><span class="p">,</span>
-            <span class="n">h</span><span class="o">=</span><span class="n">particle</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">dy</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="n">order</span>
+            <span class="n">h</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">particle</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">dy</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="n">order</span>
         <span class="p">)</span>
 
-        <span class="n">total_integral</span> <span class="o">=</span> <span class="p">(</span><span class="n">prediction</span> <span class="o">-</span> <span class="n">particle</span><span class="o">.</span><span class="n">distribution</span><span class="p">(</span><span class="n">p0</span><span class="p">))</span> <span class="o">/</span> <span class="n">particle</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">dy</span>
+        <span class="n">total_integral</span> <span class="o">=</span> <span class="p">(</span><span class="n">prediction</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">particle</span><span class="o">.</span><span class="n">distribution</span><span class="p">(</span><span class="n">p0</span><span class="p">))</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">particle</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">dy</span>
 
         <span class="k">return</span> <span class="n">total_integral</span></pre></div>
         </div>

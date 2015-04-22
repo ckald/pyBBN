@@ -31,7 +31,7 @@
     </div>
     <div class="generation-time">
         Generated at
-        <code>2015-04-01 15:55</code>
+        <code>2015-04-22 14:29</code>
         by a diligent
         <a target="_blank" href="http://ckald.github.io/pyccoon/" title="Pyccoon: side-to-side documentation generator">
             <img id="pyccoon-icon" src="../pyccoon_icon.svg" alt="Pyccoon: side-to-side documentation generator" />pyccoon</a>
@@ -74,9 +74,9 @@
             <a class='octothorpe' href='#section-1'>#</a>
           </div>
           <h1><a id="particle-density" class="header-anchor" href="#particle-density"> Particle density</a></h1>
-<div class="codehilite"><pre>    <span class="err">\</span><span class="n">begin</span><span class="p">{</span><span class="n">equation</span><span class="p">}</span>
-        <span class="n">g</span> <span class="err">\</span><span class="kt">int</span> <span class="err">\</span><span class="n">frac</span><span class="p">{</span><span class="n">p</span><span class="o">^</span><span class="mi">2</span> <span class="n">dp</span><span class="p">}{</span><span class="mi">2</span> <span class="err">\</span><span class="n">pi</span><span class="o">^</span><span class="mi">2</span><span class="p">}</span> <span class="n">f</span><span class="err">\</span><span class="n">left</span><span class="p">(</span> <span class="err">\</span><span class="n">frac</span><span class="p">{</span><span class="n">p</span><span class="p">}{</span><span class="n">T</span><span class="p">}</span> <span class="err">\</span><span class="n">right</span><span class="p">)</span>
-    <span class="err">\</span><span class="n">end</span><span class="p">{</span><span class="n">equation</span><span class="p">}</span>
+<div class="codehilite"><pre>    \begin{equation}
+        g \int \frac{p^2 dp}{2 \pi^2} f\left( \frac{p}{T} \right)
+    \end{equation}
 </pre></div>
         </div>
         <div class='code'>
@@ -247,8 +247,9 @@
         <div class='code'>
           <div class="highlight"><pre><span class="k">def</span> <span class="nf">numerator</span><span class="p">(</span><span class="n">particle</span><span class="p">):</span>
 
-    <span class="k">return</span> <span class="n">particle</span><span class="o">.</span><span class="n">mass</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="n">particle</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">x</span> <span class="o">/</span> <span class="n">particle</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">m</span><span class="o">**</span><span class="mi">2</span> \
-        <span class="o">/</span> <span class="n">particle</span><span class="o">.</span><span class="n">aT</span> <span class="o">*</span> <span class="n">I</span><span class="p">(</span><span class="n">particle</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span></pre></div>
+    <span class="k">return</span> <span class="p">(</span><span class="n">particle</span><span class="o">.</span><span class="n">mass</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="n">particle</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">x</span>
+            <span class="o">/</span> <span class="n">particle</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">m</span><span class="o">**</span><span class="mi">2</span> <span class="o">/</span> <span class="n">particle</span><span class="o">.</span><span class="n">aT</span>
+            <span class="o">*</span> <span class="n">I</span><span class="p">(</span><span class="n">particle</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span></pre></div>
         </div>
         <div class='clearall'></div>
     </section>
