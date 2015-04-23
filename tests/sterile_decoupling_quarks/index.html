@@ -31,7 +31,7 @@
     </div>
     <div class="generation-time">
         Generated at
-        <code>2015-04-22 14:29</code>
+        <code>2015-04-22 15:21</code>
         by a diligent
         <a target="_blank" href="http://ckald.github.io/pyccoon/" title="Pyccoon: side-to-side documentation generator">
             <img id="pyccoon-icon" src="../../pyccoon_icon.svg" alt="Pyccoon: side-to-side documentation generator" />pyccoon</a>
@@ -139,77 +139,18 @@ bottom = Particle(</strong>SMP.quarks.bottom)</p>
     <span class="n">neutrino_tau</span><span class="p">,</span>
 
     <span class="n">up</span><span class="p">,</span>
-    <span class="n">down</span><span class="p">,</span></pre></div>
-        </div>
-        <div class='clearall'></div>
-    </section>
-    </div>
-    <div class='section'>
-    <a id="section-3" class="section-anchor"></a>
-    <section>
-        <div class='docs'>
-          <div class='octowrap'>
-            <a class='octothorpe' href='#section-3'>#</a>
-          </div>
-          <p>charm,</p>
-        </div>
-        <div class='code'>
-          <div class="highlight"><pre>    <span class="n">strange</span><span class="p">,</span></pre></div>
-        </div>
-        <div class='clearall'></div>
-    </section>
-    </div>
-    <div class='section'>
-    <a id="section-4" class="section-anchor"></a>
-    <section>
-        <div class='docs'>
-          <div class='octowrap'>
-            <a class='octothorpe' href='#section-4'>#</a>
-          </div>
-          <p>top,
-bottom,</p>
-        </div>
-        <div class='code'>
-          <div class="highlight"><pre>    <span class="n">sterile</span><span class="p">,</span></pre></div>
-        </div>
-        <div class='clearall'></div>
-    </section>
-    </div>
-    <div class='section'>
-    <a id="section-5" class="section-anchor"></a>
-    <section>
-        <div class='docs'>
-          <div class='octowrap'>
-            <a class='octothorpe' href='#section-5'>#</a>
-          </div>
-          
-        </div>
-        <div class='code'>
-          <div class="highlight"><pre><span class="p">])</span>
+    <span class="n">down</span><span class="p">,</span>
+    <span class="n">strange</span><span class="p">,</span>
+
+    <span class="n">sterile</span><span class="p">,</span>
+<span class="p">])</span>
 
 <span class="n">thetas</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="p">{</span>
     <span class="s">&#39;electron&#39;</span><span class="p">:</span> <span class="mf">1e-4</span><span class="p">,</span>
 <span class="p">})</span>
 
-<span class="n">universe</span><span class="o">.</span><span class="n">interactions</span> <span class="o">+=</span> <span class="p">(</span></pre></div>
-        </div>
-        <div class='clearall'></div>
-    </section>
-    </div>
-    <div class='section'>
-    <a id="section-6" class="section-anchor"></a>
-    <section>
-        <div class='docs'>
-          <div class='octowrap'>
-            <a class='octothorpe' href='#section-6'>#</a>
-          </div>
-          <p>SMI.neutrino_interactions(
-    leptons=[electron, muon, tau],
-    neutrinos=[neutrino_e, neutrino_mu, neutrino_tau]
-) +</p>
-        </div>
-        <div class='code'>
-          <div class="highlight"><pre>    <span class="n">NuI</span><span class="o">.</span><span class="n">sterile_leptons_interactions</span><span class="p">(</span>
+<span class="n">universe</span><span class="o">.</span><span class="n">interactions</span> <span class="o">+=</span> <span class="p">(</span>
+    <span class="n">NuI</span><span class="o">.</span><span class="n">sterile_leptons_interactions</span><span class="p">(</span>
         <span class="n">thetas</span><span class="o">=</span><span class="n">thetas</span><span class="p">,</span> <span class="n">sterile</span><span class="o">=</span><span class="n">sterile</span><span class="p">,</span>
         <span class="n">neutrinos</span><span class="o">=</span><span class="p">[</span><span class="n">neutrino_e</span><span class="p">,</span> <span class="n">neutrino_mu</span><span class="p">,</span> <span class="n">neutrino_tau</span><span class="p">],</span>
         <span class="n">leptons</span><span class="o">=</span><span class="p">[</span><span class="n">electron</span><span class="p">,</span> <span class="n">muon</span><span class="p">,</span> <span class="n">tau</span><span class="p">]</span>
@@ -218,37 +159,9 @@ bottom,</p>
         <span class="n">thetas</span><span class="o">=</span><span class="n">thetas</span><span class="p">,</span> <span class="n">sterile</span><span class="o">=</span><span class="n">sterile</span><span class="p">,</span>
         <span class="n">neutrinos</span><span class="o">=</span><span class="p">[</span><span class="n">neutrino_e</span><span class="p">,</span> <span class="n">neutrino_mu</span><span class="p">,</span> <span class="n">neutrino_tau</span><span class="p">],</span>
         <span class="n">leptons</span><span class="o">=</span><span class="p">[</span><span class="n">electron</span><span class="p">,</span> <span class="n">muon</span><span class="p">,</span> <span class="n">tau</span><span class="p">],</span>
-        <span class="n">quarks</span><span class="o">=</span><span class="p">[</span><span class="n">up</span><span class="p">,</span> <span class="n">down</span><span class="p">,</span> <span class="n">strange</span><span class="p">]</span></pre></div>
-        </div>
-        <div class='clearall'></div>
-    </section>
-    </div>
-    <div class='section'>
-    <a id="section-7" class="section-anchor"></a>
-    <section>
-        <div class='docs'>
-          <div class='octowrap'>
-            <a class='octothorpe' href='#section-7'>#</a>
-          </div>
-          <p>quarks=[up, down, charm, strange, top, bottom]</p>
-        </div>
-        <div class='code'>
-          <div class="highlight"><pre>    <span class="p">)</span></pre></div>
-        </div>
-        <div class='clearall'></div>
-    </section>
-    </div>
-    <div class='section'>
-    <a id="section-8" class="section-anchor"></a>
-    <section>
-        <div class='docs'>
-          <div class='octowrap'>
-            <a class='octothorpe' href='#section-8'>#</a>
-          </div>
-          
-        </div>
-        <div class='code'>
-          <div class="highlight"><pre><span class="p">)</span>
+        <span class="n">quarks</span><span class="o">=</span><span class="p">[</span><span class="n">up</span><span class="p">,</span> <span class="n">down</span><span class="p">,</span> <span class="n">strange</span><span class="p">]</span>
+    <span class="p">)</span>
+<span class="p">)</span>
 
 <span class="n">universe</span><span class="o">.</span><span class="n">graphics</span><span class="o">.</span><span class="n">monitor</span><span class="p">([</span>
     <span class="p">(</span><span class="n">neutrino_e</span><span class="p">,</span> <span class="n">RadiationParticleMonitor</span><span class="p">),</span>
@@ -264,11 +177,11 @@ bottom,</p>
     </section>
     </div>
     <div class='section'>
-    <a id="section-9" class="section-anchor"></a>
+    <a id="section-3" class="section-anchor"></a>
     <section>
         <div class='docs'>
           <div class='octowrap'>
-            <a class='octothorpe' href='#section-9'>#</a>
+            <a class='octothorpe' href='#section-3'>#</a>
           </div>
           <h1><a id="plots-for-comparison-with-articles" class="header-anchor" href="#plots-for-comparison-with-articles"> Plots for comparison with articles </a></h1>
         </div>
@@ -279,15 +192,14 @@ bottom,</p>
     </section>
     </div>
     <div class='section'>
-    <a id="section-10" class="section-anchor"></a>
+    <a id="section-4" class="section-anchor"></a>
     <section>
         <div class='docs'>
           <div class='octowrap'>
-            <a class='octothorpe' href='#section-10'>#</a>
+            <a class='octothorpe' href='#section-4'>#</a>
           </div>
           <h2><a id="jcap10(2012)014,-figure-9" class="header-anchor" href="#jcap10(2012)014,-figure-9"> JCAP10(2012)014, Figure 9</a></h2>
-<div class="codehilite"><pre>&lt;img src=&quot;figure_9.png&quot; width=100% /&gt;
-</pre></div>
+<p><img src="figure_9.png" width=100% /> </p>
         </div>
         <div class='code'>
           <div class="highlight"><pre><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="mi">9</span><span class="p">)</span>
@@ -304,16 +216,15 @@ bottom,</p>
     </section>
     </div>
     <div class='section'>
-    <a id="section-11" class="section-anchor"></a>
+    <a id="section-5" class="section-anchor"></a>
     <section>
         <div class='docs'>
           <div class='octowrap'>
-            <a class='octothorpe' href='#section-11'>#</a>
+            <a class='octothorpe' href='#section-5'>#</a>
           </div>
           <h2><a id="jcap10(2012)014,-figure-10" class="header-anchor" href="#jcap10(2012)014,-figure-10"> JCAP10(2012)014, Figure 10</a></h2>
-<div class="codehilite"><pre>&lt;img src=&quot;figure_10.png&quot; width=100% /&gt;
-&lt;img src=&quot;figure_10_full.png&quot; width=100% /&gt;
-</pre></div>
+<p><img src="figure_10.png" width=100% />
+<img src="figure_10_full.png" width=100% /> </p>
         </div>
         <div class='code'>
           <div class="highlight"><pre><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
@@ -337,11 +248,11 @@ bottom,</p>
     </section>
     </div>
     <div class='section'>
-    <a id="section-12" class="section-anchor"></a>
+    <a id="section-6" class="section-anchor"></a>
     <section>
         <div class='docs'>
           <div class='octowrap'>
-            <a class='octothorpe' href='#section-12'>#</a>
+            <a class='octothorpe' href='#section-6'>#</a>
           </div>
           <p>plt.ylim(0.99, 1.06)</p>
         </div>
@@ -354,11 +265,11 @@ bottom,</p>
     </section>
     </div>
     <div class='section'>
-    <a id="section-13" class="section-anchor"></a>
+    <a id="section-7" class="section-anchor"></a>
     <section>
         <div class='docs'>
           <div class='octowrap'>
-            <a class='octothorpe' href='#section-13'>#</a>
+            <a class='octothorpe' href='#section-7'>#</a>
           </div>
           <p>Distribution functions arrays</p>
         </div>
@@ -373,11 +284,11 @@ bottom,</p>
     </section>
     </div>
     <div class='section'>
-    <a id="section-14" class="section-anchor"></a>
+    <a id="section-8" class="section-anchor"></a>
     <section>
         <div class='docs'>
           <div class='octowrap'>
-            <a class='octothorpe' href='#section-14'>#</a>
+            <a class='octothorpe' href='#section-8'>#</a>
           </div>
           <p>Just to be sure everything is okay</p>
         </div>
