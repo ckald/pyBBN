@@ -66,10 +66,7 @@ universe.add_particles([
 
     up,
     down,
-    # charm,
     strange,
-    # top,
-    # bottom,
 
     sterile,
 ])
@@ -79,10 +76,6 @@ thetas = defaultdict(float, {
 })
 
 universe.interactions += (
-    # SMI.neutrino_interactions(
-    #     leptons=[electron, muon, tau],
-    #     neutrinos=[neutrino_e, neutrino_mu, neutrino_tau]
-    # ) +
     NuI.sterile_leptons_interactions(
         thetas=thetas, sterile=sterile,
         neutrinos=[neutrino_e, neutrino_mu, neutrino_tau],
@@ -93,7 +86,6 @@ universe.interactions += (
         neutrinos=[neutrino_e, neutrino_mu, neutrino_tau],
         leptons=[electron, muon, tau],
         quarks=[up, down, strange]
-        # quarks=[up, down, charm, strange, top, bottom]
     )
 )
 
@@ -112,8 +104,9 @@ universe.graphics.save(__file__)
 
 plt.ion()
 
-""" ### JCAP10(2012)014, Figure 9
-    <img src="figure_9.png" width=100% /> """
+"""
+### JCAP10(2012)014, Figure 9
+<img src="figure_9.png" width=100% /> """
 
 plt.figure(9)
 plt.title('Figure 9')
@@ -125,9 +118,10 @@ plt.plot(UNITS.MeV / numpy.array(universe.data['T']), numpy.array(universe.data[
 plt.show()
 plt.savefig(os.path.join(folder, 'figure_9.png'))
 
-""" ### JCAP10(2012)014, Figure 10
-    <img src="figure_10.png" width=100% />
-    <img src="figure_10_full.png" width=100% /> """
+"""
+### JCAP10(2012)014, Figure 10
+<img src="figure_10.png" width=100% />
+<img src="figure_10_full.png" width=100% /> """
 
 plt.figure(10)
 plt.title('Figure 10')

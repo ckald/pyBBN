@@ -72,8 +72,9 @@ universe.graphics.save(__file__)
 
 plt.ion()
 
-""" ### 1202.2841, Figure 13
-    <img src="figure_13.png" width=100% /> """
+"""
+### 1202.2841, Figure 13
+<img src="figure_13.png" width=100% /> """
 
 plt.figure(13)
 plt.title('Figure 13')
@@ -87,8 +88,9 @@ plt.plot(UNITS.MeV / numpy.array(universe.data['T']), numpy.array(universe.data[
 plt.show()
 plt.savefig(os.path.join(folder, 'figure_13.png'))
 
-""" ### 1202.2841, Figure 14
-    <img src="figure_14.png" width=100% /> """
+"""
+### 1202.2841, Figure 14
+<img src="figure_14.png" width=100% /> """
 
 plt.figure(14)
 plt.title('Figure 14')

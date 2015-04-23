@@ -71,10 +71,6 @@ thetas = defaultdict(float, {
 })
 
 universe.interactions += (
-    # SMI.neutrino_interactions(
-    #     leptons=[electron, muon, tau],
-    #     neutrinos=[neutrino_e, neutrino_mu, neutrino_tau]
-    # ) +
     NuI.sterile_leptons_interactions(
         thetas=thetas, sterile=sterile,
         neutrinos=[neutrino_e, neutrino_mu, neutrino_tau],
@@ -104,8 +100,9 @@ universe.graphics.save(__file__)
 
 plt.ion()
 
-""" ### JCAP10(2012)014, Figure 9
-    <img src="figure_9.png" width=100% /> """
+"""
+### JCAP10(2012)014, Figure 9
+<img src="figure_9.png" width=100% /> """
 
 plt.figure(9)
 plt.title('Figure 9')
@@ -117,9 +114,10 @@ plt.plot(UNITS.MeV / numpy.array(universe.data['T']), numpy.array(universe.data[
 plt.show()
 plt.savefig(os.path.join(folder, 'figure_9.png'))
 
-""" ### JCAP10(2012)014, Figure 10
-    <img src="figure_10.png" width=100% />
-    <img src="figure_10_full.png" width=100% /> """
+"""
+### JCAP10(2012)014, Figure 10
+<img src="figure_10.png" width=100% />
+<img src="figure_10_full.png" width=100% /> """
 
 plt.figure(10)
 plt.title('Figure 10')
@@ -137,7 +135,6 @@ plt.show()
 plt.savefig(os.path.join(folder, 'figure_10_full.png'))
 
 plt.xlim(0, 10)
-# plt.ylim(0.99, 1.06)
 plt.draw()
 plt.show()
 plt.savefig(os.path.join(folder, 'figure_10.png'))
