@@ -206,6 +206,27 @@ class MassiveParticleMonitor(ParticleMonitor):
         self.plots[1].plot(GRID.TEMPLATE / UNITS.MeV, yy*(f-feq))
 
 
+class EquilibrationMonitor(ParticleMonitor):
+    def __init__(self, particle, plots):
+        self.particles, self.plots = particle, plots
+
+        self.plots[0].set_title(particle.name)
+        self.plots[0].set_xlabel("a")
+        self.plots[0].set_xscale("log")
+        self.plots[0].set_ylabel("|I|")
+
+        self.plots[1].set_xlabel("a")
+        self.plots[1].set_ylabel("numerator")
+
+    def plot(self, data):
+        a = data['a'][-1]
+
+        from particles.NonEqParticle import numerator
+
+        self.plots[0].scatter(a, numpy.max(numpy.fabs(self.particle.collision_integral)), s=1)
+        self.plots[1].scatter(a, numerator(self.particle), s=1)
+
+
 def age_lines(lines):
     """ Slightly decrease the opacity of plotted lines until they are barely visible.\
         Then, remove them. Saves up on memory and clears the view of the plots. """
