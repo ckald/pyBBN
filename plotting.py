@@ -18,6 +18,7 @@ class Plotting(object):
     def __init__(self):
         """ Initialize plots, setup basic styling """
 
+        plt.style.use('ggplot')
         plt.rcParams['toolbar'] = 'None'
 
         self.params_figure, self.plots = plt.subplots(2, 2, num=1)
