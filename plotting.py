@@ -208,7 +208,7 @@ class MassiveParticleMonitor(ParticleMonitor):
 
 class EquilibrationMonitor(ParticleMonitor):
     def __init__(self, particle, plots):
-        self.particles, self.plots = particle, plots
+        self.particle, self.plots = particle, plots
 
         self.plots[0].set_title(particle.name)
         self.plots[0].set_xlabel("a")
