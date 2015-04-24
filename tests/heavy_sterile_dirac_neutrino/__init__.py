@@ -4,7 +4,7 @@
 
 $$ M = 33.9 MeV $$
 
-$$ \theta_\tau \approx 7.6 10^{-4} \sim \tau_N \approx 0.3 sec $$
+$$ \theta_\tau \approx 7.6 10^{-3} \sim \tau_N \approx 0.3 sec $$
 
 http://arxiv.org/pdf/hep-ph/0002223v2.pdf
 
@@ -55,7 +55,7 @@ universe.add_particles([
 ])
 
 thetas = defaultdict(float, {
-    'tau': 7.6 * 1e-4,
+    'tau': 7.6 * 1e-3,
 })
 
 universe.interactions += (
