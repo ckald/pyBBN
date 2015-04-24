@@ -213,10 +213,10 @@ class EquilibrationMonitor(ParticleMonitor):
         self.plots[0].set_title(particle.name)
         self.plots[0].set_xlabel("a")
         self.plots[0].set_xscale("log")
-        self.plots[0].set_ylabel("|I|")
+        self.plots[0].set_ylabel("max|I|")
 
         self.plots[1].set_xlabel("a")
-        self.plots[1].set_ylabel("numerator")
+        self.plots[1].set_ylabel("numerator, MeV^-1")
 
     def plot(self, data):
         a = data['a'][-1]
@@ -224,7 +224,7 @@ class EquilibrationMonitor(ParticleMonitor):
         from particles.NonEqParticle import numerator
 
         self.plots[0].scatter(a, numpy.max(numpy.fabs(self.particle.collision_integral)), s=1)
-        self.plots[1].scatter(a, numerator(self.particle), s=1)
+        self.plots[1].scatter(a, numerator(self.particle) * UNITS.MeV, s=1)
 
 
 def age_lines(lines):
