@@ -18,7 +18,7 @@ import numpy
 import matplotlib
 from collections import defaultdict
 
-from plotting import plt, RadiationParticleMonitor, MassiveParticleMonitor
+from plotting import plt, RadiationParticleMonitor, MassiveParticleMonitor, EquilibrationMonitor
 from particles import Particle
 from library.SM import particles as SMP, interactions as SMI
 from library.NuMSM import particles as NuP, interactions as NuI
@@ -73,7 +73,8 @@ universe.graphics.monitor([
     (neutrino_e, RadiationParticleMonitor),
     (neutrino_mu, RadiationParticleMonitor),
     (neutrino_tau, RadiationParticleMonitor),
-    (sterile, MassiveParticleMonitor)
+    (sterile, MassiveParticleMonitor),
+    (sterile, EquilibrationMonitor)
 ])
 
 universe.evolve()
