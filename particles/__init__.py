@@ -12,7 +12,7 @@ from collections import defaultdict
 
 from common import GRID, UNITS, Params
 from common.integrators import adams_moulton_solver
-from common.utils import PicklableObject
+from common.utils import PicklableObject, lru_cache
 
 from particles import DustParticle, RadiationParticle, IntermediateParticle, NonEqParticle
 # from particles.interpolation.interpolation import distribution_interpolation
@@ -162,6 +162,7 @@ class Particle(PicklableObject):
             return
 
         self._distribution += self.collision_integral * self.params.dy
+        self.distribution.cache_clear()
 
         # Clear collision integrands for the next computation step
         self.collision_integrals = []
@@ -259,6 +260,7 @@ class Particle(PicklableObject):
     def denominator(self):
         return self.regime.denominator(self)
 
+    @lru_cache(maxsize=255)
     def distribution(self, p):
         """
         ## Distribution function interpolation
