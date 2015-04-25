@@ -156,6 +156,8 @@ class Particle(PicklableObject):
         if force_print or self.regime != oldregime or self.in_equilibrium != oldeq:
             print self
 
+        self.distribution.cache_clear()
+
     def update_distribution(self):
         """ Apply collision integral to modify the distribution function """
         if self.in_equilibrium:
