@@ -217,7 +217,7 @@ class EquilibrationMonitor(ParticleMonitor):
         self.plots[0].set_ylabel("max|I|")
 
         self.plots[1].set_xlabel("a")
-        self.plots[0].set_xscale("log")
+        self.plots[1].set_xscale("log")
         self.plots[1].set_ylabel("numerator, MeV^-1")
 
     def plot(self, data):
