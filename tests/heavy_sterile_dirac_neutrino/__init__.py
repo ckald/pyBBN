@@ -121,7 +121,7 @@ distributions_file = open(os.path.join(folder, 'distributions.txt'), "w")
 for neutrino in [neutrino_e, neutrino_mu, neutrino_tau, sterile]:
     f = neutrino_e._distribution
     feq = neutrino_e.equilibrium_distribution()
-    plt.plot(GRID.TEMPLATE/UNITS.MeV, f/feq, label=repr(neutrino))
+    plt.plot(GRID.TEMPLATE/UNITS.MeV, f/feq, label=neutrino.name)
 
     numpy.savetxt(distributions_file, (f, feq, f/feq), header=str(neutrino),
                   footer='-'*80, fmt="%1.5e")
