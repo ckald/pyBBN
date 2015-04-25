@@ -217,6 +217,7 @@ class EquilibrationMonitor(ParticleMonitor):
         self.plots[0].set_ylabel("max|I|")
 
         self.plots[1].set_xlabel("a")
+        self.plots[0].set_xscale("log")
         self.plots[1].set_ylabel("numerator, MeV^-1")
 
     def plot(self, data):
@@ -224,7 +225,8 @@ class EquilibrationMonitor(ParticleMonitor):
 
         from particles.NonEqParticle import numerator
 
-        self.plots[0].scatter(a, numpy.max(numpy.fabs(self.particle.collision_integral)), s=1)
+        self.plots[0].scatter(a, numpy.max(numpy.fabs(self.particle.collision_integral))
+                              * UNITS.MeV, s=1)
         self.plots[1].scatter(a, numerator(self.particle) * UNITS.MeV, s=1)
 
 
