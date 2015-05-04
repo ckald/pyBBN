@@ -172,6 +172,9 @@ class BoltzmannIntegral(PicklableObject, DistributionFunctional):
             \begin{equation}E_3 = -s_3 \sum_{i \neq 3} s_i E_i \end{equation} """
         E[-1] = self.reaction[-1].side \
             * sum([-self.reaction[i].side * E[i] for i in range(particle_count-1)])
+        p[-1] = numpy.sqrt(E[-1]**2 - m[-1]**2)
+        return E, p, m
+
     def correction(self, p0):
         """ ### Particle collisions integration """
 
@@ -192,8 +195,6 @@ class BoltzmannIntegral(PicklableObject, DistributionFunctional):
         total_integral = (prediction - self.particle.distribution(p0)) / self.particle.params.dy
 
         return total_integral
-        p[-1] = numpy.sqrt(E[-1]**2 - m[-1]**2)
-        return E, p, m
 
     @staticmethod
     def integrate(E0, integrand, bounds=None, kwargs=None):
