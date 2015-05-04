@@ -46,18 +46,18 @@ class ThreeParticleIntegral(BoltzmannIntegral):
             self.particle.collision_integrals.append(self)
 
     @staticmethod
-    def integrate(p0, integrand, bounds=None, kwargs=None):
+    def integrate(E0, integrand, bounds=None, kwargs=None):
         kwargs = kwargs if kwargs else {}
 
         if bounds is None:
             bounds = (GRID.MIN_MOMENTUM, GRID.MAX_MOMENTUM)
 
         if isinstance(integrand, list):
-            def prepared_integrand(p1):
-                return sum([i(p0, p1, **kwargs) for i in integrand])
+            def prepared_integrand(E1):
+                return sum([i(E0, E1, **kwargs) for i in integrand])
         else:
-            def prepared_integrand(p1):
-                return integrand(p0, p1, **kwargs)
+            def prepared_integrand(E1):
+                return integrand(E0, E1, **kwargs)
 
         integral, error = integrators.integrate_1D(
             prepared_integrand,
@@ -66,31 +66,27 @@ class ThreeParticleIntegral(BoltzmannIntegral):
 
         return integral, error
 
-    def integrand(self, p0, p1, fau=None):
+    def integrand(self, E0, E1, fau=None):
 
         """
         Collision integral interior.
         """
 
-        p = [p0, p1, 0]
-        p, E, m = self.calculate_kinematics(p)
+        E = [E0, E1, 0]
+        E, p, m = self.calculate_kinematics(E)
 
         integrand = self.in_bounds(p, E, m) * self.constant / p[0] / E[0]
 
-        # Avoid rounding errors and division by zero
-        if m[1] != 0:
-            integrand *= p[1] / E[1]
-
-        integrand *= fau(p)
+        integrand *= fau(E)
 
         return integrand
 
     """ ### Integration region bounds methods """
 
-    def in_bounds(self, p, E=None, m=None):
+    def in_bounds(self, E, p=None, m=None):
         """ The kinematically allowed region in momentum space """
-        if not E or not m:
-            p, E, m = self.calculate_kinematics(p)
+        if not p or not m:
+            E, p, m = self.calculate_kinematics(E)
 
         is_in = (
             (E[2] >= m[2])

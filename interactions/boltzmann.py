@@ -14,7 +14,7 @@ class DistributionFunctional(object):
         \end{align}
     """
 
-    def F_A(self, p, skip_index=None):
+    def F_A(self, E, skip_index=None):
         """
         Forward reaction distribution functional term
 
@@ -29,13 +29,13 @@ class DistributionFunctional(object):
         for i, particle in enumerate(self.reaction):
             if skip_index is None or i != skip_index:
                 if self.reaction[i].side == -1:
-                    temp *= particle.specie.distribution(p[i])
+                    temp *= particle.specie.distribution(E[i])
                 else:
-                    temp *= 1. - particle.specie.eta * particle.specie.distribution(p[i])
+                    temp *= 1. - particle.specie.eta * particle.specie.distribution(E[i])
 
         return temp
 
-    def F_B(self, p, skip_index=None):
+    def F_B(self, E, skip_index=None):
         """
         Backward reaction distribution functional term
 
@@ -50,9 +50,9 @@ class DistributionFunctional(object):
         for i, particle in enumerate(self.reaction):
             if skip_index is None or i != skip_index:
                 if self.reaction[i].side == 1:
-                    temp *= particle.specie.distribution(p[i])
+                    temp *= particle.specie.distribution(E[i])
                 else:
-                    temp *= 1. - particle.specie.eta * particle.specie.distribution(p[i])
+                    temp *= 1. - particle.specie.eta * particle.specie.distribution(E[i])
 
         return temp
 
@@ -75,15 +75,15 @@ class DistributionFunctional(object):
     $^{(i)}$ in $\mathcal{F}^{(i)}$ means that the distribution function $f_i$ was omitted in the\
     corresponding expression. $\pm_j$ represents the $\eta$ value of the particle $j$.
     """
-    def F_f(self, p):
+    def F_f(self, E):
         """ Variable part of the distribution functional """
         return (
-            self.F_A(p=p, skip_index=0) - self.particle.eta * self.F_B(p=p, skip_index=0)
+            self.F_A(E=E, skip_index=0) - self.particle.eta * self.F_B(E=E, skip_index=0)
         )
 
-    def F_1(self, p):
+    def F_1(self, E):
         """ Constant part of the distribution functional """
-        return self.F_B(p=p, skip_index=0)
+        return self.F_B(E=E, skip_index=0)
 
 
 class BoltzmannIntegral(PicklableObject, DistributionFunctional):
@@ -157,23 +157,21 @@ class BoltzmannIntegral(PicklableObject, DistributionFunctional):
         """
         raise NotImplementedError()
 
-    def calculate_kinematics(self, p):
+    def calculate_kinematics(self, E):
         """ Helper procedure that caches conformal energies and masses of the reaction """
         particle_count = len(self.reaction)
-        p = (p + [0.]*particle_count)[:particle_count]
-        E = []
+        E = (E + [0.]*particle_count)[:particle_count]
+        p = []
         m = []
         for i, particle in enumerate(self.reaction):
-            E.append(particle.specie.conformal_energy(p[i]))
             m.append(particle.specie.conformal_mass)
+            if i < particle_count-1:
+                p.append(numpy.sqrt(E[i]**2 - m[i]**2))
 
         """ Parameters of one particle can be inferred from the energy conservation law
             \begin{equation}E_3 = -s_3 \sum_{i \neq 3} s_i E_i \end{equation} """
-        E[particle_count-1] = self.reaction[particle_count-1].side \
+        E[-1] = self.reaction[-1].side \
             * sum([-self.reaction[i].side * E[i] for i in range(particle_count-1)])
-        p[particle_count-1] = numpy.sqrt(numpy.abs(E[particle_count-1]**2 - m[particle_count-1]**2))
-        return p, E, m
-
     def correction(self, p0):
         """ ### Particle collisions integration """
 
@@ -194,9 +192,11 @@ class BoltzmannIntegral(PicklableObject, DistributionFunctional):
         total_integral = (prediction - self.particle.distribution(p0)) / self.particle.params.dy
 
         return total_integral
+        p[-1] = numpy.sqrt(E[-1]**2 - m[-1]**2)
+        return E, p, m
 
     @staticmethod
-    def integrate(p0, integrand, bounds=None, kwargs=None):
+    def integrate(E0, integrand, bounds=None, kwargs=None):
         raise NotImplementedError()
 
     def integrand(self, *args, **kwargs):
@@ -213,24 +213,24 @@ class BoltzmannIntegral(PicklableObject, DistributionFunctional):
 
     """ ### Integration region bounds methods """
 
-    def in_bounds(self, p, E=None, m=None):
+    def in_bounds(self, E, p=None, m=None):
         raise NotImplementedError()
 
-    def bounds(self, p0):
+    def bounds(self, E0):
         """ Coarse integration region based on the `GRID` points. Assumes that integration region\
             is connected. """
         points = []
-        for p1 in GRID.TEMPLATE:
-            points.append((p1, self.lower_bound(p0, p1),))
-            points.append((p1, self.upper_bound(p0, p1),))
+        for E1 in GRID.TEMPLATE:
+            points.append((E1, self.lower_bound(E0, E1),))
+            points.append((E1, self.upper_bound(E0, E1),))
 
         return points
 
-    def lower_bound(self, p0, p1):
+    def lower_bound(self, E0, E1):
         """ Find the first `GRID` point in the integration region """
 
         index = 0
-        while index < GRID.MOMENTUM_SAMPLES and not self.in_bounds([p0, p1, GRID.TEMPLATE[index]]):
+        while index < GRID.MOMENTUM_SAMPLES and not self.in_bounds([E0, E1, GRID.TEMPLATE[index]]):
             index += 1
 
         if index == GRID.MOMENTUM_SAMPLES:
@@ -238,12 +238,12 @@ class BoltzmannIntegral(PicklableObject, DistributionFunctional):
 
         return GRID.TEMPLATE[index]
 
-    def upper_bound(self, p0, p1):
+    def upper_bound(self, E0, E1):
         """ Find the last `GRID` point in the integration region """
 
-        index = int((min(p0 + p1, GRID.MAX_MOMENTUM) - GRID.MIN_MOMENTUM) / GRID.MOMENTUM_STEP)
+        index = int((min(E0 + E1, GRID.MAX_MOMENTUM) - GRID.MIN_MOMENTUM) / GRID.MOMENTUM_STEP)
 
-        while index >= 0 and not self.in_bounds([p0, p1, GRID.TEMPLATE[index]]):
+        while index >= 0 and not self.in_bounds([E0, E1, GRID.TEMPLATE[index]]):
             index -= 1
 
         if index == -1:
