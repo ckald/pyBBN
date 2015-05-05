@@ -234,15 +234,14 @@ class Universe(object):
             for integral in self.baryons_interaction.integrals:
                 print integral, integral.rates()
 
-            self.data['kawano'].append(tuple(
+            self.data['kawano'].append(tuple([
                 self.params.t / UNITS.s,
                 self.params.x / UNITS.MeV,
                 self.params.T / UNITS.MeV * CONST.MeV_to_10_9K,
                 self.fraction / self.params.x / UNITS.MeV * CONST.MeV_to_10_9K,
                 self.params.rho / UNITS.MeV**4 * CONST.MeV4_to_g_cm_3,
-                self.params.H * UNITS.s,
-                *rates
-            ))
+                self.params.H * UNITS.s
+            ] + rates))
             print "KAWANO", self.data['kawano'][-1]
 
     def init_log(self):
