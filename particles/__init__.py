@@ -311,16 +311,8 @@ class Particle(PicklableObject):
         \end{equation}
         """
 
-        g_high = self._distribution[i_high]
-        g_low = self._distribution[i_low]
-
-        g_high = (1. / g_high - 1.)
-        if g_high > 0:
-            g_high = numpy.log(g_high)
-
-        g_low = (1. / g_low - 1.)
-        if g_low > 0:
-            g_low = numpy.log(g_low)
+        g_high = numpy.log(self._distribution[i_high])
+        g_low = numpy.log(self._distribution[i_low])
 
         g = ((E_p - E_low) * g_high + (E_high - E_p) * g_low) / (E_high - E_low)
 
