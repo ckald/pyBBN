@@ -281,8 +281,11 @@ class Particle(PicklableObject):
             return self.equilibrium_distribution(p)
 
         from KAWANO.interpolation import log_interp_values as distribution_interpolation
-        return distribution_interpolation(self.conformal_energy(p),
-                                          GRID.TEMPLATE, self._distribution, False)
+        return distribution_interpolation(
+            self.conformal_energy(p) / self.aT,
+            numpy.vectorize(self.conformal_energy)(GRID.TEMPLATE) / self.aT,
+            self._distribution, False
+        )
 
         index = numpy.searchsorted(GRID.TEMPLATE, p)
 
