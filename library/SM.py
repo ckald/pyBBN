@@ -293,5 +293,6 @@ class interactions(object):
             decoupling_temperature=0 * UNITS.MeV,
             Ms=(
                 WeakM(K1=2. * particles.quarks.CKM[(1, 1)]**2, order=(0, 1, 2, 3)),
-            )
+            ),
+            integral=FourParticleIntegral
         )
