@@ -142,8 +142,8 @@ SUBROUTINE log_interp_values(interp_val, x_interp, x_values, y_values, decreasin
           y_up = -y_up        ! of their opposite
        END IF
 
-       y_lo = log(y_lo)
-       y_up = log(y_up)
+       y_lo = log(1 / y_lo - 1)
+       y_up = log(1 / y_up - 1)
        x_lo = x_values(head)
        x_up = x_values(tail)
 
