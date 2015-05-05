@@ -230,18 +230,16 @@ class Universe(object):
         # n nue->p e  p e->n nue  n->p e nue  p e nue->n  n e->p nue  p nue->n e
 
         if self.baryons_interaction:
-            ((neutron,), (proton, electron, neutrino)) = self.baryons_interaction.particles
-
             rates_map = (
-                ((neutron, neutrino), (electron, proton)),
-                ((neutron,), (electron, neutrino, proton)),
-                ((neutron, electron), (neutrino, proton)),
+                "n + ν_e ⟶ e + p"
+                "n ⟶  e + ν_e' + p"
+                "n + e' ⟶  ν_e' + p"
             )
 
             rates = []
-            for particles in rates_map:
+            for reaction in rates_map:
                 for integral in self.baryons_interaction.integrals:
-                    if particles == integral.particles:
+                    if reaction == str(integral):
                         rs = integral.rates()
                         rs = [rs[0] / UNITS.MeV * CONST.MeV_to_s_1 * CONST.rate_normalization,
                               rs[1] / UNITS.MeV * CONST.MeV_to_s_1 * CONST.rate_normalization]
