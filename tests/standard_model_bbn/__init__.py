@@ -39,16 +39,26 @@ neutrino_e = Particle(**SMP.leptons.neutrino_e)
 neutrino_mu = Particle(**SMP.leptons.neutrino_mu)
 neutrino_tau = Particle(**SMP.leptons.neutrino_tau)
 
+neutron = Particle(**SMP.hadrons.neutron)
+proton = Particle(**SMP.hadrons.neutron)
+
 universe.add_particles([
     photon,
     electron,
     neutrino_e,
     neutrino_mu,
     neutrino_tau,
+
+    neutron,
+    proton
 ])
 
-universe.interactions += \
-    SMI.neutrino_interactions(leptons=[electron], neutrinos=[neutrino_e, neutrino_mu, neutrino_tau])
+universe.interactions += (
+    SMI.baryons_interaction(neutron=neutron, proton=proton,
+                            electron=electron, neutrino=neutrino_e)
+    + SMI.neutrino_interactions(leptons=[electron],
+                                neutrinos=[neutrino_e, neutrino_mu, neutrino_tau])
+)
 
 universe.graphics.monitor([
     (neutrino_e, RadiationParticleMonitor),

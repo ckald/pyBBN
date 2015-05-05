@@ -282,3 +282,16 @@ class interactions(object):
                 inters.append(cls.neutrinos_to_leptons(g_L=g_L, lepton=lepton, neutrino=neutrino))
 
         return inters
+
+    @classmethod
+    def baryons_interaction(cls, neutron=None, proton=None, neutrino=None, electron=None):
+
+        return Interaction(
+            name="Baryons interaction",
+            particles=((neutron), (proton, electron, neutrino)),
+            antiparticles=((False), (False, False, True)),
+            decoupling_temperature=0 * UNITS.MeV,
+            Ms=(
+                WeakM(K1=2. * CKM[(1, 1)]**2, order(0, 1, 2, 3))
+            )
+        )
