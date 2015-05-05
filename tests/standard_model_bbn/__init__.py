@@ -40,7 +40,7 @@ neutrino_mu = Particle(**SMP.leptons.neutrino_mu)
 neutrino_tau = Particle(**SMP.leptons.neutrino_tau)
 
 neutron = Particle(**SMP.hadrons.neutron)
-proton = Particle(**SMP.hadrons.neutron)
+proton = Particle(**SMP.hadrons.proton)
 
 universe.add_particles([
     photon,
