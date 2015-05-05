@@ -175,11 +175,11 @@ class BoltzmannIntegral(PicklableObject, DistributionFunctional):
         return p, E, m
 
     def rates(self):
-        def forward_integral(p0):
-            return self.integrate(p0, self.integrand_A)
+        def forward_integral(p):
+            return numpy.vectorize(lambda p0: self.integrate(p0, self.integrand_A))(p)
 
-        def backward_integral(p0):
-            return self.integrate(p0, self.integrand_B)
+        def backward_integral(p):
+            return numpy.vectorize(lambda p0: self.integrate(p0, self.integrand_B))(p)
 
         forward_rate, _ = integrators.integrate_1D(forward_integral,
                                                    (GRID.MIN_MOMENTUM, GRID.MAX_MOMENTUM))
