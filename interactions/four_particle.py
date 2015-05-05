@@ -84,23 +84,23 @@ class FourParticleIntegral(BoltzmannIntegral):
             self.particle.collision_integrals.append(self)
 
     @staticmethod
-    def integrate(E0, integrand, bounds=None, kwargs=None):
+    def integrate(p0, integrand, bounds=None, kwargs=None):
         kwargs = kwargs if kwargs else {}
 
         if bounds is None:
             bounds = (
                 (GRID.MIN_MOMENTUM,
                  GRID.MAX_MOMENTUM),
-                (lambda E1: GRID.MIN_MOMENTUM,
-                 lambda E1: min(E0 + E1, GRID.MAX_MOMENTUM)),
+                (lambda p1: GRID.MIN_MOMENTUM,
+                 lambda p1: min(p0 + p1, GRID.MAX_MOMENTUM)),
             )
 
         if isinstance(integrand, list):
-            def prepared_integrand(E1, E2):
-                return sum([i(E0, E1, E2, **kwargs) for i in integrand])
+            def prepared_integrand(p1, p2):
+                return sum([i(p0, p1, p2, **kwargs) for i in integrand])
         else:
-            def prepared_integrand(E1, E2):
-                return integrand(E0, E1, E2, **kwargs)
+            def prepared_integrand(p1, p2):
+                return integrand(p0, p1, p2, **kwargs)
 
         integral, error = integrators.integrate_2D(
             prepared_integrand,
@@ -109,16 +109,16 @@ class FourParticleIntegral(BoltzmannIntegral):
 
         return integral, error
 
-    def integrand(self, E0, E1, E2, fau=None):
+    def integrand(self, p0, p1, p2, fau=None):
 
         """
         Collision integral interior.
         """
 
-        E = [E0, E1, E2, 0]
-        E, p, m = self.calculate_kinematics(E)
+        p = [p0, p1, p2, 0]
+        p, E, m = self.calculate_kinematics(p)
 
-        if not self.in_bounds(E, p, m):
+        if not self.in_bounds(p, E, m):
             return 0.
 
         integrand = self.constant
@@ -133,28 +133,28 @@ class FourParticleIntegral(BoltzmannIntegral):
                 ds += Db1(*p[1:]) + m[1] * (E[2] * E[3] + Db2(*p[1:]))
         integrand *= ds
 
-        # # Avoid rounding errors and division by zero
-        # for i in [1, 2, 3]:
-        #     if m[i] != 0:
-        #         integrand *= p[i] / E[i]
+        # Avoid rounding errors and division by zero
+        for i in [1, 2, 3]:
+            if m[i] != 0:
+                integrand *= p[i] / E[i]
 
         if integrand == 0:
             return 0
 
-        integrand *= fau(E)
+        integrand *= fau(p)
 
         return integrand
 
     """ ### Integration region bounds methods """
 
-    def in_bounds(self, E, p=None, m=None):
+    def in_bounds(self, p, E=None, m=None):
         """ $D$-functions involved in the interactions imply a cut-off region for the collision\
             integrand. In the general case of arbitrary particle masses, this is a set of \
             irrational inequalities that can hardly be solved (at least, Wolfram Mathematica does\
             not succeed in this). To avoid excessive computations, it is convenient to do an early\
             `return 0` when the particles kinematics lay out of the cut-off region """
         if not E or not m:
-            E, p, m = self.calculate_kinematics(p)
+            p, E, m = self.calculate_kinematics(p)
 
         q1, q2 = (p[0], p[1]) if p[0] > p[1] else (p[1], p[0])
         q3, q4 = (p[2], p[3]) if p[2] > p[3] else (p[3], p[2])
