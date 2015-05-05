@@ -4,6 +4,7 @@ import sys
 import numpy
 import array
 from datetime import datetime
+from collections import defaultdict
 
 from common import UNITS, Params, Grid, CONST
 from common import integrators, parallelization, utils
