@@ -209,6 +209,14 @@ class BoltzmannIntegral(PicklableObject, DistributionFunctional):
         kwargs['fau'] = self.F_f
         return self.integrand(*args, **kwargs)
 
+    def integrand_A(self, *args, **kwargs):
+        kwargs['fau'] = self.F_A
+        return self.integrand(*args, **kwargs)
+
+    def integrand_B(self, *args, **kwargs):
+        kwargs['fau'] = self.F_B
+        return self.integrand(*args, **kwargs)
+
     """ ### Integration region bounds methods """
 
     def in_bounds(self, p, E=None, m=None):
