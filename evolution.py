@@ -232,9 +232,9 @@ class Universe(object):
         if self.baryons_interaction:
 
             rates_map = (
-                "n + ν_e ⟶  e + p"
-                "n ⟶  e + ν_e' + p"
-                "n + e' ⟶  ν_e' + p"
+                "n + ν_e ⟶  e + p",
+                "n ⟶  e + ν_e' + p",
+                "n + e' ⟶  ν_e' + p",
             )
 
             rates = []
@@ -242,8 +242,10 @@ class Universe(object):
                 for integral in self.baryons_interaction.integrals:
                     if reaction in str(integral):
                         rs = integral.rates()
-                        rs = [rs[0] / UNITS.MeV * CONST.MeV_to_s_1 * CONST.rate_normalization,
-                              rs[1] / UNITS.MeV * CONST.MeV_to_s_1 * CONST.rate_normalization]
+                        rs = [rs[0] / self.params.x * UNITS.MeV
+                              / CONST.MeV_to_s_1 * CONST.rate_normalization,
+                              rs[1] / self.params.x * UNITS.MeV
+                              / CONST.MeV_to_s_1 * CONST.rate_normalization]
                         rates += rs
                         print integral, rs
 
