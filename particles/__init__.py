@@ -15,7 +15,6 @@ from common.integrators import adams_moulton_solver
 from common.utils import PicklableObject
 
 from particles import DustParticle, RadiationParticle, IntermediateParticle, NonEqParticle
-# from particles.interpolation.interpolation import distribution_interpolation
 
 
 class STATISTICS(object):
@@ -277,28 +276,20 @@ class Particle(PicklableObject):
         if the current momenta value coincides with any of the grid points.
         """
 
-        exponential_interpolation = True
         p = abs(p)
         if self.in_equilibrium or p > GRID.MAX_MOMENTUM:
             return self.equilibrium_distribution(p)
 
-        # Cython implementation experiment
-        #
-        # ```python
-        # return distribution_interpolation(GRID.TEMPLATE, self._distribution,
-        #                                 p, self.conformal_mass,
-        #                                 self.eta,
-        #                                 GRID.MIN_MOMENTUM, GRID.MOMENTUM_STEP)
-        # ```
+        # from KAWANO.interpolation import log_interp_values as distribution_interpolation
+        # return distribution_interpolation(p, GRID.TEMPLATE, self._distribution, False)
 
-        greaters = numpy.where(GRID.TEMPLATE >= p)[0]
-        index = greaters[0]
-
-        if p == GRID.TEMPLATE[index]:
-            return self._distribution[index]
+        index = numpy.searchsorted(GRID.TEMPLATE, p)
 
         if index >= GRID.MOMENTUM_SAMPLES - 1:
             return self._distribution[-1]
+
+        if p == GRID.TEMPLATE[index]:
+            return self._distribution[index]
 
         # Determine the closest grid points
 
@@ -308,41 +299,40 @@ class Particle(PicklableObject):
         i_high = index + 1
         p_high = GRID.TEMPLATE[i_high]
 
-        if exponential_interpolation:
-            """ ### Exponential interpolation """
-            E_p = self.conformal_energy(p)
-            E_low = self.conformal_energy(p_low)
-            E_high = self.conformal_energy(p_high)
+        """ ### Exponential interpolation """
+        E_p = self.conformal_energy(p)
+        E_low = self.conformal_energy(p_low)
+        E_high = self.conformal_energy(p_high)
 
-            """
-            \begin{equation}
-                g = \frac{ (E_p - E_{low}) g_{high} + (E_{high} - E_p) g_{low} }\
-                { (E_{high} - E_{low}) }
-            \end{equation}
-            """
+        """
+        \begin{equation}
+            g = \frac{ (E_p - E_{low}) g_{high} + (E_{high} - E_p) g_{low} }\
+            { (E_{high} - E_{low}) }
+        \end{equation}
+        """
 
-            g_high = self._distribution[i_high]
-            g_low = self._distribution[i_low]
+        g_high = self._distribution[i_high]
+        g_low = self._distribution[i_low]
 
-            g_high = (1. / g_high - 1.)
-            if g_high > 0:
-                g_high = numpy.log(g_high)
+        g_high = (1. / g_high - 1.)
+        if g_high > 0:
+            g_high = numpy.log(g_high)
 
-            g_low = (1. / g_low - 1.)
-            if g_low > 0:
-                g_low = numpy.log(g_low)
+        g_low = (1. / g_low - 1.)
+        if g_low > 0:
+            g_low = numpy.log(g_low)
 
-            g = ((E_p - E_low) * g_high + (E_high - E_p) * g_low) / (E_high - E_low)
+        g = ((E_p - E_low) * g_high + (E_high - E_p) * g_low) / (E_high - E_low)
 
-            return 1. / (numpy.exp(g) + self.eta)
+        return 1. / (numpy.exp(g) + self.eta)
 
-        else:
-            """ ### Linear interpolation """
-            return (
-                self._distribution[i_low] * (p_high - p) + self._distribution[i_high] * (p - p_low)
-            ) / (p_high - p_low)
+        # """ ### Linear interpolation """
+        # return (
+        #     self._distribution[i_low] * (p_high - p) + self._distribution[i_high] * (p - p_low)
+        # ) / (p_high - p_low)
 
     def equilibrium_distribution(self, y=None, aT=None):
+
         """ Equilibrium distribution that corresponds to the particle internal temperature """
         if aT is None:
             aT = self.aT
