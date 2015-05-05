@@ -5,7 +5,7 @@ import numpy
 import array
 from datetime import datetime
 
-from common import UNITS, Params, Grid
+from common import UNITS, Params, Grid, CONST
 from common import integrators, parallelization, utils
 # from common.utils import PicklableObject
 
@@ -61,12 +61,19 @@ class Universe(object):
         for interaction in self.interactions:
             print interaction
 
+        baryons_interaction = [interaction
+                               for interaction in self.interactions
+                               if interaction.name == "Baryons interaction"]
+
+        if baryons_interaction:
+            self.baryons_interaction = baryons_interaction[0]
+
         print "dx = {} MeV".format(self.params.dx / UNITS.MeV)
 
         self.step = 0
 
         self.params.update(self.total_energy_density())
-        self.data = {
+        self.data = defaultdict(list, {
             'aT': array.array('f', [self.params.aT]),
             'T': array.array('f', [self.params.T]),
             'a': array.array('f', [self.params.a]),
@@ -74,7 +81,7 @@ class Universe(object):
             't': array.array('f', [self.params.t]),
             'rho': array.array('f', [self.params.rho]),
             'fraction': array.array('f', [0]),
-        }
+        })
 
         print '#step\tTime, s\taT, MeV\tT, MeV\tscale factor\tdx, MeV'
         self.log()
@@ -217,6 +224,25 @@ class Universe(object):
         self.data['rho'].append(self.params.rho)
         self.data['t'].append(self.params.t)
         self.data['fraction'].append(self.fraction)
+
+        #     t[s]         x    Tg[10^9K]   dTg/dt[10^9K/s] rho_tot[g cm^-3]     H[s^-1]
+        # n nue->p e  p e->n nue  n->p e nue  p e nue->n  n e->p nue  p nue->n e
+
+        if self.baryons_interaction:
+            rates = []
+            for integral in self.baryons_interaction.integrals:
+                print integral, integral.rates()
+
+            self.data['kawano'].append(tuple(
+                self.params.t / UNITS.s,
+                self.params.x / UNITS.MeV,
+                self.params.T / UNITS.MeV * CONST.MeV_to_10_9K,
+                self.fraction / self.params.x / UNITS.MeV * CONST.MeV_to_10_9K,
+                self.params.rho / UNITS.MeV**4 * CONST.MeV4_to_g_cm_3,
+                self.params.H * UNITS.s,
+                *rates
+            ))
+            print "KAWANO", self.data['kawano'][-1]
 
     def init_log(self):
         sys.stdout = utils.Logger(self.logfile)

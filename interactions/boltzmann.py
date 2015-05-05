@@ -174,26 +174,24 @@ class BoltzmannIntegral(PicklableObject, DistributionFunctional):
         p[particle_count-1] = numpy.sqrt(numpy.abs(E[particle_count-1]**2 - m[particle_count-1]**2))
         return p, E, m
 
-    def correction(self, p0):
-        """ ### Particle collisions integration """
+    def rates(self):
+        def forward_integral(p0):
+            return self.integrate(p0, self.integrand_A)
 
-        integral_1, _ = self.integral_1(p0)
-        integral_f, _ = self.integral_f(p0)
+        def backward_integral(p0):
+            return self.integrate(p0, self.integrand_B)
 
-        order = min(len(self.particle.data['collision_integral']) + 1, 5)
+        forward_rate, _ = integrators.integrate_1D(forward_integral,
+                                                   (GRID.MIN_MOMENTUM, GRID.MAX_MOMENTUM))
 
-        index = numpy.argwhere(GRID.TEMPLATE == p0)[0][0]
-        fs = [i[index] for i in self.particle.data['collision_integral'][-order:]]
+        backward_rate, _ = integrators.integrate_1D(backward_integral,
+                                                    (GRID.MIN_MOMENTUM, GRID.MAX_MOMENTUM))
 
-        prediction = integrators.adams_moulton_solver(
-            y=self.particle.distribution(p0), fs=fs,
-            A=integral_1, B=integral_f,
-            h=self.particle.params.dy, order=order
-        )
+        return -forward_rate, backward_rate
 
-        total_integral = (prediction - self.particle.distribution(p0)) / self.particle.params.dy
-
-        return total_integral
+    def rate(self):
+        forward_rate, backward_rate = self.rates()
+        return backward_rate - forward_rate
 
     @staticmethod
     def integrate(p0, integrand, bounds=None, kwargs=None):

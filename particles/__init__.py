@@ -170,10 +170,13 @@ class Particle(PicklableObject):
     def integrate_collisions(self):
         return numpy.vectorize(self.calculate_collision_integral)(GRID.TEMPLATE)
 
-    def calculate_collision_integral(self, p0):
+    def calculate_collision_integral(self, p0, collision_integrals=None):
         """ ### Particle collisions integration """
 
-        if not self.collision_integrals:
+        if not collision_integrals:
+            collision_integrals = self.collision_integrals
+
+        if not collision_integrals:
             return 0
 
         As = []
@@ -181,18 +184,15 @@ class Particle(PicklableObject):
 
         if self.INTEGRATION_ORDER == 'integral-first':
 
-            for i in self.collision_integrals:
-                integral_1, _ = i.integral_1(p0)
-                As.append(integral_1)
-
-                integral_f, _ = i.integral_f(p0)
-                Bs.append(integral_f)
+            for i in collision_integrals:
+                As.append(i.__class__.integrate(p0, i.integrand_1)[0])
+                Bs.append(i.__class__.integrate(p0, i.integrand_f)[0])
 
         else:
 
             A_integrand_groups = defaultdict(list)
             B_integrand_groups = defaultdict(list)
-            for i in self.collision_integrals:
+            for i in collision_integrals:
                 A_integrand_groups[i.__class__].append(i.integrand_1)
                 B_integrand_groups[i.__class__].append(i.integrand_f)
 
