@@ -13,8 +13,8 @@ photon = Particle(params=params, **SMP.photon)
 neutrino = Particle(params=params, **SMP.leptons.neutrino_e)
 
 neutrino_scattering = Interaction(
-    in_particles=[neutrino, neutrino],
-    out_particles=[neutrino, neutrino],
+    particles=((neutrino, neutrino), (neutrino, neutrino)),
+    antiparticles=((False, True), (False, True)),
     decoupling_temperature=0 * UNITS.MeV,
     Ms=[FourParticleM(K1=64 * CONST.G_F**2, order=(0, 1, 2, 3))]
 )
