@@ -280,8 +280,9 @@ class Particle(PicklableObject):
         if self.in_equilibrium or p > GRID.MAX_MOMENTUM:
             return self.equilibrium_distribution(p)
 
-        # from KAWANO.interpolation import log_interp_values as distribution_interpolation
-        # return distribution_interpolation(p, GRID.TEMPLATE, self._distribution, False)
+        from KAWANO.interpolation import log_interp_values as distribution_interpolation
+        return distribution_interpolation(self.conformal_energy(p),
+                                          GRID.TEMPLATE, self._distribution, False)
 
         index = numpy.searchsorted(GRID.TEMPLATE, p)
 
