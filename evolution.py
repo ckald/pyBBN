@@ -230,9 +230,21 @@ class Universe(object):
         # n nue->p e  p e->n nue  n->p e nue  p e nue->n  n e->p nue  p nue->n e
 
         if self.baryons_interaction:
+            ((neutron,), (proton, electron, neutrino)) = self.baryons_interaction.particles
+
+            rates_map = (
+                ((neutron, neutrino), (electron, proton)),
+                ((neutron,), (electron, neutrino, proton)),
+                ((neutron, electron), (neutrino, proton)),
+            )
+
             rates = []
-            for integral in self.baryons_interaction.integrals:
-                print integral, integral.rates()
+            for particles in rates_map:
+                for integral in self.baryons_interaction.integrals:
+                    if particles == integral.particles:
+                        rs = integral.rates()
+                        rates += list(rs)
+                        print integral, rs
 
             self.data['kawano'].append(tuple([
                 self.params.t / UNITS.s,
