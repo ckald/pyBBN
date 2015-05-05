@@ -49,6 +49,7 @@ class CONST(object):
     # Pion decay constant
     f_pi = 130. * UNITS.MeV
 
+    MeV_to_s_1 = 1.51926758e21
     MeV_to_10_9K = 11.6045
     MeV4_to_g_cm_3 = 2.32011575e5
 

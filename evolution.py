@@ -243,7 +243,9 @@ class Universe(object):
                 for integral in self.baryons_interaction.integrals:
                     if particles == integral.particles:
                         rs = integral.rates()
-                        rates += list(rs)
+                        rs = [rs[0] / UNITS.MeV * CONST.MeV_to_s_1 * CONST.rate_normalization,
+                              rs[1] / UNITS.MeV * CONST.MeV_to_s_1 * CONST.rate_normalization]
+                        rates += rs
                         print integral, rs
 
             self.data['kawano'].append(tuple([
