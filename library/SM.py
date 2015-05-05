@@ -288,8 +288,8 @@ class interactions(object):
 
         return Interaction(
             name="Baryons interaction",
-            particles=((neutron), (proton, electron, neutrino)),
-            antiparticles=((False), (False, False, True)),
+            particles=((neutron,), (proton, electron, neutrino)),
+            antiparticles=((False,), (False, False, True)),
             decoupling_temperature=0 * UNITS.MeV,
             Ms=(
                 WeakM(K1=2. * particles.quarks.CKM[(1, 1)]**2, order=(0, 1, 2, 3)),
