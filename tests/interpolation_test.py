@@ -1,5 +1,5 @@
 from library.SM import particles as SMP
-from interactions import Interaction, FourParticleM
+from interactions import Interaction, FourParticleM, FourParticleIntegral
 from particles import Particle
 from evolution import Universe
 from common import CONST, UNITS, Params, GRID
@@ -16,7 +16,8 @@ neutrino_scattering = Interaction(
     particles=((neutrino, neutrino), (neutrino, neutrino)),
     antiparticles=((False, True), (False, True)),
     decoupling_temperature=0 * UNITS.MeV,
-    Ms=[FourParticleM(K1=64 * CONST.G_F**2, order=(0, 1, 2, 3))]
+    Ms=(FourParticleM(K1=64 * CONST.G_F**2, order=(0, 1, 2, 3)),),
+    integral=FourParticleIntegral
 )
 
 universe = Universe(params=params, plotting=False)
