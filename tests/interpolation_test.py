@@ -22,6 +22,7 @@ neutrino_scattering = Interaction(
 )
 
 universe = Universe(params=params, plotting=False)
+universe.PARALLELIZE = False
 universe.add_particles([photon, neutrino])
 universe.interactions += [neutrino_scattering]
 
@@ -48,8 +49,8 @@ y = numpy.vectorize(neutrino.distribution)(x)
 z = numpy.vectorize(neutrino.equilibrium_distribution_function)(x / universe.params.aT)
 w = z + addition(x)
 plt.plot(x, y)
-# plt.plot(x, z)
-# plt.plot(x, w)
+plt.plot(x, z)
+plt.plot(x, w)
 plt.show()
 
 # res = []
