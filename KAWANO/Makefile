@@ -1,9 +1,9 @@
-FLAGS = -fdefault-real-8 -fno-align-commons
+FLAGS = -freal-4-real-8 -finteger-4-integer-8 -fdefault-real-8 -fno-align-commons -Ofast
 
 all: clean python kawano
 
 python:
-	f2py -c -m interpolation interpolation.f90
+	f2py -c -m interpolation interpolation.f90 --f90flags="$(FLAGS)"
 
 kawano:
 	gfortran kawano_steriles.f interpolation.f90 $(FLAGS)
