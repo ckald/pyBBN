@@ -1,6 +1,6 @@
 from library.SM import particles as SMP
 from interactions import Interaction
-from itneractions.four_particle import FourParticleM, FourParticleIntegral
+from interactions.four_particle import FourParticleM, FourParticleIntegral
 from particles import Particle
 from evolution import Universe
 from common import CONST, UNITS, Params, GRID
