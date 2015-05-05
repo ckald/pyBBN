@@ -30,12 +30,12 @@ C----------PARAMETERS.
         !Parameters from steriles prog
 C------VARIABLES FOR STERILES
         PARAMETER (n_big=1e7)
-        REAL ts(n_big)             !Time array (in seconds)
-        REAL t9s(n_big)            !Photon temperature array (in 10**9 K)
-        REAL dt9s(n_big)           !Temperature variation (in 10**9 K / s)
-        REAL rho_tot(n_big)        !Total energy density array (in g cm**-3)
-        REAL ratef(n_big)          !Array for the total rate n -> p
-        REAL rater(n_big)          !Array for the total rate p -> n
+        DOUBLE PRECISION ts(n_big)             !Time array (in seconds)
+        DOUBLE PRECISION t9s(n_big)            !Photon temperature array (in 10**9 K)
+        DOUBLE PRECISION dt9s(n_big)           !Temperature variation (in 10**9 K / s)
+        DOUBLE PRECISION rho_tot(n_big)        !Total energy density array (in g cm**-3)
+        DOUBLE PRECISION ratef(n_big)          !Array for the total rate n -> p
+        DOUBLE PRECISION rater(n_big)          !Array for the total rate p -> n
         INTEGER nlines            !An integer telling the number of lines
      |                            ! of data coming from the other program
       END
@@ -88,7 +88,7 @@ C----------COMMON AREAS.
 C==========================DECLARATION DIVISION============================
 
 C----------REACTION PARAMETERS FROM BLOCK DATA.
-      REAL    reacpr(nrec,8)       !Reaction parameters.
+      DOUBLE PRECISION    reacpr(nrec,8)       !Reaction parameters.
 
 C----------REACTION PARAMETERS.
       INTEGER iform(nrec)          !Reaction type code (1-11).
@@ -96,48 +96,48 @@ C----------REACTION PARAMETERS.
       INTEGER jj(nrec)             !Incoming light nuclide type (1-6).
       INTEGER kk(nrec)             !Outgoing light nuclide type (1-6).
       INTEGER ll(nrec)             !Outgoing nuclide type (1-26).
-      REAL    rev(nrec)            !Reverse reaction coefficient.
-      REAL    q9(nrec)             !Energy released in reaction.
+      DOUBLE PRECISION    rev(nrec)            !Reverse reaction coefficient.
+      DOUBLE PRECISION    q9(nrec)             !Energy released in reaction.
 
 C----------REACTION RATES.
-      REAL    f(nrec)              !Forward reaction rate coefficients.
-      REAL    r(nrec)              !Reverse reaction rate coefficients.
+      DOUBLE PRECISION    f(nrec)              !Forward reaction rate coefficients.
+      DOUBLE PRECISION    r(nrec)              !Reverse reaction rate coefficients.
 
 C----------DEFAULT COMPUTATION PARAMETERS.
-      REAL    cy0                  !Default cy.
-      REAL    ct0                  !Default ct.
-      REAL    t9i0                 !Default t9i.
-      REAL    t9f0                 !Default t9f.
-      REAL    ytmin0               !Default ytmin.
+      DOUBLE PRECISION    cy0                  !Default cy.
+      DOUBLE PRECISION    ct0                  !Default ct.
+      DOUBLE PRECISION    t9i0                 !Default t9i.
+      DOUBLE PRECISION    t9f0                 !Default t9f.
+      DOUBLE PRECISION    ytmin0               !Default ytmin.
       INTEGER inc0                 !Default accumulation increment.
 
 C----------COMPUTATIONAL PARAMETERS.
-      REAL    cy                   !Time step limiting constant on abundances.
-      REAL    ct                   !Time step limiting constant on temperature.
-      REAL    t9i                  !Initial temperature (in 10**9 K).
-      REAL    t9f                  !Final temperature (in 10**9 k).
-      REAL    ytmin                !Smallest abundances allowed.
+      DOUBLE PRECISION    cy                   !Time step limiting constant on abundances.
+      DOUBLE PRECISION    ct                   !Time step limiting constant on temperature.
+      DOUBLE PRECISION    t9i                  !Initial temperature (in 10**9 K).
+      DOUBLE PRECISION    t9f                  !Final temperature (in 10**9 k).
+      DOUBLE PRECISION    ytmin                !Smallest abundances allowed.
       INTEGER inc                  !Accumulation increment.
 
 C----------DEFAULT MODEL PARAMETERS.
-      REAL    c0(3)                !Default c.
-      REAL    cosmo0               !Default cosmological constant.
-      REAL    xi0(3)               !Default neutrino degeneracy parameters.
+      DOUBLE PRECISION    c0(3)                !Default c.
+      DOUBLE PRECISION    cosmo0               !Default cosmological constant.
+      DOUBLE PRECISION    xi0(3)               !Default neutrino degeneracy parameters.
 
 C----------EARLY UNIVERSE MODEL PARAMETERS.
-      REAL    c(3)                !c(1) is variation of gravitational constant.
+      DOUBLE PRECISION    c(3)                !c(1) is variation of gravitational constant.
      |                             !c(2) is neutron lifetime (sec).
      |                             !c(3) is number of neutrino species.
-      REAL    cosmo                !Cosmological constant.
-      REAL    xi(3)                !Neutrino degeneracy parameters.
+      DOUBLE PRECISION    cosmo                !Cosmological constant.
+      DOUBLE PRECISION    xi(3)                !Neutrino degeneracy parameters.
 
 C----------DEFAULT VARIATIONAL PARAMETERS.
-      REAL    dt0                  !Default initial time step.
-      REAL    eta0                 !Default baryon-to-photon ratio.
+      DOUBLE PRECISION    dt0                  !Default initial time step.
+      DOUBLE PRECISION    eta0                 !Default baryon-to-photon ratio.
 
 C----------VARIATIONAL PARAMETERS.
-      REAL    dt1                  !Initial time step.
-      REAL    eta1                 !Baryon-to-photon ratio.
+      DOUBLE PRECISION    dt1                  !Initial time step.
+      DOUBLE PRECISION    eta1                 !Baryon-to-photon ratio.
 
 C----------COMPUTATION LOCATION.
       INTEGER itime                !Time check.
@@ -817,26 +817,26 @@ C----------COMMON AREAS.
 C==========================DECLARATION DIVISION=============================
 
 C----------DEFAULT COMPUTATION PARAMETERS.
-      REAL    cy0                  !Default cy.
-      REAL    ct0                  !Default ct.
-      REAL    t9i0                 !Default t9i.
-      REAL    t9f0                 !Default t9f.
-      REAL    ytmin0               !Default ytmin.
+      DOUBLE PRECISION    cy0                  !Default cy.
+      DOUBLE PRECISION    ct0                  !Default ct.
+      DOUBLE PRECISION    t9i0                 !Default t9i.
+      DOUBLE PRECISION    t9f0                 !Default t9f.
+      DOUBLE PRECISION    ytmin0               !Default ytmin.
       INTEGER inc0                 !Default accumulation increment.
 
 C----------COMPUTATION PARAMETERS.
-      REAL    cy                   !Time step limiting constant on abundances.
-      REAL    ct                   !Time step limiting constant on temperature.
-      REAL    t9i                  !Initial temperature (in 10**9 K).
-      REAL    t9f                  !Final temperature (in 10**9 K).
-      REAL    ytmin                !Smallest abundances allowed.
+      DOUBLE PRECISION    cy                   !Time step limiting constant on abundances.
+      DOUBLE PRECISION    ct                   !Time step limiting constant on temperature.
+      DOUBLE PRECISION    t9i                  !Initial temperature (in 10**9 K).
+      DOUBLE PRECISION    t9f                  !Final temperature (in 10**9 K).
+      DOUBLE PRECISION    ytmin                !Smallest abundances allowed.
       INTEGER inc                  !Accumulation increment.
 
 C----------DEFAULT VARIATIONAL  PARAMETERS.
-      REAL    dt0                  !Default initial dt.
+      DOUBLE PRECISION    dt0                  !Default initial dt.
 
 C----------VARIATIONAL  PARAMETERS.
-      REAL    dt1                  !Initial time step.
+      DOUBLE PRECISION    dt1                  !Initial time step.
 
 C----------LOCAL VARIABLES.
       INTEGER inum                 !Selection number.
@@ -962,22 +962,22 @@ C----------COMMON AREAS.
 C==========================DECLARATION DIVISION==========================
 
 C----------DEFAULT MODEL PARAMETERS.
-      REAL    c0(3)                !Default c.
-      REAL    cosmo0               !Default cosmological constant.
-      REAL    xi0(3)               !Default neutrino degeneracy parameters.
+      DOUBLE PRECISION    c0(3)                !Default c.
+      DOUBLE PRECISION    cosmo0               !Default cosmological constant.
+      DOUBLE PRECISION    xi0(3)               !Default neutrino degeneracy parameters.
 
 C----------EARLY UNIVERSE MODEL PARAMETERS.
-      REAL    c(3)                 !c(1) is variation of gravitational constant.
+      DOUBLE PRECISION    c(3)                 !c(1) is variation of gravitational constant.
      |                             !c(2) is neutron lifetime (sec).
      |                             !c(3) is number of neutrino species.
-      REAL    cosmo                !Cosmological constant.
-      REAL    xi(3)                !Neutrino degeneracy parameters.
+      DOUBLE PRECISION    cosmo                !Cosmological constant.
+      DOUBLE PRECISION    xi(3)                !Neutrino degeneracy parameters.
 
 C----------DEFAULT VARIATIONAL PARAMETERS.
-      REAL    eta0                 !Default eta.
+      DOUBLE PRECISION    eta0                 !Default eta.
 
 C----------VARIATIONAL PARAMETERS.
-      REAL    eta1                 !Intial baryon-to-photon ratio.
+      DOUBLE PRECISION    eta1                 !Intial baryon-to-photon ratio.
 
 C----------USER RESPONSE VARIABLES.
       INTEGER inum                 !Selection number.
@@ -1119,12 +1119,12 @@ C----------COMMON AREAS.
 C==========================DECLARATION DIVISION===========================
 
 C----------MODEL PARAMETERS.
-      REAL    eta1                 !Baryon-to-photon ratio.
-      REAL    c(3)                !c(1) is variation of gravitational constant.
+      DOUBLE PRECISION    eta1                 !Baryon-to-photon ratio.
+      DOUBLE PRECISION    c(3)                !c(1) is variation of gravitational constant.
      |                             !c(2) is neutron lifetime (sec).
      |                             !c(3) is number of neutrino species.
-      REAL    cosmo                !Cosmological constant.
-      REAL    xi(3)                !Neutrino degeneracy parameters.
+      DOUBLE PRECISION    cosmo                !Cosmological constant.
+      DOUBLE PRECISION    xi(3)                !Neutrino degeneracy parameters.
 
 C----------RUN OPTION.
       INTEGER irun                 !Run network size.
@@ -1132,12 +1132,12 @@ C----------RUN OPTION.
       INTEGER jsize                !Number of reactions in computation.
 
 C----------USER INTERACTION VARIABLES.
-      REAL    rnumb1               !Run parameter for outer loop.
-      REAL    rnumb2               !Run parameter for middle loop.
-      REAL    rnumb3               !Run parameter for inner loop.
-      REAL    rnum1(3)             !Run parameter starting value.
-      REAL    rnum2(3)             !Run parameter end value.
-      REAL    rnum3(3)             !Run parameter increment.
+      DOUBLE PRECISION    rnumb1               !Run parameter for outer loop.
+      DOUBLE PRECISION    rnumb2               !Run parameter for middle loop.
+      DOUBLE PRECISION    rnumb3               !Run parameter for inner loop.
+      DOUBLE PRECISION    rnum1(3)             !Run parameter starting value.
+      DOUBLE PRECISION    rnum2(3)             !Run parameter end value.
+      DOUBLE PRECISION    rnum3(3)             !Run parameter increment.
       INTEGER inumb                !Selection number.
       INTEGER inum(3)              !Selection number.
       INTEGER jnum                 !Number of loopings to be done.
@@ -1153,7 +1153,7 @@ C----------FLAG AND LABELS.
       CHARACTER*22 vtype(8)        !Label for quantities being varied.
 
 C----------EQUIVALENCE VARIABLE.
-      REAL    qvary(7)             !Array set equal to c, cosmo, and xi.
+      DOUBLE PRECISION    qvary(7)             !Array set equal to c, cosmo, and xi.
 
 C----------EQUIVALENCE STATEMENTS.
       EQUIVALENCE (qvary(1),c(1)), (qvary(4),cosmo), (qvary(5),xi(1))
@@ -1427,30 +1427,30 @@ C----------COMMON AREAS.
 C==========================DECLARATION DIVISION=============================
 
 C----------COMPUTATION SETTINGS.
-      REAL    cy                   !Time step limiting constant on abundances.
-      REAL    ct                   !Time step limiting constant on temperature.
-      REAL    t9i                  !Initial temperature (in 10**9 K).
-      REAL    t9f                  !Final temperature (in 10**9 K).
-      REAL    ytmin                !Smallest abundances allowed.
+      DOUBLE PRECISION    cy                   !Time step limiting constant on abundances.
+      DOUBLE PRECISION    ct                   !Time step limiting constant on temperature.
+      DOUBLE PRECISION    t9i                  !Initial temperature (in 10**9 K).
+      DOUBLE PRECISION    t9f                  !Final temperature (in 10**9 K).
+      DOUBLE PRECISION    ytmin                !Smallest abundances allowed.
 
 C----------EARLY UNIVERSE MODEL PARAMETERS.
-      REAL    c(3)                !c(1) is variation of gravitational constant.
+      DOUBLE PRECISION    c(3)                !c(1) is variation of gravitational constant.
      |                             !c(2) is neutron lifetime (sec).
      |                             !c(3) is number of neutrino species.
-      REAL    cosmo                !Cosmological constant.
-      REAL    xi(3)                !Neutrino degeneracy parameters.
+      DOUBLE PRECISION    cosmo                !Cosmological constant.
+      DOUBLE PRECISION    xi(3)                !Neutrino degeneracy parameters.
 
 C----------COUNTER.
       INTEGER it                   !# times accumulated in output buffer.
 
 C----------OUTPUT ARRAYS.
-      REAL    xout(itmax,nnuc)     !Nuclide mass fractions.
-      REAL    thmout(itmax,6)      !Thermodynamic variables.
-      REAL    t9out(itmax)         !Temperature (in units of 10**9 K).
-      REAL    tout(itmax)          !Time.
-      REAL    dtout(itmax)         !Time step.
-      REAL    etaout(itmax)        !Baryon-to-photon ratio.
-      REAL    hubout(itmax)        !Expansion rate.
+      DOUBLE PRECISION    xout(itmax,nnuc)     !Nuclide mass fractions.
+      DOUBLE PRECISION    thmout(itmax,6)      !Thermodynamic variables.
+      DOUBLE PRECISION    t9out(itmax)         !Temperature (in units of 10**9 K).
+      DOUBLE PRECISION    tout(itmax)          !Time.
+      DOUBLE PRECISION    dtout(itmax)         !Time step.
+      DOUBLE PRECISION    etaout(itmax)        !Baryon-to-photon ratio.
+      DOUBLE PRECISION    hubout(itmax)        !Expansion rate.
 
 C----------OUTPUT FILE STATUS.
       INTEGER nout                 !Number of output requests.
@@ -1693,28 +1693,28 @@ C-------COMMON AREAS.
 C=================DECLARATION DIVISION=====================
 
 C-------EVOLUTION PARAMETERS.
-      REAL    t9                   !Temperature (in units of 10**9 K).
-      REAL    hv                   !Defined by hv = M(atomic)n(baryon)/t9**3.
-      REAL    phie                 !Chemical potential for electron.
-      REAL    y(nnuc)              !Relative number abundances.
+      DOUBLE PRECISION    t9                   !Temperature (in units of 10**9 K).
+      DOUBLE PRECISION    hv                   !Defined by hv = M(atomic)n(baryon)/t9**3.
+      DOUBLE PRECISION    phie                 !Chemical potential for electron.
+      DOUBLE PRECISION    y(nnuc)              !Relative number abundances.
 
 C-------EVOLUTION PARAMETERS (DERIVATIVES).
-      REAL    dydt(nnuc)           !Change in rel number abundances.
+      DOUBLE PRECISION    dydt(nnuc)           !Change in rel number abundances.
 
 C-------EVOLUTION PARAMETERS (ORIGINAL VALUES).
-      REAL    y0(nnuc)             !Rel # abund at beginning of iteration.
+      DOUBLE PRECISION    y0(nnuc)             !Rel # abund at beginning of iteration.
 
 C-------COMPUTATION PARAMETERS.
-      REAL    cy                   !Time step limiting constant on abundances.
-      REAL    ct                  !Time step limiting constant on temperature.
-      REAL    t9f                  !Final temperature (in 10**9 K).
-      REAL    ytmin                !Smallest abundances allowed.
+      DOUBLE PRECISION    cy                   !Time step limiting constant on abundances.
+      DOUBLE PRECISION    ct                  !Time step limiting constant on temperature.
+      DOUBLE PRECISION    t9f                  !Final temperature (in 10**9 K).
+      DOUBLE PRECISION    ytmin                !Smallest abundances allowed.
       INTEGER inc                  !Accumulation increment.
 
 C-------TIME AND TIME STEP VARIABLES.
-      REAL    t                    !Time.
-      REAL    dt                   !Time step.
-      REAL    dlt9dt               !(1/t9)*d(t9)/d(t).
+      DOUBLE PRECISION    t                    !Time.
+      DOUBLE PRECISION    dt                   !Time step.
+      DOUBLE PRECISION    dlt9dt               !(1/t9)*d(t9)/d(t).
 
 C-------COUNTERS AND FLAGS.
       INTEGER loop                 !Counts which Runge-Kutta loop.
@@ -1729,15 +1729,15 @@ C-------RUN OPTION.
       INTEGER isize                !Number of nuclides in computation.
 
 C-------TIME AND TIME STEP VARIABLES.
-      REAL    dtmin                !Mininum time step.
-      REAL    dtl                 !Time step from limitation on abund changes.
+      DOUBLE PRECISION    dtmin                !Mininum time step.
+      DOUBLE PRECISION    dtl                 !Time step from limitation on abund changes.
 
 C-------LABELS FOR VARIABLES TO BE TIME EVOLVED.
       INTEGER mvar                 !Total number of variables to be evolved.
-      REAL    v(nvar)              !Variables to be time evolved.
-      REAL    dvdt(nvar)           !Time derivatives.
-      REAL    v0(nvar)             !Value of variables at original point.
-      REAL    dvdt0(nvar)          !Value of derivatives at original point.
+      DOUBLE PRECISION    v(nvar)              !Variables to be time evolved.
+      DOUBLE PRECISION    dvdt(nvar)           !Time derivatives.
+      DOUBLE PRECISION    v0(nvar)             !Value of variables at original point.
+      DOUBLE PRECISION    dvdt0(nvar)          !Value of derivatives at original point.
 
 C-------EQUIVALENCE STATEMENTS.
       EQUIVALENCE (v(4),y(1)),(dvdt(4),dydt(1)),(v0(4),y0(1))
@@ -1858,45 +1858,45 @@ C-------COMMON AREAS.
 C=================DECLARATION DIVISION=====================
 
 C-------REACTION RATES.
-      REAL    f(nrec)              !Forward reaction rate coefficients.
-      REAL r(nrec)
+      DOUBLE PRECISION    f(nrec)              !Forward reaction rate coefficients.
+      DOUBLE PRECISION r(nrec)
 C-------EVOLUTION PARAMETERS.
-      REAL    t9                   !Temperature (in units of 10**9 K).
-      REAL    hv                   !Defined by hv = M(atomic)n(baryon)/t9**3.
-      REAL    phie                 !Chemical potential of electron.
-      REAL    y(nnuc)              !Relative number abundances.
+      DOUBLE PRECISION    t9                   !Temperature (in units of 10**9 K).
+      DOUBLE PRECISION    hv                   !Defined by hv = M(atomic)n(baryon)/t9**3.
+      DOUBLE PRECISION    phie                 !Chemical potential of electron.
+      DOUBLE PRECISION    y(nnuc)              !Relative number abundances.
 
 C-------EVOLUTION PARAMETERS (ORIGINAL VALUES).
-      REAL    y0(nnuc)             !Rel # abund at start of iteration.
+      DOUBLE PRECISION    y0(nnuc)             !Rel # abund at start of iteration.
 
 C-------COMPUTATION SETTINGS.
-      REAL    t9i                  !Initial temperature (in 10**9 K).
-      REAL    ytmin                !Smallest abundances allowed.
+      DOUBLE PRECISION    t9i                  !Initial temperature (in 10**9 K).
+      DOUBLE PRECISION    ytmin                !Smallest abundances allowed.
       INTEGER inc                  !Accumulation increment.
 
 C-------EARLY UNIVERSE MODEL PARAMETERS.
-      REAL    g                    !Gravitational constant.
-      REAL    tau                  !Neutron lifetime.
-      REAL    xnu                  !Number of neutrino species.
-      REAL    c(3)               !c(1) is variation of gravitational constant.
+      DOUBLE PRECISION    g                    !Gravitational constant.
+      DOUBLE PRECISION    tau                  !Neutron lifetime.
+      DOUBLE PRECISION    xnu                  !Number of neutrino species.
+      DOUBLE PRECISION    c(3)               !c(1) is variation of gravitational constant.
      |                             !c(2) is neutron lifetime (sec).
      |                             !c(3) is number of neutrino species.
-      REAL    xi(3)                !Neutrino degeneracy parameters.
+      DOUBLE PRECISION    xi(3)                !Neutrino degeneracy parameters.
 
 C-------VARIATIONAL PARAMETERS.
-      REAL    dt1                  !Initial time step.
-      REAL    eta1                 !Baryon-to-photon ratio.
+      DOUBLE PRECISION    dt1                  !Initial time step.
+      DOUBLE PRECISION    eta1                 !Baryon-to-photon ratio.
 
 C-------TIME VARIABLES.
-      REAL    t                    !Time.
-      REAL    dt                   !Time step.
+      DOUBLE PRECISION    t                    !Time.
+      DOUBLE PRECISION    dt                   !Time step.
 
 C-------ENERGY DENSITIES.
-      REAL    rhone0               !Initial electron neutrino mass density.
-      REAL    rhob0                !Initial baryon mass density.
+      DOUBLE PRECISION    rhone0               !Initial electron neutrino mass density.
+      DOUBLE PRECISION    rhob0                !Initial baryon mass density.
 
 C-------EVALUATION OF FUNCTIONS bl,bm,bn.
-      REAL    bl1,bl2,bl3,bl4,bl5  !Evaluation of function bl(z).
+      DOUBLE PRECISION    bl1,bl2,bl3,bl4,bl5  !Evaluation of function bl(z).
 
 C-------COUNTERS AND FLAGS.
       INTEGER ltime                !Indicates if output buffer printed.
@@ -1906,19 +1906,19 @@ C-------COUNTERS AND FLAGS.
       INTEGER mbad                 !Indicates if gaussian elimination fails.
 
 C-------NEUTRINO PARAMETERS.
-      REAL    tnu                  !Neutrino temperature.
-      REAL    cnorm                !Normalizing constant.
+      DOUBLE PRECISION    tnu                  !Neutrino temperature.
+      DOUBLE PRECISION    cnorm                !Normalizing constant.
 
 C-------RUN OPTION.
       INTEGER isize                !Number of nuclides in computation.
 
 C-------LOCAL VARIABLES.
-      REAL    z                 !Defined by z = m(electron)*c**2/k*t9.
+      DOUBLE PRECISION    z                 !Defined by z = m(electron)*c**2/k*t9.
 
 c Julien modified, 28-02-08
-      REAL tr,xx,HH,t9r,dt9r,rhor,
+      DOUBLE PRECISION tr,xx,HH,t9r,dt9r,rhor,
      |     r1r,r2r,r3r,r4r,r5r,r6r !Variables used to read the data file
-      REAL t_interp             !This is used to obtain the correct time values
+      DOUBLE PRECISION t_interp             !This is used to obtain the correct time values
       CHARACTER trash           !Used to remove the first line from the data
 c Julien end mod 28-02-08
 
@@ -2105,39 +2105,39 @@ C-------COMMON AREAS.
 C=================DECLARATION DIVISION=====================
 
 C-------EVOLUTION PARAMETERS.
-      REAL    t9                   !Temperature (in units of 10**9 K).
-      REAL    hv                   !Defined by hv = M(atomic)n(baryon)/t9**3.
-      REAL    phie                 !Chemical potential for electron.
-      REAL    y(nnuc)              !Relative number abundances.
+      DOUBLE PRECISION    t9                   !Temperature (in units of 10**9 K).
+      DOUBLE PRECISION    hv                   !Defined by hv = M(atomic)n(baryon)/t9**3.
+      DOUBLE PRECISION    phie                 !Chemical potential for electron.
+      DOUBLE PRECISION    y(nnuc)              !Relative number abundances.
 
 C-------EVOLUTION PARAMETERS (DERIVATIVES).
-      REAL    dt9                  !Change in temperature.
-      REAL    dhv                  !Change in hv.
-      REAL    dphie                !Change in chemical potential.
-      REAL    dydt(nnuc)           !Change in rel number abundances.
+      DOUBLE PRECISION    dt9                  !Change in temperature.
+      DOUBLE PRECISION    dhv                  !Change in hv.
+      DOUBLE PRECISION    dphie                !Change in chemical potential.
+      DOUBLE PRECISION    dydt(nnuc)           !Change in rel number abundances.
 
 C-------EVOLUTION PARAMETERS (ORIGINAL VALUES).
-      REAL    y0(nnuc)             !Rel # abund at beginning of iteration.
+      DOUBLE PRECISION    y0(nnuc)             !Rel # abund at beginning of iteration.
 
 C-------MODEL PARAMETERS.
-      REAL    g                    !Gravitational constant.
-      REAL    cosmo                !Cosmological constant.
+      DOUBLE PRECISION    g                    !Gravitational constant.
+      DOUBLE PRECISION    cosmo                !Cosmological constant.
 
 C-------TIME VARIABLES.
-      REAL    dlt9dt               !(1/t9)*d(t9)/d(t).
+      DOUBLE PRECISION    dlt9dt               !(1/t9)*d(t9)/d(t).
 
 C-------DYNAMIC VARIABLES.
-      REAL    thm(14)              !Thermodynamic variables.
-      REAL    hubcst               !Expansion rate.
+      DOUBLE PRECISION    thm(14)              !Thermodynamic variables.
+      DOUBLE PRECISION    hubcst               !Expansion rate.
 
 C-------ENERGY DENSITIES.
-      REAL    rhob0                !Initial baryon mass density.
-      REAL    rhob                 !Baryon mass density.
-      REAL    rnb                  !Baryon mass density (ratio to init value).
+      DOUBLE PRECISION    rhob0                !Initial baryon mass density.
+      DOUBLE PRECISION    rhob                 !Baryon mass density.
+      DOUBLE PRECISION    rnb                  !Baryon mass density (ratio to init value).
 
 C-------NUCLIDE DATA.
-      REAL    zm(nnuc)             !Charge of nuclide.
-      REAL    dm(nnuc)             !Mass excess of nuclide.
+      DOUBLE PRECISION    zm(nnuc)             !Charge of nuclide.
+      DOUBLE PRECISION    dm(nnuc)             !Mass excess of nuclide.
 
 C-------COUNTERS AND FLAGS.
       INTEGER mbad                 !Indicates if gaussian elimination fails.
@@ -2147,23 +2147,23 @@ C-------RUN OPTION.
       INTEGER isize                !Number of nuclides in computation.
 
 C-------SUMS.
-      REAL    sumy                 !Sum of abundances.
-      REAL    sumzy                !Sum of charge*abundances.
-      REAL    sumdy                !Sum of abundance flows.
-      REAL    summdy               !Sum of (mass excess)*(abundance flows).
-      REAL    sumzdy               !Sum of (charge)*(abundance flows).
+      DOUBLE PRECISION    sumy                 !Sum of abundances.
+      DOUBLE PRECISION    sumzy                !Sum of charge*abundances.
+      DOUBLE PRECISION    sumdy                !Sum of abundance flows.
+      DOUBLE PRECISION    summdy               !Sum of (mass excess)*(abundance flows).
+      DOUBLE PRECISION    sumzdy               !Sum of (charge)*(abundance flows).
 
 C-------DERIVATIVES.
-      REAL    dphdt9               !d(phi e)/d(t9).
-      REAL    dphdln               !d(phi e)/d(h).
-      REAL    dphdzy               !d(phi e)/d(sumzy).
-      REAL    dlndt9               !(1/h)*d(h)/d(t9).
-      REAL    bar                  !Baryon density and pressure terms.
+      DOUBLE PRECISION    dphdt9               !d(phi e)/d(t9).
+      DOUBLE PRECISION    dphdln               !d(phi e)/d(h).
+      DOUBLE PRECISION    dphdzy               !d(phi e)/d(sumzy).
+      DOUBLE PRECISION    dlndt9               !(1/h)*d(h)/d(t9).
+      DOUBLE PRECISION    bar                  !Baryon density and pressure terms.
 
 C-------LOCAL VARIABLES.
       INTEGER loop              !Counts which Runge-Kutta loop.
 c Julien modified, 05-03-08
-      REAL dt9_interp           !The interpolated dt9 value from dt9s
+      DOUBLE PRECISION dt9_interp           !The interpolated dt9 value from dt9s
 c Julien end mod 05-03-08
 
 
@@ -2270,24 +2270,24 @@ C-------COMMON AREAS.
 C=================DECLARATION DIVISION=====================
 
 C-------EVOLUTION PARAMETERS.
-      REAL    t9                   !Temperature (in units of 10**9 K).
-      REAL    hv                   !Defined by hv = M(atomic)n(baryon)/t9**3.
-      REAL    phie                 !Chemical potential for electron.
-      REAL    y(nnuc)              !Relative number abundances.
+      DOUBLE PRECISION    t9                   !Temperature (in units of 10**9 K).
+      DOUBLE PRECISION    hv                   !Defined by hv = M(atomic)n(baryon)/t9**3.
+      DOUBLE PRECISION    phie                 !Chemical potential for electron.
+      DOUBLE PRECISION    y(nnuc)              !Relative number abundances.
 
 C-------COMPUTATION PARAMETERS.
       INTEGER inc                  !Accumulation increment.
 
 C-------TIME PARAMETERS.
-      REAL    t                    !Time.
-      REAL    dt                   !Time step.
+      DOUBLE PRECISION    t                    !Time.
+      DOUBLE PRECISION    dt                   !Time step.
 
 C-------DYNAMIC VARIABLES.
-      REAL    thm(14)              !Thermodynamic variables.
-      REAL    hubcst               !Expansion rate.
+      DOUBLE PRECISION    thm(14)              !Thermodynamic variables.
+      DOUBLE PRECISION    hubcst               !Expansion rate.
 
 C-------NUCLIDE DATA.
-      REAL    am(nnuc)             !Atomic number of nuclide.
+      DOUBLE PRECISION    am(nnuc)             !Atomic number of nuclide.
 
 C-------COUNTERS AND FLAGS.
       INTEGER ltime                !Indicates if output buffer printed.
@@ -2295,13 +2295,13 @@ C-------COUNTERS AND FLAGS.
       INTEGER ip                   !# time steps after outputting a line.
 
 C-------OUTPUT ARRAYS.
-      REAL    xout(itmax,nnuc)     !Nuclide mass fractions.
-      REAL    thmout(itmax,6)      !Thermodynamic variables.
-      REAL    t9out(itmax)         !Temperature (in units of 10**9 K).
-      REAL    tout(itmax)          !Time.
-      REAL    dtout(itmax)         !Time step.
-      REAL    etaout(itmax)        !Baryon-to-photon ratio.
-      REAL    hubout(itmax)        !Expansion rate.
+      DOUBLE PRECISION    xout(itmax,nnuc)     !Nuclide mass fractions.
+      DOUBLE PRECISION    thmout(itmax,6)      !Thermodynamic variables.
+      DOUBLE PRECISION    t9out(itmax)         !Temperature (in units of 10**9 K).
+      DOUBLE PRECISION    tout(itmax)          !Time.
+      DOUBLE PRECISION    dtout(itmax)         !Time step.
+      DOUBLE PRECISION    etaout(itmax)        !Baryon-to-photon ratio.
+      DOUBLE PRECISION    hubout(itmax)        !Expansion rate.
 
 C-------RUN OPTION.
       INTEGER isize                !Number of nuclides in computation.
@@ -2377,38 +2377,38 @@ C-------COMMON AREAS.
 C=================DECLARATION DIVISION=====================
 
 C-------EVOLUTION PARAMETERS.
-      REAL    t9                   !Temperature (in units of 10**9 K).
-      REAL    phie                 !Chemical potential for electron.
+      DOUBLE PRECISION    t9                   !Temperature (in units of 10**9 K).
+      DOUBLE PRECISION    phie                 !Chemical potential for electron.
 
 C-------COMPUTATION PARAMETERS.
-      REAL    t9i                  !Initial temperature (in 10**9 K).
+      DOUBLE PRECISION    t9i                  !Initial temperature (in 10**9 K).
 
 C-------EARLY UNIVERSE MODEL PARAMETERS.
-      REAL    xnu                  !Number of neutrino species.
-      REAL    xi(3)                !Neutrino degeneracy parameters.
+      DOUBLE PRECISION    xnu                  !Number of neutrino species.
+      DOUBLE PRECISION    xi(3)                !Neutrino degeneracy parameters.
 
 C-------DYNAMIC VARIABLES.
-      REAL    thm(14)              !Thermodynamic variables.
+      DOUBLE PRECISION    thm(14)              !Thermodynamic variables.
 
 C-------ENERGY DENSITIES.
-      REAL    rhone0               !Initial electron neutrino mass density.
-      REAL    rhob0                !Initial baryon mass density.
-      REAL    rnb                  !Baryon mass density (ratio to init value).
+      DOUBLE PRECISION    rhone0               !Initial electron neutrino mass density.
+      DOUBLE PRECISION    rhob0                !Initial baryon mass density.
+      DOUBLE PRECISION    rnb                  !Baryon mass density (ratio to init value).
 
 C-------EVALUATION OF FUNCTIONS bl,bm,bn.
-      REAL    bl1,bl2,bl3,bl4,bl5  !Evaluation of function bl(z).
-      REAL    bm1,bm2,bm3,bm4,bm5  !Evaluation of function bm(z).
-      REAL    bn1,bn2,bn3,bn4,bn5  !Evaluation of function bn(z).
+      DOUBLE PRECISION    bl1,bl2,bl3,bl4,bl5  !Evaluation of function bl(z).
+      DOUBLE PRECISION    bm1,bm2,bm3,bm4,bm5  !Evaluation of function bm(z).
+      DOUBLE PRECISION    bn1,bn2,bn3,bn4,bn5  !Evaluation of function bn(z).
 
 C-------NEUTRINO PARAMETERS.
-      REAL    tnu                  !Neutrino temperature.
-      REAL    rhonu                !Neutrino energy density.
+      DOUBLE PRECISION    tnu                  !Neutrino temperature.
+      DOUBLE PRECISION    rhonu                !Neutrino energy density.
       INTEGER nu                   !Type of neutrino.
 
 C-------LOCAL VARIABLE.
-      REAL    z                    !Defined by z = m(electron)*c**2/k*t9.
+      DOUBLE PRECISION    z                    !Defined by z = m(electron)*c**2/k*t9.
 c Julien modified, 28-02-08
-      REAL rho,rate             !Total energy density at given time, and
+      DOUBLE PRECISION rho,rate             !Total energy density at given time, and
      |                          ! rate
 c Julien end mod 28-02-08
 
@@ -2566,19 +2566,19 @@ C-------COMMON AREAS.
 C=================DECLARATION DIVISION=====================
 
 C-------EVALUATION OF FUNCTIONS bl,bm,bn.
-      REAL   bl1,bl2,bl3,bl4,bl5  !Single variables equivalenced to array blz.
-      REAL   bm1,bm2,bm3,bm4,bm5  !Single variables equivalenced to array bmz.
-      REAL   bn1,bn2,bn3,bn4,bn5  !Single variables equivalenced to array bnz.
+      DOUBLE PRECISION   bl1,bl2,bl3,bl4,bl5  !Single variables equivalenced to array blz.
+      DOUBLE PRECISION   bm1,bm2,bm3,bm4,bm5  !Single variables equivalenced to array bmz.
+      DOUBLE PRECISION   bn1,bn2,bn3,bn4,bn5  !Single variables equivalenced to array bnz.
 
 C-------EVALUATIION OF MODIFIED BESSEL FUNCTIONS.
-      REAL    bk0,bk1,bk2,bk3,bk4  !Values k0(r),k1(r),k2(r),k3(r),k4(r).
+      DOUBLE PRECISION    bk0,bk1,bk2,bk3,bk4  !Values k0(r),k1(r),k2(r),k3(r),k4(r).
 
 C-------LOCAL VARIABLES.
-      REAL    blz(5)               !Array containing values from function bl.
-      REAL    bmz(5)               !Array containing values from function bm.
-      REAL    bnz(5)               !Array containing values from function bn.
-      REAL    z                    !Defined by z = m(electron)*c**2/k*t9.
-      REAL    r                    !Multiples of z.
+      DOUBLE PRECISION    blz(5)               !Array containing values from function bl.
+      DOUBLE PRECISION    bmz(5)               !Array containing values from function bm.
+      DOUBLE PRECISION    bnz(5)               !Array containing values from function bn.
+      DOUBLE PRECISION    z                    !Defined by z = m(electron)*c**2/k*t9.
+      DOUBLE PRECISION    r                    !Multiples of z.
 
 C-------EQUIVALENCE STATEMENTS.
       EQUIVALENCE (blz(1),bl1),(blz(2),bl2),(blz(3),bl3),(blz(4),bl4),
@@ -2631,23 +2631,23 @@ C-------COMMON AREAS.
 C==================DECLARATION DIVISION====================
 
 C--------MODIFIED BESSEL FUNCTION VALUES.
-      REAL    bk0,bk1              !Values k0(z),k1(z)
-      REAL    bi0,bi1              !Values i0(z),i1(z).
-      REAL    bk2,bk3,bk4          !Values k2(z),k3(z),k4(z).
+      DOUBLE PRECISION    bk0,bk1              !Values k0(z),k1(z)
+      DOUBLE PRECISION    bi0,bi1              !Values i0(z),i1(z).
+      DOUBLE PRECISION    bk2,bk3,bk4          !Values k2(z),k3(z),k4(z).
 
 C--------EXPANSION COEFFICIENTS.
-      REAL    ci0(7)               !Expansion coefficients for i0 (z.le.2).
-      REAL    ci1(7)               !Expansion coefficients for i1 (z.le.2).
-      REAL    ck0(7)               !Expansion coefficients for k0 (z.le.2).
-      REAL    ck1(7)               !Expansion coefficients for k1 (z.le.2).
-      REAL    c0(7)                !Expansion coefficients for k0 (z.gt.2).
-      REAL    c1(7)                !Expansion coefficients for k1 (z.gt.2).
+      DOUBLE PRECISION    ci0(7)               !Expansion coefficients for i0 (z.le.2).
+      DOUBLE PRECISION    ci1(7)               !Expansion coefficients for i1 (z.le.2).
+      DOUBLE PRECISION    ck0(7)               !Expansion coefficients for k0 (z.le.2).
+      DOUBLE PRECISION    ck1(7)               !Expansion coefficients for k1 (z.le.2).
+      DOUBLE PRECISION    c0(7)                !Expansion coefficients for k0 (z.gt.2).
+      DOUBLE PRECISION    c1(7)                !Expansion coefficients for k1 (z.gt.2).
 
 C--------VARIABLES TO BE EVALUATED.
-      REAL    z                    !Input variable.
-      REAL    y                    !Expansion variable = z/2.
-      REAL    t                    !Expansion variable = z/3.75.
-      REAL    coeff                !Logrithmic or exponential coefficient.
+      DOUBLE PRECISION    z                    !Input variable.
+      DOUBLE PRECISION    y                    !Expansion variable = z/2.
+      DOUBLE PRECISION    t                    !Expansion variable = z/3.75.
+      DOUBLE PRECISION    coeff                !Logrithmic or exponential coefficient.
 
 
 C=====================DATA DIVISION========================
@@ -2756,18 +2756,18 @@ C-------EXTERNAL FUNCTIONS.
 C=================DECLARATION DIVISION=====================
 
 C-------MODEL PARAMETERS.
-      REAL    xi(3)                !Neutrino degeneracy parameters.
-	REAL func5
-	REAL func6
+      DOUBLE PRECISION    xi(3)                !Neutrino degeneracy parameters.
+      DOUBLE PRECISION func5
+      DOUBLE PRECISION func6
 
 C-------NEUTRINO PARAMETERS.
-      REAL    tnu                  !Neutrino temperature (units of 10**9 K).
-      REAL    rhonu                !Neutrino energy density.
+      DOUBLE PRECISION    tnu                  !Neutrino temperature (units of 10**9 K).
+      DOUBLE PRECISION    rhonu                !Neutrino energy density.
       INTEGER nu                   !Which neutrino type.
 
 C-------LOCAL VARIABLES.
-      REAL    uplim1               !Upper limit for neutrino energy integral.
-      REAL    uplim2               !Upper limit for antineu energy integral.
+      DOUBLE PRECISION    uplim1               !Upper limit for neutrino energy integral.
+      DOUBLE PRECISION    uplim2               !Upper limit for antineu energy integral.
 
 
 C==================PROCEDURE DIVISION======================
@@ -2805,13 +2805,13 @@ C     Forms of the integrals involved can be found in
 C       Beaudet,G. and Goret,P., 1976, Astron. & Astrophys., 49, 415.
 C       Freese, K., Kolb, E.W., Turner, M.S., 1983, Phys. Rev. D, 27, 1689.
 
-	END
+      END
 
 
 
 C===============IDENTIFICATION DIVISION====================
 
-	FUNCTION eval()
+      FUNCTION eval()
 
 C-------LINKAGES.
 C     CALLED BY - [subroutine] rate1, nudens
@@ -2827,26 +2827,26 @@ C-------COMMON AREAS.
 C=================DECLARATION DIVISION=====================
 
 C-------MODEL PARAMETERS.
-      REAL    xi(3)                !Neutrino degeneracy parameters.
+      DOUBLE PRECISION    xi(3)                !Neutrino degeneracy parameters.
 
 C-------NEUTRINO PARAMETERS.
-      REAL    t9mev                !Temperature (in units of MeV).
-      REAL    tnmev                !Neutrino temperature (in units of MeV).
-      REAL    tnu                  !Neutrino temperature (units of 10**9 K).
-      REAL    cnorm                !Normalizing constant.
+      DOUBLE PRECISION    t9mev                !Temperature (in units of MeV).
+      DOUBLE PRECISION    tnmev                !Neutrino temperature (in units of MeV).
+      DOUBLE PRECISION    tnu                  !Neutrino temperature (units of 10**9 K).
+      DOUBLE PRECISION    cnorm                !Normalizing constant.
 
 C-------FUNCTIONS TO BE EVALUATED.
-      REAL   func1                 !1st part n->p rate.
-      REAL   func2                 !2nd part n->p rate.
-      REAL   func3                 !1st part p->n rate.
-      REAL   func4                 !2nd part p->n rate.
-      REAL   func5                 !Energy density for neutrinos.
-      REAL   func6                 !Energy density for antineutrinos.
+      DOUBLE PRECISION   func1                 !1st part n->p rate.
+      DOUBLE PRECISION   func2                 !2nd part n->p rate.
+      DOUBLE PRECISION   func3                 !1st part p->n rate.
+      DOUBLE PRECISION   func4                 !2nd part p->n rate.
+      DOUBLE PRECISION   func5                 !Energy density for neutrinos.
+      DOUBLE PRECISION   func6                 !Energy density for antineutrinos.
 
 C-------LOCAL VARIABLES.
-      REAL    x                    !Value at which function is evaluated.
-      REAL    part1                !Exponential expression with photon temp.
-      REAL    part2                !Exponential expression with neutrino temp.
+      DOUBLE PRECISION    x                    !Value at which function is evaluated.
+      DOUBLE PRECISION    part1                !Exponential expression with photon temp.
+      DOUBLE PRECISION    part2                !Exponential expression with neutrino temp.
 
 
 C==================PROCEDURE DIVISION======================
@@ -2935,16 +2935,16 @@ C     Computes the integral of the function "func".
 C=================DECLARATION DIVISION=====================
 
 C-------INPUT VARIABLES.
-	external func
-      REAL    xlow                 !Array of low limits.
-      REAL    xhi                  !Array of high limits.
+      external func
+      DOUBLE PRECISION    xlow                 !Array of low limits.
+      DOUBLE PRECISION    xhi                  !Array of high limits.
       INTEGER nq                   !Number of six point gaussian quads.
 
 C-------COMPUTATION VARIABLES.
-      REAL    dist                 !Size of quad interval.
-      REAL    cent                 !Center of quad interval.
-      REAL    x                    !Variables of integration.
-      REAL    sum                  !Summation of terms.
+      DOUBLE PRECISION    dist                 !Size of quad interval.
+      DOUBLE PRECISION    cent                 !Center of quad interval.
+      DOUBLE PRECISION    x                    !Variables of integration.
+      DOUBLE PRECISION    sum                  !Summation of terms.
 
 C-------COUNTERS.
       INTEGER nint                 !Interval number.
@@ -2952,8 +2952,8 @@ C-------COUNTERS.
       INTEGER np                   !Total number of points in interval.
 
 C-------ABSCISSAS AND WEIGHT FACTORS.
-      REAL    u(6)                 !Abscissas.
-      REAL    w(6)                 !Weight factor.
+      DOUBLE PRECISION    u(6)                 !Abscissas.
+      DOUBLE PRECISION    w(6)                 !Weight factor.
 
 
 C=====================DATA DIVISION========================
@@ -3061,36 +3061,36 @@ C-------REACTION PARAMETERS.
       INTEGER jj(nrec)             !Incoming light nuclide type (1-6).
       INTEGER kk(nrec)             !Outgoing light nuclide type (1-6).
       INTEGER ll(nrec)             !Outgoing nuclide type (1-26).
-      REAL    rev(nrec)            !Reverse reaction coefficient.
-      REAL    q9(nrec)             !Energy released in reaction.
+      DOUBLE PRECISION    rev(nrec)            !Reverse reaction coefficient.
+      DOUBLE PRECISION    q9(nrec)             !Energy released in reaction.
 
 C-------REACTION RATES.
-      REAL    f(nrec)              !Forward reaction rate coefficients.
-      REAL    r(nrec)              !Reverse reaction rate coefficients.
+      DOUBLE PRECISION    f(nrec)              !Forward reaction rate coefficients.
+      DOUBLE PRECISION    r(nrec)              !Reverse reaction rate coefficients.
 
 C-------EVOLUTION PARAMETERS.
-      REAL    t9                   !Temperature (in units of 10**9 K).
-      REAL    y(nnuc)              !Relative number abundances.
+      DOUBLE PRECISION    t9                   !Temperature (in units of 10**9 K).
+      DOUBLE PRECISION    y(nnuc)              !Relative number abundances.
 
 C-------EVOLUTION PARAMETERS (DERIVATIVES).
-      REAL    dydt(nnuc)           !Change in rel number abundances.
+      DOUBLE PRECISION    dydt(nnuc)           !Change in rel number abundances.
 
 C-------EVOLUTION PARAMETERS (ORIGINAL VALUES).
-      REAL    y0(nnuc)             !Rel # abund at start of iteration.
+      DOUBLE PRECISION    y0(nnuc)             !Rel # abund at start of iteration.
 
 C-------TIME VARIABLES.
-      REAL    dt                   !Time step.
+      DOUBLE PRECISION    dt                   !Time step.
 
 C-------DYNAMIC VARIABLES.
-      REAL    hubcst               !Expansion rate.
+      DOUBLE PRECISION    hubcst               !Expansion rate.
 
 C-------ENERGY DENSITIES.
-      REAL    rhob                 !Baryon mass density.
+      DOUBLE PRECISION    rhob                 !Baryon mass density.
 
 C-------COMPONENTS OF MATRIX EQUATION.
-      REAL a(nnuc,nnuc) !Relates y(t-dt) to y(t).
-      REAL    b(nnuc)              !Contains y0 in inverse order.
-      REAL    yx(nnuc)             !yy in reverse order.
+      DOUBLE PRECISION a(nnuc,nnuc) !Relates y(t-dt) to y(t).
+      DOUBLE PRECISION    b(nnuc)              !Contains y0 in inverse order.
+      DOUBLE PRECISION    yx(nnuc)             !yy in reverse order.
 
 C-------COUNTERS AND FLAGS.
       INTEGER loop                 !Counts which Runge-Kutta loop.
@@ -3104,13 +3104,13 @@ C-------RUN OPTIONS.
 
 C-------EVOLUTION EQUATION COEFFICIENTS.
       INTEGER i,j,k,l              !Equate to ii,jj,kk,ll.
-      REAL    ri,rj,rk,rl          !Equate to si,sj,sk,sl.
-      REAL    ci,cj,ck,cl          !Coefficients of rate equation.
+      DOUBLE PRECISION    ri,rj,rk,rl          !Equate to si,sj,sk,sl.
+      DOUBLE PRECISION    ci,cj,ck,cl          !Coefficients of rate equation.
 
 C-------LOCAL VARIABLES.
-      REAL    yy(nnuc)             !Abundances at end of iteration.
-      REAL    si(11),sj(11),sk(11),sl(11)  !# of nuclide i,j,k,l
-      REAL    bdln                 !(10**(-5))*volume expansion rate.
+      DOUBLE PRECISION    yy(nnuc)             !Abundances at end of iteration.
+      DOUBLE PRECISION    si(11),sj(11),sk(11),sl(11)  !# of nuclide i,j,k,l
+      DOUBLE PRECISION    bdln                 !(10**(-5))*volume expansion rate.
       INTEGER ind                  !Equate to iform.
       INTEGER ierror               !Element which does not converge.
 
@@ -3371,9 +3371,9 @@ C-------COMPUTATION PARAMETER.
       INTEGER inc                  !Accumulation increment.
 
 C-------MATRIX COEFFICIENTS FOR LINEAR EQUATION.
-      REAL a(nnuc,nnuc)!Coefficient array.
-      REAL    b(nnuc)              !Right-hand vector w/o manipulation.
-      REAL    y(nnuc)              !Solution vector.
+      DOUBLE PRECISION a(nnuc,nnuc)!Coefficient array.
+      DOUBLE PRECISION    b(nnuc)              !Right-hand vector w/o manipulation.
+      DOUBLE PRECISION    y(nnuc)              !Solution vector.
 
 C-------COUNTERS AND FLAGS.
       INTEGER mbad                 !Indicates type of error.
@@ -3382,13 +3382,13 @@ C-------RUN OPTION.
       INTEGER isize                !Number of nuclides in computation.
 
 C-------LOCAL MATRICES AND VECTORS.
-      REAL a0(nnuc,nnuc)!Coefficient array w/o manipulation.
-      REAL x(nnuc)     !Right-hand vector.
+      DOUBLE PRECISION a0(nnuc,nnuc)!Coefficient array w/o manipulation.
+      DOUBLE PRECISION x(nnuc)     !Right-hand vector.
 
 C-------LOCAL COMPUTATION VARIABLES.
-      REAL cx          !Scaling factor in triangularization.
-      REAL sum         !Sum for backsubstitution.
-      REAL   xdy                   !Relative error.
+      DOUBLE PRECISION cx          !Scaling factor in triangularization.
+      DOUBLE PRECISION sum         !Sum for backsubstitution.
+      DOUBLE PRECISION   xdy                   !Relative error.
 
 C-------LOCAL COUNTERS.
       INTEGER nord                 !Order of correction.
@@ -3511,7 +3511,7 @@ C-------COMMON AREA.
 C=================DECLARATION DIVISION=====================
 
 C-------REACTION RATE COEFFICIENTS.
-      REAL    f(nrec)              !Forward reaction rate coefficients.
+      DOUBLE PRECISION    f(nrec)              !Forward reaction rate coefficients.
 
 
 C==================PROCEDURE DIVISION======================
@@ -3589,30 +3589,30 @@ C-------EXTERNAL FUNCTIONS.
 C=================DECLARATION DIVISION=====================
 
 C-------REACTION RATES.
-      REAL    f(nrec)              !Forward reaction rate coefficients.
-      REAL    r(nrec)              !Reverse reaction rate coefficients.
+      DOUBLE PRECISION    f(nrec)              !Forward reaction rate coefficients.
+      DOUBLE PRECISION    r(nrec)              !Reverse reaction rate coefficients.
 
 C-------EARLY UNIVERSE MODEL PARAMETERS.
-      REAL    tau                  !Neutron lifetime.
-      REAL    xi(3)                !Neutrino degeneracy parameters.
+      DOUBLE PRECISION    tau                  !Neutron lifetime.
+      DOUBLE PRECISION    xi(3)                !Neutrino degeneracy parameters.
      |                             !xi(1) is e neutrino degeneracy parameter.
      |                             !xi(2) is m neutrino degeneracy parameter.
      |                             !xi(3) is t neutrino degeneracy parameter.
 
 C-------DYNAMIC VARIABLES.
-      REAL    thm(14)              !Thermodynamic variables (energy densities).
+      DOUBLE PRECISION    thm(14)              !Thermodynamic variables (energy densities).
 
 C-------NEUTRINO PARAMETERS.
-      REAL    t9mev                !Temperature (in units of MeV).
-      REAL    tnmev                !Neutrino temperature (in units of MeV).
+      DOUBLE PRECISION    t9mev                !Temperature (in units of MeV).
+      DOUBLE PRECISION    tnmev                !Neutrino temperature (in units of MeV).
 
 C-------LOCAL VARIABLES.
-      REAL    tph                  !Photon temperature.
-      REAL    w(2),x(2),          !Upper limits for exponentials, forward rate.
+      DOUBLE PRECISION    tph                  !Photon temperature.
+      DOUBLE PRECISION    w(2),x(2),          !Upper limits for exponentials, forward rate.
      |        y(2),z(2)           !Upper limits for exponentials, reverse rate.
-      REAL    uplim1,uplim2,      !Upper limits for integrals for forward rate.
+      DOUBLE PRECISION    uplim1,uplim2,      !Upper limits for integrals for forward rate.
      |        uplim3,uplim4       !Upper limits for integrals for reverse rate.
-      REAL    part1,part2,         !Parts of integrals for forward rate.
+      DOUBLE PRECISION    part1,part2,         !Parts of integrals for forward rate.
      |        part3,part4          !Parts of integrals for reverse rate.
 
 
@@ -3659,10 +3659,10 @@ C-------COMMON AREAS.
 C=================DECLARATION DIVISION=====================
 
 C-------REACTION RATES.
-      REAL    f(nrec)              !Forward reaction rate coefficients.
+      DOUBLE PRECISION    f(nrec)              !Forward reaction rate coefficients.
 
 C-------EVOLUTION PARAMETER.
-      REAL    t9                   !Temperature of photons (units of 10**9 K).
+      DOUBLE PRECISION    t9                   !Temperature of photons (units of 10**9 K).
 
 
 C==================PROCEDURE DIVISION======================
@@ -3850,10 +3850,10 @@ C-------COMMON AREAS.
 C=================DECLARATION DIVISION=====================
 
 C-------REACTION RATES.
-      REAL    f(nrec)              !Forward reaction rate coefficients.
+      DOUBLE PRECISION    f(nrec)              !Forward reaction rate coefficients.
 
 C-------EVOLUTION PARAMETER.
-      REAL    t9                   !Temperature of photons (units of 10**9 K).
+      DOUBLE PRECISION    t9                   !Temperature of photons (units of 10**9 K).
 
 
 C==================PROCEDURE DIVISION======================
@@ -4063,10 +4063,10 @@ C-------COMMON AREAS.
 C=================DECLARATION DIVISION=====================
 
 C-------REACTION RATES.
-      REAL    f(nrec)              !Forward reaction rate coefficients.
+      DOUBLE PRECISION    f(nrec)              !Forward reaction rate coefficients.
 
 C-------EVOLUTION PARAMETER.
-      REAL    t9                   !Temperature of photons (units of 10**9 K).
+      DOUBLE PRECISION    t9                   !Temperature of photons (units of 10**9 K).
 
 
 C==================PROCEDURE DIVISION======================
@@ -4252,31 +4252,31 @@ C-------COMMON AREAS.
 C=================DECLARATION DIVISION=====================
 
 C-------REACTION PARAMETERS VALUES.
-      REAL    reacpr(nrec,8)       !Reaction parameters.
+      DOUBLE PRECISION    reacpr(nrec,8)       !Reaction parameters.
 
 C-------DEFAULT COMPUTATION PARAMETERS.
-      REAL    cy0                  !Default time step limiting constant.
-      REAL    ct0                  !Default time step limiting constant.
-      REAL    t9i0                 !Default initial temperature (in 10**9 K).
-      REAL    t9f0                 !Default final temperature (in 10**9 K).
-      REAL    ytmin0               !Default smallest abundances allowed.
+      DOUBLE PRECISION    cy0                  !Default time step limiting constant.
+      DOUBLE PRECISION    ct0                  !Default time step limiting constant.
+      DOUBLE PRECISION    t9i0                 !Default initial temperature (in 10**9 K).
+      DOUBLE PRECISION    t9f0                 !Default final temperature (in 10**9 K).
+      DOUBLE PRECISION    ytmin0               !Default smallest abundances allowed.
       INTEGER inc0                 !Default accumulation increment.
 
 C-------DEFAULT MODEL PARAMETERS.
-      REAL    c0(3)               !c0(1) is default variation of grav constant.
+      DOUBLE PRECISION    c0(3)               !c0(1) is default variation of grav constant.
      |                             !c0(2) is default neutron half-life.
      |                             !c0(3) is default number of neutrinos.
-      REAL    cosmo0               !Default cosmological constant.
-      REAL    xi0(3)               !Default neutrino degeneracy parameters.
+      DOUBLE PRECISION    cosmo0               !Default cosmological constant.
+      DOUBLE PRECISION    xi0(3)               !Default neutrino degeneracy parameters.
 
 C-------DEFAULT VARIATIONAL PARAMETERS.
-      REAL    dt0                  !Default initial time step.
-      REAL    eta0                 !Default baryon-to-photon ratio.
+      DOUBLE PRECISION    dt0                  !Default initial time step.
+      DOUBLE PRECISION    eta0                 !Default baryon-to-photon ratio.
 
 C-------NUCLIDE DATA.
-      REAL    am(nnuc)             !Atomic number of nuclide.
-      REAL    zm(nnuc)             !Charge of nuclide.
-      REAL    dm(nnuc)             !Mass excess of nuclide.
+      DOUBLE PRECISION    am(nnuc)             !Atomic number of nuclide.
+      DOUBLE PRECISION    zm(nnuc)             !Charge of nuclide.
+      DOUBLE PRECISION    dm(nnuc)             !Mass excess of nuclide.
 
 
 C=====================DATA DIVISION========================
@@ -4483,7 +4483,7 @@ C-------COMMON AREAS.
 C=================DECLARATION DIVISION=====================
 
 C-------REACTION PARAMETER VALUES.
-      REAL    reacpr(nrec,8)       !Reaction parameters.
+      DOUBLE PRECISION    reacpr(nrec,8)       !Reaction parameters.
 
 C-------REACTION PARAMETER NAMES.
       INTEGER iform(nrec)          !Reaction type code (1-11).
@@ -4491,102 +4491,102 @@ C-------REACTION PARAMETER NAMES.
       INTEGER jj(nrec)             !Incoming light nuclide type (1-6).
       INTEGER kk(nrec)             !Outgoing light nuclide type (1-6).
       INTEGER ll(nrec)             !Outgoing nuclide type (1-26).
-      REAL    rev(nrec)            !Reverse reaction coefficient.
-      REAL    q9(nrec)             !Energy released in reaction (in 10**9 K).
+      DOUBLE PRECISION    rev(nrec)            !Reverse reaction coefficient.
+      DOUBLE PRECISION    q9(nrec)             !Energy released in reaction (in 10**9 K).
 
 C-------REACTION RATES.
-      REAL    f(nrec)              !Forward reaction rate coefficients.
-      REAL    r(nrec)              !Reverse reaction rate coefficients.
+      DOUBLE PRECISION    f(nrec)              !Forward reaction rate coefficients.
+      DOUBLE PRECISION    r(nrec)              !Reverse reaction rate coefficients.
 
 C-------EVOLUTION PARAMETERS.
-      REAL    t9                   !Temperature of photons (units of 10**9 K).
-      REAL    hv                   !Defined by hv = M(atomic)n(baryon)/t9**3.
-      REAL    phie                 !Chemical potential of electron.
-      REAL    y(nnuc)              !Relative number abundances.
+      DOUBLE PRECISION    t9                   !Temperature of photons (units of 10**9 K).
+      DOUBLE PRECISION    hv                   !Defined by hv = M(atomic)n(baryon)/t9**3.
+      DOUBLE PRECISION    phie                 !Chemical potential of electron.
+      DOUBLE PRECISION    y(nnuc)              !Relative number abundances.
 
 C-------EVOLUTION PARAMETERS (DERIVATIVES).
-      REAL    dt9                  !Change in temperature.
-      REAL    dhv                  !Change in hv.
-      REAL    dphie                !Change in chemical potential.
-      REAL    dydt(nnuc)           !Change in relative number abundances.
+      DOUBLE PRECISION    dt9                  !Change in temperature.
+      DOUBLE PRECISION    dhv                  !Change in hv.
+      DOUBLE PRECISION    dphie                !Change in chemical potential.
+      DOUBLE PRECISION    dydt(nnuc)           !Change in relative number abundances.
 
 C-------EVOLUTION PARAMETERS (ORIGINAL VALUES).
-      REAL    y0(nnuc)             !Rel # abundances at end of 1st R-K loop.
+      DOUBLE PRECISION    y0(nnuc)             !Rel # abundances at end of 1st R-K loop.
 
 C-------DEFAULT COMPUTATION PARAMETERS.
-      REAL    cy0                  !Default cy.
-      REAL    ct0                  !Default ct.
-      REAL    t9i0                 !Default t9i.
-      REAL    t9f0                 !Default t9f.
-      REAL    ytmin0               !Default ytmin.
+      DOUBLE PRECISION    cy0                  !Default cy.
+      DOUBLE PRECISION    ct0                  !Default ct.
+      DOUBLE PRECISION    t9i0                 !Default t9i.
+      DOUBLE PRECISION    t9f0                 !Default t9f.
+      DOUBLE PRECISION    ytmin0               !Default ytmin.
       INTEGER inc0                 !Default accumulation increment.
 
 C-------COMPUTATION PARAMETERS.
-      REAL    cy                   !Time step limiting constant on abundances.
-      REAL    ct                  !Time step limiting constant on temperature.
-      REAL    t9i                  !Initial temperature (in 10**9 K).
-      REAL    t9f                  !Final temperature (in 10**9 K).
-      REAL    ytmin                !Smallest abundances allowed.
+      DOUBLE PRECISION    cy                   !Time step limiting constant on abundances.
+      DOUBLE PRECISION    ct                  !Time step limiting constant on temperature.
+      DOUBLE PRECISION    t9i                  !Initial temperature (in 10**9 K).
+      DOUBLE PRECISION    t9f                  !Final temperature (in 10**9 K).
+      DOUBLE PRECISION    ytmin                !Smallest abundances allowed.
       INTEGER inc                  !Accumulation increment.
 
 C-------DEFAULT MODEL PARAMETERS.
-      REAL    c0(3)                !Default c.
-      REAL    cosmo0               !Default cosmological constant.
-      REAL    xi0(3)               !Default neutrino degeneracy parameters.
+      DOUBLE PRECISION    c0(3)                !Default c.
+      DOUBLE PRECISION    cosmo0               !Default cosmological constant.
+      DOUBLE PRECISION    xi0(3)               !Default neutrino degeneracy parameters.
 
 C-------EARLY UNIVERSE MODEL PARAMETERS.
-      REAL    g                    !Gravitational constant.
-      REAL    tau                  !Neutron lifetime (sec).
-      REAL    xnu                  !Number of neutrino species.
-      REAL    c(3)               !c(1) is variation of gravitational constant.
+      DOUBLE PRECISION    g                    !Gravitational constant.
+      DOUBLE PRECISION    tau                  !Neutron lifetime (sec).
+      DOUBLE PRECISION    xnu                  !Number of neutrino species.
+      DOUBLE PRECISION    c(3)               !c(1) is variation of gravitational constant.
      |                             !c(2) is neutron half-life (min).
      |                             !c(3) is number of neutrino species.
-      REAL    cosmo                !Cosmological constant.
-      REAL    xi(3)                !Neutrino degeneracy parameters.
+      DOUBLE PRECISION    cosmo                !Cosmological constant.
+      DOUBLE PRECISION    xi(3)                !Neutrino degeneracy parameters.
      |                             !xi(1) is e neutrino degeneracy parameter.
      |                             !xi(2) is m neutrino degeneracy parameter.
      |                             !xi(3) is t neutrino degeneracy parameter.
 
 C-------DEFAULT VARIATIONAL PARAMETERS.
-      REAL    dt0                  !Default initial time step.
-      REAL    eta0                 !Default baryon-to-photon ratio.
+      DOUBLE PRECISION    dt0                  !Default initial time step.
+      DOUBLE PRECISION    eta0                 !Default baryon-to-photon ratio.
 
 C-------VARIATIONAL PARAMETERS.
-      REAL    dt1                  !Initial time step.
-      REAL    eta1                 !Baryon-to-photon ratio.
+      DOUBLE PRECISION    dt1                  !Initial time step.
+      DOUBLE PRECISION    eta1                 !Baryon-to-photon ratio.
 
 C-------TIME VARIABLES.
-      REAL    t                    !Time.
-      REAL    dt                   !Time step.
-      REAL    dlt9dt               !(1/t9)*d(t9)/d(t).
+      DOUBLE PRECISION    t                    !Time.
+      DOUBLE PRECISION    dt                   !Time step.
+      DOUBLE PRECISION    dlt9dt               !(1/t9)*d(t9)/d(t).
 
 C-------DYNAMIC VARIABLES.
-      REAL    thm(14)              !Thermodynamic variables (energy densities).
-      REAL    hubcst               !Expansion rate of the universe.
+      DOUBLE PRECISION    thm(14)              !Thermodynamic variables (energy densities).
+      DOUBLE PRECISION    hubcst               !Expansion rate of the universe.
 
 C-------ENERGY DENSITIES.
-      REAL    rhone0               !Initial electron neutrino energy density.
-      REAL    rhob0                !Initial baryon energy density.
-      REAL    rhob                 !Baryon energy density.
-      REAL    rnb                !Baryon energy density (ratio to init value).
+      DOUBLE PRECISION    rhone0               !Initial electron neutrino energy density.
+      DOUBLE PRECISION    rhob0                !Initial baryon energy density.
+      DOUBLE PRECISION    rhob                 !Baryon energy density.
+      DOUBLE PRECISION    rnb                !Baryon energy density (ratio to init value).
 
 C-------MATRIX COEFFICIENTS FOR LINEAR EQUATION.
-      REAL a(nnuc,nnuc)!Relates y(t+dt) to y(t).
-      REAL    b(nnuc)              !Contains y0 in inverse order.
-      REAL    yx(nnuc)             !yy in reverse order.
+      DOUBLE PRECISION a(nnuc,nnuc)!Relates y(t+dt) to y(t).
+      DOUBLE PRECISION    b(nnuc)              !Contains y0 in inverse order.
+      DOUBLE PRECISION    yx(nnuc)             !yy in reverse order.
 
 C-------NUCLIDE DATA.
-      REAL    am(nnuc)             !Atomic number of nuclide.
-      REAL    zm(nnuc)             !Charge of nuclide.
-      REAL    dm(nnuc)             !Mass excess of nuclide.
+      DOUBLE PRECISION    am(nnuc)             !Atomic number of nuclide.
+      DOUBLE PRECISION    zm(nnuc)             !Charge of nuclide.
+      DOUBLE PRECISION    dm(nnuc)             !Mass excess of nuclide.
 
 C-------EVALUATION OF FUNCTIONS bl,bm,bn.
-      REAL    bl1,bl2,bl3,bl4,bl5  !Evaluation of function bl(z).
-      REAL    bm1,bm2,bm3,bm4,bm5  !Evaluation of function bm(z).
-      REAL    bn1,bn2,bn3,bn4,bn5  !Evaluation of function bn(z).
+      DOUBLE PRECISION    bl1,bl2,bl3,bl4,bl5  !Evaluation of function bl(z).
+      DOUBLE PRECISION    bm1,bm2,bm3,bm4,bm5  !Evaluation of function bm(z).
+      DOUBLE PRECISION    bn1,bn2,bn3,bn4,bn5  !Evaluation of function bn(z).
 
 C-------EVALUATION OF MODIFIED BESSEL FUNCTIONS.
-      REAL    bk0,bk1,bk2,bk3,bk4  !Values k0(r),k1(r),k2(r),k3(r),k4(r).
+      DOUBLE PRECISION    bk0,bk1,bk2,bk3,bk4  !Values k0(r),k1(r),k2(r),k3(r),k4(r).
 
 C-------FLAGS AND COUNTERS.
       INTEGER ltime                !Indicates if output buffer printed.
@@ -4599,20 +4599,20 @@ C-------COMPUTATION LOCATION.
       INTEGER itime                !Time check.
 
 C-------OUTPUT ARRAYS.
-      REAL    xout(itmax,nnuc)     !Nuclide mass fractions.
-      REAL    thmout(itmax,6)      !Thermodynamic variables.
-      REAL    t9out(itmax)         !Temperature (in units of 10**9 K).
-      REAL    tout(itmax)          !Time.
-      REAL    dtout(itmax)         !Time step.
-      REAL    etaout(itmax)        !Baryon to photon ratio.
-      REAL    hubout(itmax)        !Expansion rate.
+      DOUBLE PRECISION    xout(itmax,nnuc)     !Nuclide mass fractions.
+      DOUBLE PRECISION    thmout(itmax,6)      !Thermodynamic variables.
+      DOUBLE PRECISION    t9out(itmax)         !Temperature (in units of 10**9 K).
+      DOUBLE PRECISION    tout(itmax)          !Time.
+      DOUBLE PRECISION    dtout(itmax)         !Time step.
+      DOUBLE PRECISION    etaout(itmax)        !Baryon to photon ratio.
+      DOUBLE PRECISION    hubout(itmax)        !Expansion rate.
 
 C-------NEUTRINO PARAMETERS.
-      REAL    t9mev                !Temperature (in units of MeV).
-      REAL    tnmev                !Neutrino temperature (in units of MeV).
-      REAL    tnu                  !Neutrino temperature.
-      REAL    cnorm                !Normalizing constant.
-      REAL    rhonu                !Neutrino energy density.
+      DOUBLE PRECISION    t9mev                !Temperature (in units of MeV).
+      DOUBLE PRECISION    tnmev                !Neutrino temperature (in units of MeV).
+      DOUBLE PRECISION    tnu                  !Neutrino temperature.
+      DOUBLE PRECISION    cnorm                !Normalizing constant.
+      DOUBLE PRECISION    rhonu                !Neutrino energy density.
       INTEGER nu                   !Type of neutrino.
 
 C-------RUN OPTION.

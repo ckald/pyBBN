@@ -1,4 +1,4 @@
-FLAGS = -fno-align-commons -Ofast
+FLAGS = -freal-4-real-8 -fno-align-commons -Ofast
 
 all: clean python kawano
 

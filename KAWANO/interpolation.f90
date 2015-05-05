@@ -8,16 +8,16 @@ SUBROUTINE binary_search(head, tail, needle, haystack, size, decreasing)
 
   INTEGER, INTENT(out) :: head
   INTEGER, INTENT(out) :: tail
-  REAL, INTENT(in) :: needle
+  DOUBLE PRECISION, INTENT(in) :: needle
   INTEGER :: size
   !f2py INTEGER, INTENT(hide), DEPEND(haystack) :: size = len(haystack)
-  REAL, INTENT(in), DIMENSION(size) :: haystack
+  DOUBLE PRECISION, INTENT(in), DIMENSION(size) :: haystack
   LOGICAL, INTENT(in) :: decreasing
 
   INTEGER range
   INTEGER middle
 
-  REAL comparison
+  DOUBLE PRECISION comparison
 
   head = 1
   tail = size
@@ -59,13 +59,13 @@ SUBROUTINE interp_values(interp_val, x_interp, x_values, y_values, decreasing, s
 
   IMPLICIT NONE
 
-  REAL, INTENT(out) :: interp_val
+  DOUBLE PRECISION, INTENT(out) :: interp_val
   !The interpolated y-result
-  REAL, INTENT(in) :: x_interp
+  DOUBLE PRECISION, INTENT(in) :: x_interp
   !The x-value at which interpolation happens
-  REAL, INTENT(in) :: x_values(size)
+  DOUBLE PRECISION, INTENT(in) :: x_values(size)
   !The abscissa discrete values
-  REAL, INTENT(in) :: y_values(size)
+  DOUBLE PRECISION, INTENT(in) :: y_values(size)
   !The array for which we interpolate
   LOGICAL, INTENT(in) :: decreasing
   !This boolean tells if the x-values are in decreasing (true) or incr. order
@@ -76,7 +76,7 @@ SUBROUTINE interp_values(interp_val, x_interp, x_values, y_values, decreasing, s
   INTEGER head, tail
   !The integer giving an x-value just below the one to be interpolated
 
-  REAL :: x_lo, x_up, y_lo, y_up
+  DOUBLE PRECISION :: x_lo, x_up, y_lo, y_up
 
   CALL binary_search(head, tail, x_interp, x_values, size, decreasing)
 
@@ -101,13 +101,13 @@ SUBROUTINE log_interp_values(interp_val, x_interp, x_values, y_values, decreasin
 
   IMPLICIT NONE
 
-  REAL, INTENT(out) :: interp_val
+  DOUBLE PRECISION, INTENT(out) :: interp_val
   !The interpolated y-result
-  REAL, INTENT(in) :: x_interp
+  DOUBLE PRECISION, INTENT(in) :: x_interp
   !The x-value at which interpolation happens
-  REAL, INTENT(in), DIMENSION(size) :: x_values
+  DOUBLE PRECISION, INTENT(in), DIMENSION(size) :: x_values
   !The abscissa
-  REAL, INTENT(in), DIMENSION(size) :: y_values
+  DOUBLE PRECISION, INTENT(in), DIMENSION(size) :: y_values
   !The array for which we interpolate
   LOGICAL, INTENT(in) :: decreasing
   !This boolean tells if the x-values are in decreasing (true) or incr. order
@@ -119,7 +119,7 @@ SUBROUTINE log_interp_values(interp_val, x_interp, x_values, y_values, decreasin
   LOGICAL positive
   !This tells if the y_values are positive, needed when taking the log.
 
-  REAL x_lo, x_up, y_lo, y_up
+  DOUBLE PRECISION x_lo, x_up, y_lo, y_up
 
 
   CALL binary_search(head, tail, x_interp, x_values, size, decreasing)
@@ -168,13 +168,13 @@ SUBROUTINE dist_interp_values(interp_val, x_interp, x_values, y_values, decreasi
 
   IMPLICIT NONE
 
-  REAL, INTENT(out) :: interp_val
+  DOUBLE PRECISION, INTENT(out) :: interp_val
   !The interpolated y-result
-  REAL, INTENT(in) :: x_interp
+  DOUBLE PRECISION, INTENT(in) :: x_interp
   !The x-value at which interpolation happens
-  REAL, INTENT(in), DIMENSION(size) :: x_values
+  DOUBLE PRECISION, INTENT(in), DIMENSION(size) :: x_values
   !The abscissa
-  REAL, INTENT(in), DIMENSION(size) :: y_values
+  DOUBLE PRECISION, INTENT(in), DIMENSION(size) :: y_values
   !The array for which we interpolate
   LOGICAL, INTENT(in) :: decreasing
   !This boolean tells if the x-values are in decreasing (true) or incr. order
@@ -186,7 +186,7 @@ SUBROUTINE dist_interp_values(interp_val, x_interp, x_values, y_values, decreasi
   LOGICAL positive
   !This tells if the y_values are positive, needed when taking the log.
 
-  REAL x_lo, x_up, y_lo, y_up
+  DOUBLE PRECISION x_lo, x_up, y_lo, y_up
 
 
   CALL binary_search(head, tail, x_interp, x_values, size, decreasing)
