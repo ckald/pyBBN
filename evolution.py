@@ -242,12 +242,14 @@ class Universe(object):
                 self.params.t / UNITS.s,
                 self.params.x / UNITS.MeV,
                 self.params.T / UNITS.MeV * CONST.MeV_to_10_9K,
-                self.fraction / self.params.x / UNITS.MeV * CONST.MeV_to_10_9K,
+                (self.params.T - self.data['T'][-2]) / UNITS.MeV
+                / (self.params.t - self.data['t'][-2]) * UNITS.s * CONST.MeV_to_10_9K,
                 self.params.rho / UNITS.MeV**4 * CONST.MeV4_to_g_cm_3,
                 self.params.H * UNITS.s
             ] + rates))
 
-            log_entry = "\t".join("{:e}".format(item) for item in self.data['kawano'][-1])
+            log_entry = "\t".join("{:e}".format(item / UNITS.MeV**5)
+                                  for item in self.data['kawano'][-1])
 
             print "KAWANO", log_entry
             self.kawano_log.write(log_entry + "\n")
