@@ -1,11 +1,10 @@
 import numpy
-from nose import with_setup_args
 
 from common import GRID
 from particles import Particle
 from library.SM import particles as SMP
 
-from . import setup
+from . import setup, with_setup_args
 
 
 @with_setup_args(setup)
