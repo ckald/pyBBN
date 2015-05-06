@@ -1,5 +1,8 @@
 import numpy
+import functools
 from numpy import polynomial
+
+from common import GRID
 
 
 def euler_correction(y, t, f, h):
@@ -161,3 +164,17 @@ def double_gaussian(f, a, b, g, h):
     integral = numpy.dot(numpy.transpose(weights), numpy.dot(mesh, weights))
 
     return integral
+
+
+def lambda_integrate(bounds=(GRID.MIN_MOMENTUM, GRID.MAX_MOMENTUM,)):
+    """ Gaussian integration over the momentum space of the lambda function """
+
+    def decorator(func):
+        @functools.wraps(func)
+        def wrapper(*args, **kw):
+            fpp = func(*args, **kw)
+            result, _ = integrate_1D(fpp, *bounds)
+
+            return result
+        return wrapper
+    return decorator

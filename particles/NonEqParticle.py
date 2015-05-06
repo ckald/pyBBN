@@ -2,44 +2,16 @@
 # Non-equilibrium particles
 """
 from __future__ import division
-import functools
 import numpy
-from scipy import interpolate, integrate
+from scipy import interpolate
 from common import GRID
+from common.integrators import lambda_integrate
 
 
 name = 'non-equilibrium'
 
 
-def lambda_integrate(func):
-    """ Scipy integration over the momentum space of the lambda function applied to the \
-        grid template """
-
-    method = ['simps', 'quad'][1]
-
-    if method == 'simps':
-
-        @functools.wraps(func)
-        def wrapper(*args, **kw):
-            fpp = func(*args, **kw)(GRID.TEMPLATE)
-            result = integrate.simps(fpp, dx=GRID.MOMENTUM_STEP)
-
-            return result
-
-    elif method == 'quad':
-
-        @functools.wraps(func)
-        def wrapper(*args, **kw):
-            fpp = func(*args, **kw)
-            result, _ = integrate.quad(fpp, GRID.MIN_MOMENTUM, GRID.MAX_MOMENTUM,
-                                       epsrel=1e-5, epsabs=0)
-
-            return result
-
-    return wrapper
-
-
-@lambda_integrate
+@lambda_integrate()
 def density(particle):
     return numpy.vectorize(lambda y: (
         particle.distribution(y) * y**2
@@ -47,7 +19,7 @@ def density(particle):
     ), otypes=[numpy.float_])
 
 
-@lambda_integrate
+@lambda_integrate()
 def energy_density(particle):
     """ ### Energy density
 
@@ -63,7 +35,7 @@ def energy_density(particle):
     ), otypes=[numpy.float_])
 
 
-@lambda_integrate
+@lambda_integrate()
 def pressure(particle):
     """ ### Pressure
 
@@ -89,7 +61,7 @@ def pressure(particle):
 """
 
 
-@lambda_integrate
+@lambda_integrate()
 def numerator(particle):
     integral = interpolate.interp1d(GRID.TEMPLATE, particle.collision_integral / particle.params.x,
                                     kind='quadratic', assume_sorted=True, copy=False)
