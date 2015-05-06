@@ -102,9 +102,6 @@ class Particle(PicklableObject):
         for key, value in settings.items():
             setattr(self, key, value)
 
-        if self.params:
-            self.set_params(self.params)
-
         self.eta = 1. if self.statistics == STATISTICS.FERMION else -1.
 
         """ For equilibrium particles distribution function is by definition given by its\
@@ -118,6 +115,9 @@ class Particle(PicklableObject):
             'distribution': [self._distribution],
             'collision_integral': []
         }
+
+        if self.params:
+            self.set_params(self.params)
 
     def __str__(self):
         """ String-like representation of particle species it's regime and parameters """
