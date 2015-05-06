@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import math
 from collections import namedtuple
 from common import GRID, CONST
