@@ -28,56 +28,41 @@ def _rate1(y):
     """ n + ν_e ⟶  e + p """
     E_e = q*a + y
     y_e = math.sqrt(E_e**2 - (m_e*a)**2)
-    return (
-        (y**2 * y_e * E_e
-         * (1. - particles.electron.distribution(y_e)) * particles.neutrino.distribution(y)),
-        default_bounds
-    )
+    return (y**2 * y_e * E_e
+            * (1. - particles.electron.distribution(y_e)) * particles.neutrino.distribution(y)),
 
 
 def _rate1b(y):
     """ e + p ⟶  n + ν_e """
     E_e = q*a + y
     y_e = math.sqrt(E_e**2 - (m_e*a)**2)
-    return (
-        (y**2 * y_e * E_e
-         * particles.electron.distribution(y_e) * (1. - particles.neutrino.distribution(y))),
-        default_bounds
-    )
+    return (y**2 * y_e * E_e
+            * particles.electron.distribution(y_e) * (1. - particles.neutrino.distribution(y)))
 
 
 def _rate2(y):
     """ n ⟶  e + ν_e' + p """
     E_e = q*a - y
     y_e = math.sqrt(E_e**2 - (m_e*a)**2)
-    return (
-        (y**2 * y_e * E_e
-         * (1. - particles.electron.distribution(y_e))
-         * (1. - particles.neutrino.distribution(y))),
-        (GRID.MIN_MOMENTUM, q*a - (m_e*a))
-    )
+    return (y**2 * y_e * E_e
+            * (1. - particles.electron.distribution(y_e))
+            * (1. - particles.neutrino.distribution(y)))
 
 
 def _rate2b(y):
     """ e + ν_e' + p ⟶  n """
     E_e = q*a - y
     y_e = math.sqrt(E_e**2 - (m_e*a)**2)
-    return (
-        (y**2 * y_e * E_e
-         * particles.electron.distribution(y_e) * particles.neutrino.distribution(y)),
-        (GRID.MIN_MOMENTUM, q*a - (m_e*a))
-    )
+    return (y**2 * y_e * E_e
+            * particles.electron.distribution(y_e) * particles.neutrino.distribution(y))
 
 
 def _rate3(y):
     """ n + e' ⟶  ν_e' + p """
     E_e = -q*a + y
     y_e = math.sqrt(E_e**2 - (m_e*a)**2)
-    return (
-        (y_e**2 * y_e * E_e
-         * particles.electron.distribution(y_e) * (1. - particles.neutrino.distribution(y))),
-        default_bounds
-    )
+    return (y_e**2 * y_e * E_e
+            * particles.electron.distribution(y_e) * (1. - particles.neutrino.distribution(y)))
 
 
 def _rate3b(y):
@@ -85,11 +70,8 @@ def _rate3b(y):
     E_e = math.sqrt(y**2 + (m_e*a)**2)
     y_n = q*a + E_e
 
-    return (
-        (y**2 * y_n**2
-         * (1. - particles.electron.distribution(y)) * particles.neutrino.distribution(y_n)),
-        default_bounds
-    )
+    return (y**2 * y_n**2
+            * (1. - particles.electron.distribution(y)) * particles.neutrino.distribution(y_n))
 
 
 def baryonic_rates(_a):
@@ -97,6 +79,12 @@ def baryonic_rates(_a):
     a = _a
 
     return [
-        CONST.rate_normalization / a**5 * integrate_1D(rate[0], bounds=rate[1])
-        for rate in [_rate1, _rate1b, _rate2, _rate2b, _rate3, _rate3b]
+        CONST.rate_normalization / a**5 * integrate_1D(integrand, bounds=bounds)
+        for integrand, bounds in [
+            (_rate1, default_bounds),
+            (_rate1b, default_bounds),
+            (_rate2, (GRID.MIN_MOMENTUM, q*a - (m_e*a))),
+            (_rate2b, (GRID.MIN_MOMENTUM, q*a - (m_e*a))),
+            (_rate3, default_bounds),
+            (_rate3b, default_bounds)]
     ]
