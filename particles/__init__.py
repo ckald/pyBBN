@@ -89,6 +89,7 @@ class Particle(PicklableObject):
         'symbol': 'p',
         'dof': 2,
         'statistics': STATISTICS.FERMION,
+        'params': None
     }
 
     INTEGRATION_ORDER = ['sum-first', 'integral-first'][0]
@@ -100,6 +101,9 @@ class Particle(PicklableObject):
 
         for key, value in settings.items():
             setattr(self, key, value)
+
+        if self.params:
+            self.set_params(self.params)
 
         self.eta = 1. if self.statistics == STATISTICS.FERMION else -1.
 

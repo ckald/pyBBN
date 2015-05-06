@@ -5,14 +5,14 @@ from common import GRID
 from particles import Particle
 from library.SM import particles as SMP
 
-from . import eps, setup
+from . import setup
 
 
 @with_setup(setup)
-def init_distribution_test():
+def init_distribution_test(params):
 
-    photon = Particle(**SMP.photon)
-    neutrino = Particle(**SMP.leptons.neutrino_e)
+    photon = Particle(params=params, **SMP.photon)
+    neutrino = Particle(params=params, **SMP.leptons.neutrino_e)
 
     print neutrino._distribution - numpy.vectorize(neutrino.distribution)(GRID.TEMPLATE)
 
@@ -21,9 +21,9 @@ def init_distribution_test():
 
 
 @with_setup(setup)
-def distribution_interpolation_accuracy_test():
+def distribution_interpolation_accuracy_test(params):
 
-    neutrino = Particle(**SMP.leptons.neutrino_e)
+    neutrino = Particle(params=params, **SMP.leptons.neutrino_e)
 
     detailed_grid = numpy.linspace(GRID.MIN_MOMENTUM, GRID.MAX_MOMENTUM*2,
                                    num=GRID.MOMENTUM_SAMPLES*10, endpoint=True)
