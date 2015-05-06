@@ -47,8 +47,8 @@ class Universe(object):
         self.logfile = logfile
         self.init_log()
 
-    def init_kawano(self, *args):
-        kawano.init_kawano(*args)
+    def init_kawano(self, **kwargs):
+        kawano.init_kawano(**kwargs)
         self.kawano = kawano
 
     def evolve(self):
