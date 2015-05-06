@@ -173,7 +173,7 @@ def lambda_integrate(bounds=(GRID.MIN_MOMENTUM, GRID.MAX_MOMENTUM,)):
         @functools.wraps(func)
         def wrapper(*args, **kw):
             fpp = func(*args, **kw)
-            result, _ = integrate_1D(fpp, *bounds)
+            result, _ = integrate_1D(fpp, bounds)
 
             return result
         return wrapper
