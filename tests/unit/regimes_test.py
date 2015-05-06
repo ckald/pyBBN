@@ -16,7 +16,7 @@ def params_inferrence_test(params):
 @with_setup_args(setup)
 def radiation_regime_test(params):
 
-    photon = Particle(**SMP.photon)
+    photon = Particle(params=params, **SMP.photon)
     assert photon.in_equilibrium, "Photon must always stay in equilibrium"
     assert not photon.decoupling_temperature, "Photon can't decouple"
     assert photon.regime == REGIMES.RADIATION, "Photon is a relativistic particle"
@@ -43,7 +43,7 @@ def intermediate_regime_test(params):
 @with_setup_args(setup)
 def dust_regime_test(params):
 
-    proton = Particle(**SMP.hadrons.proton)
+    proton = Particle(params=params, **SMP.hadrons.proton)
     assert proton.in_equilibrium, "Proton must always stay in equilibrium"
     assert not proton.decoupling_temperature, "Proton can't decouple"
     assert proton.regime == REGIMES.DUST, \
