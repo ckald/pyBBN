@@ -27,6 +27,7 @@ class Universe(object):
     interactions = []
 
     kawano = None
+    kawano_log = None
 
     def __init__(self, logfile='logs/' + str(datetime.now()) + '.txt',
                  plotting=True, params=None, grid=None):
@@ -47,8 +48,12 @@ class Universe(object):
         self.logfile = logfile
         self.init_log()
 
-    def init_kawano(self, **kwargs):
+    def init_kawano(self, datafile='s4.dat', **kwargs):
         kawano.init_kawano(**kwargs)
+        self.kawano_log = open(datafile, 'w')
+        self.kawano_log.write(
+            "t[s]\tx\tTg[10^9K]\tdTg/dt[10^9K/s]\trho_tot[g cm^-3]\tH[s^-1]"
+            "\tn nue->p e\tp e->n nue\tn->p e nue\tp e nue->n\tn e->p nue\tp nue->n e\n")
         self.kawano = kawano
 
     def evolve(self):
@@ -226,10 +231,10 @@ class Universe(object):
         self.data['t'].append(self.params.t)
         self.data['fraction'].append(self.fraction)
 
-        #     t[s]         x    Tg[10^9K]   dTg/dt[10^9K/s] rho_tot[g cm^-3]     H[s^-1]
-        # n nue->p e  p e->n nue  n->p e nue  p e nue->n  n e->p nue  p nue->n e
-
         if self.kawano:
+
+            #     t[s]         x    Tg[10^9K]   dTg/dt[10^9K/s] rho_tot[g cm^-3]     H[s^-1]
+            # n nue->p e  p e->n nue  n->p e nue  p e nue->n  n e->p nue  p nue->n e
 
             rates = self.kawano.baryonic_rates(self.params.a)
 
@@ -241,7 +246,11 @@ class Universe(object):
                 self.params.rho / UNITS.MeV**4 * CONST.MeV4_to_g_cm_3,
                 self.params.H * UNITS.s
             ] + rates))
-            print "KAWANO", self.data['kawano'][-1]
+
+            log_entry = "\t".join("{:e}".format(item) for item in self.data['kawano'][-1])
+
+            print "KAWANO", log_entry
+            self.kawano_log.write(log_entry + "\n")
 
     def init_log(self):
         sys.stdout = utils.Logger(self.logfile)
