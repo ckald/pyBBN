@@ -231,7 +231,7 @@ class Universe(object):
 
         if self.kawano:
 
-            rates = self.kawano.baryonic_rates(Q, M_e)
+            rates = self.kawano.baryonic_rates(self.params.a)
 
             self.data['kawano'].append(tuple([
                 self.params.t / UNITS.s,

@@ -60,6 +60,8 @@ universe.interactions += (
                                 neutrinos=[neutrino_e, neutrino_mu, neutrino_tau])
 )
 
+universe.init_kawano(electron=electron, neutrino=neutrino_e, neutron=neutron, proton=proton)
+
 universe.graphics.monitor([
     (neutrino_e, RadiationParticleMonitor),
     (neutrino_mu, RadiationParticleMonitor),
