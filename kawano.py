@@ -4,12 +4,11 @@ import math
 from collections import namedtuple
 from common import GRID, CONST
 from common.integrators import integrate_1D
+from library import SM
 
 
-from library.SM.particles.hadrons import neutron, proton
-from library.SM.particles.leptons import electron
-q = (neutron['mass'] - proton['mass'])
-m_e = electron['mass']
+q = (SM.particles.hadrons.neutron['mass'] - SM.particles.hadrons.proton['mass'])
+m_e = SM.particles.leptons.electron['mass']
 
 a = None
 
