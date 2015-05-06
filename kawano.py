@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-import math
+import numpy
 from collections import namedtuple
 from common import GRID, CONST
 from common.integrators import integrate_1D
@@ -27,7 +27,7 @@ def init_kawano(electron=None, neutrino=None, neutron=None, proton=None):
 def _rate1(y):
     """ n + ν_e ⟶  e + p """
     E_e = q*a + y
-    y_e = math.sqrt(E_e**2 - (m_e*a)**2)
+    y_e = numpy.sqrt(E_e**2 - (m_e*a)**2)
     return (y**2 * y_e * E_e
             * (1. - particles.electron.distribution(y_e)) * particles.neutrino.distribution(y)),
 
@@ -35,7 +35,7 @@ def _rate1(y):
 def _rate1b(y):
     """ e + p ⟶  n + ν_e """
     E_e = q*a + y
-    y_e = math.sqrt(E_e**2 - (m_e*a)**2)
+    y_e = numpy.sqrt(E_e**2 - (m_e*a)**2)
     return (y**2 * y_e * E_e
             * particles.electron.distribution(y_e) * (1. - particles.neutrino.distribution(y)))
 
@@ -43,7 +43,7 @@ def _rate1b(y):
 def _rate2(y):
     """ n ⟶  e + ν_e' + p """
     E_e = q*a - y
-    y_e = math.sqrt(E_e**2 - (m_e*a)**2)
+    y_e = numpy.sqrt(E_e**2 - (m_e*a)**2)
     return (y**2 * y_e * E_e
             * (1. - particles.electron.distribution(y_e))
             * (1. - particles.neutrino.distribution(y)))
@@ -52,7 +52,7 @@ def _rate2(y):
 def _rate2b(y):
     """ e + ν_e' + p ⟶  n """
     E_e = q*a - y
-    y_e = math.sqrt(E_e**2 - (m_e*a)**2)
+    y_e = numpy.sqrt(E_e**2 - (m_e*a)**2)
     return (y**2 * y_e * E_e
             * particles.electron.distribution(y_e) * particles.neutrino.distribution(y))
 
@@ -60,14 +60,14 @@ def _rate2b(y):
 def _rate3(y):
     """ n + e' ⟶  ν_e' + p """
     E_e = -q*a + y
-    y_e = math.sqrt(E_e**2 - (m_e*a)**2)
+    y_e = numpy.sqrt(E_e**2 - (m_e*a)**2)
     return (y_e**2 * y_e * E_e
             * particles.electron.distribution(y_e) * (1. - particles.neutrino.distribution(y)))
 
 
 def _rate3b(y):
     """ ν_e' + p ⟶  n + e' """
-    E_e = math.sqrt(y**2 + (m_e*a)**2)
+    E_e = numpy.sqrt(y**2 + (m_e*a)**2)
     y_n = q*a + E_e
 
     return (y**2 * y_n**2
