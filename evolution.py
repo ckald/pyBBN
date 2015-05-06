@@ -246,9 +246,9 @@ class Universe(object):
                 / (self.params.t - self.data['t'][-2]) * UNITS.s * CONST.MeV_to_10_9K,
                 self.params.rho / UNITS.MeV**4 * CONST.MeV4_to_g_cm_3,
                 self.params.H * UNITS.s
-            ] + rates))
+            ] + [rate / UNITS.MeV**5 for rate in rates]))
 
-            log_entry = "\t".join("{:e}".format(item / UNITS.MeV**5)
+            log_entry = "\t".join("{:e}".format(item)
                                   for item in self.data['kawano'][-1])
 
             print "KAWANO", log_entry
