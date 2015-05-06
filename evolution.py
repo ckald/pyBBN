@@ -8,7 +8,8 @@ from collections import defaultdict
 
 from common import UNITS, Params, Grid, CONST
 from common import integrators, parallelization, utils
-# from common.utils import PicklableObject
+
+import kawano
 
 
 class Universe(object):
@@ -24,6 +25,8 @@ class Universe(object):
 
     particles = []
     interactions = []
+
+    kawano = None
 
     def __init__(self, logfile='logs/' + str(datetime.now()) + '.txt',
                  plotting=True, params=None, grid=None):
@@ -44,6 +47,10 @@ class Universe(object):
         self.logfile = logfile
         self.init_log()
 
+    def init_kawano(self, *args):
+        kawano.init_kawano(*args)
+        self.kawano = kawano
+
     def evolve(self):
         """
         ## Main computing routine
@@ -61,13 +68,6 @@ class Universe(object):
 
         for interaction in self.interactions:
             print interaction
-
-        baryons_interaction = [interaction
-                               for interaction in self.interactions
-                               if interaction.name == "Baryons interaction"]
-
-        if baryons_interaction:
-            self.baryons_interaction = baryons_interaction[0]
 
         print "dx = {} MeV".format(self.params.dx / UNITS.MeV)
 
@@ -229,25 +229,9 @@ class Universe(object):
         #     t[s]         x    Tg[10^9K]   dTg/dt[10^9K/s] rho_tot[g cm^-3]     H[s^-1]
         # n nue->p e  p e->n nue  n->p e nue  p e nue->n  n e->p nue  p nue->n e
 
-        if self.baryons_interaction:
+        if self.kawano:
 
-            rates_map = (
-                "n + ν_e ⟶  e + p",
-                "n ⟶  e + ν_e' + p",
-                "n + e' ⟶  ν_e' + p",
-            )
-
-            rates = []
-            for reaction in rates_map:
-                for integral in self.baryons_interaction.integrals:
-                    if reaction in str(integral):
-                        rs = integral.rates()
-                        rs = [rs[0] / self.params.x * UNITS.MeV
-                              / CONST.MeV_to_s_1 * CONST.rate_normalization,
-                              rs[1] / self.params.x * UNITS.MeV
-                              / CONST.MeV_to_s_1 * CONST.rate_normalization]
-                        rates += rs
-                        print integral, rs
+            rates = self.kawano.baryonic_rates(Q, M_e)
 
             self.data['kawano'].append(tuple([
                 self.params.t / UNITS.s,
