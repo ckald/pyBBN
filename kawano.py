@@ -85,6 +85,6 @@ def baryonic_rates(_a):
             (_rate1b, default_bounds),
             (_rate2, (GRID.MIN_MOMENTUM, q*a - (m_e*a))),
             (_rate2b, (GRID.MIN_MOMENTUM, q*a - (m_e*a))),
-            (_rate3, default_bounds),
+            (_rate3, (q*a - (m_e*a), GRID.MAX_MOMENTUM)),
             (_rate3b, default_bounds)]
     ]
