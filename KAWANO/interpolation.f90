@@ -3,6 +3,11 @@
 !-------------TO FIND THE INTERPOLATION INDEX----------------
 
 SUBROUTINE binary_search(head, tail, needle, haystack, size, decreasing)
+  ! Find the insert position for the `needle` that preserves the ordering of the
+  ! `haystack`. Comparing to the regular binary search, this subroutine returns
+  ! a pair of indices indicating the insertion interval. If the `needle` is
+  ! found in the `haystack`, those indices coincide.
+
 
   IMPLICIT NONE
 
@@ -13,22 +18,33 @@ SUBROUTINE binary_search(head, tail, needle, haystack, size, decreasing)
   !f2py INTEGER, INTENT(hide), DEPEND(haystack) :: size = len(haystack)
   DOUBLE PRECISION, INTENT(in), DIMENSION(size) :: haystack
   LOGICAL, INTENT(in) :: decreasing
+  !f2py LOGICAL, INTENT(in), OPTIONAL :: decreasing = 0
 
   INTEGER range
   INTEGER middle
 
   DOUBLE PRECISION comparison
 
-  head = 1
-  tail = size
-  range = tail - head
-  middle = (tail + head) / 2
-
   IF (decreasing) THEN
     comparison = -1.
   ELSE
     comparison = 1.
   END IF
+
+  head = 1
+  tail = size
+
+  ! Check if the `needle` is outside the `haystack` range
+  IF (SIGN(1., needle - haystack(head)) == -comparison) THEN
+    tail = head
+    RETURN
+  ELSE IF (SIGN(1., needle - haystack(tail)) == comparison) THEN
+    head = tail
+    RETURN
+  END IF
+
+  range = tail - head
+  middle = (tail + head) / 2
 
   DO WHILE ( haystack(middle) /= needle .AND. range > 1)
     IF (SIGN(1., needle - haystack(middle)) == comparison) THEN
@@ -41,6 +57,7 @@ SUBROUTINE binary_search(head, tail, needle, haystack, size, decreasing)
     middle = (tail + head) / 2
   END DO
 
+  ! Identify if the needle is positioned exactly at `middle`/`head`/`tail`
   IF (haystack(middle) == needle) THEN
     head = middle
     tail = middle
@@ -68,7 +85,7 @@ SUBROUTINE interp_values(interp_val, x_interp, x_values, y_values, decreasing, s
   DOUBLE PRECISION, INTENT(in) :: y_values(size)
   !The array for which we interpolate
   LOGICAL, INTENT(in) :: decreasing
-  !This boolean tells if the x-values are in decreasing (true) or incr. order
+  !f2py LOGICAL, INTENT(in), OPTIONAL :: decreasing = 0
   INTEGER :: size
   !f2py INTEGER, INTENT(hide), DEPEND(x_values) :: size = len(x_values)
 
@@ -110,7 +127,7 @@ SUBROUTINE log_interp_values(interp_val, x_interp, x_values, y_values, decreasin
   DOUBLE PRECISION, INTENT(in), DIMENSION(size) :: y_values
   !The array for which we interpolate
   LOGICAL, INTENT(in) :: decreasing
-  !This boolean tells if the x-values are in decreasing (true) or incr. order
+  !f2py LOGICAL, INTENT(in), OPTIONAL :: decreasing = 0
   INTEGER :: size
   !f2py INTEGER, INTENT(hide), DEPEND(x_values) :: size = len(x_values)
 
@@ -177,7 +194,7 @@ SUBROUTINE dist_interp_values(interp_val, x_interp, x_values, y_values, decreasi
   DOUBLE PRECISION, INTENT(in), DIMENSION(size) :: y_values
   !The array for which we interpolate
   LOGICAL, INTENT(in) :: decreasing
-  !This boolean tells if the x-values are in decreasing (true) or incr. order
+  !f2py LOGICAL, INTENT(in), OPTIONAL :: decreasing = 0
   INTEGER :: size
   !f2py INTEGER, INTENT(hide), DEPEND(x_values) :: size = len(x_values)
 
