@@ -162,7 +162,7 @@ class Universe(object):
                 continue
 
             with utils.printoptions(precision=2):
-                with utils.benchmark(lambda: particle.symbol + "I ="
+                with utils.benchmark(lambda: "I(" + particle.symbol + ") = "
                                      + repr(particle.collision_integral)):
                     if self.PARALLELIZE:
                         particle.collision_integral = \
