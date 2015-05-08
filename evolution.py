@@ -6,8 +6,7 @@ import array
 from datetime import datetime
 from collections import defaultdict
 
-from common import UNITS, Params, Grid, CONST
-from common import integrators, parallelization, utils
+from common import UNITS, Params, Grid, CONST, integrators, parallelization, utils
 
 import kawano
 
@@ -169,7 +168,8 @@ class Universe(object):
             else:
                 particle.collision_integral = particle.integrate_collisions()
 
-            print particle.symbol, "I =", particle.collision_integral
+            with utils.printoptions(precision=2, suppress=True):
+                print particle.symbol, "I =", particle.collision_integral
 
     def update_distributions(self):
         """ ### 4. Update particles distributions """

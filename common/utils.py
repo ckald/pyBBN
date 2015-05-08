@@ -1,6 +1,8 @@
 import sys
 import time
 import codecs
+import contextlib
+import numpy
 from functools import wraps
 from collections import deque
 
@@ -127,3 +129,11 @@ class MemoizeMutable:
             self.memo[pickle] = self.fn(*args)
 
         return self.memo[pickle]
+
+
+@contextlib.contextmanager
+def printoptions(*args, **kwargs):
+    original = numpy.get_printoptions()
+    numpy.set_printoptions(*args, **kwargs)
+    yield
+    numpy.set_printoptions(**original)
