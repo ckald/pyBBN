@@ -56,8 +56,9 @@ universe.add_particles([
 universe.interactions += (
     # [SMI.baryons_interaction(neutron=neutron, proton=proton,
     #                          electron=electron, neutrino=neutrino_e)]
-    + SMI.neutrino_interactions(leptons=[electron],
-                                neutrinos=[neutrino_e, neutrino_mu, neutrino_tau])
+    # +
+    SMI.neutrino_interactions(leptons=[electron],
+                              neutrinos=[neutrino_e, neutrino_mu, neutrino_tau])
 )
 
 universe.init_kawano(datafile=os.path.join(folder, 's4.dat'),
