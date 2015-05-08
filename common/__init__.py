@@ -176,3 +176,29 @@ def theta(f):
     if f == 0:
         return 0.5
     return 0.
+
+
+def linear_interpolation(function, grid):
+    """ ### Linear interpolation """
+
+    def interpolation(x):
+        index = numpy.searchsorted(grid, x)
+
+        if index >= len(grid) - 1:
+            return function[len(grid) - 1]
+
+        if x == grid[index]:
+            return function[index]
+
+        # Determine the closest grid points
+        i_low = index
+        x_low = grid[i_low]
+
+        i_high = index + 1
+        x_high = grid[i_high]
+
+        return (
+            function[i_low] * (x_high - x) + function[i_high] * (x - x_low)
+        ) / (x_high - x_low)
+
+    return interpolation

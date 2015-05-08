@@ -10,11 +10,12 @@ from __future__ import division
 import numpy
 from collections import defaultdict
 
-from common import GRID, UNITS, Params
+from common import GRID, UNITS
 from common.integrators import adams_moulton_solver
 from common.utils import PicklableObject
 
 from particles import DustParticle, RadiationParticle, IntermediateParticle, NonEqParticle
+from KAWANO.interpolation import dist_interp_values as distribution_interpolation
 
 
 class STATISTICS(object):
@@ -91,8 +92,6 @@ class Particle(PicklableObject):
         'statistics': STATISTICS.FERMION,
         'params': None
     }
-
-    INTEGRATION_ORDER = ['sum-first', 'integral-first'][0]
 
     def __init__(self, **kwargs):
 
@@ -186,24 +185,16 @@ class Particle(PicklableObject):
         As = []
         Bs = []
 
-        if self.INTEGRATION_ORDER == 'integral-first':
+        A_integrand_groups = defaultdict(list)
+        B_integrand_groups = defaultdict(list)
+        for i in collision_integrals:
+            A_integrand_groups[i.__class__].append(i.integrand_1)
+            B_integrand_groups[i.__class__].append(i.integrand_f)
 
-            for i in collision_integrals:
-                As.append(i.__class__.integrate(p0, i.integrand_1)[0])
-                Bs.append(i.__class__.integrate(p0, i.integrand_f)[0])
-
-        else:
-
-            A_integrand_groups = defaultdict(list)
-            B_integrand_groups = defaultdict(list)
-            for i in collision_integrals:
-                A_integrand_groups[i.__class__].append(i.integrand_1)
-                B_integrand_groups[i.__class__].append(i.integrand_f)
-
-            for cls, integrands in A_integrand_groups.items():
-                As.append(cls.integrate(p0, integrands)[0])
-            for cls, integrands in B_integrand_groups.items():
-                Bs.append(cls.integrate(p0, integrands)[0])
+        for cls, integrands in A_integrand_groups.items():
+            As.append(cls.integrate(p0, integrands)[0])
+        for cls, integrands in B_integrand_groups.items():
+            Bs.append(cls.integrate(p0, integrands)[0])
 
         order = min(len(self.data['collision_integral']) + 1, 5)
 
@@ -284,11 +275,10 @@ class Particle(PicklableObject):
         if self.in_equilibrium or p > GRID.MAX_MOMENTUM:
             return self.equilibrium_distribution(p)
 
-        from KAWANO.interpolation import dist_interp_values as distribution_interpolation
         return distribution_interpolation(
             p,
             GRID.TEMPLATE,
-            self._distribution, False
+            self._distribution
         )
 
         index = numpy.searchsorted(GRID.TEMPLATE, p)
@@ -326,11 +316,6 @@ class Particle(PicklableObject):
 
         return 1. / (numpy.exp(g) + self.eta)
 
-        # """ ### Linear interpolation """
-        # return (
-        #     self._distribution[i_low] * (p_high - p) + self._distribution[i_high] * (p - p_low)
-        # ) / (p_high - p_low)
-
     def equilibrium_distribution(self, y=None, aT=None):
 
         """ Equilibrium distribution that corresponds to the particle internal temperature """
@@ -367,7 +352,7 @@ class Particle(PicklableObject):
             \end{equation}
         """
         if self.mass > 0:
-            return numpy.sqrt(p**2 + self.mass**2, dtype=numpy.float_)
+            return numpy.sqrt(p**2 + self.mass**2)
         else:
             return abs(p)
 

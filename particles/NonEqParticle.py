@@ -3,8 +3,7 @@
 """
 from __future__ import division
 import numpy
-from scipy import interpolate
-from common import GRID
+from common import GRID, linear_interpolation
 from common.integrators import lambda_integrate
 
 
@@ -63,8 +62,7 @@ def pressure(particle):
 
 @lambda_integrate()
 def numerator(particle):
-    integral = interpolate.interp1d(GRID.TEMPLATE, particle.collision_integral / particle.params.x,
-                                    kind='quadratic', assume_sorted=True, copy=False)
+    integral = linear_interpolation(particle.collision_integral / particle.params.x, GRID.TEMPLATE)
     return numpy.vectorize(lambda y: (
         -1. * particle.dof / 2. / numpy.pi**2
         * y**2 * particle.conformal_energy(y)
