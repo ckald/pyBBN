@@ -28,8 +28,8 @@ from common import UNITS, Params, GRID
 
 folder = os.path.split(__file__)[0]
 
-params = Params(T_initial=5. * UNITS.MeV,
-                T_final=0.015 * UNITS.MeV)
+params = Params(T_initial=10. * UNITS.MeV,
+                T_final=0.0008 * UNITS.MeV)
 
 universe = Universe(params=params, logfile=os.path.join(folder, 'log.txt'))
 
@@ -54,13 +54,14 @@ universe.add_particles([
 ])
 
 universe.interactions += (
-    [SMI.baryons_interaction(neutron=neutron, proton=proton,
-                             electron=electron, neutrino=neutrino_e)]
+    # [SMI.baryons_interaction(neutron=neutron, proton=proton,
+    #                          electron=electron, neutrino=neutrino_e)]
     + SMI.neutrino_interactions(leptons=[electron],
                                 neutrinos=[neutrino_e, neutrino_mu, neutrino_tau])
 )
 
-universe.init_kawano(electron=electron, neutrino=neutrino_e, neutron=neutron, proton=proton)
+universe.init_kawano(datafile=os.path.join(folder, 's4.dat'),
+                     electron=electron, neutrino=neutrino_e, neutron=neutron, proton=proton)
 
 universe.graphics.monitor([
     (neutrino_e, RadiationParticleMonitor),
@@ -131,7 +132,7 @@ plt.savefig(os.path.join(folder, 'figure_10.png'))
 distributions_file.close()
 
 # Just to be sure everything is okay
-import ipdb
-ipdb.set_trace()
+# import ipdb
+# ipdb.set_trace()
 
-raw_input("...")
+# raw_input("...")
