@@ -82,7 +82,7 @@ class benchmark(object):
 
     def __exit__(self, ty, val, tb):
         end = time.time()
-        print("%s : %0.5f seconds"
+        print("{:s} : {:0.3f} seconds"
               .format(self.name if not callable(self.name) else self.name(), end-self.start))
         return False
 
