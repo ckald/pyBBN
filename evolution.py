@@ -161,15 +161,16 @@ class Universe(object):
             if not particle.collision_integrals:
                 continue
 
-            if self.PARALLELIZE:
-                particle.collision_integral = \
-                    numpy.array(parallelization.poolmap(particle, 'calculate_collision_integral',
-                                                        self.grid.TEMPLATE))
-            else:
-                particle.collision_integral = particle.integrate_collisions()
-
-            with utils.printoptions(precision=2, suppress=True):
-                print particle.symbol, "I =", particle.collision_integral
+            with utils.printoptions(precision=2):
+                with utils.benchmark(lambda: particle.symbol + "I ="
+                                     + repr(particle.collision_integral)):
+                    if self.PARALLELIZE:
+                        particle.collision_integral = \
+                            numpy.array(parallelization.poolmap(particle,
+                                                                'calculate_collision_integral',
+                                                                self.grid.TEMPLATE))
+                    else:
+                        particle.collision_integral = particle.integrate_collisions()
 
     def update_distributions(self):
         """ ### 4. Update particles distributions """
