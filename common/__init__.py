@@ -67,6 +67,8 @@ class Params(PicklableObject):
     __slots__ = ['T_initial', 'T_final', 'm', 'dy', 't', 'H', 'rho',
                  'a_initial', 'a', 'x', 'y', 'dx', 'T', 'aT']
 
+    _saveable_fields = __slots__
+
     """ ## Parameters
         Master object carrying the cosmological state of the system and initial conditions """
 
