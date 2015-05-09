@@ -123,7 +123,7 @@ def integrate_2D(integrand, bounds):
     return integral, error
 
 
-GAUSS_LEGENDRE_ORDER = 40
+GAUSS_LEGENDRE_ORDER = 30
 points, weights = polynomial.legendre.leggauss(GAUSS_LEGENDRE_ORDER)
 grid = numpy.meshgrid(points, points)
 
