@@ -29,7 +29,7 @@ def _rate1(y):
     E_e = q*a + y
     y_e = numpy.sqrt(E_e**2 - (m_e*a)**2)
     return (y**2 * y_e * E_e
-            * (1. - particles.electron.distribution(y_e)) * particles.neutrino.distribution(y)),
+            * (1. - particles.electron.distribution(y_e)) * particles.neutrino.distribution(y))
 
 
 def _rate1b(y):
