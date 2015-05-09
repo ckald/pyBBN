@@ -7,7 +7,6 @@ This file contains constants and utilities shared by all other modules in the pr
 """
 import numpy
 import numericalunits as nu
-from utils import PicklableObject
 
 
 class UNITS(object):
@@ -62,12 +61,11 @@ class CONST(object):
     rate_normalization = 17.54459
 
 
-class Params(PicklableObject):
+class Params(object):
 
     __slots__ = ['T_initial', 'T_final', 'm', 'dy', 't', 'H', 'rho',
                  'a_initial', 'a', 'x', 'y', 'dx', 'T', 'aT', '_saveable_fields']
 
-    _saveable_fields = __slots__
 
     """ ## Parameters
         Master object carrying the cosmological state of the system and initial conditions """
@@ -138,7 +136,7 @@ class Params(PicklableObject):
         self.t += dt
 
 
-class Grid(PicklableObject):
+class Grid(object):
 
     """ ### Distribution functions grid
 
