@@ -66,25 +66,25 @@ class Params(object):
     __slots__ = ('T_initial', 'T_final', 'm', 'dy', 't', 'H', 'rho',
                  'a_initial', 'a', 'x', 'y', 'dx', 'T', 'aT')
 
-    """ ## Parameters
+    def __init__(self, **kwargs):
+        """ ## Parameters
         Master object carrying the cosmological state of the system and initial conditions """
 
-    # Temperature bounds define the simulations boundaries of the system
-    T_initial = 10 * UNITS.MeV
-    T_final = 10 * UNITS.keV
+        # Temperature bounds define the simulations boundaries of the system
+        self.T_initial = 10 * UNITS.MeV
+        self.T_final = 10 * UNITS.keV
 
-    # Arbitrary normalization of the conformal scale factor
-    m = 1. * UNITS.MeV
-    # Conformal scale factor step size during computations
-    dy = 0.05
-    # Initial time
-    t = 0. * UNITS.s
-    # Hubble rate
-    H = 0.
-    # Total energy density
-    rho = 0.
+        # Arbitrary normalization of the conformal scale factor
+        self.m = 1. * UNITS.MeV
+        # Conformal scale factor step size during computations
+        self.dy = 0.05
+        # Initial time
+        self.t = 0. * UNITS.s
+        # Hubble rate
+        self.H = 0.
+        # Total energy density
+        self.rho = 0.
 
-    def __init__(self, **kwargs):
         for key in kwargs:
             setattr(self, key, kwargs[key])
 
