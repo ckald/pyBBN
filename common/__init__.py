@@ -65,7 +65,7 @@ class CONST(object):
 class Params(PicklableObject):
 
     __slots__ = ['T_initial', 'T_final', 'm', 'dy', 't', 'H', 'rho',
-                 'a_initial', 'a', 'x', 'y', 'dx', 'T', 'aT']
+                 'a_initial', 'a', 'x', 'y', 'dx', 'T', 'aT', '_saveable_fields']
 
     _saveable_fields = __slots__
 
