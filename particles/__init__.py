@@ -108,6 +108,7 @@ class Particle(PicklableObject):
         self._distribution = numpy.zeros(GRID.MOMENTUM_SAMPLES, dtype=numpy.float_)
         """ Particle collision integral is not effective in the equilibrium as well """
         self.collision_integral = numpy.zeros(GRID.MOMENTUM_SAMPLES, dtype=numpy.float_)
+        self.calculate_collision_integral = numpy.vectorize(self.calculate_collision_integral)
 
         self.collision_integrals = []
         self.data = {
@@ -173,13 +174,10 @@ class Particle(PicklableObject):
     def integrate_collisions(self):
         return numpy.vectorize(self.calculate_collision_integral)(GRID.TEMPLATE)
 
-    def calculate_collision_integral(self, p0, collision_integrals=None):
+    def calculate_collision_integral(self, p0):
         """ ### Particle collisions integration """
 
-        if not collision_integrals:
-            collision_integrals = self.collision_integrals
-
-        if not collision_integrals:
+        if not self.collision_integrals:
             return 0
 
         As = []
@@ -187,7 +185,7 @@ class Particle(PicklableObject):
 
         A_integrand_groups = defaultdict(list)
         B_integrand_groups = defaultdict(list)
-        for i in collision_integrals:
+        for i in self.collision_integrals:
             A_integrand_groups[i.__class__].append(i.integrand_1)
             B_integrand_groups[i.__class__].append(i.integrand_f)
 

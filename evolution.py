@@ -165,10 +165,13 @@ class Universe(object):
                 with utils.benchmark(lambda: "I(" + particle.symbol + ") = "
                                      + repr(particle.collision_integral)):
                     if self.PARALLELIZE:
-                        particle.collision_integral = \
-                            numpy.array(parallelization.poolmap(particle,
-                                                                'calculate_collision_integral',
-                                                                self.grid.TEMPLATE))
+                        particle.collision_integral = numpy.array(parallelization.poolmap(
+                            particle, 'calculate_collision_integral',
+                            map(None, *(
+                                [iter(self.grid.TEMPLATE)]
+                                * self.grid.MOMENTUM_SAMPLES / parallelization.worker_count
+                            ))
+                        ))
                     else:
                         particle.collision_integral = particle.integrate_collisions()
 
