@@ -62,7 +62,7 @@ universe.interactions += (
 )
 
 universe.init_kawano(datafile=os.path.join(folder, 's4.dat'),
-                     electron=electron, neutrino=neutrino_e, neutron=neutron, proton=proton)
+                     electron=electron, neutrino=neutrino_e)
 
 universe.graphics.monitor([
     (neutrino_e, RadiationParticleMonitor),

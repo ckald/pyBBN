@@ -19,9 +19,9 @@ particles = None
 default_bounds = (GRID.MIN_MOMENTUM, GRID.MAX_MOMENTUM,)
 
 
-def init_kawano(electron=None, neutrino=None, neutron=None, proton=None):
+def init_kawano(electron=None, neutrino=None):
     global particles
-    particles = Particles(electron=electron, neutrino=neutrino, neutron=neutron, proton=proton)
+    particles = Particles(electron=electron, neutrino=neutrino)
 
 
 def _rate1(y):
