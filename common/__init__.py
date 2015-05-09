@@ -11,7 +11,7 @@ import numericalunits as nu
 
 class UNITS(object):
 
-    __slots__ = ['use_numericalunits', 'eV', 'keV', 'MeV', 'GeV', 'TeV', 's', 'kg', 'm', 'N']
+    __slots__ = ('use_numericalunits', 'eV', 'keV', 'MeV', 'GeV', 'TeV', 's', 'kg', 'm', 'N')
 
     """ ## Units
         As we use natural units in the project, all units from `numericalunits` except energy units\
@@ -36,8 +36,8 @@ UNITS.reset_units()
 
 class CONST(object):
 
-    __slots__ = ['G', 'M_p', 'G_F', 'sin_theta_w_2', 'g_R', 'g_L', 'f_pi',
-                 'MeV_to_s_1', 'MeV_to_10_9K', 'MeV4_to_g_cm_3', 'rate_normalization']
+    __slots__ = ('G', 'M_p', 'G_F', 'sin_theta_w_2', 'g_R', 'g_L', 'f_pi',
+                 'MeV_to_s_1', 'MeV_to_10_9K', 'MeV4_to_g_cm_3', 'rate_normalization')
 
     """ ### Physical constants """
 
@@ -63,9 +63,8 @@ class CONST(object):
 
 class Params(object):
 
-    __slots__ = ['T_initial', 'T_final', 'm', 'dy', 't', 'H', 'rho',
-                 'a_initial', 'a', 'x', 'y', 'dx', 'T', 'aT', '_saveable_fields']
-
+    __slots__ = ('T_initial', 'T_final', 'm', 'dy', 't', 'H', 'rho',
+                 'a_initial', 'a', 'x', 'y', 'dx', 'T', 'aT', '_saveable_fields')
 
     """ ## Parameters
         Master object carrying the cosmological state of the system and initial conditions """
@@ -154,7 +153,7 @@ class Grid(object):
         and errors).
         """
 
-    __slots__ = ['MIN_MOMENTUM', 'MAX_MOMENTUM', 'MOMENTUM_SAMPLES', 'MOMENTUM_STEP', 'TEMPLATE']
+    __slots__ = ('MIN_MOMENTUM', 'MAX_MOMENTUM', 'MOMENTUM_SAMPLES', 'MOMENTUM_STEP', 'TEMPLATE')
 
     def __init__(self):
         self.MIN_MOMENTUM = 1. * UNITS.eV
