@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import numpy
-from common import PicklableObject, GRID, integrators
+from common import GRID, integrators
+from common.utils import PicklableObject
 
 
 class DistributionFunctional(object):
