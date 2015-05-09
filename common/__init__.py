@@ -156,7 +156,7 @@ class Grid(object):
     __slots__ = ('MIN_MOMENTUM', 'MAX_MOMENTUM', 'MOMENTUM_SAMPLES', 'MOMENTUM_STEP', 'TEMPLATE')
 
     def __init__(self):
-        self.MIN_MOMENTUM = 1. * UNITS.eV
+        self.MIN_MOMENTUM = 0.  # 1. * UNITS.eV
         self.MAX_MOMENTUM = self.MIN_MOMENTUM + 20 * UNITS.MeV
         self.MOMENTUM_SAMPLES = 50
 
