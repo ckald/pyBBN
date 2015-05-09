@@ -64,7 +64,7 @@ class CONST(object):
 class Params(object):
 
     __slots__ = ('T_initial', 'T_final', 'm', 'dy', 't', 'H', 'rho',
-                 'a_initial', 'a', 'x', 'y', 'dx', 'T', 'aT', '_saveable_fields')
+                 'a_initial', 'a', 'x', 'y', 'dx', 'T', 'aT')
 
     """ ## Parameters
         Master object carrying the cosmological state of the system and initial conditions """
