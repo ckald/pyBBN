@@ -12,7 +12,7 @@ m_e = SM.particles.leptons.electron['mass']
 
 a = None
 
-Particles = namedtuple("Particles", "electron neutrino neutron proton")
+Particles = namedtuple("Particles", "electron neutrino")
 particles = None
 
 
