@@ -171,7 +171,7 @@ class Universe(object):
                                 [iter(self.grid.TEMPLATE)]
                                 * (self.grid.MOMENTUM_SAMPLES / parallelization.worker_count)
                             ))
-                        ))
+                        )).flatten()
                     else:
                         particle.collision_integral = particle.integrate_collisions()
 
