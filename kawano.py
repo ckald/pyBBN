@@ -80,6 +80,7 @@ def baryonic_rates(_a):
 
     return [
         CONST.rate_normalization / a**5 * integrate_1D(numpy.vectorize(integrand), bounds=bounds)[0]
+        if bounds[0] < bounds[1] else 0.
         for integrand, bounds in [
             (_rate1, default_bounds),
             (_rate1b, default_bounds),
