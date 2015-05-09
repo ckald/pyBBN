@@ -12,7 +12,7 @@ class PicklableObject(object):
     _saveable_fields = None
 
     def __getstate__(self):
-        if getattr(self, '__slots__'):
+        if getattr(self, '__slots__', None):
             return {key: getattr(self, key) for key in self.__slots__}
         if self._saveable_fields:
             return {key: value for key, value in self.__dict__.items()
@@ -20,7 +20,7 @@ class PicklableObject(object):
         return self.__dict__
 
     def __setstate__(self, data):
-        if getattr(self, '__slots__'):
+        if getattr(self, '__slots__', None):
             [setattr(self, key, value) for key, value in data.items()]
         else:
             if self._saveable_fields:
