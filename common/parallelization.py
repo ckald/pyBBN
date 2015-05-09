@@ -9,7 +9,8 @@ def target(args, **kw):
     result = getattr(obj, method_name)(*args, **kw)
     return result
 
-pool = Pool(processes=multiprocessing.cpu_count()-1)
+worker_count = multiprocessing.cpu_count() * 2 / 3
+pool = Pool(processes=worker_count)
 
 
 def spawn(f):
@@ -19,14 +20,14 @@ def spawn(f):
     return fun
 
 
-def parmap(f, X, workers=multiprocessing.cpu_count()-1):
+def parmap(f, X):
     pipe = [Pipe() for x in X]
     processes = [Process(target=spawn(f), args=(c, x)) for x, (_, c) in izip(X, pipe)]
     numProcesses = len(processes)
     processNum = 0
     outputList = []
     while processNum < numProcesses:
-        endProcessNum = min(processNum+workers, numProcesses)
+        endProcessNum = min(processNum+worker_count, numProcesses)
         for proc in processes[processNum:endProcessNum]:
             proc.start()
         for proc in processes[processNum:endProcessNum]:
