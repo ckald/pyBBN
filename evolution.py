@@ -169,7 +169,7 @@ class Universe(object):
                             particle, 'calculate_collision_integral',
                             map(None, *(
                                 [iter(self.grid.TEMPLATE)]
-                                * self.grid.MOMENTUM_SAMPLES / parallelization.worker_count
+                                * (self.grid.MOMENTUM_SAMPLES / parallelization.worker_count)
                             ))
                         ))
                     else:
