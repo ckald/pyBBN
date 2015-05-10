@@ -109,9 +109,8 @@ def import_data(filepath):
     with open(filepath) as f:
         f.readline()
         data = pandas.DataFrame(
-            {heading[i]: float(value) for i, value in enumerate(line.strip("\n").split("\t"))}
-            for line in f,
-            columns=heading)
+            ({heading[i]: float(value) for i, value in enumerate(line.strip("\n").split("\t"))}
+             for line in f), columns=heading)
     return data
 
 
@@ -176,6 +175,7 @@ def plot_kawano(data, label=None):
     parameters_plots.plots[2].plot(time_series, data[heading[3]])
     parameters_plots.plots[3].plot(time_series, data[heading[4]])
     parameters_plots.plots[4].plot(time_series, data[heading[5]])
-    for i, rate in enumerate(data[heading[6]:heading[11]], 6):
-        parameters_plots.plots[5].plot(time_series, rate)
-        rates_plots.plots[i-6].plot(time_series, rate, label=label)
+    rates = data.ix[:, 5: 11]
+    for i, rate in enumerate(rates, 6):
+        parameters_plots.plots[5].plot(time_series, rates[rate])
+        rates_plots.plots[i-6].plot(time_series, rates[rate], label=label)
