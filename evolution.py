@@ -224,6 +224,7 @@ class Universe(object):
 
     def save(self):
         """ Save current Universe parameters into the data arrays or output files """
+        print self.data
         self.data.append({
             'aT': self.params.aT,
             'T': self.params.T,
@@ -232,7 +233,7 @@ class Universe(object):
             'rho': self.params.rho,
             't': self.params.t,
             'fraction': self.fraction
-        })
+        }, ignore_index=True)
 
         if self.kawano:
 
@@ -245,8 +246,8 @@ class Universe(object):
                 self.kawano.heading[0]: self.params.t / UNITS.s,
                 self.kawano.heading[1]: self.params.x / UNITS.MeV,
                 self.kawano.heading[2]: self.params.T / UNITS.MeV * CONST.MeV_to_10_9K,
-                self.kawano.heading[3]: (self.params.T - self.data['T'][-2]) / UNITS.MeV
-                / (self.params.t - self.data['t'][-2]) * UNITS.s * CONST.MeV_to_10_9K,
+                self.kawano.heading[3]: (self.params.T - self.data['T'].iloc[-2]) / UNITS.MeV
+                / (self.params.t - self.data['t'].iloc[-2]) * UNITS.s * CONST.MeV_to_10_9K,
                 self.kawano.heading[4]: self.params.rho / UNITS.MeV**4 * CONST.MeV4_to_g_cm_3,
                 self.kawano.heading[5]: self.params.H * UNITS.s
             }
