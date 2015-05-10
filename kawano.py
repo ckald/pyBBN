@@ -118,6 +118,8 @@ def plot_kawano(data, label=None):
     global parameters_plots, rates_plots
 
     import matplotlib.pyplot as plt
+    plt.style.use('ggplot')
+    plt.rcParams['toolbar'] = 'None'
 
     if not parameters_plots:
         figure, plots = plt.subplots(3, 2, num="KAWANO parameters")
