@@ -27,7 +27,7 @@ class Universe(object):
     kawano = None
     kawano_log = None
 
-    data = pandas.DataFrame()
+    data = pandas.DataFrame(columns=('aT', 'T', 'a', 'x', 't', 'rho', 'fraction'))
 
     def __init__(self, logfile='logs/' + str(datetime.now()) + '.txt',
                  plotting=True, params=None, grid=None):
@@ -48,7 +48,7 @@ class Universe(object):
         self.logfile = logfile
         self.init_log()
 
-        self.data = pandas.DataFrame(columns=('aT', 'T', 'a', 'x', 't', 'rho', 'fraction'))
+        self.fraction = 0
 
     def init_kawano(self, datafile='s4.dat', **kwargs):
         kawano.init_kawano(**kwargs)
