@@ -1,11 +1,9 @@
 # -*- coding: utf-8 -*-
 
 import sys
-import array
 import numpy
 import pandas
 from datetime import datetime
-from collections import defaultdict
 
 from common import UNITS, Params, Grid, CONST, integrators, parallelization, utils
 
@@ -28,6 +26,8 @@ class Universe(object):
 
     kawano = None
     kawano_log = None
+
+    data = pandas.DataFrame()
 
     def __init__(self, logfile='logs/' + str(datetime.now()) + '.txt',
                  plotting=True, params=None, grid=None):

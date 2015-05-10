@@ -108,7 +108,7 @@ class Plotting(object):
         plt.draw()
 
         if self.particles:
-            for i, (particle, monitor) in enumerate(self.particles):
+            for i, (_, monitor) in enumerate(self.particles):
                 monitor.plot(data)
 
             plt.figure(2)
