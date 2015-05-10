@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 
 import sys
-import numpy
 import array
+import numpy
+import pandas
 from datetime import datetime
 from collections import defaultdict
 
@@ -50,10 +51,9 @@ class Universe(object):
     def init_kawano(self, datafile='s4.dat', **kwargs):
         kawano.init_kawano(**kwargs)
         self.kawano_log = open(datafile, 'w')
-        self.kawano_log.write(
-            "t[s]\tx\tTg[10^9K]\tdTg/dt[10^9K/s]\trho_tot[g cm^-3]\tH[s^-1]"
-            "\tn nue->p e\tp e->n nue\tn->p e nue\tp e nue->n\tn e->p nue\tp nue->n e\n")
+        self.kawano_log.write("\t".join(kawano.heading))
         self.kawano = kawano
+        self.data['kawano'] = []
 
     def evolve(self):
         """
@@ -78,14 +78,14 @@ class Universe(object):
         self.step = 0
 
         self.params.update(self.total_energy_density())
-        self.data = defaultdict(list, {
-            'aT': array.array('f', [self.params.aT]),
-            'T': array.array('f', [self.params.T]),
-            'a': array.array('f', [self.params.a]),
-            'x': array.array('f', [self.params.x]),
-            't': array.array('f', [self.params.t]),
-            'rho': array.array('f', [self.params.rho]),
-            'fraction': array.array('f', [0]),
+        self.data = pandas.DataFrame({
+            'aT': [self.params.aT],
+            'T': [self.params.T],
+            'a': [self.params.a],
+            'x': [self.params.x],
+            't': [self.params.t],
+            'rho': [self.params.rho],
+            'fraction': [0],
         })
 
         print '#step\tTime, s\taT, MeV\tT, MeV\tscale factor\tdx, MeV'
@@ -226,13 +226,15 @@ class Universe(object):
 
     def save(self):
         """ Save current Universe parameters into the data arrays or output files """
-        self.data['aT'].append(self.params.aT)
-        self.data['T'].append(self.params.T)
-        self.data['a'].append(self.params.a)
-        self.data['x'].append(self.params.x)
-        self.data['rho'].append(self.params.rho)
-        self.data['t'].append(self.params.t)
-        self.data['fraction'].append(self.fraction)
+        self.data.append({
+            'aT': self.params.aT,
+            'T': self.params.T,
+            'a': self.params.a,
+            'x': self.params.x,
+            'rho': self.params.rho,
+            't': self.params.t,
+            'fraction': self.fraction
+        })
 
         if self.kawano:
 
@@ -241,15 +243,19 @@ class Universe(object):
 
             rates = self.kawano.baryonic_rates(self.params.a)
 
-            self.data['kawano'].append(tuple([
-                self.params.t / UNITS.s,
-                self.params.x / UNITS.MeV,
-                self.params.T / UNITS.MeV * CONST.MeV_to_10_9K,
-                (self.params.T - self.data['T'][-2]) / UNITS.MeV
+            row = {
+                self.kawano.heading[0]: self.params.t / UNITS.s,
+                self.kawano.heading[1]: self.params.x / UNITS.MeV,
+                self.kawano.heading[2]: self.params.T / UNITS.MeV * CONST.MeV_to_10_9K,
+                self.kawano.heading[3]: (self.params.T - self.data['T'][-2]) / UNITS.MeV
                 / (self.params.t - self.data['t'][-2]) * UNITS.s * CONST.MeV_to_10_9K,
-                self.params.rho / UNITS.MeV**4 * CONST.MeV4_to_g_cm_3,
-                self.params.H * UNITS.s
-            ] + [rate / UNITS.MeV**5 for rate in rates]))
+                self.kawano.heading[4]: self.params.rho / UNITS.MeV**4 * CONST.MeV4_to_g_cm_3,
+                self.kawano.heading[5]: self.params.H * UNITS.s
+            }
+            row.update({self.kawano.heading[i]: rate / UNITS.MeV**5
+                        for i, rate in enumerate(rates, 6)})
+
+            self.data['kawano'].append(row)
 
             log_entry = "\t".join("{:e}".format(item)
                                   for item in self.data['kawano'][-1])

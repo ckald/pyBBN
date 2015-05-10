@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 
+import itertools
 import numpy
+import pandas
 from collections import namedtuple
 from common import GRID, CONST
 from common.integrators import integrate_1D
@@ -89,3 +91,92 @@ def baryonic_rates(_a):
             (_rate3, (q*a + (m_e*a), GRID.MAX_MOMENTUM)),
             (_rate3b, default_bounds)]
     ]
+
+
+Plotting = namedtuple('Plotting', 'figure plots')
+parameters_plots = None
+rates_plots = None
+
+heading = ("t[s]", "x",
+           "Tg[10^9K]", "dTg/dt[10^9K/s]",
+           "rho_tot[g cm^-3]", "H[s^-1]",
+           "n nue->p e", "p e->n nue",
+           "n->p e nue", "p e nue->n",
+           "n e->p nue", "p nue->n e")
+
+
+def import_data(filepath):
+    with open(filepath) as f:
+        f.readline()
+        data = pandas.DataFrame(columns=heading)
+        data.append(
+            {heading[i]: float(value) for i, value in enumerate(line.strip("\n").split("\t"))}
+            for line in f
+        )
+    return data
+
+
+def plot_kawano(data, label=None):
+    global parameters_plots, rates_plots
+
+    import matplotlib.pyplot as plt
+
+    if not parameters_plots:
+        figure, plots = plt.subplots(3, 2, num=1)
+        plots = list(itertools.chain(*plots))
+        figure.subplots_adjust(hspace=0.5, wspace=0.5)
+
+        #     t[s]         x    Tg[10^9K]   dTg/dt[10^9K/s] rho_tot[g cm^-3]     H[s^-1]
+
+        parameters_plots = Plotting(figure=figure, plots=plots)
+
+        for plot in plots:
+            plot.set_xlabel("time, s")
+            plot.set_xscale("log")
+            plot.set_yscale("log")
+
+        plots[0].set_title("Scale factor")
+        plots[0].set_ylabel("a, 1")
+        plots[0].set_yscale("log")
+
+        plots[1].set_title("Temperature")
+        plots[1].set_ylabel("T, 10^9 K")
+
+        plots[2].set_title("Temperature derivative")
+        plots[2].set_ylabel("dT/dt, 10^9 K/s")
+        plots[2].set_yscale('linear')
+
+        plots[3].set_title("Total energy density")
+        plots[3].set_ylabel("rho, g/cm^3")
+
+        plots[4].set_title("Hubble rate")
+        plots[4].set_ylabel("H, s^-1")
+
+        plots[5].set_title("Nuclear rates")
+        plots[5].set_ylabel("rate")
+
+    if not rates_plots:
+        figure, plots = plt.subplots(3, 2, num=1)
+        plots = list(itertools.chain(*plots))
+        figure.subplots_adjust(hspace=0.5, wspace=0.5)
+
+        # n nue->p e  p e->n nue  n->p e nue  p e nue->n  n e->p nue  p nue->n e
+
+        rates_plots = Plotting(figure=figure, plots=plots)
+
+        for i, plot in enumerate(plots, 6):
+            plot.set_title(heading[i])
+            plot.set_xlabel("time, s")
+            plot.set_xscale("log")
+            plot.set_ylabel("Rate")
+            plot.set_yscale("log")
+
+    time_series = data[heading[0]]
+    parameters_plots.plots[0].plot(time_series, data[heading[1]])
+    parameters_plots.plots[1].plot(time_series, data[heading[2]])
+    parameters_plots.plots[2].plot(time_series, data[heading[3]])
+    parameters_plots.plots[3].plot(time_series, data[heading[4]])
+    parameters_plots.plots[4].plot(time_series, data[heading[5]])
+    for i, rate in enumerate(data[heading[6]:heading[11]], 6):
+        parameters_plots.plots[5].plot(time_series, rate)
+        rates_plots.plots[i-6].plot(time_series, rate, label=label)
