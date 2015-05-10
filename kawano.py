@@ -178,7 +178,7 @@ def plot_kawano(data, label=None):
     parameters_plots.plots[3].plot(time_series, data[heading[4]])
     parameters_plots.plots[4].plot(time_series, data[heading[5]])
 
-    rates = data.ix[:, 5:11]
-    for i, rate in enumerate(rates, 6):
+    rates = data.ix[:, 6:12]
+    for i, rate in enumerate(rates):
         parameters_plots.plots[5].plot(time_series, rates[rate])
-        rates_plots.plots[i-6].plot(time_series, rates[rate], label=label)
+        rates_plots.plots[i].plot(time_series, rates[rate], label=label)
