@@ -1,7 +1,7 @@
 """
 ## C$\nu$B temperature test
 
-<img src="plots.png" width=100% />
+<img src="plots.svg" width=100% />
 
 This test checks that in the universe filled with photons, neutrons, protons, electrons\
 and neutrinos (which decouple at temperatures around $\sim 3 MeV$:

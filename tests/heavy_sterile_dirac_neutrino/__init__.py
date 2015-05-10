@@ -8,8 +8,8 @@ $$ \theta_\tau \approx 7.6 10^{-3} \sim \tau_N \approx 0.3 sec $$
 
 http://arxiv.org/pdf/hep-ph/0002223v2.pdf
 
-<img src="plots.png" width=100% />
-<img src="particles.png" width=100% />
+<img src="plots.svg" width=100% />
+<img src="particles.svg" width=100% />
 
 """
 
@@ -88,7 +88,7 @@ plt.ion()
 
 """
 ### JCAP10(2012)014, Figure 9
-<img src="figure_9.png" width=100% />
+<img src="figure_9.svg" width=100% />
 """
 
 plt.figure(9)
@@ -101,12 +101,12 @@ plt.xticks([1, 2, 3, 5, 10, 20])
 plt.axes().get_xaxis().set_major_formatter(matplotlib.ticker.ScalarFormatter())
 plt.plot(UNITS.MeV / numpy.array(universe.data['T']), numpy.array(universe.data['aT']) / UNITS.MeV)
 plt.show()
-plt.savefig(os.path.join(folder, 'figure_9.png'))
+plt.savefig(os.path.join(folder, 'figure_9.svg'))
 
 """
 ### JCAP10(2012)014, Figure 10
-<img src="figure_10.png" width=100% />
-<img src="figure_10_full.png" width=100% />
+<img src="figure_10.svg" width=100% />
+<img src="figure_10_full.svg" width=100% />
 """
 
 plt.figure(10)
@@ -129,13 +129,13 @@ for neutrino in [neutrino_e, neutrino_mu, neutrino_tau, sterile]:
 plt.legend()
 plt.draw()
 plt.show()
-plt.savefig(os.path.join(folder, 'figure_10_full.png'))
+plt.savefig(os.path.join(folder, 'figure_10_full.svg'))
 
 plt.xlim(0, 10)
 plt.ylim(0.99, 1.06)
 plt.draw()
 plt.show()
-plt.savefig(os.path.join(folder, 'figure_10.png'))
+plt.savefig(os.path.join(folder, 'figure_10.svg'))
 
 distributions_file.close()
 

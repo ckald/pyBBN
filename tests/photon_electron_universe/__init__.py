@@ -1,7 +1,7 @@
 """
 ## Photon-electron universe test
 
-<img src="plots.png" width=100% />
+<img src="plots.svg" width=100% />
 
 This test checks that in the photon-electron universe:
 

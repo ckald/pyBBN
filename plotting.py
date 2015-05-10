@@ -62,10 +62,10 @@ class Plotting(object):
 
         folder = os.path.split(filename)[0]
         plt.figure(1)
-        plt.savefig(os.path.join(folder, 'plots.png'))
+        plt.savefig(os.path.join(folder, 'plots.svg'))
         if self.particles:
             plt.figure(2)
-            plt.savefig(os.path.join(folder, 'particles.png'))
+            plt.savefig(os.path.join(folder, 'particles.svg'))
 
     def monitor(self, map):
         """ Setup the detailed distribution function and energy density plots for specific \
@@ -261,7 +261,7 @@ def plot_integrand(integrand, name, p0, filename=__file__):
     ax.set_ylabel('p2')
     ax.set_title('{} p0 = {}'.format(name, p0 / UNITS.MeV))
 
-    plt.savefig(os.path.join(os.path.split(filename)[0], 'logs/plt_{}.png'.format(p0 / UNITS.MeV)))
+    plt.savefig(os.path.join(os.path.split(filename)[0], 'logs/plt_{}.svg'.format(p0 / UNITS.MeV)))
 
 
 def plot_points(points, name):

@@ -2,8 +2,8 @@
 """
 ## Minimal network with two-body decays
 
-<img src="plots.png" width=100% />
-<img src="particles.png" width=100% />
+<img src="plots.svg" width=100% />
+<img src="particles.svg" width=100% />
 
 Study a network of Boltzmann equation to get control over instabilities related to the addition of
 decays. For simplicity investigate a minimal network which exhibits the and has the following
@@ -106,7 +106,7 @@ universe.graphics.save(__file__)
 plt.ion()
 
 """ ### JCAP10(2012)014, Figure 9
-    <img src="figure_9.png" width=100% /> """
+    <img src="figure_9.svg" width=100% /> """
 
 plt.figure(9)
 plt.title('Figure 9')
@@ -116,11 +116,11 @@ plt.xscale('log')
 plt.xlim(UNITS.MeV/universe.params.T_initial, UNITS.MeV/universe.params.T_final)
 plt.plot(UNITS.MeV / numpy.array(universe.data['T']), numpy.array(universe.data['aT']) / UNITS.MeV)
 plt.show()
-plt.savefig(os.path.join(folder, 'figure_9.png'))
+plt.savefig(os.path.join(folder, 'figure_9.svg'))
 
 """ ### JCAP10(2012)014, Figure 10
-    <img src="figure_10.png" width=100% />
-    <img src="figure_10_full.png" width=100% /> """
+    <img src="figure_10.svg" width=100% />
+    <img src="figure_10_full.svg" width=100% /> """
 
 plt.figure(10)
 plt.title('Figure 10')
@@ -135,13 +135,13 @@ plt.plot(GRID.TEMPLATE/UNITS.MeV, f_sterile/feq_sterile, label="sterile")
 plt.legend()
 plt.draw()
 plt.show()
-plt.savefig(os.path.join(folder, 'figure_10_full.png'))
+plt.savefig(os.path.join(folder, 'figure_10_full.svg'))
 
 plt.xlim(0, 10)
 # plt.ylim(0.99, 1.06)
 plt.draw()
 plt.show()
-plt.savefig(os.path.join(folder, 'figure_10.png'))
+plt.savefig(os.path.join(folder, 'figure_10.svg'))
 
 # Distribution functions arrays
 distributions_file = open(os.path.join(folder, 'distributions.txt'), "w")

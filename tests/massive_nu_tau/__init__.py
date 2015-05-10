@@ -1,8 +1,8 @@
 """
 ## Massive $\nu_\tau$ ($20 MeV$) test
 
-<img src="plots.png" width=100% />
-<img src="particles.png" width=100% />
+<img src="plots.svg" width=100% />
+<img src="particles.svg" width=100% />
 
 This test checks that in the universe filled with photons, electrons and neutrinos:
 
@@ -74,7 +74,7 @@ plt.ion()
 
 """
 ### 1202.2841, Figure 13
-<img src="figure_13.png" width=100% /> """
+<img src="figure_13.svg" width=100% /> """
 
 plt.figure(13)
 plt.title('Figure 13')
@@ -86,11 +86,11 @@ plt.xticks([0.1, 0.2, 0.5, 1, 2, 5, 10, 20])
 plt.axes().get_xaxis().set_major_formatter(matplotlib.ticker.ScalarFormatter())
 plt.plot(UNITS.MeV / numpy.array(universe.data['T']), numpy.array(universe.data['aT']) / UNITS.MeV)
 plt.show()
-plt.savefig(os.path.join(folder, 'figure_13.png'))
+plt.savefig(os.path.join(folder, 'figure_13.svg'))
 
 """
 ### 1202.2841, Figure 14
-<img src="figure_14.png" width=100% /> """
+<img src="figure_14.svg" width=100% /> """
 
 plt.figure(14)
 plt.title('Figure 14')
@@ -113,7 +113,7 @@ for neutrino in (neutrino_e, neutrino_mu, neutrino_tau):
 plt.legend()
 plt.draw()
 plt.show()
-plt.savefig(os.path.join(folder, 'figure_14.png'))
+plt.savefig(os.path.join(folder, 'figure_14.svg'))
 
 # Distribution functions arrays
 distributions_file.close()
