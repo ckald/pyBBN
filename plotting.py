@@ -5,8 +5,6 @@ import itertools
 
 import numpy
 import matplotlib.pyplot as plt
-from matplotlib import cm
-from mpl_toolkits.mplot3d import Axes3D
 
 from common import UNITS, GRID
 from common.utils import ring_deque
@@ -243,6 +241,10 @@ def age_lines(lines):
 
 def plot_integrand(integrand, name, p0, filename=__file__):
     """ Save a 3D plot of the distribution function integrand into a file. """
+
+    from matplotlib import cm
+    from mpl_toolkits.mplot3d import Axes3D
+
     fig = plt.figure(3)
     ax = fig.gca(projection='3d')
     plt.cla()
