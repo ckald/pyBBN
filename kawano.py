@@ -122,7 +122,6 @@ def plot_kawano(data, label=None):
     if not parameters_plots:
         figure, plots = plt.subplots(3, 2, num="KAWANO parameters")
         plots = list(itertools.chain(*plots))
-        figure.subplots_adjust(hspace=0.5, wspace=0.5)
 
         #     t[s]         x    Tg[10^9K]   dTg/dt[10^9K/s] rho_tot[g cm^-3]     H[s^-1]
 
@@ -156,7 +155,6 @@ def plot_kawano(data, label=None):
     if not rates_plots:
         figure, plots = plt.subplots(3, 2, num="KAWANO rates")
         plots = list(itertools.chain(*plots))
-        figure.subplots_adjust(hspace=0.5, wspace=0.5)
 
         # n nue->p e  p e->n nue  n->p e nue  p e nue->n  n e->p nue  p nue->n e
 
