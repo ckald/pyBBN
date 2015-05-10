@@ -48,6 +48,8 @@ class Universe(object):
         self.logfile = logfile
         self.init_log()
 
+        self.data = pandas.DataFrame(columns=('aT', 'T', 'a', 'x', 't', 'rho', 'fraction'))
+
     def init_kawano(self, datafile='s4.dat', **kwargs):
         kawano.init_kawano(**kwargs)
         self.kawano_log = open(datafile, 'w')
@@ -78,15 +80,7 @@ class Universe(object):
         self.step = 0
 
         self.params.update(self.total_energy_density())
-        self.data = pandas.DataFrame({
-            'aT': [self.params.aT],
-            'T': [self.params.T],
-            'a': [self.params.a],
-            'x': [self.params.x],
-            't': [self.params.t],
-            'rho': [self.params.rho],
-            'fraction': [0],
-        })
+        self.save()
 
         print '#step\tTime, s\taT, MeV\tT, MeV\tscale factor\tdx, MeV'
         self.log()
