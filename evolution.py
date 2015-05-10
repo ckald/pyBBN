@@ -53,7 +53,7 @@ class Universe(object):
         self.kawano_log = open(datafile, 'w')
         self.kawano_log.write("\t".join(kawano.heading))
         self.kawano = kawano
-        self.data['kawano'] = pandas.DataFrame(columns=self.kawano.heading)
+        self.kawano_data = pandas.DataFrame(columns=self.kawano.heading)
 
     def evolve(self):
         """
@@ -254,10 +254,9 @@ class Universe(object):
             row.update({self.kawano.heading[i]: rate / UNITS.MeV**5
                         for i, rate in enumerate(rates, 6)})
 
-            self.data['kawano'].append(row, ignore_index=True)
+            self.kawano_data.append(row, ignore_index=True)
 
-            log_entry = "\t".join("{:e}".format(item)
-                                  for item in self.data['kawano'].iloc[-1])
+            log_entry = "\t".join("{:e}".format(item) for item in self.kawano_data.iloc[-1])
 
             print "KAWANO", log_entry
             self.kawano_log.write(log_entry + "\n")
