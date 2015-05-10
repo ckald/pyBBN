@@ -4,13 +4,13 @@ import itertools
 import numpy
 import pandas
 from collections import namedtuple
-from common import GRID, CONST, UNITS
+from common import GRID, CONST
 from common.integrators import integrate_1D
 from library import SM
 
 
-# q = (SM.particles.hadrons.neutron['mass'] - SM.particles.hadrons.proton['mass'])
-q = 1.2933 * UNITS.MeV
+q = (SM.particles.hadrons.neutron['mass'] - SM.particles.hadrons.proton['mass'])
+# q = 1.2933 * UNITS.MeV
 m_e = SM.particles.leptons.electron['mass']
 
 a = None
