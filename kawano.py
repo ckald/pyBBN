@@ -120,6 +120,7 @@ def plot_kawano(data, label=None):
     import matplotlib.pyplot as plt
 
     if not parameters_plots:
+        plt.figure("KAWANO parameters")
         figure, plots = plt.subplots(3, 2, num=1)
         plots = list(itertools.chain(*plots))
         figure.subplots_adjust(hspace=0.5, wspace=0.5)
@@ -154,6 +155,7 @@ def plot_kawano(data, label=None):
         plots[5].set_ylabel("rate")
 
     if not rates_plots:
+        plt.figure("KAWANO rates")
         figure, plots = plt.subplots(3, 2, num=1)
         plots = list(itertools.chain(*plots))
         figure.subplots_adjust(hspace=0.5, wspace=0.5)

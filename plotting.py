@@ -20,7 +20,7 @@ class Plotting(object):
         plt.rcParams['toolbar'] = 'None'
 
         self.params_figure, self.plots = plt.subplots(2, 2, num=1)
-        self.plots = [p for p in itertools.chain(*self.plots)]
+        self.plots = list(itertools.chain(*self.plots))
         self.params_figure.subplots_adjust(hspace=0.5, wspace=0.5)
 
         self.plot_map = ['T', 'a', 'aT', 'rho']
