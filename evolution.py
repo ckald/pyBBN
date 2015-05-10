@@ -256,7 +256,7 @@ class Universe(object):
             self.data['kawano'].append(row)
 
             log_entry = "\t".join("{:e}".format(item)
-                                  for item in self.data['kawano'][-1])
+                                  for item in self.data['kawano'].iloc[-1])
 
             print "KAWANO", log_entry
             self.kawano_log.write(log_entry + "\n")

@@ -84,7 +84,7 @@ class Plotting(object):
     def plot(self, data):
         """ Plot cosmological parameters and monitored particles distribution functions """
 
-        last_t = data['t'][-1] / UNITS.s
+        last_t = data['t'].iloc[-1] / UNITS.s
         self.times.append(last_t)
 
         for i, plot in enumerate(self.plots):
@@ -94,7 +94,7 @@ class Plotting(object):
             if last_t >= xmax:
                 plot.set_xlim(self.times[0], last_t * 1.1)
 
-            last_data = data[self.plot_map[i]][-1] / self.divider_map[i]
+            last_data = data[self.plot_map[i]].iloc[-1] / self.divider_map[i]
             self.plots_data[i].append(last_data)
 
             if last_data >= ymax:
@@ -163,8 +163,8 @@ class RadiationParticleMonitor(ParticleMonitor):
 
 class EquilibriumRadiationParticleMonitor(RadiationParticleMonitor):
     def comparison_distributions(self, data):
-        a = data['a'][-1]
-        aT = data['aT'][-1]
+        a = data['a'].iloc[-1]
+        aT = data['aT'].iloc[-1]
 
         rhoeq = self.particle.energy_density() / (
             7. * self.particle.dof * numpy.pi**2
@@ -189,7 +189,7 @@ class MassiveParticleMonitor(ParticleMonitor):
         self.plots[1].set_ylabel("(f-f_eq) y^2")
 
     def plot(self, data):
-        a = data['a'][-1]
+        a = data['a'].iloc[-1]
 
         from particles.NonEqParticle import energy_density, density
 
@@ -219,7 +219,7 @@ class EquilibrationMonitor(ParticleMonitor):
         self.plots[1].set_ylabel("numerator, MeV^-1")
 
     def plot(self, data):
-        a = data['a'][-1]
+        a = data['a'].iloc[-1]
 
         from particles.NonEqParticle import numerator
 
