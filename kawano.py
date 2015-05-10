@@ -120,8 +120,7 @@ def plot_kawano(data, label=None):
     import matplotlib.pyplot as plt
 
     if not parameters_plots:
-        plt.figure("KAWANO parameters")
-        figure, plots = plt.subplots(3, 2, num=1)
+        figure, plots = plt.subplots(3, 2, num="KAWANO parameters")
         plots = list(itertools.chain(*plots))
         figure.subplots_adjust(hspace=0.5, wspace=0.5)
 
@@ -155,8 +154,7 @@ def plot_kawano(data, label=None):
         plots[5].set_ylabel("rate")
 
     if not rates_plots:
-        plt.figure("KAWANO rates")
-        figure, plots = plt.subplots(3, 2, num=1)
+        figure, plots = plt.subplots(3, 2, num="KAWANO rates")
         plots = list(itertools.chain(*plots))
         figure.subplots_adjust(hspace=0.5, wspace=0.5)
 
@@ -171,17 +169,14 @@ def plot_kawano(data, label=None):
             plot.set_ylabel("Rate")
             plot.set_yscale("log")
 
-    plt.figure("KAWANO parameters")
     time_series = data[heading[0]]
     parameters_plots.plots[0].plot(time_series, data[heading[1]])
     parameters_plots.plots[1].plot(time_series, data[heading[2]])
     parameters_plots.plots[2].plot(time_series, data[heading[3]])
     parameters_plots.plots[3].plot(time_series, data[heading[4]])
     parameters_plots.plots[4].plot(time_series, data[heading[5]])
+
     rates = data.ix[:, 5:11]
     for i, rate in enumerate(rates, 6):
         parameters_plots.plots[5].plot(time_series, rates[rate])
-
-    plt.figure("KAWANO rates")
-    for i, rate in enumerate(rates, 6):
         rates_plots.plots[i-6].plot(time_series, rates[rate], label=label)
