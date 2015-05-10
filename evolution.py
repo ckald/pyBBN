@@ -224,8 +224,7 @@ class Universe(object):
 
     def save(self):
         """ Save current Universe parameters into the data arrays or output files """
-        print self.data
-        self.data.append({
+        self.data = self.data.append({
             'aT': self.params.aT,
             'T': self.params.T,
             'a': self.params.a,
@@ -254,8 +253,7 @@ class Universe(object):
             row.update({self.kawano.heading[i]: rate / UNITS.MeV**5
                         for i, rate in enumerate(rates, 6)})
 
-            self.kawano_data.append(row, ignore_index=True)
-
+            self.kawano_data = self.kawano_data.append(row, ignore_index=True)
             log_entry = "\t".join("{:e}".format(item) for item in self.kawano_data.iloc[-1])
 
             print "KAWANO", log_entry
