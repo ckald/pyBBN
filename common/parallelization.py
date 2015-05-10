@@ -9,7 +9,7 @@ def target(args, **kw):
     result = getattr(obj, method_name)(*args, **kw)
     return result
 
-worker_count = multiprocessing.cpu_count() * 2 / 3
+worker_count = multiprocessing.cpu_count() / 2
 pool = Pool(processes=worker_count)
 
 
