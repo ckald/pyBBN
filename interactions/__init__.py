@@ -96,10 +96,10 @@ class Interaction(PicklableObject):
                 IntegralItem(side=1,
                              specie=particle,
                              antiparticle=antiparticle,
-                             index=i+len(particles[0]),
+                             index=i,
                              crossed=False)
                 for i, (particle, antiparticle)
-                in enumerate(zip(particles[1], antiparticles[1]))
+                in enumerate(zip(particles[1], antiparticles[1]), len(particles[0]))
             ]
         )
 
