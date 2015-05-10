@@ -108,11 +108,10 @@ heading = ("t[s]", "x",
 def import_data(filepath):
     with open(filepath) as f:
         f.readline()
-        data = pandas.DataFrame(columns=heading)
-        data.append(
+        data = pandas.DataFrame(
             {heading[i]: float(value) for i, value in enumerate(line.strip("\n").split("\t"))}
-            for line in f
-        )
+            for line in f,
+            columns=heading)
     return data
 
 
