@@ -107,7 +107,14 @@ heading = ("t[s]", "x",
 
 def import_data(filepath):
     with open(filepath) as f:
-        f.readline()
+        line = f.readline()
+        try:
+            line = line.split()
+            if int(line[0]):
+                f.readline()
+        except:
+            pass
+
         data = pandas.DataFrame(
             ({heading[i]: float(value) for i, value in enumerate(line.strip("\n").split("\t"))}
              for line in f), columns=heading)
