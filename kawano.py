@@ -171,13 +171,17 @@ def plot_kawano(data, label=None):
             plot.set_ylabel("Rate")
             plot.set_yscale("log")
 
+    plt.figure("KAWANO parameters")
     time_series = data[heading[0]]
     parameters_plots.plots[0].plot(time_series, data[heading[1]])
     parameters_plots.plots[1].plot(time_series, data[heading[2]])
     parameters_plots.plots[2].plot(time_series, data[heading[3]])
     parameters_plots.plots[3].plot(time_series, data[heading[4]])
     parameters_plots.plots[4].plot(time_series, data[heading[5]])
-    rates = data.ix[:, 5: 11]
+    rates = data.ix[:, 5:11]
     for i, rate in enumerate(rates, 6):
         parameters_plots.plots[5].plot(time_series, rates[rate])
+
+    plt.figure("KAWANO rates")
+    for i, rate in enumerate(rates, 6):
         rates_plots.plots[i-6].plot(time_series, rates[rate], label=label)
