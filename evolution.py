@@ -116,7 +116,7 @@ class Universe(object):
         self.log()
 
         order = min(self.step + 1, 5)
-        fs = self.data['fraction'].tail(order-1)
+        fs = self.data['fraction'].tail(order-1).values.tolist()
         fs.append(self.fraction)
 
         self.params.aT +=\
