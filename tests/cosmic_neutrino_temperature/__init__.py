@@ -16,14 +16,18 @@ plasma. This leads to increasing of the entropy and plasma temperature approxima
 
 """
 
+import os
 from particles import Particle
 from evolution import Universe
 from common import Params, UNITS
 from library.SM import particles as SMP
 
+
+folder = os.path.split(__file__)[0]
+
 params = Params(T_initial=10 * UNITS.MeV,
-                T_final=0.05 * UNITS.MeV,
-                dx=1e-2 * UNITS.MeV)
+                T_final=0.0008 * UNITS.MeV,
+                dy=0.0125)
 
 Particles = []
 photon = Particle(**SMP.photon)
@@ -48,8 +52,13 @@ Particles += [
     tau
 ]
 
-universe = Universe(params=params, logfile='tests/cosmic_neutrino_temperature/log.txt')
+universe = Universe(params=params, logfile=os.path.join(folder, 'log.txt'))
 universe.add_particles(Particles)
+
+universe.init_kawano(datafile=os.path.join(folder, 's4.dat'),
+                     electron=electron, neutrino=neutrino_e)
+
+
 universe.evolve()
 
 print """
