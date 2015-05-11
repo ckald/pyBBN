@@ -75,8 +75,6 @@ class Universe(object):
         for interaction in self.interactions:
             print interaction
 
-        print "dx = {} MeV".format(self.params.dx / UNITS.MeV)
-
         self.step = 0
 
         self.params.update(self.total_energy_density())
@@ -99,7 +97,8 @@ class Universe(object):
 
         print "Data saved to file {}".format(self.logfile)
 
-        parallelization.pool.close()
+        if self.PARALLELIZE:
+            parallelization.pool.close()
 
         return self.data
 
@@ -151,19 +150,23 @@ class Universe(object):
 
     def calculate_collisions(self):
         """ ### 3. Calculate collision integrals """
-        for particle in self.particles:
-            if not particle.collision_integrals:
-                continue
 
-            with utils.printoptions(precision=2):
-                with utils.benchmark(lambda: "I(" + particle.symbol + ") = "
-                                     + repr(particle.collision_integral)):
-                    if self.PARALLELIZE:
-                        particle.collision_integral = numpy.array(parallelization.poolmap(
-                            particle, 'calculate_collision_integral',
-                            self.grid.TEMPLATE
-                        ))
-                    else:
+        with utils.printoptions(precision=2):
+            if self.PARALLELIZE:
+                for particle in self.particles:
+                    particle.collision_integral = parallelization.poolmap(
+                        particle, 'calculate_collision_integral',
+                        self.grid.TEMPLATE
+                    )
+                for particle in self.particles:
+                    with utils.benchmark(lambda: "I(" + particle.symbol + ") = "
+                                         + repr(particle.collision_integral)):
+                        particle.collision_integral = numpy.array(particle.collision_integral
+                                                                  .get(1000))
+            else:
+                for particle in self.particles:
+                    with utils.benchmark(lambda: "I(" + particle.symbol + ") = "
+                                         + repr(particle.collision_integral)):
                         particle.collision_integral = particle.integrate_collisions()
 
     def update_distributions(self):

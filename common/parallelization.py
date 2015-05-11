@@ -42,5 +42,5 @@ def poolmap(cls, func_name, arguments):
     arguments = [(cls, func_name, arg) for arg in arguments]
     func = target
 
-    result = pool.map_async(func, arguments).get(10000)
+    result = pool.map_async(func, arguments, chunksize=5)
     return result
