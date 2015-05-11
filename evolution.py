@@ -151,20 +151,24 @@ class Universe(object):
     def calculate_collisions(self):
         """ ### 3. Calculate collision integrals """
 
+        particles = [particle for particle in self.particles if particle.collision_integrals]
+
         with utils.printoptions(precision=2):
             if self.PARALLELIZE:
-                for particle in self.particles:
+                # Send the tasks
+                for particle in particles:
                     particle.collision_integral = parallelization.poolmap(
                         particle, 'calculate_collision_integral',
                         self.grid.TEMPLATE
                     )
-                for particle in self.particles:
+                # Collect results
+                for particle in particles:
                     with utils.benchmark(lambda: "I(" + particle.symbol + ") = "
                                          + repr(particle.collision_integral)):
                         particle.collision_integral = numpy.array(particle.collision_integral
                                                                   .get(1000))
             else:
-                for particle in self.particles:
+                for particle in particles:
                     with utils.benchmark(lambda: "I(" + particle.symbol + ") = "
                                          + repr(particle.collision_integral)):
                         particle.collision_integral = particle.integrate_collisions()
