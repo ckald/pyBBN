@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import os
 import sys
 import numpy
 import pandas
@@ -29,13 +30,12 @@ class Universe(object):
 
     data = pandas.DataFrame(columns=('aT', 'T', 'a', 'x', 't', 'rho', 'fraction'))
 
-    def __init__(self, logfile='logs/' + str(datetime.now()) + '.txt',
-                 plotting=True, params=None, grid=None):
+    def __init__(self, folder='logs', plotting=True, params=None, grid=None):
         """
         :param particles: Set of `particle.Particle` to model
         :param interactions: Set of `interaction.Interaction` - quantum interactions \
                              between particle species
-        :param logfile: Log file path (current `datetime` by default)
+        :param folder: Log file path (current `datetime` by default)
         """
         self.params = Params() if not params else params
         self.grid = Grid() if not grid else grid
@@ -45,14 +45,13 @@ class Universe(object):
             from plotting import Plotting
             self.graphics = Plotting()
 
-        self.logfile = logfile
-        self.init_log()
+        self.init_log(folder=folder)
 
         self.fraction = 0
 
     def init_kawano(self, datafile='s4.dat', **kwargs):
         kawano.init_kawano(**kwargs)
-        self.kawano_log = open(datafile, 'w')
+        self.kawano_log = open(os.path.join(self.folder, datafile), 'w')
         self.kawano_log.write("\t".join(kawano.heading) + "\n")
         self.kawano = kawano
         self.kawano_data = pandas.DataFrame(columns=self.kawano.heading)
@@ -99,7 +98,7 @@ class Universe(object):
         print "Data saved to file {}".format(self.logfile)
 
         if self.kawano:
-            self.kawano.plot(self.kawano_data, save=self.logfile)
+            self.kawano.plot(self.kawano_data, save=self.kawano_log.name)
 
         if self.PARALLELIZE:
             parallelization.pool.close()
@@ -261,7 +260,9 @@ class Universe(object):
             print "KAWANO", log_entry
             self.kawano_log.write(log_entry + "\n")
 
-    def init_log(self):
+    def init_log(self, folder=''):
+        self.folder = folder
+        self.logfile = os.path.join(self.folder, 'log.txt')
         sys.stdout = utils.Logger(self.logfile)
 
     def log(self):

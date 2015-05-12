@@ -31,7 +31,7 @@ folder = os.path.split(__file__)[0]
 params = Params(T_initial=10. * UNITS.MeV,
                 T_final=0.0008 * UNITS.MeV)
 
-universe = Universe(params=params, logfile=os.path.join(folder, 'log.txt'))
+universe = Universe(params=params, folder=folder)
 
 photon = Particle(**SMP.photon)
 electron = Particle(**SMP.leptons.electron)
@@ -61,8 +61,7 @@ universe.interactions += (
                               neutrinos=[neutrino_e, neutrino_mu, neutrino_tau])
 )
 
-universe.init_kawano(datafile=os.path.join(folder, 's4.dat'),
-                     electron=electron, neutrino=neutrino_e)
+universe.init_kawano(electron=electron, neutrino=neutrino_e)
 
 universe.graphics.monitor([
     (neutrino_e, RadiationParticleMonitor),
