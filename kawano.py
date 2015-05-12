@@ -177,17 +177,20 @@ def plot(data, label=None, show=True, save=None):
             plot.set_yscale("log")
 
     time_series = data[heading[0]]
-    parameters_plots.plots[0].plot(time_series, data[heading[1]])
-    parameters_plots.plots[1].plot(time_series, data[heading[2]])
-    parameters_plots.plots[2].plot(time_series, data[heading[3]])
-    parameters_plots.plots[3].plot(time_series, data[heading[4]])
-    parameters_plots.plots[4].plot(time_series, data[heading[5]])
+
+    def bias(x):
+        return x if abs(x) > 1e-20 else 0.
+
+    parameters_plots.plots[0].plot(time_series, data[heading[1]].apply(bias))
+    parameters_plots.plots[1].plot(time_series, data[heading[2]].apply(bias))
+    parameters_plots.plots[2].plot(time_series, data[heading[3]].apply(bias))
+    parameters_plots.plots[3].plot(time_series, data[heading[4]].apply(bias))
+    parameters_plots.plots[4].plot(time_series, data[heading[5]].apply(bias))
 
     rates = data.ix[:, 6:12]
     for i, rate in enumerate(rates):
         parameters_plots.plots[5].plot(time_series, rates[rate])
         rates_plots.plots[i].plot(time_series, rates[rate], label=label)
-        rates_plots.plots[i].set_ylim(ymin=1e-20)
 
     if show:
         plt.ion()
