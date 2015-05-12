@@ -3,7 +3,6 @@ import time
 import codecs
 import contextlib
 import numpy
-from functools import wraps
 from collections import deque
 
 
@@ -90,51 +89,6 @@ class benchmark(object):
         print("{:s} : {:0.3f} seconds"
               .format(self.name if not callable(self.name) else self.name(), end-self.start))
         return False
-
-
-def echo(func):
-    """ Print the return value of the function """
-    @wraps(func)
-    def wrapper(*args, **kw):
-        val = func(*args, **kw)
-        print val
-        return val
-    return wrapper
-
-
-class memoize(dict):
-    def __init__(self, func):
-        self.func = func
-
-    def __call__(self, *args):
-        return self[args]
-
-    def __missing__(self, key):
-        result = self[key] = self.func(*key)
-        return result
-
-
-def memodict(f):
-    """ Memoization decorator for a function taking a single argument """
-    class memodict(dict):
-        def __missing__(self, key):
-            ret = self[key] = f(key)
-            return ret
-    return memodict().__getitem__
-
-
-class MemoizeMutable:
-    """ Multiple arguments implementation of the memoization decorator """
-    def __init__(self, fn):
-        self.fn = fn
-        self.memo = {}
-
-    def __call__(self, *args):
-        pickle = tuple(args)
-        if pickle not in self.memo:
-            self.memo[pickle] = self.fn(*args)
-
-        return self.memo[pickle]
 
 
 @contextlib.contextmanager
