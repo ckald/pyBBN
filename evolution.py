@@ -53,7 +53,7 @@ class Universe(object):
     def init_kawano(self, datafile='s4.dat', **kwargs):
         kawano.init_kawano(**kwargs)
         self.kawano_log = open(datafile, 'w')
-        self.kawano_log.write("\t".join(kawano.heading))
+        self.kawano_log.write("\t".join(kawano.heading) + "\n")
         self.kawano = kawano
         self.kawano_data = pandas.DataFrame(columns=self.kawano.heading)
 
@@ -78,15 +78,16 @@ class Universe(object):
         self.step = 0
 
         self.params.update(self.total_energy_density())
-        self.save()
+        self.save_params()
 
-        print '#step\tTime, s\taT, MeV\tT, MeV\tscale factor\tdx, MeV'
-        self.log()
         self.step += 1
 
         while self.params.T > self.params.T_final:
             try:
+                self.log()
                 self.make_step()
+                self.save()
+                self.step += 1
             except KeyboardInterrupt:
                 print "Keyboard interrupt!"
                 break
@@ -109,8 +110,6 @@ class Universe(object):
         self.params.dx = self.params.x * (numpy.exp(self.params.dy) - 1.)
         self.integrand(self.params.x, self.params.aT)
 
-        self.log()
-
         order = min(self.step + 1, 5)
         fs = self.data['fraction'].tail(order-1).values.tolist()
         fs.append(self.fraction)
@@ -120,10 +119,6 @@ class Universe(object):
         self.params.x += self.params.dx
 
         self.params.update(self.total_energy_density())
-
-        self.save()
-
-        self.step += 1
 
     def add_particles(self, particles):
         for particle in particles:
@@ -226,8 +221,7 @@ class Universe(object):
 
         return self.fraction
 
-    def save(self):
-        """ Save current Universe parameters into the data arrays or output files """
+    def save_params(self):
         self.data = self.data.append({
             'aT': self.params.aT,
             'T': self.params.T,
@@ -237,6 +231,10 @@ class Universe(object):
             't': self.params.t,
             'fraction': self.fraction
         }, ignore_index=True)
+
+    def save(self):
+        """ Save current Universe parameters into the data arrays or output files """
+        self.save_params()
 
         if self.kawano:
 
@@ -271,12 +269,13 @@ class Universe(object):
 
         # Print parameters every now and then
         if self.step % self.log_freq == 0:
-            print '#' + str(self.step), \
-                '\tt =', self.params.t / UNITS.s, \
-                '\taT =', self.params.aT / UNITS.MeV, \
-                '\tT =', self.params.T / UNITS.MeV, \
-                '\ta =', self.params.a, \
-                '\tdx =', self.params.dx / UNITS.MeV
+            print ('#{step}\tt = {t:e}\taT = {aT:e}\tT = {T:e}\ta = {a:e}\tdx = {dx:e}'
+                   .format(step=self.step,
+                           t=self.params.t / UNITS.s,
+                           aT=self.params.aT / UNITS.MeV,
+                           T=self.params.T / UNITS.MeV,
+                           a=self.params.a,
+                           dx=self.params.dx / UNITS.MeV))
 
             if self.graphics:
                 self.graphics.plot(self.data)
