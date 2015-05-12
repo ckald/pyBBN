@@ -7,14 +7,16 @@ import numpy
 import matplotlib.pyplot as plt
 
 from common import UNITS, GRID
-from common.utils import ring_deque
+from common.utils import ring_deque, getboolenv
 
 
 class Plotting(object):
     particles = None
 
-    def __init__(self):
+    def __init__(self, show=True):
         """ Initialize plots, setup basic styling """
+
+        self.show_plots = getboolenv("SHOW_PLOTS", show)
 
         plt.style.use('ggplot')
         plt.rcParams['toolbar'] = 'None'
@@ -54,18 +56,17 @@ class Plotting(object):
             self.lines.append(plot.plot([], [], 'b-')[0])
             self.plots_data.append(ring_deque([], 1000))
 
-        self.params_figure.show()
+        if self.show_plots:
+            self.params_figure.show()
 
     def save(self, filename):
         """ Save cosmological and monitored particles plots to the file in the same folder as \
             `filename` """
 
         folder = os.path.split(filename)[0]
-        plt.figure(1)
-        plt.savefig(os.path.join(folder, 'plots.svg'))
+        self.params_figure.savefig(os.path.join(folder, 'plots.svg'))
         if self.particles:
-            plt.figure(2)
-            plt.savefig(os.path.join(folder, 'particles.svg'))
+            self.particles_figure.savefig(os.path.join(folder, 'particles.svg'))
 
     def monitor(self, map):
         """ Setup the detailed distribution function and energy density plots for specific \
@@ -79,7 +80,8 @@ class Plotting(object):
         for i, (particle, monitor) in enumerate(map):
             self.particles.append((particle, monitor(particle, self.particles_plots[i])))
 
-        self.particles_figure.show()
+        if self.show_plots:
+            self.particles_figure.show()
 
     def plot(self, data):
         """ Plot cosmological parameters and monitored particles distribution functions """

@@ -1,3 +1,4 @@
+import os
 import sys
 import time
 import codecs
@@ -97,3 +98,12 @@ def printoptions(*args, **kwargs):
     numpy.set_printoptions(*args, **kwargs)
     yield
     numpy.set_printoptions(**original)
+
+
+def getenv(var, default=None):
+    return os.getenv(var, default)
+
+
+def getboolenv(var, default=None):
+    value = getenv(var, default)
+    return (value != 'false' and value != 'f' and value != '0' and value != '-1')

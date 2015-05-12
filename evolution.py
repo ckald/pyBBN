@@ -4,7 +4,6 @@ import os
 import sys
 import numpy
 import pandas
-from datetime import datetime
 
 from common import UNITS, Params, Grid, CONST, integrators, parallelization, utils
 
@@ -18,9 +17,6 @@ class Universe(object):
 
     # System state is rendered to the log file each `log_freq` steps
     log_freq = 1
-
-    # Controls parallelization of the collision integrals calculations
-    PARALLELIZE = True
 
     particles = []
     interactions = []
@@ -41,11 +37,14 @@ class Universe(object):
         self.grid = Grid() if not grid else grid
 
         self.graphics = None
-        if plotting:
+        if utils.getboolenv("PLOT", plotting):
             from plotting import Plotting
             self.graphics = Plotting()
 
         self.init_log(folder=folder)
+
+        # Controls parallelization of the collision integrals calculations
+        self.PARALLELIZE = utils.getenv("PARALLELIZE", True)
 
         self.fraction = 0
 
@@ -97,7 +96,7 @@ class Universe(object):
 
         print "Data saved to file {}".format(self.logfile)
 
-        if self.kawano:
+        if self.kawano and self.graphics:
             self.kawano.plot(self.kawano_data, save=self.kawano_log.name)
 
         if self.PARALLELIZE:

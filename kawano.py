@@ -4,7 +4,7 @@ import itertools
 import numpy
 import pandas
 from collections import namedtuple
-from common import GRID, CONST
+from common import GRID, CONST, utils
 from common.integrators import integrate_1D
 from library import SM
 
@@ -119,7 +119,7 @@ def import_data(filepath):
     return data
 
 
-def plot(data, label=None, show=True, save=None):
+def plot(data, label=None, save=None):
     global parameters_plots, rates_plots
 
     import matplotlib.pyplot as plt
@@ -192,10 +192,9 @@ def plot(data, label=None, show=True, save=None):
         parameters_plots.plots[5].plot(time_series, rates[rate])
         rates_plots.plots[i].plot(time_series, rates[rate], label=label)
 
-    if show:
+    if utils.getboolenv("SHOW_PLOTS", True):
         plt.ion()
         plt.show()
 
-    if save:
-        parameters_plots.figure.savefig(save + "_params.svg")
-        rates_plots.figure.savefig(save + "_rates.svg")
+    parameters_plots.figure.savefig(save + "_params.svg")
+    rates_plots.figure.savefig(save + "_rates.svg")
