@@ -16,8 +16,10 @@ def density(particle):
             n = \frac{g}{\pi^2} (aT)^3 \zeta(3)
         \end{equation}
     """
+    from particles import STATISTICS
+
     density = particle.T**3 * particle.dof / numpy.pi**2 * 1.2
-    if particle.eta == 1:
+    if particle.statistics == STATISTICS.FERMION:
         # Multiplied by $\frac34$ for fermions
         density *= 3./4.
     return density
@@ -30,8 +32,10 @@ def energy_density(particle):
             \rho = \frac{\pi^2}{30} g T^4
         \end{equation}
     """
+    from particles import STATISTICS
+
     density = particle.dof * numpy.pi**2 / 30. * particle.T**4
-    if particle.eta == 1:
+    if particle.statistics == STATISTICS.FERMION:
         # Multiplied by $\frac78$ for fermions
         density *= 7./8.
     return density
