@@ -119,7 +119,7 @@ def import_data(filepath):
     return data
 
 
-def plot_kawano(data, label=None):
+def plot(data, label=None, show=True, save=None):
     global parameters_plots, rates_plots
 
     import matplotlib.pyplot as plt
@@ -187,3 +187,12 @@ def plot_kawano(data, label=None):
     for i, rate in enumerate(rates):
         parameters_plots.plots[5].plot(time_series, rates[rate])
         rates_plots.plots[i].plot(time_series, rates[rate], label=label)
+        rates_plots.plots[i].set_ylim(ymin=1e-20)
+
+    if show:
+        plt.ion()
+        plt.show()
+
+    if save:
+        parameters_plots.figure.savefig(save + "_params.svg")
+        rates_plots.figure.savefig(save + "_rates.svg")
