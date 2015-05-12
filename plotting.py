@@ -106,15 +106,13 @@ class Plotting(object):
 
             self.lines[i].set_data(self.times, self.plots_data[i])
 
-        plt.figure(1)
-        plt.draw()
+        self.params_figure.canvas.draw()
 
         if self.particles:
             for i, (_, monitor) in enumerate(self.particles):
                 monitor.plot(data)
 
-            plt.figure(2)
-            plt.draw()
+            self.particles_figure.canvas.draw()
 
 
 class ParticleMonitor(object):
