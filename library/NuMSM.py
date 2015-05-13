@@ -78,9 +78,9 @@ class interactions(object):
 
         # Neutrinos scatterings
         for neutrino_a, neutrino_b in itertools.combinations_with_replacement(neutrinos, 2):
-            if thetas[neutrino_b.flavour]:
+            if thetas[neutrino_a.flavour]:
                 inters.append(cls.sterile_active_scattering(
-                    theta=thetas[neutrino_b.flavour],
+                    theta=thetas[neutrino_a.flavour],
                     sterile=sterile,
                     active_a=neutrino_a,
                     active_b=neutrino_b
