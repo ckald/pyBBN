@@ -29,7 +29,8 @@ from common import UNITS, Params, GRID
 folder = os.path.split(__file__)[0]
 
 params = Params(T_initial=10. * UNITS.MeV,
-                T_final=0.0008 * UNITS.MeV)
+                T_final=0.0008 * UNITS.MeV,
+		dy=0.0125)
 
 universe = Universe(params=params, folder=folder)
 
