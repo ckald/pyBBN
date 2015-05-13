@@ -29,10 +29,9 @@ from common import UNITS, Params, GRID
 folder = os.path.split(__file__)[0]
 
 params = Params(T_initial=100. * UNITS.MeV,
-                T_final=1. * UNITS.MeV,
-                dy=0.05)
+                T_final=0.0008 * UNITS.MeV)
 
-universe = Universe(params=params, logfile=os.path.join(folder, 'log.txt'))
+universe = Universe(params=params, folder=folder)
 
 photon = Particle(**SMP.photon)
 electron = Particle(**SMP.leptons.electron)
@@ -68,6 +67,8 @@ universe.interactions += (
         leptons=[electron, muon]
     )
 )
+
+universe.init_kawano(electron=electron, neutrino=neutrino_e)
 
 universe.graphics.monitor([
     (neutrino_e, RadiationParticleMonitor),
