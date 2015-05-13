@@ -96,8 +96,11 @@ class Universe(object):
 
         print "Data saved to file {}".format(self.logfile)
 
-        if self.kawano and self.graphics:
-            self.kawano.plot(self.kawano_data, save=self.kawano_log.name)
+        if self.graphics:
+            self.graphics.save(self.logfile)
+
+            if self.kawano:
+                self.kawano.plot(self.kawano_data, save=self.kawano_log.name)
 
         if self.PARALLELIZE:
             parallelization.pool.close()

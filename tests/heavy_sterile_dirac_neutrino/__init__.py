@@ -79,8 +79,6 @@ universe.graphics.monitor([
 
 universe.evolve()
 
-universe.graphics.save(__file__)
-
 
 """ ## Plots for comparison with articles"""
 

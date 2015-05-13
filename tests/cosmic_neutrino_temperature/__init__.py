@@ -64,6 +64,3 @@ print """
     Relative error is {:.3f} %
     """.format(universe.params.aT / UNITS.MeV,
                (universe.params.aT / UNITS.MeV - 1.401) / 1.401 * 100)
-
-if universe.graphics:
-    universe.graphics.save(__file__)
