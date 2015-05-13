@@ -77,7 +77,7 @@ class interactions(object):
         inters = []
 
         # Neutrinos scatterings
-        for neutrino_a, neutrino_b in itertools.product(neutrinos, 2):
+        for neutrino_a, neutrino_b in itertools.product(neutrinos, neutrinos):
             if thetas[neutrino_a.flavour]:
                 inters.append(cls.sterile_active_scattering(
                     theta=thetas[neutrino_a.flavour],
