@@ -137,9 +137,3 @@ plt.show()
 plt.savefig(os.path.join(folder, 'figure_10.svg'))
 
 distributions_file.close()
-
-# Just to be sure everything is okay
-import ipdb
-ipdb.set_trace()
-
-raw_input("...")
