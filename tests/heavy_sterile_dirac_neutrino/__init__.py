@@ -42,6 +42,9 @@ neutrino_tau = Particle(**SMP.leptons.neutrino_tau)
 sterile = Particle(**NuP.sterile_neutrino(33.9 * UNITS.MeV))
 
 sterile.decoupling_temperature = params.T_initial
+neutrino_e.decoupling_temperature = 10 * UNITS.MeV
+neutrino_mu.decoupling_temperature = 10 * UNITS.MeV
+neutrino_tau.decoupling_temperature = 10 * UNITS.MeV
 
 universe.add_particles([
     photon,
@@ -54,7 +57,7 @@ universe.add_particles([
 ])
 
 thetas = defaultdict(float, {
-    'tau': 7.6 * 1e-3,
+    'tau': 1. * 1e-3,
 })
 
 universe.interactions += (
@@ -118,8 +121,8 @@ plt.xlim(0, 20)
 distributions_file = open(os.path.join(folder, 'distributions.txt'), "w")
 
 for neutrino in [neutrino_e, neutrino_mu, neutrino_tau, sterile]:
-    f = neutrino_e._distribution
-    feq = neutrino_e.equilibrium_distribution()
+    f = neutrino._distribution
+    feq = neutrino.equilibrium_distribution()
     plt.plot(GRID.TEMPLATE/UNITS.MeV, f/feq, label=neutrino.name)
 
     numpy.savetxt(distributions_file, (f, feq, f/feq), header=str(neutrino),
