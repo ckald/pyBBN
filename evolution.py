@@ -4,6 +4,8 @@ import os
 import sys
 import numpy
 import pandas
+import time
+from datetime import timedelta
 
 from common import UNITS, Params, Grid, CONST, integrators, parallelization, utils
 
@@ -17,6 +19,7 @@ class Universe(object):
 
     # System state is rendered to the log file each `log_freq` steps
     log_freq = 1
+    clock_start = None
 
     particles = []
     interactions = []
@@ -33,6 +36,9 @@ class Universe(object):
                              between particle species
         :param folder: Log file path (current `datetime` by default)
         """
+
+        self.clock_start = time.time()
+
         self.params = Params() if not params else params
         self.grid = Grid() if not grid else grid
 
@@ -272,8 +278,9 @@ class Universe(object):
 
         # Print parameters every now and then
         if self.step % self.log_freq == 0:
-            print ('#{step}\tt = {t:e}\taT = {aT:e}\tT = {T:e}\ta = {a:e}\tdx = {dx:e}'
-                   .format(step=self.step,
+            print ('[{clock}] #{step}\tt = {t:e}\taT = {aT:e}\tT = {T:e}\ta = {a:e}'
+                   .format(clock=str(timedelta(seconds=int(time.time() - self.clock_start))),
+                           step=self.step,
                            t=self.params.t / UNITS.s,
                            aT=self.params.aT / UNITS.MeV,
                            T=self.params.T / UNITS.MeV,
