@@ -18,6 +18,7 @@ class Plotting(object):
 
         self.show_plots = getboolenv("SHOW_PLOTS", show)
 
+        plt.ion()
         plt.style.use('ggplot')
         plt.rcParams['toolbar'] = 'None'
 
