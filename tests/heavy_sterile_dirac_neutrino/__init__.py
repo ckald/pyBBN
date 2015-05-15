@@ -29,7 +29,8 @@ from common import UNITS, Params, GRID
 folder = os.path.split(__file__)[0]
 
 params = Params(T_initial=100. * UNITS.MeV,
-                T_final=0.0008 * UNITS.MeV)
+                T_final=0.0008 * UNITS.MeV,
+		dy=0.05)
 
 universe = Universe(params=params, folder=folder)
 
@@ -57,7 +58,7 @@ universe.add_particles([
 ])
 
 thetas = defaultdict(float, {
-    'tau': 1. * 1e-3,
+    'tau': numpy.sqrt(1e-3),
 })
 
 universe.interactions += (
