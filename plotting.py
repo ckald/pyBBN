@@ -18,10 +18,6 @@ class Plotting(object):
 
         self.show_plots = getboolenv("SHOW_PLOTS", show)
 
-        plt.ion()
-        plt.style.use('ggplot')
-        plt.rcParams['toolbar'] = 'None'
-
         self.params_figure, self.plots = plt.subplots(2, 2, num=1)
         self.plots = list(itertools.chain(*self.plots))
         self.params_figure.subplots_adjust(hspace=0.5, wspace=0.5)
