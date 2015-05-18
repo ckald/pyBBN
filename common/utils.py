@@ -107,3 +107,17 @@ def getenv(var, default=None):
 def getboolenv(var, default=None):
     value = getenv(var, default)
     return (value != 'false' and value != 'f' and value != '0' and value != '-1')
+
+
+def ensure_path(*chunks):
+    path = os.path.join(*chunks)
+    dir = os.path.dirname(path)
+    ensure_dir(dir)
+    return path
+
+
+def ensure_dir(*chunks):
+    dir = os.path.join(*chunks)
+    if not os.path.exists(dir):
+        os.makedirs(dir)
+    return dir

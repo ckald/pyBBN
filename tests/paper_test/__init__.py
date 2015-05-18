@@ -13,6 +13,7 @@ http://arxiv.org/pdf/hep-ph/0002223v2.pdf
 
 """
 
+import argparse
 import os
 import numpy
 import matplotlib
@@ -23,14 +24,24 @@ from particles import Particle
 from library.SM import particles as SMP, interactions as SMI
 from library.NuMSM import particles as NuP, interactions as NuI
 from evolution import Universe
-from common import UNITS, Params, GRID
+from common import UNITS, Params, GRID, utils
 
 
-folder = os.path.split(__file__)[0]
+parser = argparse.ArgumentParser(description='Run simulation for given mass and mixing angle')
+parser.add_argument('--mass', required=True)
+parser.add_argument('--theta', required=True)
+args = parser.parse_args()
+
+mass = args.mass
+theta = args.theta
+
+folder = utils.ensure_dir(os.path.split(__file__)[0],
+                          "mass={:e}_theta={:e}".format(mass / UNITS.MeV, theta))
+
 
 params = Params(T_initial=100. * UNITS.MeV,
                 T_final=0.0008 * UNITS.MeV,
-                dy=0.05)
+                dy=0.025)
 
 universe = Universe(params=params, folder=folder)
 
@@ -40,7 +51,7 @@ muon = Particle(**SMP.leptons.muon)
 neutrino_e = Particle(**SMP.leptons.neutrino_e)
 neutrino_mu = Particle(**SMP.leptons.neutrino_mu)
 neutrino_tau = Particle(**SMP.leptons.neutrino_tau)
-sterile = Particle(**NuP.sterile_neutrino(33.9 * UNITS.MeV))
+sterile = Particle(**NuP.sterile_neutrino(mass))
 
 sterile.decoupling_temperature = params.T_initial
 neutrino_e.decoupling_temperature = 10 * UNITS.MeV
@@ -58,7 +69,7 @@ universe.add_particles([
 ])
 
 thetas = defaultdict(float, {
-    'tau': numpy.sqrt(1e-3),
+    'electron': theta,
 })
 
 universe.interactions += (

@@ -1,0 +1,11 @@
+python tests/paper_test/__init__.py --mass 20 --theta 0.0556863
+python tests/paper_test/__init__.py --mass 20 --theta 0.0393762
+
+python tests/paper_test/__init__.py --mass 50 --theta 0.0177946
+python tests/paper_test/__init__.py --mass 50 --theta 0.0125827
+
+python tests/paper_test/__init__.py --mass 100 --theta 0.00444776
+python tests/paper_test/__init__.py --mass 100 --theta 0.00314504
+
+python tests/paper_test/__init__.py --mass 120 --theta 0.00238271
+python tests/paper_test/__init__.py --mass 120 --theta 0.00281926
