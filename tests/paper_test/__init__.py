@@ -32,7 +32,7 @@ parser.add_argument('--mass', required=True)
 parser.add_argument('--theta', required=True)
 args = parser.parse_args()
 
-mass = float(args.mass)
+mass = float(args.mass) * UNITS.MeV
 theta = float(args.theta)
 
 folder = utils.ensure_dir(os.path.split(__file__)[0],
