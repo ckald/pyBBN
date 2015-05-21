@@ -8,11 +8,16 @@ all: clean python kawano test
 python:
 	f2py -c -m interpolation interpolation.f90 --f90flags="$(FLAGS)"
 
-original:
-	gfortran nuc123.f $(FLAGS) -o kawano1992
+kawano: original fixed noneq
 
-kawano:
-	gfortran kawano_steriles.f newint.f nuccom.f nucrat.f interpolation.f90 $(FLAGS) -o kawano
+original:
+	gfortran nuc123.f $(FLAGS) -o kawano_original
+
+fixed:
+	gfortran nuc123_fixed.f $(FLAGS) -o kawano
+
+noneq:
+	gfortran kawano_steriles.f newint.f nuccom.f nucrat.f interpolation.f90 $(FLAGS) -o kawano_noneq
 
 clean:
 	rm -f *.o *.so *.mod kawano
