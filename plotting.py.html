@@ -20,7 +20,7 @@
     <a class="btn" class="source source-1" href="#top">Back to top</a>
     <div class="generation-time">
         Generated at
-        <code>2015-04-23 19:30</code>
+        <code>2015-05-21 17:24</code>
         by a diligent
         <a target="_blank" href="http://ckald.github.io/pyccoon/" title="Pyccoon: side-to-side documentation generator">
             <img id="pyccoon-icon" src="./pyccoon_icon.svg" alt="Pyccoon: side-to-side documentation generator" />pyccoon</a>
@@ -50,11 +50,9 @@
 
 <span class="kn">import</span> <span class="nn">numpy</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
-<span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">cm</span>
-<span class="kn">from</span> <span class="nn">mpl_toolkits.mplot3d</span> <span class="kn">import</span> <span class="n">Axes3D</span>
 
 <span class="kn">from</span> <span class="nn">common</span> <span class="kn">import</span> <span class="n">UNITS</span><span class="p">,</span> <span class="n">GRID</span>
-<span class="kn">from</span> <span class="nn">common.utils</span> <span class="kn">import</span> <span class="n">ring_deque</span></pre></div>
+<span class="kn">from</span> <span class="nn">common.utils</span> <span class="kn">import</span> <span class="n">ring_deque</span><span class="p">,</span> <span class="n">getboolenv</span></pre></div>
         </div>
         <div class='clearall'></div>
     </section>
@@ -85,12 +83,12 @@
           <p>Initialize plots, setup basic styling </p>
         </div>
         <div class='code'>
-          <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+          <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
 
-        <span class="n">plt</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s">&#39;toolbar&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39;None&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">show_plots</span> <span class="o">=</span> <span class="n">getboolenv</span><span class="p">(</span><span class="s">&quot;SHOW_PLOTS&quot;</span><span class="p">,</span> <span class="n">show</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">params_figure</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">plots</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">num</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">plots</span> <span class="o">=</span> <span class="p">[</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">chain</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">plots</span><span class="p">)]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">plots</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">itertools</span><span class="o">.</span><span class="n">chain</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">plots</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">params_figure</span><span class="o">.</span><span class="n">subplots_adjust</span><span class="p">(</span><span class="n">hspace</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">wspace</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">plot_map</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;T&#39;</span><span class="p">,</span> <span class="s">&#39;a&#39;</span><span class="p">,</span> <span class="s">&#39;aT&#39;</span><span class="p">,</span> <span class="s">&#39;rho&#39;</span><span class="p">]</span>
@@ -124,7 +122,8 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">plot</span><span class="o">.</span><span class="n">plot</span><span class="p">([],</span> <span class="p">[],</span> <span class="s">&#39;b-&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">plots_data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ring_deque</span><span class="p">([],</span> <span class="mi">1000</span><span class="p">))</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">params_figure</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></pre></div>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">show_plots</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">params_figure</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></pre></div>
         </div>
         <div class='clearall'></div>
     </section>
@@ -142,11 +141,9 @@
           <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
 
         <span class="n">folder</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">filename</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-        <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">folder</span><span class="p">,</span> <span class="s">&#39;plots.png&#39;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">params_figure</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">folder</span><span class="p">,</span> <span class="s">&#39;plots.svg&#39;</span><span class="p">))</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">particles</span><span class="p">:</span>
-            <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
-            <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">folder</span><span class="p">,</span> <span class="s">&#39;particles.png&#39;</span><span class="p">))</span></pre></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">particles_figure</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">folder</span><span class="p">,</span> <span class="s">&#39;particles.svg&#39;</span><span class="p">))</span></pre></div>
         </div>
         <div class='clearall'></div>
     </section>
@@ -171,7 +168,8 @@
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">particle</span><span class="p">,</span> <span class="n">monitor</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">map</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">particles</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">particle</span><span class="p">,</span> <span class="n">monitor</span><span class="p">(</span><span class="n">particle</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">particles_plots</span><span class="p">[</span><span class="n">i</span><span class="p">])))</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">particles_figure</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></pre></div>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">show_plots</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">particles_figure</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></pre></div>
         </div>
         <div class='clearall'></div>
     </section>
@@ -188,7 +186,7 @@
         <div class='code'>
           <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
 
-        <span class="n">last_t</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s">&#39;t&#39;</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">s</span>
+        <span class="n">last_t</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s">&#39;t&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">s</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">times</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">last_t</span><span class="p">)</span>
 
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">plot</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">plots</span><span class="p">):</span>
@@ -198,7 +196,7 @@
             <span class="k">if</span> <span class="n">last_t</span> <span class="o">&gt;=</span> <span class="n">xmax</span><span class="p">:</span>
                 <span class="n">plot</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">times</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">last_t</span> <span class="o">*</span> <span class="mf">1.1</span><span class="p">)</span>
 
-            <span class="n">last_data</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">plot_map</span><span class="p">[</span><span class="n">i</span><span class="p">]][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">divider_map</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="n">last_data</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">plot_map</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">divider_map</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">plots_data</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">last_data</span><span class="p">)</span>
 
             <span class="k">if</span> <span class="n">last_data</span> <span class="o">&gt;=</span> <span class="n">ymax</span><span class="p">:</span>
@@ -208,15 +206,13 @@
 
             <span class="bp">self</span><span class="o">.</span><span class="n">lines</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">set_data</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">times</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">plots_data</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
 
-        <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-        <span class="n">plt</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">params_figure</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">particles</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">particle</span><span class="p">,</span> <span class="n">monitor</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">particles</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">_</span><span class="p">,</span> <span class="n">monitor</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">particles</span><span class="p">):</span>
                 <span class="n">monitor</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
 
-            <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
-            <span class="n">plt</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span></pre></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">particles_figure</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span></pre></div>
         </div>
         <div class='clearall'></div>
     </section>
@@ -298,7 +294,7 @@
 
         <span class="n">rhoeq</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">particle</span><span class="o">.</span><span class="n">energy_density</span><span class="p">()</span> <span class="o">/</span> <span class="p">(</span>
             <span class="mf">7.</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">particle</span><span class="o">.</span><span class="n">dof</span> <span class="o">*</span> <span class="n">numpy</span><span class="o">.</span><span class="n">pi</span><span class="o">**</span><span class="mi">2</span>
-            <span class="o">*</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">particle</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">m</span> <span class="o">/</span> <span class="n">a</span><span class="p">)</span><span class="o">**</span><span class="mi">4</span> <span class="o">/</span> <span class="mf">240.</span>
+            <span class="o">*</span> <span class="p">(</span><span class="n">aT</span> <span class="o">/</span> <span class="n">a</span><span class="p">)</span><span class="o">**</span><span class="mi">4</span> <span class="o">/</span> <span class="mf">240.</span>
         <span class="p">)</span>
         <span class="n">feq</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">particle</span><span class="o">.</span><span class="n">equilibrium_distribution</span><span class="p">(</span><span class="n">aT</span><span class="o">=</span><span class="n">aT</span><span class="p">)</span>
 
@@ -345,8 +341,8 @@
           <div class="highlight"><pre><span class="k">class</span> <span class="nc">EquilibriumRadiationParticleMonitor</span><span class="p">(</span><span class="n">RadiationParticleMonitor</span><span class="p">):</span>
 
     <span class="k">def</span> <span class="nf">comparison_distributions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
-        <span class="n">a</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s">&#39;a&#39;</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-        <span class="n">aT</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s">&#39;aT&#39;</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">a</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s">&#39;a&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">aT</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s">&#39;aT&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
 
         <span class="n">rhoeq</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">particle</span><span class="o">.</span><span class="n">energy_density</span><span class="p">()</span> <span class="o">/</span> <span class="p">(</span>
             <span class="mf">7.</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">particle</span><span class="o">.</span><span class="n">dof</span> <span class="o">*</span> <span class="n">numpy</span><span class="o">.</span><span class="n">pi</span><span class="o">**</span><span class="mi">2</span>
@@ -397,7 +393,7 @@
         </div>
         <div class='code'>
           <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
-        <span class="n">a</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s">&#39;a&#39;</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">a</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s">&#39;a&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
 
         <span class="kn">from</span> <span class="nn">particles.NonEqParticle</span> <span class="kn">import</span> <span class="n">energy_density</span><span class="p">,</span> <span class="n">density</span>
 
@@ -422,6 +418,55 @@
           <div class='octowrap'>
             <a class='octothorpe' href='#section-14'>#</a>
           </div>
+          
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre><span class="k">class</span> <span class="nc">EquilibrationMonitor</span><span class="p">(</span><span class="n">ParticleMonitor</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">particle</span><span class="p">,</span> <span class="n">plots</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">particle</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">plots</span> <span class="o">=</span> <span class="n">particle</span><span class="p">,</span> <span class="n">plots</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">plots</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">particle</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">plots</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s">&quot;a&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">plots</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_xscale</span><span class="p">(</span><span class="s">&quot;log&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">plots</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s">&quot;max|I|&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">plots</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s">&quot;a&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">plots</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_xscale</span><span class="p">(</span><span class="s">&quot;log&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">plots</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s">&quot;numerator, MeV^-1&quot;</span><span class="p">)</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+    </div>
+    <div class='section'>
+    <a id="section-15" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-15'>#</a>
+          </div>
+          
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="n">a</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s">&#39;a&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+        <span class="kn">from</span> <span class="nn">particles.NonEqParticle</span> <span class="kn">import</span> <span class="n">numerator</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">plots</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">numpy</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">fabs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">particle</span><span class="o">.</span><span class="n">collision_integral</span><span class="p">))</span>
+                              <span class="o">*</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">MeV</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">plots</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">numerator</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">particle</span><span class="p">)</span> <span class="o">*</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">MeV</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+    </div>
+    <div class='section'>
+    <a id="section-16" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-16'>#</a>
+          </div>
           <p>Slightly decrease the opacity of plotted lines until they are barely visible. Then, remove them. Saves up on memory and clears the view of the plots. </p>
         </div>
         <div class='code'>
@@ -438,16 +483,19 @@
     </section>
     </div>
     <div class='section'>
-    <a id="section-15" class="section-anchor"></a>
+    <a id="section-17" class="section-anchor"></a>
     <section>
         <div class='docs'>
           <div class='octowrap'>
-            <a class='octothorpe' href='#section-15'>#</a>
+            <a class='octothorpe' href='#section-17'>#</a>
           </div>
           <p>Save a 3D plot of the distribution function integrand into a file. </p>
         </div>
         <div class='code'>
           <div class="highlight"><pre><span class="k">def</span> <span class="nf">plot_integrand</span><span class="p">(</span><span class="n">integrand</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">p0</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="n">__file__</span><span class="p">):</span>
+
+    <span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">cm</span>
+    <span class="kn">from</span> <span class="nn">mpl_toolkits.mplot3d</span> <span class="kn">import</span> <span class="n">Axes3D</span>
 
     <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
     <span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">gca</span><span class="p">(</span><span class="n">projection</span><span class="o">=</span><span class="s">&#39;3d&#39;</span><span class="p">)</span>
@@ -465,17 +513,17 @@
     <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s">&#39;p2&#39;</span><span class="p">)</span>
     <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s">&#39;{} p0 = {}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">p0</span> <span class="o">/</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">MeV</span><span class="p">))</span>
 
-    <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">filename</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span> <span class="s">&#39;logs/plt_{}.png&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">p0</span> <span class="o">/</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">MeV</span><span class="p">)))</span></pre></div>
+    <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">filename</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span> <span class="s">&#39;logs/plt_{}.svg&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">p0</span> <span class="o">/</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">MeV</span><span class="p">)))</span></pre></div>
         </div>
         <div class='clearall'></div>
     </section>
     </div>
     <div class='section'>
-    <a id="section-16" class="section-anchor"></a>
+    <a id="section-18" class="section-anchor"></a>
     <section>
         <div class='docs'>
           <div class='octowrap'>
-            <a class='octothorpe' href='#section-16'>#</a>
+            <a class='octothorpe' href='#section-18'>#</a>
           </div>
           <p>Draw a scatter plot for a number of <code>points</code> tuples <code>(x, y)</code> </p>
         </div>

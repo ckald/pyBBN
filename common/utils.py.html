@@ -20,7 +20,7 @@
     <a class="btn" class="source source-1" href="#top">Back to top</a>
     <div class="generation-time">
         Generated at
-        <code>2015-04-23 19:30</code>
+        <code>2015-05-21 17:24</code>
         by a diligent
         <a target="_blank" href="http://ckald.github.io/pyccoon/" title="Pyccoon: side-to-side documentation generator">
             <img id="pyccoon-icon" src="../pyccoon_icon.svg" alt="Pyccoon: side-to-side documentation generator" />pyccoon</a>
@@ -45,10 +45,12 @@
           
         </div>
         <div class='code'>
-          <div class="highlight"><pre><span class="kn">import</span> <span class="nn">sys</span>
+          <div class="highlight"><pre><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">sys</span>
 <span class="kn">import</span> <span class="nn">time</span>
 <span class="kn">import</span> <span class="nn">codecs</span>
-<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">wraps</span>
+<span class="kn">import</span> <span class="nn">contextlib</span>
+<span class="kn">import</span> <span class="nn">numpy</span>
 <span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">deque</span></pre></div>
         </div>
         <div class='clearall'></div>
@@ -69,6 +71,8 @@
     <span class="n">_saveable_fields</span> <span class="o">=</span> <span class="bp">None</span>
 
     <span class="k">def</span> <span class="nf">__getstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s">&#39;__slots__&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">):</span>
+            <span class="k">return</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__slots__</span><span class="p">}</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_saveable_fields</span><span class="p">:</span>
             <span class="k">return</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="n">value</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__dict__</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
                     <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_saveable_fields</span><span class="p">}</span>
@@ -88,10 +92,13 @@
         </div>
         <div class='code'>
           <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">__setstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_saveable_fields</span><span class="p">:</span>
-            <span class="n">data</span> <span class="o">=</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="n">value</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
-                    <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_saveable_fields</span><span class="p">}</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__dict__</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">data</span><span class="p">)</span></pre></div>
+        <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s">&#39;__slots__&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">):</span>
+            <span class="p">[</span><span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">items</span><span class="p">()]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_saveable_fields</span><span class="p">:</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="n">value</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+                        <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_saveable_fields</span><span class="p">}</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__dict__</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">data</span><span class="p">)</span></pre></div>
         </div>
         <div class='clearall'></div>
     </section>
@@ -291,7 +298,8 @@
         <div class='code'>
           <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ty</span><span class="p">,</span> <span class="n">val</span><span class="p">,</span> <span class="n">tb</span><span class="p">):</span>
         <span class="n">end</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
-        <span class="k">print</span><span class="p">(</span><span class="s">&quot;</span><span class="si">%s</span><span class="s"> : </span><span class="si">%0.5f</span><span class="s"> seconds&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">end</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="p">))</span>
+        <span class="k">print</span><span class="p">(</span><span class="s">&quot;{:s} : {:0.3f} seconds&quot;</span>
+              <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="k">if</span> <span class="ow">not</span> <span class="nb">callable</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">(),</span> <span class="n">end</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="p">))</span>
         <span class="k">return</span> <span class="bp">False</span></pre></div>
         </div>
         <div class='clearall'></div>
@@ -304,17 +312,15 @@
           <div class='octowrap'>
             <a class='octothorpe' href='#section-14'>#</a>
           </div>
-          <p>Print the return value of the function </p>
+          
         </div>
         <div class='code'>
-          <div class="highlight"><pre><span class="k">def</span> <span class="nf">echo</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
-
-    <span class="nd">@wraps</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">):</span>
-        <span class="n">val</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">)</span>
-        <span class="k">print</span> <span class="n">val</span>
-        <span class="k">return</span> <span class="n">val</span>
-    <span class="k">return</span> <span class="n">wrapper</span></pre></div>
+          <div class="highlight"><pre><span class="nd">@contextlib.contextmanager</span>
+<span class="k">def</span> <span class="nf">printoptions</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="n">original</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">get_printoptions</span><span class="p">()</span>
+    <span class="n">numpy</span><span class="o">.</span><span class="n">set_printoptions</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="k">yield</span>
+    <span class="n">numpy</span><span class="o">.</span><span class="n">set_printoptions</span><span class="p">(</span><span class="o">**</span><span class="n">original</span><span class="p">)</span></pre></div>
         </div>
         <div class='clearall'></div>
     </section>
@@ -326,12 +332,11 @@
           <div class='octowrap'>
             <a class='octothorpe' href='#section-15'>#</a>
           </div>
-          <p>Memoization decorator for a function taking a single argument </p>
+          
         </div>
         <div class='code'>
-          <div class="highlight"><pre><span class="k">def</span> <span class="nf">memodict</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
-
-    <span class="k">class</span> <span class="nc">memodict</span><span class="p">(</span><span class="nb">dict</span><span class="p">):</span></pre></div>
+          <div class="highlight"><pre><span class="k">def</span> <span class="nf">getenv</span><span class="p">(</span><span class="n">var</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="n">var</span><span class="p">,</span> <span class="n">default</span><span class="p">)</span></pre></div>
         </div>
         <div class='clearall'></div>
     </section>
@@ -346,9 +351,9 @@
           
         </div>
         <div class='code'>
-          <div class="highlight"><pre>        <span class="k">def</span> <span class="nf">__missing__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
-            <span class="n">ret</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">f</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
-            <span class="k">return</span> <span class="n">ret</span></pre></div>
+          <div class="highlight"><pre><span class="k">def</span> <span class="nf">getboolenv</span><span class="p">(</span><span class="n">var</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="n">value</span> <span class="o">=</span> <span class="n">getenv</span><span class="p">(</span><span class="n">var</span><span class="p">,</span> <span class="n">default</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">value</span> <span class="o">!=</span> <span class="s">&#39;false&#39;</span> <span class="ow">and</span> <span class="n">value</span> <span class="o">!=</span> <span class="s">&#39;f&#39;</span> <span class="ow">and</span> <span class="n">value</span> <span class="o">!=</span> <span class="s">&#39;0&#39;</span> <span class="ow">and</span> <span class="n">value</span> <span class="o">!=</span> <span class="s">&#39;-1&#39;</span><span class="p">)</span></pre></div>
         </div>
         <div class='clearall'></div>
     </section>
@@ -363,7 +368,11 @@
           
         </div>
         <div class='code'>
-          <div class="highlight"><pre>    <span class="k">return</span> <span class="n">memodict</span><span class="p">()</span><span class="o">.</span><span class="n">__getitem__</span></pre></div>
+          <div class="highlight"><pre><span class="k">def</span> <span class="nf">ensure_path</span><span class="p">(</span><span class="o">*</span><span class="n">chunks</span><span class="p">):</span>
+    <span class="n">path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="o">*</span><span class="n">chunks</span><span class="p">)</span>
+    <span class="nb">dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+    <span class="n">ensure_dir</span><span class="p">(</span><span class="nb">dir</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">path</span></pre></div>
         </div>
         <div class='clearall'></div>
     </section>
@@ -375,34 +384,14 @@
           <div class='octowrap'>
             <a class='octothorpe' href='#section-18'>#</a>
           </div>
-          <p>Multiple arguments implementation of the memoization decorator </p>
-        </div>
-        <div class='code'>
-          <div class="highlight"><pre><span class="k">class</span> <span class="nc">MemoizeMutable</span><span class="p">:</span>
-
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fn</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">fn</span> <span class="o">=</span> <span class="n">fn</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">memo</span> <span class="o">=</span> <span class="p">{}</span></pre></div>
-        </div>
-        <div class='clearall'></div>
-    </section>
-    </div>
-    <div class='section'>
-    <a id="section-19" class="section-anchor"></a>
-    <section>
-        <div class='docs'>
-          <div class='octowrap'>
-            <a class='octothorpe' href='#section-19'>#</a>
-          </div>
           
         </div>
         <div class='code'>
-          <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
-        <span class="n">pickle</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">pickle</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">memo</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">memo</span><span class="p">[</span><span class="n">pickle</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fn</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
-
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">memo</span><span class="p">[</span><span class="n">pickle</span><span class="p">]</span>
+          <div class="highlight"><pre><span class="k">def</span> <span class="nf">ensure_dir</span><span class="p">(</span><span class="o">*</span><span class="n">chunks</span><span class="p">):</span>
+    <span class="nb">dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="o">*</span><span class="n">chunks</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="nb">dir</span><span class="p">):</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="nb">dir</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">dir</span>
 
 </pre></div>
         </div>

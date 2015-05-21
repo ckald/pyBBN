@@ -28,7 +28,7 @@
     </div>
     <div class="generation-time">
         Generated at
-        <code>2015-04-23 19:30</code>
+        <code>2015-05-21 17:24</code>
         by a diligent
         <a target="_blank" href="http://ckald.github.io/pyccoon/" title="Pyccoon: side-to-side documentation generator">
             <img id="pyccoon-icon" src="../pyccoon_icon.svg" alt="Pyccoon: side-to-side documentation generator" />pyccoon</a>
@@ -239,10 +239,10 @@
           <p>Neutrinos scatterings</p>
         </div>
         <div class='code'>
-          <div class="highlight"><pre>        <span class="k">for</span> <span class="n">neutrino_a</span><span class="p">,</span> <span class="n">neutrino_b</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">combinations_with_replacement</span><span class="p">(</span><span class="n">neutrinos</span><span class="p">,</span> <span class="mi">2</span><span class="p">):</span>
-            <span class="k">if</span> <span class="n">thetas</span><span class="p">[</span><span class="n">neutrino_b</span><span class="o">.</span><span class="n">flavour</span><span class="p">]:</span>
+          <div class="highlight"><pre>        <span class="k">for</span> <span class="n">neutrino_a</span><span class="p">,</span> <span class="n">neutrino_b</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="n">neutrinos</span><span class="p">,</span> <span class="n">neutrinos</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">thetas</span><span class="p">[</span><span class="n">neutrino_a</span><span class="o">.</span><span class="n">flavour</span><span class="p">]:</span>
                 <span class="n">inters</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cls</span><span class="o">.</span><span class="n">sterile_active_scattering</span><span class="p">(</span>
-                    <span class="n">theta</span><span class="o">=</span><span class="n">thetas</span><span class="p">[</span><span class="n">neutrino_b</span><span class="o">.</span><span class="n">flavour</span><span class="p">],</span>
+                    <span class="n">theta</span><span class="o">=</span><span class="n">thetas</span><span class="p">[</span><span class="n">neutrino_a</span><span class="o">.</span><span class="n">flavour</span><span class="p">],</span>
                     <span class="n">sterile</span><span class="o">=</span><span class="n">sterile</span><span class="p">,</span>
                     <span class="n">active_a</span><span class="o">=</span><span class="n">neutrino_a</span><span class="p">,</span>
                     <span class="n">active_b</span><span class="o">=</span><span class="n">neutrino_b</span>

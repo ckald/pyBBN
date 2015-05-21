@@ -20,7 +20,7 @@
     <a class="btn" class="source source-1" href="#top">Back to top</a>
     <div class="generation-time">
         Generated at
-        <code>2015-04-23 19:30</code>
+        <code>2015-05-21 17:25</code>
         by a diligent
         <a target="_blank" href="http://ckald.github.io/pyccoon/" title="Pyccoon: side-to-side documentation generator">
             <img id="pyccoon-icon" src="../../pyccoon_icon.svg" alt="Pyccoon: side-to-side documentation generator" />pyccoon</a>
@@ -87,7 +87,7 @@
           <div class="highlight"><pre><span class="nd">@with_setup_args</span><span class="p">(</span><span class="n">setup</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">radiation_regime_test</span><span class="p">(</span><span class="n">params</span><span class="p">):</span>
 
-    <span class="n">photon</span> <span class="o">=</span> <span class="n">Particle</span><span class="p">(</span><span class="o">**</span><span class="n">SMP</span><span class="o">.</span><span class="n">photon</span><span class="p">)</span>
+    <span class="n">photon</span> <span class="o">=</span> <span class="n">Particle</span><span class="p">(</span><span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">,</span> <span class="o">**</span><span class="n">SMP</span><span class="o">.</span><span class="n">photon</span><span class="p">)</span>
     <span class="k">assert</span> <span class="n">photon</span><span class="o">.</span><span class="n">in_equilibrium</span><span class="p">,</span> <span class="s">&quot;Photon must always stay in equilibrium&quot;</span>
     <span class="k">assert</span> <span class="ow">not</span> <span class="n">photon</span><span class="o">.</span><span class="n">decoupling_temperature</span><span class="p">,</span> <span class="s">&quot;Photon can&#39;t decouple&quot;</span>
     <span class="k">assert</span> <span class="n">photon</span><span class="o">.</span><span class="n">regime</span> <span class="o">==</span> <span class="n">REGIMES</span><span class="o">.</span><span class="n">RADIATION</span><span class="p">,</span> <span class="s">&quot;Photon is a relativistic particle&quot;</span>
@@ -138,7 +138,7 @@
           <div class="highlight"><pre><span class="nd">@with_setup_args</span><span class="p">(</span><span class="n">setup</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">dust_regime_test</span><span class="p">(</span><span class="n">params</span><span class="p">):</span>
 
-    <span class="n">proton</span> <span class="o">=</span> <span class="n">Particle</span><span class="p">(</span><span class="o">**</span><span class="n">SMP</span><span class="o">.</span><span class="n">hadrons</span><span class="o">.</span><span class="n">proton</span><span class="p">)</span>
+    <span class="n">proton</span> <span class="o">=</span> <span class="n">Particle</span><span class="p">(</span><span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">,</span> <span class="o">**</span><span class="n">SMP</span><span class="o">.</span><span class="n">hadrons</span><span class="o">.</span><span class="n">proton</span><span class="p">)</span>
     <span class="k">assert</span> <span class="n">proton</span><span class="o">.</span><span class="n">in_equilibrium</span><span class="p">,</span> <span class="s">&quot;Proton must always stay in equilibrium&quot;</span>
     <span class="k">assert</span> <span class="ow">not</span> <span class="n">proton</span><span class="o">.</span><span class="n">decoupling_temperature</span><span class="p">,</span> <span class="s">&quot;Proton can&#39;t decouple&quot;</span>
     <span class="k">assert</span> <span class="n">proton</span><span class="o">.</span><span class="n">regime</span> <span class="o">==</span> <span class="n">REGIMES</span><span class="o">.</span><span class="n">DUST</span><span class="p">,</span> \

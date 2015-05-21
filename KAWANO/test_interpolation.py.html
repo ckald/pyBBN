@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>pyBBN v0.1.0: KAWANO/test_interpolation.py</title>
+  <link rel="stylesheet" href="../pyccoon.css">
+  <script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+  });
+  </script>
+  <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</head>
+<body>
+<div id='container' >
+  <div id="footer">
+    <span id="project-name">
+        <a class="btn" href="../index.html">pyBBN v0.1.0</a>
+    </span>
+    <a class="btn" class="source source-1" href="#top">Back to top</a>
+    <div class="generation-time">
+        Generated at
+        <code>2015-05-21 17:24</code>
+        by a diligent
+        <a target="_blank" href="http://ckald.github.io/pyccoon/" title="Pyccoon: side-to-side documentation generator">
+            <img id="pyccoon-icon" src="../pyccoon_icon.svg" alt="Pyccoon: side-to-side documentation generator" />pyccoon</a>
+    </div>
+  </div>
+  <a id="top"></a>
+  <div class='section'>
+    <div class='docs nav'>
+      <nav id="breadcrumbs">/ <a href="test_interpolation.py.html/../../index.html">.</a> / <a href="test_interpolation.py.html/../index.html">KAWANO</a> / <a href="test_interpolation.py.html">test_interpolation.py</a> </nav>
+      <ul id="children"></ul>
+    </div>
+  </div>
+  <div id="everything" class='clearall'>
+    <div id="background"></div>
+    <div class='section'>
+    <a id="section-0" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-0'>#</a>
+          </div>
+          <p>interpolation.f90 test suite</p>
+<p><span class=warning><strong>WARNING</strong>: don't forget that Fortran's default array indexing is (1...size) unlike Python's</span>
+            (0...size-1)</p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre><span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">from</span> <span class="nn">sys</span> <span class="kn">import</span> <span class="n">float_info</span>
+
+
+<span class="kn">from</span> <span class="nn">interpolation</span> <span class="kn">import</span> <span class="n">binary_search</span><span class="p">,</span> <span class="n">interp_values</span><span class="p">,</span> <span class="n">log_interp_values</span><span class="p">,</span> <span class="n">dist_interp_values</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+    </div>
+    <div class='section'>
+    <a id="section-1" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-1'>#</a>
+          </div>
+          <p>Test a basic case</p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre><span class="k">def</span> <span class="nf">test_binary_search</span><span class="p">():</span>
+
+    <span class="n">haystack</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">))</span>
+    <span class="k">assert</span> <span class="n">binary_search</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="n">haystack</span><span class="p">)</span> <span class="o">==</span> <span class="p">(</span><span class="mi">51</span><span class="p">,</span> <span class="mi">51</span><span class="p">)</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+    </div>
+    <div class='section'>
+    <a id="section-2" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-2'>#</a>
+          </div>
+          <p>Test a case with odd len</p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>    <span class="n">haystack</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">99</span><span class="p">))</span>
+    <span class="k">assert</span> <span class="n">binary_search</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="n">haystack</span><span class="p">)</span> <span class="o">==</span> <span class="p">(</span><span class="mi">51</span><span class="p">,</span> <span class="mi">51</span><span class="p">)</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+    </div>
+    <div class='section'>
+    <a id="section-3" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-3'>#</a>
+          </div>
+          <p>Range test case</p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>    <span class="k">assert</span> <span class="n">binary_search</span><span class="p">(</span><span class="mf">3.1</span><span class="p">,</span> <span class="n">haystack</span><span class="p">)</span> <span class="o">==</span> <span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">binary_search</span><span class="p">(</span><span class="mf">97.9</span><span class="p">,</span> <span class="n">haystack</span><span class="p">)</span> <span class="o">==</span> <span class="p">(</span><span class="mi">98</span><span class="p">,</span> <span class="mi">99</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">binary_search</span><span class="p">(</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">haystack</span><span class="p">)</span> <span class="o">==</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+    </div>
+    <div class='section'>
+    <a id="section-4" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-4'>#</a>
+          </div>
+          <p>Test the case with needle outside the haystack range</p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>    <span class="k">assert</span> <span class="n">binary_search</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">haystack</span><span class="p">)</span> <span class="o">==</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">binary_search</span><span class="p">(</span><span class="mi">99</span><span class="p">,</span> <span class="n">haystack</span><span class="p">)</span> <span class="o">==</span> <span class="p">(</span><span class="mi">99</span><span class="p">,</span> <span class="mi">99</span><span class="p">)</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+    </div>
+    <div class='section'>
+    <a id="section-5" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-5'>#</a>
+          </div>
+          <p>Corner cases</p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>    <span class="k">assert</span> <span class="n">binary_search</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">haystack</span><span class="p">)</span> <span class="o">==</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">binary_search</span><span class="p">(</span><span class="mi">98</span><span class="p">,</span> <span class="n">haystack</span><span class="p">)</span> <span class="o">==</span> <span class="p">(</span><span class="mi">99</span><span class="p">,</span> <span class="mi">99</span><span class="p">)</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+    </div>
+    <div class='section'>
+    <a id="section-6" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-6'>#</a>
+          </div>
+          <p>Test a basic case</p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre><span class="k">def</span> <span class="nf">test_binary_search_reversed</span><span class="p">():</span>
+
+    <span class="n">haystack</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">reversed</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">)))</span>
+    <span class="k">assert</span> <span class="n">binary_search</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="n">haystack</span><span class="p">,</span> <span class="n">decreasing</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span> <span class="o">==</span> <span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="mi">50</span><span class="p">)</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+    </div>
+    <div class='section'>
+    <a id="section-7" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-7'>#</a>
+          </div>
+          <p>Test a case with odd len</p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>    <span class="n">haystack</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">reversed</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">99</span><span class="p">)))</span>
+    <span class="k">assert</span> <span class="n">binary_search</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="n">haystack</span><span class="p">,</span> <span class="n">decreasing</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span> <span class="o">==</span> <span class="p">(</span><span class="mi">49</span><span class="p">,</span> <span class="mi">49</span><span class="p">)</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+    </div>
+    <div class='section'>
+    <a id="section-8" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-8'>#</a>
+          </div>
+          <p>Range test case</p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>    <span class="k">assert</span> <span class="n">binary_search</span><span class="p">(</span><span class="mf">3.1</span><span class="p">,</span> <span class="n">haystack</span><span class="p">,</span> <span class="n">decreasing</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span> <span class="o">==</span> <span class="p">(</span><span class="mi">95</span><span class="p">,</span> <span class="mi">96</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">binary_search</span><span class="p">(</span><span class="mf">97.9</span><span class="p">,</span> <span class="n">haystack</span><span class="p">,</span> <span class="n">decreasing</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span> <span class="o">==</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">binary_search</span><span class="p">(</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">haystack</span><span class="p">,</span> <span class="n">decreasing</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span> <span class="o">==</span> <span class="p">(</span><span class="mi">98</span><span class="p">,</span> <span class="mi">99</span><span class="p">)</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+    </div>
+    <div class='section'>
+    <a id="section-9" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-9'>#</a>
+          </div>
+          <p>Test the case with needle outside the haystack range</p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>    <span class="k">assert</span> <span class="n">binary_search</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">haystack</span><span class="p">,</span> <span class="n">decreasing</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span> <span class="o">==</span> <span class="p">(</span><span class="mi">99</span><span class="p">,</span> <span class="mi">99</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">binary_search</span><span class="p">(</span><span class="mi">99</span><span class="p">,</span> <span class="n">haystack</span><span class="p">,</span> <span class="n">decreasing</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span> <span class="o">==</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+    </div>
+    <div class='section'>
+    <a id="section-10" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-10'>#</a>
+          </div>
+          <p>Corner cases</p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>    <span class="k">assert</span> <span class="n">binary_search</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">haystack</span><span class="p">,</span> <span class="n">decreasing</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span> <span class="o">==</span> <span class="p">(</span><span class="mi">99</span><span class="p">,</span> <span class="mi">99</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">binary_search</span><span class="p">(</span><span class="mi">98</span><span class="p">,</span> <span class="n">haystack</span><span class="p">,</span> <span class="n">decreasing</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span> <span class="o">==</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+    </div>
+    <div class='section'>
+    <a id="section-11" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-11'>#</a>
+          </div>
+          <p>def test_linear_interpolation():</p>
+        </div>
+        <div class='code'>
+          
+        </div>
+        <div class='clearall'></div>
+    </section>
+    </div>
+    <div class='section'>
+    <a id="section-12" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-12'>#</a>
+          </div>
+          <p>xs = [0, 1, 2, 3, 4]
+ys = [0, 0, 1, 0, 5]</p>
+        </div>
+        <div class='code'>
+          
+        </div>
+        <div class='clearall'></div>
+    </section>
+    </div>
+    <div class='section'>
+    <a id="section-13" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-13'>#</a>
+          </div>
+          <p>assert ys == [interp_values(x, xs, ys) for x in xs]
+assert 0 == interp_values(0.5, xs, ys)
+assert 0.5 == interp_values(1.5, xs, ys) == interp_values(2.5, xs, ys)</p>
+        </div>
+        <div class='code'>
+          
+        </div>
+        <div class='clearall'></div>
+    </section>
+    </div>
+    <div class='section'>
+    <a id="section-14" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-14'>#</a>
+          </div>
+          <p>assert abs(4 - interp_values(3.8, xs, ys)) &lt; 10 * float_info.epsilon</p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre><span class="k">def</span> <span class="nf">test_logarithmic_interpolation</span><span class="p">():</span>
+
+    <span class="k">def</span> <span class="nf">f</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">math</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span><span class="n">x</span><span class="p">)</span>
+
+    <span class="n">xs</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="o">-</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+    <span class="n">ys</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">xs</span><span class="p">)</span>
+
+    <span class="n">xxs</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="o">/</span> <span class="mf">5.</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="o">-</span><span class="mi">25</span><span class="p">,</span> <span class="mi">21</span><span class="p">)]</span>
+    <span class="n">yys</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">xxs</span><span class="p">)</span>
+
+    <span class="k">assert</span> <span class="p">[</span><span class="nb">abs</span><span class="p">(</span><span class="n">log_interp_values</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">xs</span><span class="p">,</span> <span class="n">ys</span><span class="p">)</span> <span class="o">-</span> <span class="n">y</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">10</span> <span class="o">*</span> <span class="n">float_info</span><span class="o">.</span><span class="n">epsilon</span>
+            <span class="k">for</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">ys</span><span class="p">)]</span>
+    <span class="k">assert</span> <span class="p">[</span><span class="nb">abs</span><span class="p">(</span><span class="n">log_interp_values</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">xs</span><span class="p">,</span> <span class="n">ys</span><span class="p">)</span> <span class="o">-</span> <span class="n">y</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">10</span> <span class="o">*</span> <span class="n">float_info</span><span class="o">.</span><span class="n">epsilon</span>
+            <span class="k">for</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">xxs</span><span class="p">,</span> <span class="n">yys</span><span class="p">)]</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+    </div>
+    <div class='section'>
+    <a id="section-15" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-15'>#</a>
+          </div>
+          
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre><span class="k">def</span> <span class="nf">test_distribution_interpolation</span><span class="p">():</span>
+
+    <span class="k">def</span> <span class="nf">f</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+        <span class="k">return</span> <span class="mf">1.</span> <span class="o">/</span> <span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">x</span> <span class="o">/</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="n">xs</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="o">-</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+    <span class="n">ys</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">xs</span><span class="p">)</span>
+
+    <span class="n">xxs</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="o">/</span> <span class="mf">5.</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="o">-</span><span class="mi">25</span><span class="p">,</span> <span class="mi">21</span><span class="p">)]</span>
+    <span class="n">yys</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">xxs</span><span class="p">)</span>
+
+    <span class="k">assert</span> <span class="p">[</span><span class="nb">abs</span><span class="p">(</span><span class="n">dist_interp_values</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">xs</span><span class="p">,</span> <span class="n">ys</span><span class="p">)</span> <span class="o">-</span> <span class="n">y</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">10</span> <span class="o">*</span> <span class="n">float_info</span><span class="o">.</span><span class="n">epsilon</span>
+            <span class="k">for</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">ys</span><span class="p">)]</span>
+    <span class="k">assert</span> <span class="p">[</span><span class="nb">abs</span><span class="p">(</span><span class="n">dist_interp_values</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">xs</span><span class="p">,</span> <span class="n">ys</span><span class="p">)</span> <span class="o">-</span> <span class="n">y</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">10</span> <span class="o">*</span> <span class="n">float_info</span><span class="o">.</span><span class="n">epsilon</span>
+            <span class="k">for</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">xxs</span><span class="p">,</span> <span class="n">yys</span><span class="p">)]</span>
+
+</pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+    </div>
+  </div>
+</body>

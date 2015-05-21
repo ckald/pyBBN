@@ -20,7 +20,7 @@
     <a class="btn" class="source source-1" href="#top">Back to top</a>
     <div class="generation-time">
         Generated at
-        <code>2015-04-23 19:30</code>
+        <code>2015-05-21 17:24</code>
         by a diligent
         <a target="_blank" href="http://ckald.github.io/pyccoon/" title="Pyccoon: side-to-side documentation generator">
             <img id="pyccoon-icon" src="../pyccoon_icon.svg" alt="Pyccoon: side-to-side documentation generator" />pyccoon</a>
@@ -46,7 +46,8 @@
         </div>
         <div class='code'>
           <div class="highlight"><pre><span class="kn">from</span> <span class="nn">library.SM</span> <span class="kn">import</span> <span class="n">particles</span> <span class="k">as</span> <span class="n">SMP</span>
-<span class="kn">from</span> <span class="nn">interactions</span> <span class="kn">import</span> <span class="n">Interaction</span><span class="p">,</span> <span class="n">M</span>
+<span class="kn">from</span> <span class="nn">interactions</span> <span class="kn">import</span> <span class="n">Interaction</span>
+<span class="kn">from</span> <span class="nn">interactions.four_particle</span> <span class="kn">import</span> <span class="n">FourParticleM</span><span class="p">,</span> <span class="n">FourParticleIntegral</span>
 <span class="kn">from</span> <span class="nn">particles</span> <span class="kn">import</span> <span class="n">Particle</span>
 <span class="kn">from</span> <span class="nn">evolution</span> <span class="kn">import</span> <span class="n">Universe</span>
 <span class="kn">from</span> <span class="nn">common</span> <span class="kn">import</span> <span class="n">CONST</span><span class="p">,</span> <span class="n">UNITS</span><span class="p">,</span> <span class="n">Params</span><span class="p">,</span> <span class="n">GRID</span>
@@ -56,18 +57,20 @@
                 <span class="n">T_final</span><span class="o">=</span><span class="mf">0.075</span> <span class="o">*</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">MeV</span><span class="p">,</span>
                 <span class="n">dx</span><span class="o">=</span><span class="mf">1e-1</span> <span class="o">*</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">MeV</span><span class="p">)</span>
 
-<span class="n">photon</span> <span class="o">=</span> <span class="n">Particle</span><span class="p">(</span><span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">,</span> <span class="o">**</span><span class="n">SMP</span><span class="o">.</span><span class="n">photon</span><span class="p">)</span>
-<span class="n">neutrino</span> <span class="o">=</span> <span class="n">Particle</span><span class="p">(</span><span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">,</span> <span class="o">**</span><span class="n">SMP</span><span class="o">.</span><span class="n">leptons</span><span class="o">.</span><span class="n">neutrino_e</span><span class="p">)</span>
+<span class="n">photon</span> <span class="o">=</span> <span class="n">Particle</span><span class="p">(</span><span class="o">**</span><span class="n">SMP</span><span class="o">.</span><span class="n">photon</span><span class="p">)</span>
+<span class="n">neutrino</span> <span class="o">=</span> <span class="n">Particle</span><span class="p">(</span><span class="o">**</span><span class="n">SMP</span><span class="o">.</span><span class="n">leptons</span><span class="o">.</span><span class="n">neutrino_e</span><span class="p">)</span>
 
 <span class="n">neutrino_scattering</span> <span class="o">=</span> <span class="n">Interaction</span><span class="p">(</span>
-    <span class="n">in_particles</span><span class="o">=</span><span class="p">[</span><span class="n">neutrino</span><span class="p">,</span> <span class="n">neutrino</span><span class="p">],</span>
-    <span class="n">out_particles</span><span class="o">=</span><span class="p">[</span><span class="n">neutrino</span><span class="p">,</span> <span class="n">neutrino</span><span class="p">],</span>
+    <span class="n">particles</span><span class="o">=</span><span class="p">((</span><span class="n">neutrino</span><span class="p">,</span> <span class="n">neutrino</span><span class="p">),</span> <span class="p">(</span><span class="n">neutrino</span><span class="p">,</span> <span class="n">neutrino</span><span class="p">)),</span>
+    <span class="n">antiparticles</span><span class="o">=</span><span class="p">((</span><span class="bp">False</span><span class="p">,</span> <span class="bp">True</span><span class="p">),</span> <span class="p">(</span><span class="bp">False</span><span class="p">,</span> <span class="bp">True</span><span class="p">)),</span>
     <span class="n">decoupling_temperature</span><span class="o">=</span><span class="mi">0</span> <span class="o">*</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">MeV</span><span class="p">,</span>
-    <span class="n">Ms</span><span class="o">=</span><span class="p">[</span><span class="n">M</span><span class="p">(</span><span class="n">K1</span><span class="o">=</span><span class="mi">64</span> <span class="o">*</span> <span class="n">CONST</span><span class="o">.</span><span class="n">G_F</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">))]</span>
+    <span class="n">Ms</span><span class="o">=</span><span class="p">(</span><span class="n">FourParticleM</span><span class="p">(</span><span class="n">K1</span><span class="o">=</span><span class="mi">64</span> <span class="o">*</span> <span class="n">CONST</span><span class="o">.</span><span class="n">G_F</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">)),),</span>
+    <span class="n">integral</span><span class="o">=</span><span class="n">FourParticleIntegral</span>
 <span class="p">)</span>
 
 <span class="n">universe</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">,</span> <span class="n">plotting</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
-<span class="n">universe</span><span class="o">.</span><span class="n">particles</span> <span class="o">+=</span> <span class="p">[</span><span class="n">photon</span><span class="p">,</span> <span class="n">neutrino</span><span class="p">]</span>
+<span class="n">universe</span><span class="o">.</span><span class="n">PARALLELIZE</span> <span class="o">=</span> <span class="bp">False</span>
+<span class="n">universe</span><span class="o">.</span><span class="n">add_particles</span><span class="p">([</span><span class="n">photon</span><span class="p">,</span> <span class="n">neutrino</span><span class="p">])</span>
 <span class="n">universe</span><span class="o">.</span><span class="n">interactions</span> <span class="o">+=</span> <span class="p">[</span><span class="n">neutrino_scattering</span><span class="p">]</span>
 
 
@@ -128,7 +131,10 @@
 <span class="n">y</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="n">neutrino</span><span class="o">.</span><span class="n">distribution</span><span class="p">)(</span><span class="n">x</span><span class="p">)</span>
 <span class="n">z</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="n">neutrino</span><span class="o">.</span><span class="n">equilibrium_distribution_function</span><span class="p">)(</span><span class="n">x</span> <span class="o">/</span> <span class="n">universe</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">aT</span><span class="p">)</span>
 <span class="n">w</span> <span class="o">=</span> <span class="n">z</span> <span class="o">+</span> <span class="n">addition</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span></pre></div>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">z</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">w</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></pre></div>
         </div>
         <div class='clearall'></div>
     </section>
@@ -139,22 +145,6 @@
         <div class='docs'>
           <div class='octowrap'>
             <a class='octothorpe' href='#section-4'>#</a>
-          </div>
-          <p>plt.plot(x, z)
-plt.plot(x, w)</p>
-        </div>
-        <div class='code'>
-          <div class="highlight"><pre><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></pre></div>
-        </div>
-        <div class='clearall'></div>
-    </section>
-    </div>
-    <div class='section'>
-    <a id="section-5" class="section-anchor"></a>
-    <section>
-        <div class='docs'>
-          <div class='octowrap'>
-            <a class='octothorpe' href='#section-5'>#</a>
           </div>
           <p>res = []
 for p0 in GRID.TEMPLATE:

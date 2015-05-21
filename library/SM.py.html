@@ -28,7 +28,7 @@
     </div>
     <div class="generation-time">
         Generated at
-        <code>2015-04-23 19:30</code>
+        <code>2015-05-21 17:24</code>
         by a diligent
         <a target="_blank" href="http://ckald.github.io/pyccoon/" title="Pyccoon: side-to-side documentation generator">
             <img id="pyccoon-icon" src="../pyccoon_icon.svg" alt="Pyccoon: side-to-side documentation generator" />pyccoon</a>
@@ -141,7 +141,7 @@
             <span class="s">&#39;name&#39;</span><span class="p">:</span> <span class="s">&#39;Neutron&#39;</span><span class="p">,</span>
             <span class="s">&#39;symbol&#39;</span><span class="p">:</span> <span class="s">&#39;n&#39;</span><span class="p">,</span>
             <span class="s">&#39;statistics&#39;</span><span class="p">:</span> <span class="n">STATISTICS</span><span class="o">.</span><span class="n">FERMION</span><span class="p">,</span>
-            <span class="s">&#39;mass&#39;</span><span class="p">:</span> <span class="mf">0.939</span> <span class="o">*</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">GeV</span><span class="p">,</span>
+            <span class="s">&#39;mass&#39;</span><span class="p">:</span> <span class="mf">939.565378</span> <span class="o">*</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">MeV</span><span class="p">,</span>
             <span class="s">&#39;dof&#39;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span>
             <span class="s">&#39;majorana&#39;</span><span class="p">:</span> <span class="bp">False</span>
         <span class="p">}</span>
@@ -149,7 +149,7 @@
             <span class="s">&#39;name&#39;</span><span class="p">:</span> <span class="s">&#39;Proton&#39;</span><span class="p">,</span>
             <span class="s">&#39;symbol&#39;</span><span class="p">:</span> <span class="s">&#39;p&#39;</span><span class="p">,</span>
             <span class="s">&#39;statistics&#39;</span><span class="p">:</span> <span class="n">STATISTICS</span><span class="o">.</span><span class="n">FERMION</span><span class="p">,</span>
-            <span class="s">&#39;mass&#39;</span><span class="p">:</span> <span class="mf">0.938</span> <span class="o">*</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">GeV</span><span class="p">,</span>
+            <span class="s">&#39;mass&#39;</span><span class="p">:</span> <span class="mf">938.272046</span> <span class="o">*</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">MeV</span><span class="p">,</span>
             <span class="s">&#39;dof&#39;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span>
             <span class="s">&#39;majorana&#39;</span><span class="p">:</span> <span class="bp">False</span>
         <span class="p">}</span>
@@ -470,7 +470,32 @@
                 <span class="n">g_L</span> <span class="o">=</span> <span class="n">g_R</span> <span class="o">+</span> <span class="mf">0.5</span> <span class="k">if</span> <span class="n">lepton</span><span class="o">.</span><span class="n">flavour</span> <span class="o">==</span> <span class="n">neutrino</span><span class="o">.</span><span class="n">flavour</span> <span class="k">else</span> <span class="n">g_R</span> <span class="o">-</span> <span class="mf">0.5</span>
                 <span class="n">inters</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cls</span><span class="o">.</span><span class="n">neutrinos_to_leptons</span><span class="p">(</span><span class="n">g_L</span><span class="o">=</span><span class="n">g_L</span><span class="p">,</span> <span class="n">lepton</span><span class="o">=</span><span class="n">lepton</span><span class="p">,</span> <span class="n">neutrino</span><span class="o">=</span><span class="n">neutrino</span><span class="p">))</span>
 
-        <span class="k">return</span> <span class="n">inters</span>
+        <span class="k">return</span> <span class="n">inters</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+    </div>
+    <div class='section'>
+    <a id="section-13" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-13'>#</a>
+          </div>
+          
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">baryons_interaction</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">neutron</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">proton</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">neutrino</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">electron</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+
+        <span class="k">return</span> <span class="n">Interaction</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="s">&quot;Baryons interaction&quot;</span><span class="p">,</span>
+            <span class="n">particles</span><span class="o">=</span><span class="p">((</span><span class="n">neutron</span><span class="p">,),</span> <span class="p">(</span><span class="n">proton</span><span class="p">,</span> <span class="n">electron</span><span class="p">,</span> <span class="n">neutrino</span><span class="p">)),</span>
+            <span class="n">antiparticles</span><span class="o">=</span><span class="p">((</span><span class="bp">False</span><span class="p">,),</span> <span class="p">(</span><span class="bp">False</span><span class="p">,</span> <span class="bp">False</span><span class="p">,</span> <span class="bp">True</span><span class="p">)),</span>
+            <span class="n">decoupling_temperature</span><span class="o">=</span><span class="mi">0</span> <span class="o">*</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">MeV</span><span class="p">,</span>
+            <span class="n">Ms</span><span class="o">=</span><span class="p">(</span><span class="n">WeakM</span><span class="p">(</span><span class="n">K1</span><span class="o">=</span><span class="mf">2.</span> <span class="o">*</span> <span class="n">particles</span><span class="o">.</span><span class="n">quarks</span><span class="o">.</span><span class="n">CKM</span><span class="p">[(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)]</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">)),),</span>
+            <span class="n">integral</span><span class="o">=</span><span class="n">FourParticleIntegral</span>
+        <span class="p">)</span>
 
 </pre></div>
         </div>

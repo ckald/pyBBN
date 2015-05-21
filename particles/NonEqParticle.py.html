@@ -32,7 +32,7 @@
     </div>
     <div class="generation-time">
         Generated at
-        <code>2015-04-23 19:30</code>
+        <code>2015-05-21 17:24</code>
         by a diligent
         <a target="_blank" href="http://ckald.github.io/pyccoon/" title="Pyccoon: side-to-side documentation generator">
             <img id="pyccoon-icon" src="../pyccoon_icon.svg" alt="Pyccoon: side-to-side documentation generator" />pyccoon</a>
@@ -58,10 +58,9 @@
         </div>
         <div class='code'>
           <div class="highlight"><pre><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">division</span>
-<span class="kn">import</span> <span class="nn">functools</span>
 <span class="kn">import</span> <span class="nn">numpy</span>
-<span class="kn">from</span> <span class="nn">scipy</span> <span class="kn">import</span> <span class="n">interpolate</span><span class="p">,</span> <span class="n">integrate</span>
-<span class="kn">from</span> <span class="nn">common</span> <span class="kn">import</span> <span class="n">GRID</span>
+<span class="kn">from</span> <span class="nn">common</span> <span class="kn">import</span> <span class="n">GRID</span><span class="p">,</span> <span class="n">linear_interpolation</span>
+<span class="kn">from</span> <span class="nn">common.integrators</span> <span class="kn">import</span> <span class="n">lambda_integrate</span>
 
 
 <span class="n">name</span> <span class="o">=</span> <span class="s">&#39;non-equilibrium&#39;</span></pre></div>
@@ -76,14 +75,15 @@
           <div class='octowrap'>
             <a class='octothorpe' href='#section-1'>#</a>
           </div>
-          <p>Scipy integration over the momentum space of the lambda function applied to the grid template </p>
+          
         </div>
         <div class='code'>
-          <div class="highlight"><pre><span class="k">def</span> <span class="nf">lambda_integrate</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
-
-    <span class="n">method</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;simps&#39;</span><span class="p">,</span> <span class="s">&#39;quad&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
-
-    <span class="k">if</span> <span class="n">method</span> <span class="o">==</span> <span class="s">&#39;simps&#39;</span><span class="p">:</span></pre></div>
+          <div class="highlight"><pre><span class="nd">@lambda_integrate</span><span class="p">()</span>
+<span class="k">def</span> <span class="nf">density</span><span class="p">(</span><span class="n">particle</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">numpy</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="k">lambda</span> <span class="n">y</span><span class="p">:</span> <span class="p">(</span>
+        <span class="n">particle</span><span class="o">.</span><span class="n">distribution</span><span class="p">(</span><span class="n">y</span><span class="p">)</span> <span class="o">*</span> <span class="n">y</span><span class="o">**</span><span class="mi">2</span>
+        <span class="o">*</span> <span class="n">particle</span><span class="o">.</span><span class="n">dof</span> <span class="o">/</span> <span class="mf">2.</span> <span class="o">/</span> <span class="n">numpy</span><span class="o">.</span><span class="n">pi</span><span class="o">**</span><span class="mi">2</span> <span class="o">/</span> <span class="n">particle</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">a</span><span class="o">**</span><span class="mi">3</span>
+    <span class="p">),</span> <span class="n">otypes</span><span class="o">=</span><span class="p">[</span><span class="n">numpy</span><span class="o">.</span><span class="n">float_</span><span class="p">])</span></pre></div>
         </div>
         <div class='clearall'></div>
     </section>
@@ -95,69 +95,6 @@
           <div class='octowrap'>
             <a class='octothorpe' href='#section-2'>#</a>
           </div>
-          
-        </div>
-        <div class='code'>
-          <div class="highlight"><pre>        <span class="nd">@functools.wraps</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
-        <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">):</span>
-            <span class="n">fpp</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">)(</span><span class="n">GRID</span><span class="o">.</span><span class="n">TEMPLATE</span><span class="p">)</span>
-            <span class="n">result</span> <span class="o">=</span> <span class="n">integrate</span><span class="o">.</span><span class="n">simps</span><span class="p">(</span><span class="n">fpp</span><span class="p">,</span> <span class="n">dx</span><span class="o">=</span><span class="n">GRID</span><span class="o">.</span><span class="n">MOMENTUM_STEP</span><span class="p">)</span>
-
-            <span class="k">return</span> <span class="n">result</span></pre></div>
-        </div>
-        <div class='clearall'></div>
-    </section>
-    </div>
-    <div class='section'>
-    <a id="section-3" class="section-anchor"></a>
-    <section>
-        <div class='docs'>
-          <div class='octowrap'>
-            <a class='octothorpe' href='#section-3'>#</a>
-          </div>
-          
-        </div>
-        <div class='code'>
-          <div class="highlight"><pre>    <span class="k">elif</span> <span class="n">method</span> <span class="o">==</span> <span class="s">&#39;quad&#39;</span><span class="p">:</span>
-        <span class="nd">@functools.wraps</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
-        <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">):</span>
-            <span class="n">fpp</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">)</span>
-            <span class="n">result</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">integrate</span><span class="o">.</span><span class="n">quad</span><span class="p">(</span><span class="n">fpp</span><span class="p">,</span> <span class="n">GRID</span><span class="o">.</span><span class="n">MIN_MOMENTUM</span><span class="p">,</span> <span class="n">GRID</span><span class="o">.</span><span class="n">MAX_MOMENTUM</span><span class="p">,</span>
-                                       <span class="n">epsrel</span><span class="o">=</span><span class="mf">1e-5</span><span class="p">,</span> <span class="n">epsabs</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-
-            <span class="k">return</span> <span class="n">result</span></pre></div>
-        </div>
-        <div class='clearall'></div>
-    </section>
-    </div>
-    <div class='section'>
-    <a id="section-4" class="section-anchor"></a>
-    <section>
-        <div class='docs'>
-          <div class='octowrap'>
-            <a class='octothorpe' href='#section-4'>#</a>
-          </div>
-          
-        </div>
-        <div class='code'>
-          <div class="highlight"><pre>    <span class="k">return</span> <span class="n">wrapper</span>
-<span class="nd">@lambda_integrate</span>
-<span class="k">def</span> <span class="nf">density</span><span class="p">(</span><span class="n">particle</span><span class="p">):</span>
-    <span class="k">return</span> <span class="n">numpy</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="k">lambda</span> <span class="n">y</span><span class="p">:</span> <span class="p">(</span>
-        <span class="n">particle</span><span class="o">.</span><span class="n">distribution</span><span class="p">(</span><span class="n">y</span><span class="p">)</span> <span class="o">*</span> <span class="n">y</span><span class="o">**</span><span class="mi">2</span>
-        <span class="o">*</span> <span class="n">particle</span><span class="o">.</span><span class="n">dof</span> <span class="o">/</span> <span class="mf">2.</span> <span class="o">/</span> <span class="n">numpy</span><span class="o">.</span><span class="n">pi</span><span class="o">**</span><span class="mi">2</span> <span class="o">/</span> <span class="n">particle</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">a</span><span class="o">**</span><span class="mi">3</span>
-    <span class="p">),</span> <span class="n">otypes</span><span class="o">=</span><span class="p">[</span><span class="n">numpy</span><span class="o">.</span><span class="n">float_</span><span class="p">])</span></pre></div>
-        </div>
-        <div class='clearall'></div>
-    </section>
-    </div>
-    <div class='section'>
-    <a id="section-5" class="section-anchor"></a>
-    <section>
-        <div class='docs'>
-          <div class='octowrap'>
-            <a class='octothorpe' href='#section-5'>#</a>
-          </div>
           <h2><a id="energy-density" class="header-anchor" href="#energy-density"> Energy density</a></h2>
 <div class="codehilite"><pre>    \begin{equation}
         \rho = \frac{g}{2 \pi^2} \frac{m^4}{x^4} \int dy y^2 \sqrt{y^2 + \frac{M_N^2 x^2}{m^2}} f(y)
@@ -165,7 +102,7 @@
 </pre></div>
         </div>
         <div class='code'>
-          <div class="highlight"><pre><span class="nd">@lambda_integrate</span>
+          <div class="highlight"><pre><span class="nd">@lambda_integrate</span><span class="p">()</span>
 <span class="k">def</span> <span class="nf">energy_density</span><span class="p">(</span><span class="n">particle</span><span class="p">):</span>
 
     <span class="k">return</span> <span class="n">numpy</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="k">lambda</span> <span class="n">y</span><span class="p">:</span> <span class="p">(</span>
@@ -178,11 +115,11 @@
     </section>
     </div>
     <div class='section'>
-    <a id="section-6" class="section-anchor"></a>
+    <a id="section-3" class="section-anchor"></a>
     <section>
         <div class='docs'>
           <div class='octowrap'>
-            <a class='octothorpe' href='#section-6'>#</a>
+            <a class='octothorpe' href='#section-3'>#</a>
           </div>
           <h2><a id="pressure" class="header-anchor" href="#pressure"> Pressure</a></h2>
 <div class="codehilite"><pre>    \begin{equation}
@@ -191,7 +128,7 @@
 </pre></div>
         </div>
         <div class='code'>
-          <div class="highlight"><pre><span class="nd">@lambda_integrate</span>
+          <div class="highlight"><pre><span class="nd">@lambda_integrate</span><span class="p">()</span>
 <span class="k">def</span> <span class="nf">pressure</span><span class="p">(</span><span class="n">particle</span><span class="p">):</span>
 
     <span class="k">return</span> <span class="n">numpy</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="k">lambda</span> <span class="n">p</span><span class="p">:</span> <span class="p">(</span>
@@ -204,11 +141,11 @@
     </section>
     </div>
     <div class='section'>
-    <a id="section-7" class="section-anchor"></a>
+    <a id="section-4" class="section-anchor"></a>
     <section>
         <div class='docs'>
           <div class='octowrap'>
-            <a class='octothorpe' href='#section-7'>#</a>
+            <a class='octothorpe' href='#section-4'>#</a>
           </div>
           <h1><a id="master-equation-terms" class="header-anchor" href="#master-equation-terms"> Master equation terms </a></h1>
         </div>
@@ -219,11 +156,11 @@
     </section>
     </div>
     <div class='section'>
-    <a id="section-8" class="section-anchor"></a>
+    <a id="section-5" class="section-anchor"></a>
     <section>
         <div class='docs'>
           <div class='octowrap'>
-            <a class='octothorpe' href='#section-8'>#</a>
+            <a class='octothorpe' href='#section-5'>#</a>
           </div>
           <h2><a id="numerator" class="header-anchor" href="#numerator"> Numerator</a></h2>
 <div class="codehilite"><pre>\begin{equation}
@@ -232,10 +169,9 @@
 </pre></div>
         </div>
         <div class='code'>
-          <div class="highlight"><pre><span class="nd">@lambda_integrate</span>
+          <div class="highlight"><pre><span class="nd">@lambda_integrate</span><span class="p">()</span>
 <span class="k">def</span> <span class="nf">numerator</span><span class="p">(</span><span class="n">particle</span><span class="p">):</span>
-    <span class="n">integral</span> <span class="o">=</span> <span class="n">interpolate</span><span class="o">.</span><span class="n">interp1d</span><span class="p">(</span><span class="n">GRID</span><span class="o">.</span><span class="n">TEMPLATE</span><span class="p">,</span> <span class="n">particle</span><span class="o">.</span><span class="n">collision_integral</span> <span class="o">/</span> <span class="n">particle</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">x</span><span class="p">,</span>
-                                    <span class="n">kind</span><span class="o">=</span><span class="s">&#39;quadratic&#39;</span><span class="p">,</span> <span class="n">assume_sorted</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+    <span class="n">integral</span> <span class="o">=</span> <span class="n">linear_interpolation</span><span class="p">(</span><span class="n">particle</span><span class="o">.</span><span class="n">collision_integral</span> <span class="o">/</span> <span class="n">particle</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">GRID</span><span class="o">.</span><span class="n">TEMPLATE</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">numpy</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="k">lambda</span> <span class="n">y</span><span class="p">:</span> <span class="p">(</span>
         <span class="o">-</span><span class="mf">1.</span> <span class="o">*</span> <span class="n">particle</span><span class="o">.</span><span class="n">dof</span> <span class="o">/</span> <span class="mf">2.</span> <span class="o">/</span> <span class="n">numpy</span><span class="o">.</span><span class="n">pi</span><span class="o">**</span><span class="mi">2</span>
         <span class="o">*</span> <span class="n">y</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="n">particle</span><span class="o">.</span><span class="n">conformal_energy</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
@@ -246,11 +182,11 @@
     </section>
     </div>
     <div class='section'>
-    <a id="section-9" class="section-anchor"></a>
+    <a id="section-6" class="section-anchor"></a>
     <section>
         <div class='docs'>
           <div class='octowrap'>
-            <a class='octothorpe' href='#section-9'>#</a>
+            <a class='octothorpe' href='#section-6'>#</a>
           </div>
           <h2><a id="denominator" class="header-anchor" href="#denominator"> Denominator</a></h2>
 <p>\begin{equation}

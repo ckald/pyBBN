@@ -20,7 +20,7 @@
     <a class="btn" class="source source-1" href="#top">Back to top</a>
     <div class="generation-time">
         Generated at
-        <code>2015-04-23 19:30</code>
+        <code>2015-05-21 17:24</code>
         by a diligent
         <a target="_blank" href="http://ckald.github.io/pyccoon/" title="Pyccoon: side-to-side documentation generator">
             <img id="pyccoon-icon" src="../pyccoon_icon.svg" alt="Pyccoon: side-to-side documentation generator" />pyccoon</a>
@@ -46,8 +46,7 @@
         </div>
         <div class='code'>
           <div class="highlight"><pre><span class="kn">import</span> <span class="nn">multiprocessing</span>
-<span class="kn">from</span> <span class="nn">multiprocessing</span> <span class="kn">import</span> <span class="n">Process</span><span class="p">,</span> <span class="n">Pipe</span><span class="p">,</span> <span class="n">Pool</span>
-<span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">izip</span></pre></div>
+<span class="kn">from</span> <span class="nn">multiprocessing</span> <span class="kn">import</span> <span class="n">Pool</span></pre></div>
         </div>
         <div class='clearall'></div>
     </section>
@@ -68,7 +67,8 @@
     <span class="n">result</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">method_name</span><span class="p">)(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">result</span>
 
-<span class="n">pool</span> <span class="o">=</span> <span class="n">Pool</span><span class="p">(</span><span class="n">processes</span><span class="o">=</span><span class="n">multiprocessing</span><span class="o">.</span><span class="n">cpu_count</span><span class="p">()</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span></pre></div>
+<span class="n">worker_count</span> <span class="o">=</span> <span class="n">multiprocessing</span><span class="o">.</span><span class="n">cpu_count</span><span class="p">()</span> <span class="o">/</span> <span class="mi">2</span>
+<span class="n">pool</span> <span class="o">=</span> <span class="n">Pool</span><span class="p">(</span><span class="n">processes</span><span class="o">=</span><span class="n">worker_count</span><span class="p">)</span></pre></div>
         </div>
         <div class='clearall'></div>
     </section>
@@ -83,61 +83,11 @@
           
         </div>
         <div class='code'>
-          <div class="highlight"><pre><span class="k">def</span> <span class="nf">spawn</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
-
-    <span class="k">def</span> <span class="nf">fun</span><span class="p">(</span><span class="n">pipe</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
-        <span class="n">pipe</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
-        <span class="n">pipe</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-    <span class="k">return</span> <span class="n">fun</span></pre></div>
-        </div>
-        <div class='clearall'></div>
-    </section>
-    </div>
-    <div class='section'>
-    <a id="section-3" class="section-anchor"></a>
-    <section>
-        <div class='docs'>
-          <div class='octowrap'>
-            <a class='octothorpe' href='#section-3'>#</a>
-          </div>
-          
-        </div>
-        <div class='code'>
-          <div class="highlight"><pre><span class="k">def</span> <span class="nf">parmap</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">workers</span><span class="o">=</span><span class="n">multiprocessing</span><span class="o">.</span><span class="n">cpu_count</span><span class="p">()</span><span class="o">-</span><span class="mi">1</span><span class="p">):</span>
-    <span class="n">pipe</span> <span class="o">=</span> <span class="p">[</span><span class="n">Pipe</span><span class="p">()</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">X</span><span class="p">]</span>
-    <span class="n">processes</span> <span class="o">=</span> <span class="p">[</span><span class="n">Process</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="n">spawn</span><span class="p">(</span><span class="n">f</span><span class="p">),</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">x</span><span class="p">))</span> <span class="k">for</span> <span class="n">x</span><span class="p">,</span> <span class="p">(</span><span class="n">_</span><span class="p">,</span> <span class="n">c</span><span class="p">)</span> <span class="ow">in</span> <span class="n">izip</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">pipe</span><span class="p">)]</span>
-    <span class="n">numProcesses</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">processes</span><span class="p">)</span>
-    <span class="n">processNum</span> <span class="o">=</span> <span class="mi">0</span>
-    <span class="n">outputList</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="k">while</span> <span class="n">processNum</span> <span class="o">&lt;</span> <span class="n">numProcesses</span><span class="p">:</span>
-        <span class="n">endProcessNum</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">processNum</span><span class="o">+</span><span class="n">workers</span><span class="p">,</span> <span class="n">numProcesses</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">proc</span> <span class="ow">in</span> <span class="n">processes</span><span class="p">[</span><span class="n">processNum</span><span class="p">:</span><span class="n">endProcessNum</span><span class="p">]:</span>
-            <span class="n">proc</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
-        <span class="k">for</span> <span class="n">proc</span> <span class="ow">in</span> <span class="n">processes</span><span class="p">[</span><span class="n">processNum</span><span class="p">:</span><span class="n">endProcessNum</span><span class="p">]:</span>
-            <span class="n">proc</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
-        <span class="k">for</span> <span class="n">proc</span><span class="p">,</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">pipe</span><span class="p">[</span><span class="n">processNum</span><span class="p">:</span><span class="n">endProcessNum</span><span class="p">]:</span>
-            <span class="n">outputList</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">proc</span><span class="o">.</span><span class="n">recv</span><span class="p">())</span>
-        <span class="n">processNum</span> <span class="o">=</span> <span class="n">endProcessNum</span>
-    <span class="k">return</span> <span class="n">outputList</span></pre></div>
-        </div>
-        <div class='clearall'></div>
-    </section>
-    </div>
-    <div class='section'>
-    <a id="section-4" class="section-anchor"></a>
-    <section>
-        <div class='docs'>
-          <div class='octowrap'>
-            <a class='octothorpe' href='#section-4'>#</a>
-          </div>
-          
-        </div>
-        <div class='code'>
           <div class="highlight"><pre><span class="k">def</span> <span class="nf">poolmap</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">func_name</span><span class="p">,</span> <span class="n">arguments</span><span class="p">):</span>
     <span class="n">arguments</span> <span class="o">=</span> <span class="p">[(</span><span class="n">cls</span><span class="p">,</span> <span class="n">func_name</span><span class="p">,</span> <span class="n">arg</span><span class="p">)</span> <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">arguments</span><span class="p">]</span>
     <span class="n">func</span> <span class="o">=</span> <span class="n">target</span>
 
-    <span class="n">result</span> <span class="o">=</span> <span class="n">pool</span><span class="o">.</span><span class="n">map_async</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">arguments</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="mi">10000</span><span class="p">)</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">pool</span><span class="o">.</span><span class="n">map_async</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">arguments</span><span class="p">,</span> <span class="n">chunksize</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">result</span>
 
 </pre></div>
