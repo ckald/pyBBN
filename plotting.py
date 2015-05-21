@@ -139,7 +139,7 @@ class RadiationParticleMonitor(ParticleMonitor):
 
         rhoeq = self.particle.energy_density() / (
             7. * self.particle.dof * numpy.pi**2
-            * (self.particle.params.m / a)**4 / 240.
+            * (aT / a)**4 / 240.
         )
         feq = self.particle.equilibrium_distribution(aT=aT)
 
