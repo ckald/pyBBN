@@ -177,10 +177,9 @@ class Grid(object):
     def generate_template(self):
         return (
             self.MIN_MOMENTUM
-            + numpy.logspace(0,
-                             numpy.log(self.MAX_MOMENTUM - self.MIN_MOMENTUM),
-                             self.MOMENTUM_SAMPLES)
-            - 1
+            + (self.MAX_MOMENTUM - self.MIN_MOMENTUM)
+            * (numpy.exp(numpy.arange(0, self.MOMENTUM_SAMPLES, 1)) - 1.)
+            / numpy.exp(self.MOMENTUM_SAMPLES - 1.)
         )
 
         # self.TEMPLATE = numpy.linspace(self.MIN_MOMENTUM, self.MAX_MOMENTUM,
