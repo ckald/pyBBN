@@ -153,7 +153,7 @@ class Grid(object):
         and errors).
         """
 
-    __slots__ = ('MIN_MOMENTUM', 'MAX_MOMENTUM', 'MOMENTUM_SAMPLES', 'MOMENTUM_STEP', 'TEMPLATE')
+    __slots__ = ('MIN_MOMENTUM', 'MAX_MOMENTUM', 'MOMENTUM_SAMPLES', 'MOMENTUM_RATIO', 'TEMPLATE')
 
     def __init__(self):
         self.MIN_MOMENTUM = 0.  # 1. * UNITS.eV
@@ -170,10 +170,21 @@ class Grid(object):
 
         yields an array of particle conformal energy mapped over the `GRID`
         """
-        self.TEMPLATE = numpy.linspace(self.MIN_MOMENTUM, self.MAX_MOMENTUM,
-                                       num=self.MOMENTUM_SAMPLES, endpoint=True)
+        self.TEMPLATE = self.generate_template()
 
-        self.MOMENTUM_STEP = self.TEMPLATE[1] - self.TEMPLATE[0]
+        self.MOMENTUM_RATIO = self.TEMPLATE[-1] / self.TEMPLATE[-2]
+
+    def generate_template(self):
+        return (
+            self.MIN_MOMENTUM
+            + numpy.logspace(0,
+                             numpy.log(self.MAX_MOMENTUM - self.MIN_MOMENTUM),
+                             self.MOMENTUM_SAMPLES)
+            - 1
+        )
+
+        # self.TEMPLATE = numpy.linspace(self.MIN_MOMENTUM, self.MAX_MOMENTUM,
+        #                                num=self.MOMENTUM_SAMPLES, endpoint=True)
 
 
 GRID = Grid()
