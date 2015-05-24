@@ -175,11 +175,12 @@ class Grid(object):
         self.MOMENTUM_RATIO = self.TEMPLATE[-1] / self.TEMPLATE[-2]
 
     def generate_template(self):
+        base = 1.2
         return (
             self.MIN_MOMENTUM
             + (self.MAX_MOMENTUM - self.MIN_MOMENTUM)
-            * (numpy.exp(numpy.arange(0, self.MOMENTUM_SAMPLES, 1)) - 1.)
-            / numpy.exp(self.MOMENTUM_SAMPLES - 1.)
+            * (base ** numpy.arange(0, self.MOMENTUM_SAMPLES, 1) - 1.)
+            / (base ** (self.MOMENTUM_SAMPLES - 1.) - 1.)
         )
 
         # self.TEMPLATE = numpy.linspace(self.MIN_MOMENTUM, self.MAX_MOMENTUM,
