@@ -28,6 +28,7 @@ class particles(object):
             'majorana': True
         }
 
+    @staticmethod
     def dirac_sterile_neutrino(mass=33.9 * UNITS.MeV):
         return {
             'name': 'Sterile neutrino (Dirac)',
