@@ -14,3 +14,26 @@ python tests/paper_test/__init__.py --mass 120 --theta 0.00398704
 python tests/paper_test/__init__.py --mass 120 --theta 0.00238271
 python tests/paper_test/__init__.py --mass 120 --theta 0.00281926
 
+
+python tests/paper_test/__init__.py --mass 130 --theta 0.00326175
+python tests/paper_test/__init__.py --mass 130 --theta 0.00257864
+
+python tests/paper_test/__init__.py --mass 80 --theta 0.0122858
+python tests/paper_test/__init__.py --mass 80 --theta 0.0109887
+python tests/paper_test/__init__.py --mass 80 --theta 0.0077702
+
+
+
+# New batch
+python tests/paper_test/__init__.py --mass 20 --theta 0.111792 --comment '_t=0.496257'
+python tests/paper_test/__init__.py --mass 20 --theta 0.0782721 --comment '_t=1.01231'
+python tests/paper_test/__init__.py --mass 20 --theta 0.055284 --comment '_t=2.02922'
+python tests/paper_test/__init__.py --mass 50 --theta 0.0265091 --comment '_t=0.0901193'
+python tests/paper_test/__init__.py --mass 50 --theta 0.0198906 --comment '_t=0.16007'
+python tests/paper_test/__init__.py --mass 80 --theta 0.00996268 --comment '_t=0.0608292'
+python tests/paper_test/__init__.py --mass 80 --theta 0.0077048 --comment '_t=0.101705'
+python tests/paper_test/__init__.py --mass 100 --theta 0.00624422 --comment '_t=0.0507371'
+python tests/paper_test/__init__.py --mass 100 --theta 0.00444378 --comment '_t=0.100179'
+python tests/paper_test/__init__.py --mass 120 --theta 0.00395797 --comment '_t=0.0507371'
+python tests/paper_test/__init__.py --mass 120 --theta 0.00306096 --comment '_t=0.0848312'
+
