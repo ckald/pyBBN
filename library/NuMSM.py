@@ -19,13 +19,24 @@ class particles(object):
     @staticmethod
     def sterile_neutrino(mass=33.9 * UNITS.MeV):
         return {
-            'name': 'Sterile neutrino',
+            'name': 'Sterile neutrino (Majorana)',
             'symbol': 'N',
             'statistics': STATISTICS.FERMION,
             'mass': mass,
             'dof': 2,
             'decoupling_temperature': 1. * UNITS.GeV,
             'majorana': True
+        }
+
+    def dirac_sterile_neutrino(mass=33.9 * UNITS.MeV):
+        return {
+            'name': 'Sterile neutrino (Dirac)',
+            'symbol': 'N',
+            'statistics': STATISTICS.FERMION,
+            'mass': mass,
+            'dof': 4,
+            'decoupling_temperature': 1. * UNITS.GeV,
+            'majorana': False
         }
 
 

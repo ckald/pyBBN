@@ -51,7 +51,7 @@ muon = Particle(**SMP.leptons.muon)
 neutrino_e = Particle(**SMP.leptons.neutrino_e)
 neutrino_mu = Particle(**SMP.leptons.neutrino_mu)
 neutrino_tau = Particle(**SMP.leptons.neutrino_tau)
-sterile = Particle(**NuP.sterile_neutrino(mass))
+sterile = Particle(**NuP.dirac_sterile_neutrino(mass))
 
 sterile.decoupling_temperature = params.T_initial
 neutrino_e.decoupling_temperature = 10 * UNITS.MeV
