@@ -106,7 +106,7 @@ def getenv(var, default=None):
 
 def getboolenv(var, default=None):
     value = getenv(var, default)
-    return (value != 'false' and value != 'f' and value != '0' and value != '-1')
+    return (value is not False and value is not None and value not in ['false', 'f', '0', '-1'])
 
 
 def ensure_path(*chunks):
