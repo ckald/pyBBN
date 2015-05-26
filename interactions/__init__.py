@@ -164,7 +164,7 @@ class Interaction(PicklableObject):
         particle_Ms = copy.deepcopy(self.Ms)
 
         for M in particle_Ms:
-            if M.__class__ is FourParticleM:
+            if isinstance(M, FourParticleM):
                 map = {item.index: i for i, item in enumerate(reaction)}
                 M.apply_order(tuple(map[val] for val in M.order), reaction)
 

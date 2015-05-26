@@ -1,33 +1,8 @@
-from evolution import Universe
-from particles import Particle
-from library.SM import particles as SMP, interactions as SMI
-
-from . import eps, setup, with_setup_args
-
-
-universe = None
-
-
-def non_equilibium_setup():
-    global universe
-    args, kwargs = setup()
-    params = args[0]
-
-    photon = Particle(**SMP.photon)
-    neutrino_e = Particle(**SMP.leptons.neutrino_e)
-    neutrino_mu = Particle(**SMP.leptons.neutrino_mu)
-
-    neutrino_self_scattering = SMI.neutrino_scattering(neutrino_e, neutrino_e)
-
-    universe = Universe(params=params, plotting=False)
-    universe.add_particles([photon, neutrino_e, neutrino_mu])
-    universe.interactions += [neutrino_self_scattering]
-
-    return args, kwargs
+from . import eps, non_equilibium_setup, with_setup_args
 
 
 @with_setup_args(non_equilibium_setup)
-def free_non_equilibrium_test(params):
+def free_non_equilibrium_test(params, universe):
 
     params.update(universe.total_energy_density())
 

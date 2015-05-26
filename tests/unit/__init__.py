@@ -1,5 +1,7 @@
 from common import Params, UNITS
-from library.SM import particles as SMP
+from evolution import Universe
+from particles import Particle
+from library.SM import particles as SMP, interactions as SMI
 
 
 eps = 1e-5
@@ -10,6 +12,23 @@ def setup():
                     T_final=0.075 * UNITS.MeV,
                     dx=1e-4 * UNITS.MeV)
     return [params], {}
+
+
+def non_equilibium_setup():
+    args, kwargs = setup()
+    params = args[0]
+
+    photon = Particle(**SMP.photon)
+    neutrino_e = Particle(**SMP.leptons.neutrino_e)
+    neutrino_mu = Particle(**SMP.leptons.neutrino_mu)
+
+    neutrino_self_scattering = SMI.neutrino_scattering(neutrino_e, neutrino_e)
+
+    universe = Universe(params=params, plotting=False)
+    universe.add_particles([photon, neutrino_e, neutrino_mu])
+    universe.interactions += [neutrino_self_scattering]
+
+    return args + [universe], kwargs
 
 
 def with_setup_args(setup, teardown=None):
