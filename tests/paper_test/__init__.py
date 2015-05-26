@@ -30,13 +30,15 @@ from common import UNITS, Params, GRID, utils
 parser = argparse.ArgumentParser(description='Run simulation for given mass and mixing angle')
 parser.add_argument('--mass', required=True)
 parser.add_argument('--theta', required=True)
+parser.add_argument('--comment', default='')
 args = parser.parse_args()
 
 mass = float(args.mass) * UNITS.MeV
 theta = float(args.theta)
 
 folder = utils.ensure_dir(os.path.split(__file__)[0],
-                          "mass={:e}_theta={:e}".format(mass / UNITS.MeV, theta))
+                          "mass={:e}_theta={:e}".format(mass / UNITS.MeV, theta)
+                          + args.comment)
 
 
 params = Params(T_initial=100. * UNITS.MeV,
