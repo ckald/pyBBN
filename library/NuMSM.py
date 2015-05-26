@@ -44,7 +44,7 @@ class interactions(object):
         return Interaction(
             name="Sterile-active neutrino scattering",
             particles=((sterile, active_b), (active_a, active_b)),
-            antiparticles=((False, True), (False, True)),
+            antiparticles=((False, False), (False, False)),
             Ms=(WeakM(K1=theta**2 * K1, order=(0, 1, 2, 3)), ),
             integral=FourParticleIntegral
         )
