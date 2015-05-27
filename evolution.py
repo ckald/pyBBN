@@ -190,8 +190,10 @@ class Universe(object):
         if self.oscillations:
             pattern, particles = self.oscillations
 
+            integrals = {A.flavour: A.collision_integral for A in particles}
+
             for A, B in itertools.product(particles, particles):
-                A.collision_integral = pattern[(A.flavour, B.flavour)] * B.collision_integral
+                A.collision_integral = pattern[(A.flavour, B.flavour)] * integrals[B.flavour]
 
         for particle in self.particles:
             particle.update_distribution()
