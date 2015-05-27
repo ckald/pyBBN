@@ -5,6 +5,7 @@ import sys
 import numpy
 import pandas
 import time
+import itertools
 from datetime import timedelta
 
 from common import UNITS, Params, Grid, CONST, integrators, parallelization, utils
@@ -26,6 +27,8 @@ class Universe(object):
 
     kawano = None
     kawano_log = None
+
+    oscillations = None
 
     data = pandas.DataFrame(columns=('aT', 'T', 'a', 'x', 't', 'rho', 'fraction'))
 
@@ -60,6 +63,9 @@ class Universe(object):
         self.kawano_log.write("\t".join(kawano.heading) + "\n")
         self.kawano = kawano
         self.kawano_data = pandas.DataFrame(columns=self.kawano.heading)
+
+    def init_oscillations(self, pattern, particles):
+        self.oscillations = (pattern, particles)
 
     def evolve(self):
         """
@@ -180,6 +186,12 @@ class Universe(object):
 
     def update_distributions(self):
         """ ### 4. Update particles distributions """
+
+        if self.oscillations:
+            pattern, particles = self.oscillations
+
+            for A, B in itertools.product(particles, particles):
+                A.collision_integral = pattern[(A.flavour, B.flavour)] * B.collision_integral
 
         for particle in self.particles:
             particle.update_distribution()

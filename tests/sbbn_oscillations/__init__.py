@@ -30,7 +30,7 @@ folder = os.path.split(__file__)[0]
 
 params = Params(T_initial=10. * UNITS.MeV,
                 T_final=0.0008 * UNITS.MeV,
-                dy=0.0125)
+                dy=0.025)
 
 universe = Universe(params=params, folder=folder)
 
@@ -53,6 +53,8 @@ universe.add_particles([
     neutron,
     proton
 ])
+
+universe.init_oscillations(SMP.leptons.oscillations_map(), (neutrino_e, neutrino_mu, neutrino_tau))
 
 universe.interactions += (
     # [SMI.baryons_interaction(neutron=neutron, proton=proton,

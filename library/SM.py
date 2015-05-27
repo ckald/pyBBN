@@ -6,6 +6,7 @@
 from __future__ import division
 
 import itertools
+from math import sin, cos
 
 from common import UNITS, CONST
 from particles import STATISTICS
@@ -134,6 +135,29 @@ class particles(object):
             'majorana': False,
             'flavour': 'tau'
         }
+
+        @staticmethod
+        def oscillations_map(angles=(0.5905, 0.805404, 0.152346)):
+
+            oscillations = {
+                ('electron', 'electron'):
+                    1 - .5 * (sin(2*angles[2])**2 + cos(angles[2])**4 * sin(2*angles[0])**2),
+                ('electron', 'muon'):
+                    .5 * cos(angles[2])**2 * sin(2*angles[0])**2,
+                ('electron', 'tau'):
+                    sin(angles[2])**2 * cos(angles[2])**2 * (2 - .5 * sin(2*angles[0])**2),
+                ('muon', 'muon'):
+                    1 - .5 * sin(2*angles[0])**2,
+                ('muon', 'tau'):
+                    .5 * sin(angles[2])**2 * sin(2*angles[0])**2,
+                ('tau', 'tau'):
+                    1 - sin(angles[2])**2 * (2 * cos(angles[2])**2 +
+                                             .5 * sin(angles[2])**2 * sin(2*angles[0])**2)
+            }
+            oscillations[('muon', 'electron')] = oscillations[('electron', 'muon')]
+            oscillations[('tau', 'electron')] = oscillations[('electron', 'tau')]
+            oscillations[('tau', 'muon')] = oscillations[('muon', 'tau')]
+            return oscillations
 
     class quarks(object):
 
