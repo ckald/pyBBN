@@ -5,7 +5,6 @@ import sys
 import numpy
 import pandas
 import time
-import itertools
 from datetime import timedelta
 
 from common import UNITS, Params, Grid, CONST, integrators, parallelization, utils
@@ -106,13 +105,17 @@ class Universe(object):
         for particle in self.particles:
             print particle
 
-        print "Data saved to file {}".format(self.logfile)
-
         if self.graphics:
             self.graphics.save(self.logfile)
 
             if self.kawano:
                 self.kawano.plot(self.kawano_data, save=self.kawano_log.name)
+
+        if self.kawano:
+            self.kawano_log.close()
+            print kawano.run(self.folder)
+
+        print "Data saved to file {}".format(self.logfile)
 
         if self.PARALLELIZE:
             parallelization.pool.close()

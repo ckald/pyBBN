@@ -1,8 +1,13 @@
 # -*- coding: utf-8 -*-
 
+import os
 import itertools
 import numpy
 import pandas
+import argparse
+
+from subprocess import Popen, PIPE
+
 from collections import namedtuple
 from common import GRID, CONST, utils
 from common.integrators import integrate_1D
@@ -22,6 +27,33 @@ particles = None
 def init_kawano(electron=None, neutrino=None):
     global particles
     particles = Particles(electron=electron, neutrino=neutrino)
+
+
+def run(data_folder, input="s4.dat", output="kawano_output.dat"):
+    p = Popen(utils.getenv('KAWANO', 'KAWANO/kawano_noneq'), stdin=PIPE, env={
+        "INPUT": os.path.join(data_folder, input),
+        "OUTPUT": os.path.join(data_folder, output)
+    })
+    p.communicate(os.linesep.join([
+        # ...
+        "",
+        # Run
+        "4",
+        # Go
+        "2",
+        # ...
+        "",
+        # Exit
+        "4",
+        # Output
+        "5",
+        # Request output file
+        "1",
+        # ...
+        "", "", "", ""
+    ]))
+    with open(os.path.join(data_folder, "kawano_output.dat"), "r") as kawano_output:
+        return kawano_output.read()
 
 
 def _rate1(y):
@@ -198,3 +230,12 @@ def plot(data, label=None, save=None):
 
     parameters_plots.figure.savefig(save + "_params.svg")
     rates_plots.figure.savefig(save + "_rates.svg")
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description='Run KAWANO program for the given input file')
+    parser.add_argument('--folder', required=True)
+    parser.add_argument('--input', default='s4.dat')
+    parser.add_argument('--output', default='kawano_output.dat')
+    args = parser.parse_args()
+    print run(args.folder, input=args.input, output=args.output)
