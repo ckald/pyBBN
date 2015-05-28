@@ -108,17 +108,21 @@ class Universe(object):
         if self.graphics:
             self.graphics.save(self.logfile)
 
-            if self.kawano:
+        if self.kawano:
+            if self.graphics:
                 self.kawano.plot(self.kawano_data, save=self.kawano_log.name)
 
-        if self.kawano:
             self.kawano_log.close()
             print kawano.run(self.folder)
+
+            self.kawano_data.to_pickle(os.path.join(self.folder, "kawano.pickle"))
 
         print "Data saved to file {}".format(self.logfile)
 
         if self.PARALLELIZE:
             parallelization.pool.close()
+
+        self.data.to_pickle(os.path.join(self.folder, "evolution.pickle"))
 
         return self.data
 
