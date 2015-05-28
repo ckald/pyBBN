@@ -27,11 +27,15 @@ class Plotting(object):
 
         self.plots[0].set_title("Temperature")
         self.plots[0].set_xlabel("time, s")
+        self.plots[0].set_xscale("log")
+        self.plots[0].set_yscale("log")
         self.plots[0].set_ylabel("T, MeV")
         self.plots[0].set_yscale("log")
 
         self.plots[1].set_title("Scale factor")
         self.plots[1].set_xlabel("time, s")
+        self.plots[1].set_xscale("log")
+        self.plots[1].set_yscale("log")
         self.plots[1].set_ylabel("a, 1")
         self.plots[1].set_ylim(0, 1)
 
@@ -42,8 +46,9 @@ class Plotting(object):
         self.plots[2].set_ylim(1, 1.1)
 
         self.plots[3].set_title("Total energy density")
-        self.plots[3].set_yscale("log")
         self.plots[3].set_xlabel("time, s")
+        self.plots[3].set_xscale("log")
+        self.plots[3].set_yscale("log")
         self.plots[3].set_ylabel(u"ρ, eV**4")
 
         self.lines = []
