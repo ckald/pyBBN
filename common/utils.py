@@ -4,6 +4,8 @@ import time
 import codecs
 import contextlib
 import numpy
+import traceback
+import functools
 from collections import deque
 
 
@@ -121,3 +123,14 @@ def ensure_dir(*chunks):
     if not os.path.exists(dir):
         os.makedirs(dir)
     return dir
+
+
+def trace_unhandled_exceptions(func):
+    @functools.wraps(func)
+    def wrapped_func(*args, **kwargs):
+        try:
+            return func(*args, **kwargs)
+        except:
+            print 'Exception in '+func.__name__
+            traceback.print_exc()
+    return wrapped_func

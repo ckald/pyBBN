@@ -12,7 +12,7 @@ from collections import defaultdict
 
 from common import GRID, UNITS
 from common.integrators import adams_moulton_solver
-from common.utils import PicklableObject
+from common.utils import PicklableObject, trace_unhandled_exceptions
 
 from particles import DustParticle, RadiationParticle, IntermediateParticle, NonEqParticle
 from KAWANO.interpolation import dist_interp_values as distribution_interpolation
@@ -174,6 +174,7 @@ class Particle(PicklableObject):
     def integrate_collisions(self):
         return numpy.vectorize(self.calculate_collision_integral)(GRID.TEMPLATE)
 
+    @trace_unhandled_exceptions
     def calculate_collision_integral(self, p0):
         """ ### Particle collisions integration """
 
