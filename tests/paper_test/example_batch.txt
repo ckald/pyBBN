@@ -63,8 +63,24 @@ python tests/paper_oscillations/__init__.py --mass 20 --theta 0.111792 --comment
 python tests/paper_oscillations/__init__.py --mass 20 --theta 0.0782721 --comment '_t=1.01231'
 
 
-python tests/pionic --mass 160 --theta 0.00081349 --comment '_t=0.05'
-python tests/pionic --mass 160 --theta 0.00105021 --comment '_t=0.03'
+# Pionic batches
+
+python tests/pionic --mass 150 --theta 0.000936349 --comment '_t=0.1'
+python tests/pionic --mass 150 --theta 0.0013242 --comment '_t=0.05'
+python tests/pionic --mass 150 --theta 0.00170953 --comment '_t=0.03'
+python tests/pionic --mass 150 --theta 0.002961 --comment '_t=0.01'
+python tests/pionic --mass 250 --theta 0.000115584 --comment '_t=0.1'
+python tests/pionic --mass 250 --theta 0.00016346 --comment '_t=0.05'
+python tests/pionic --mass 250 --theta 0.000211026 --comment '_t=0.03'
+python tests/pionic --mass 250 --theta 0.000365508 --comment '_t=0.01'
+python tests/pionic --mass 350 --theta 0.0000563524 --comment '_t=0.1'
+python tests/pionic --mass 350 --theta 0.0000796943 --comment '_t=0.05'
+python tests/pionic --mass 350 --theta 0.000102885 --comment '_t=0.03'
+python tests/pionic --mass 350 --theta 0.000178202 --comment '_t=0.01'
+python tests/pionic --mass 450 --theta 0.0000349638 --comment '_t=0.1'
+python tests/pionic --mass 450 --theta 0.0000494463 --comment '_t=0.05'
+python tests/pionic --mass 450 --theta 0.0000638349 --comment '_t=0.03'
+python tests/pionic --mass 450 --theta 0.000110565 --comment '_t=0.01'
 
 
 
