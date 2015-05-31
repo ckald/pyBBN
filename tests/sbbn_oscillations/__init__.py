@@ -64,11 +64,12 @@ universe.interactions += (
 
 universe.init_kawano(electron=electron, neutrino=neutrino_e)
 
-universe.graphics.monitor([
-    (neutrino_e, RadiationParticleMonitor),
-    (neutrino_mu, RadiationParticleMonitor),
-    (neutrino_tau, RadiationParticleMonitor)
-])
+if universe.graphics:
+    universe.graphics.monitor([
+        (neutrino_e, RadiationParticleMonitor),
+        (neutrino_mu, RadiationParticleMonitor),
+        (neutrino_tau, RadiationParticleMonitor)
+    ])
 
 
 universe.evolve()
