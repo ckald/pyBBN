@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import numpy
-from common import CONST, GRID, integrators
+from common import GRID, integrators
 from interactions.boltzmann import BoltzmannIntegral
 from interactions.ds import D, Db1, Db2
 

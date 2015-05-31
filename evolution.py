@@ -21,8 +21,8 @@ class Universe(object):
     log_freq = 1
     clock_start = None
 
-    particles = []
-    interactions = []
+    particles = None
+    interactions = None
 
     kawano = None
     kawano_log = None
@@ -38,6 +38,9 @@ class Universe(object):
                              between particle species
         :param folder: Log file path (current `datetime` by default)
         """
+
+        self.particles = []
+        self.interactions = []
 
         self.clock_start = time.time()
 
