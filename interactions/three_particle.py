@@ -81,7 +81,7 @@ class ThreeParticleIntegral(BoltzmannIntegral):
         if m[1] != 0:
             integrand *= p[1] / E[1]
 
-        integrand *= fau(p)
+        integrand *= numpy.array([fau([p[0], p[1][i], p[2][i]]) for i in range(len(p[1]))])
 
         return integrand
 
