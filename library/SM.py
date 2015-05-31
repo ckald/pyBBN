@@ -71,7 +71,7 @@ class particles(object):
             'symbol': 'π',
             'statistics': STATISTICS.BOSON,
             'mass': 139.57 * UNITS.MeV,
-            'dof': 1,
+            'dof': 2,
             'majorana': False,
             'Q': -1
         }
