@@ -1,0 +1,100 @@
+                                                      NUCLIDE ABUNDANCE YIELDS
+                                                      ------- --------- ------
+
+
+ Computational parameters:
+   cy = 0.300/  ct = 0.030/  initial temp = 1.00E+02/  final temp = 1.00E-02/  smallest abundances allowed = 1.00E-25
+ Model parameters:
+   g =  1.00/  tau = 885.70/  # nu =  3.00/  lambda =  0.000E+00/  xi-e =  0.000E+00/  xi-m =  0.000E+00/  xi-t =  0.000E+00
+
+    Temp        N/H          P          D/H         T/H        He3/H        He4        Li6/H       Li7/H       Be7/H      Li8/H&up
+------------------------------------------------------------------------------------------------------------------------------------
+ 1.000E+02   8.606E-01   5.375E-01         NaN   1.861E-25   1.861E-25   4.000E-25   1.861E-25   1.861E-25   1.861E-25   3.163E-24
+       NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN
+       NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN
+       NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN
+       NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN
+       NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN
+       NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN
+       NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN
+       NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN
+       NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN
+       NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN
+       NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN
+       NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN
+       NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN
+       NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN
+       NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN
+       NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN
+       NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN
+       NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN
+       NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN
+       NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN
+       NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN
+       NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN
+       NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN
+       NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN
+       NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN
+       NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN
+       NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN
+       NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN
+       NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN
+       NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN
+       NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN
+       NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN
+       NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN
+       NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN
+       NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN
+       NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN
+       NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN
+       NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN
+       NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN
+ 
+    Temp         T          rhog        rhoe       rhone        rhob        phie         dt         eta          H
+------------------------------------------------------------------------------------------------------------------------------------
+ 1.000E+02   1.082E-02   8.418E+08   0.000E+00         NaN         NaN         NaN   1.000E-04         NaN         NaN
+       NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN
+       NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN
+       NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN
+       NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN
+       NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN
+       NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN
+       NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN
+       NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN
+       NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN
+       NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN
+       NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN
+       NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN
+       NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN
+       NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN
+       NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN
+       NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN
+       NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN
+       NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN
+       NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN
+       NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN
+       NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN
+       NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN
+       NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN
+       NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN
+       NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN
+       NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN
+       NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN
+       NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN
+       NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN
+       NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN
+       NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN
+       NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN
+       NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN
+       NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN
+       NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN
+       NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN
+       NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN
+       NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN
+       NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN
+
+
+
+
+                        eta             D           He3           He4           Li7 
+ Observables:           NaN           NaN           NaN           NaN           NaN 
