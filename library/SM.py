@@ -63,7 +63,7 @@ class particles(object):
             'statistics': STATISTICS.BOSON,
             'mass': 134.98 * UNITS.MeV,
             'dof': 1,
-            'majorana': False,
+            'majorana': True,
             'Q': 0
         }
         charged_pion = {

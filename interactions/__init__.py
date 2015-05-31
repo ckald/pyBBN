@@ -107,10 +107,13 @@ class Interaction(PicklableObject):
         """ Return all relevant collision integrals involving `count` particles """
         reactions = {}
 
-        perms = itertools.chain(
-            self.permutations(self.particles, self.antiparticles),
-            self.permutations(tuple(reversed(self.particles)), tuple(reversed(self.antiparticles)))
-        )
+        perms = self.permutations(self.particles, self.antiparticles)
+
+        # # Produces more reactions, but with double-counting in neutrinos-leptons reactions
+        # perms = itertools.chain(
+        #     self.permutations(self.particles, self.antiparticles),
+        #     self.permutations(tuple(reversed(self.particles)), tuple(reversed(self.antiparticles)))
+        # )
 
         # if any(specie.majorana for specie in itertools.chain.from_iterable(self.particles)):
         #     print "There is Majorana in da house!"

@@ -196,21 +196,19 @@ class interactions(object):
             if thetas[neutrino.flavour]:
                 for meson in hadrons:
                     if meson.Q == 0:
-                        inters.append(cls.sterile_pion_neutral(
-                            theta=thetas[neutrino.flavour],
-                            sterile=sterile,
-                            active=neutrino,
-                            pion=meson))
+                        inters += cls.sterile_pion_neutral(theta=thetas[neutrino.flavour],
+                                                           sterile=sterile,
+                                                           active=neutrino,
+                                                           pion=meson)
 
         for lepton in leptons:
             if thetas[lepton.flavour]:
                 for meson in hadrons:
                     if meson.Q == -1:
-                        inters.append(cls.sterile_pion_charged(
-                            theta=thetas[lepton.flavour],
-                            sterile=sterile,
-                            lepton=lepton,
-                            pion=meson))
+                        inters += cls.sterile_pion_charged(theta=thetas[lepton.flavour],
+                                                           sterile=sterile,
+                                                           lepton=lepton,
+                                                           pion=meson)
 
         return inters
 
@@ -221,14 +219,17 @@ class interactions(object):
             \end{align}
         """
 
-        return Interaction(
+        return [Interaction(
             name="Sterile neutrino decay to neutral pion and neutrino",
             particles=((sterile, ), (active, pion)),
-            antiparticles=((False, ), (False, False)),
+            antiparticles=antiparticles,
             Ms=(ThreeParticleM(K=(CONST.G_F * theta * CONST.f_pi)**2
                                * sterile.mass**2 * (sterile.mass**2 - pion.mass**2)), ),
             integral=ThreeParticleIntegral
-        )
+        ) for antiparticles in [
+            ((False, ), (False, False)),
+            ((True, ), (True, False))
+        ]]
 
     @staticmethod
     def sterile_pion_charged(theta=1., sterile=None, lepton=None, pion=None):
@@ -239,10 +240,10 @@ class interactions(object):
 
         CKM = SM_particles.quarks.CKM[(1, 1)]
 
-        return Interaction(
+        return [Interaction(
             name="Sterile neutrino decay to charged pion and lepton",
             particles=((sterile, ), (lepton, pion)),
-            antiparticles=((False, ), (False, True)),
+            antiparticles=antiparticles,
             Ms=(ThreeParticleM(
                 K=(CONST.G_F * theta * CONST.f_pi * CKM)**2
                 * (
@@ -251,4 +252,7 @@ class interactions(object):
                 )
             ),),
             integral=ThreeParticleIntegral
-        )
+        ) for antiparticles in [
+            ((False, ), (False, True)),
+            ((True, ), (True, False))
+        ]]

@@ -33,16 +33,16 @@ def three_particle_integral_test(params):
     sterile = Particle(**NuP.dirac_sterile_neutrino(mass=200 * UNITS.MeV))
     neutral_pion = Particle(**SMP.hadrons.neutral_pion)
 
-    pion_interaction = NuI.sterile_pion_neutral(theta=1e-3, sterile=sterile,
-                                                active=neutrino_e, pion=neutral_pion)
+    pion_interactions = NuI.sterile_pion_neutral(theta=1e-3, sterile=sterile,
+                                                 active=neutrino_e, pion=neutral_pion)
 
     universe = Universe(params=params, plotting=False)
     universe.add_particles([photon, neutrino_e, sterile, neutral_pion])
-    universe.interactions += [pion_interaction]
+    universe.interactions += pion_interactions
 
     params.update(universe.total_energy_density())
 
-    assert len(universe.interactions) == 1
+    assert len(universe.interactions) == 2
     assert len(universe.interactions[0].integrals) == 3
     integral = universe.interactions[0].integrals[0]
     assert len(integral.Ms) == 1
