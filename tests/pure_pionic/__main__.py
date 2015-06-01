@@ -100,9 +100,10 @@ universe.init_kawano(electron=electron, neutrino=neutrino_e)
 universe.init_oscillations(SMP.leptons.oscillations_map(), (neutrino_e, neutrino_mu, neutrino_tau))
 
 if universe.graphics:
-    from plotting import RadiationParticleMonitor, MassiveParticleMonitor, AbundanceMonitor
+    from plotting import (RadiationParticleMonitor, EffectiveTemperatureRadiationPartileMonitor,
+                          MassiveParticleMonitor, AbundanceMonitor)
     universe.graphics.monitor([
-        (neutrino_e, RadiationParticleMonitor),
+        (neutrino_e, EffectiveTemperatureRadiationPartileMonitor),
         (neutrino_mu, RadiationParticleMonitor),
         (neutrino_tau, RadiationParticleMonitor),
         (sterile, MassiveParticleMonitor),

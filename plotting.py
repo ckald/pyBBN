@@ -8,6 +8,7 @@ import matplotlib.pyplot as plt
 
 from common import UNITS, GRID
 from common.utils import ring_deque, getboolenv
+from particles import STATISTICS
 
 
 class Plotting(object):
@@ -143,8 +144,9 @@ class RadiationParticleMonitor(ParticleMonitor):
         aT = self.particle.aT
 
         rhoeq = self.particle.energy_density() / (
-            7. * self.particle.dof * numpy.pi**2
-            * T**4 / 240.
+            self.particle.dof * numpy.pi**2
+            * T**4 / 30.
+            * (7./8. if self.particle.statistics == STATISTICS.FERMION else 1.)
         )
         feq = self.particle.equilibrium_distribution(aT=aT)
 
@@ -173,6 +175,26 @@ class EquilibriumRadiationParticleMonitor(RadiationParticleMonitor):
             * T**4 / 240.
         )
         feq = self.particle.equilibrium_distribution(aT=aT)
+
+        return (T, rhoeq), feq
+
+
+class EffectiveTemperatureRadiationPartileMonitor(RadiationParticleMonitor):
+    def comparison_distributions(self, data):
+        rho = self.particle.energy_density()
+        const = (
+            numpy.pi**2 / 30.
+            * (7./8. if self.particle.statistics == STATISTICS.FERMION else 1.)
+        )
+
+        T = self.particle.params.T
+        T_eff = (rho / const)**0.25
+        aT = T_eff * self.particle.params.a
+
+        rhoeq = rho / const / T**4
+        feq = self.particle.equilibrium_distribution(aT=aT)
+
+        self.plots[1].set_title("T ~ {:3e}".format(T / UNITS.MeV))
 
         return (T, rhoeq), feq
 
