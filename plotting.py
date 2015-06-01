@@ -130,7 +130,7 @@ class RadiationParticleMonitor(ParticleMonitor):
         self.particle, self.plots = particle, plots
 
         self.plots[0].set_title(particle.name)
-        self.plots[0].set_xlabel("a")
+        self.plots[0].set_xlabel("T, MeV")
         self.plots[0].set_xscale("log")
         self.plots[0].set_ylabel("rho/rho_eq")
 
@@ -139,21 +139,21 @@ class RadiationParticleMonitor(ParticleMonitor):
         self.plots[1].set_ylabel("f/f_eq")
 
     def comparison_distributions(self, data):
-        a = self.particle.params.a
+        T = self.particle.params.T
         aT = self.particle.aT
 
         rhoeq = self.particle.energy_density() / (
             7. * self.particle.dof * numpy.pi**2
-            * (aT / a)**4 / 240.
+            * T**4 / 240.
         )
         feq = self.particle.equilibrium_distribution(aT=aT)
 
-        return (a, rhoeq), feq
+        return (T, rhoeq), feq
 
     def plot(self, data):
-        (a, rhoeq), feq = self.comparison_distributions(data)
+        (T, rhoeq), feq = self.comparison_distributions(data)
 
-        self.plots[0].scatter(a, rhoeq, s=1)
+        self.plots[0].scatter(T, rhoeq, s=1)
 
         age_lines(self.plots[1].get_axes().lines)
 
@@ -165,16 +165,16 @@ class RadiationParticleMonitor(ParticleMonitor):
 
 class EquilibriumRadiationParticleMonitor(RadiationParticleMonitor):
     def comparison_distributions(self, data):
-        a = data['a'].iloc[-1]
+        T = data['a'].iloc[-1]
         aT = data['aT'].iloc[-1]
 
         rhoeq = self.particle.energy_density() / (
             7. * self.particle.dof * numpy.pi**2
-            * (self.particle.params.m / a)**4 / 240.
+            * T**4 / 240.
         )
         feq = self.particle.equilibrium_distribution(aT=aT)
 
-        return (a, rhoeq), feq
+        return (T, rhoeq), feq
 
 
 class MassiveParticleMonitor(ParticleMonitor):
@@ -182,7 +182,7 @@ class MassiveParticleMonitor(ParticleMonitor):
         self.particle, self.plots = particle, plots
 
         self.plots[0].set_title(particle.name)
-        self.plots[0].set_xlabel("a")
+        self.plots[0].set_xlabel("T, MeV")
         self.plots[0].set_xscale("log")
         self.plots[0].set_ylabel("rho/(n M)")
 
@@ -191,11 +191,11 @@ class MassiveParticleMonitor(ParticleMonitor):
         self.plots[1].set_ylabel("(f-f_eq) y^2")
 
     def plot(self, data):
-        a = data['a'].iloc[-1]
+        T = data['T'].iloc[-1]
 
         from particles.NonEqParticle import energy_density, density
 
-        self.plots[0].scatter(a, energy_density(self.particle)
+        self.plots[0].scatter(T / UNITS.MeV, energy_density(self.particle)
                               / (self.particle.mass * density(self.particle)), s=1)
 
         age_lines(self.plots[1].get_axes().lines)
@@ -228,6 +228,30 @@ class EquilibrationMonitor(ParticleMonitor):
         self.plots[0].scatter(a, numpy.max(numpy.fabs(self.particle.collision_integral))
                               * UNITS.MeV, s=1)
         self.plots[1].scatter(a, numerator(self.particle) * UNITS.MeV, s=1)
+
+
+class AbundanceMonitor(ParticleMonitor):
+    def __init__(self, particle, plots):
+        self.particle, self.plots = particle, plots
+
+        self.plots[0].set_title(particle.name)
+        self.plots[0].set_xlabel("T")
+        self.plots[0].set_xscale("log")
+        self.plots[0].set_ylabel("Energy density fraction")
+
+        self.plots[1].set_xlabel("T")
+        self.plots[1].set_xscale("log")
+        self.plots[1].set_ylabel("N_eff")
+
+    def plot(self, data):
+        T = data['T'].iloc[-1]
+
+        total_rho = data['rho'].iloc[-1]
+        rho = self.particle.energy_density()
+        self.plots[0].scatter(T, rho / total_rho, s=1)
+
+        N_eff = (total_rho - (numpy.pi**2 / 15 * T**4)) * 120 / 7 / numpy.pi**2 / T**4
+        self.plots[1].scatter(T, N_eff, s=1)
 
 
 def age_lines(lines):

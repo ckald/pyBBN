@@ -10,7 +10,6 @@ import argparse
 import os
 from collections import defaultdict
 
-from plotting import RadiationParticleMonitor, MassiveParticleMonitor, EquilibrationMonitor
 from particles import Particle
 from library.SM import particles as SMP, interactions as SMI
 from library.NuMSM import particles as NuP, interactions as NuI
@@ -99,12 +98,13 @@ universe.init_kawano(electron=electron, neutrino=neutrino_e)
 universe.init_oscillations(SMP.leptons.oscillations_map(), (neutrino_e, neutrino_mu, neutrino_tau))
 
 if universe.graphics:
+    from plotting import RadiationParticleMonitor, MassiveParticleMonitor, AbundanceMonitor
     universe.graphics.monitor([
         (neutrino_e, RadiationParticleMonitor),
         (neutrino_mu, RadiationParticleMonitor),
         (neutrino_tau, RadiationParticleMonitor),
         (sterile, MassiveParticleMonitor),
-        (sterile, EquilibrationMonitor)
+        (sterile, AbundanceMonitor)
     ])
 
 universe.evolve()
@@ -120,5 +120,6 @@ universe.evolve()
 <img src="figure_10_full.svg" width=100% />
 """
 
-from tests.plots import articles_comparison_plots
-articles_comparison_plots(universe, [neutrino_e, neutrino_mu, neutrino_tau, sterile])
+if universe.graphics:
+    from tests.plots import articles_comparison_plots
+    articles_comparison_plots(universe, [neutrino_e, neutrino_mu, neutrino_tau, sterile])
