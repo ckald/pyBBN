@@ -132,7 +132,7 @@ class RadiationParticleMonitor(ParticleMonitor):
 
         self.plots[0].set_title(particle.name)
         self.plots[0].set_xlabel("T, MeV")
-        self.plots[0].gca().invert_xaxis()
+        self.plots[0].invert_xaxis()
         self.plots[0].set_xscale("log")
         self.plots[0].set_ylabel("rho/rho_eq")
 
@@ -205,7 +205,7 @@ class MassiveParticleMonitor(ParticleMonitor):
         self.particle, self.plots = particle, plots
 
         self.plots[0].set_title(particle.name)
-        self.plots[0].gca().invert_xaxis()
+        self.plots[0].invert_xaxis()
         self.plots[0].set_xlabel("T, MeV")
         self.plots[0].set_xscale("log")
         self.plots[0].set_ylabel("rho/(n M)")
@@ -260,12 +260,12 @@ class AbundanceMonitor(ParticleMonitor):
 
         self.plots[0].set_title(particle.name)
         self.plots[0].set_xlabel("T, MeV")
-        self.plots[0].gca().invert_xaxis()
+        self.plots[0].invert_xaxis()
         self.plots[0].set_xscale("log")
         self.plots[0].set_ylabel("Energy density fraction")
 
         self.plots[1].set_xlabel("T, MeV")
-        self.plots[1].gca().invert_xaxis()
+        self.plots[1].invert_xaxis()
         self.plots[1].set_xscale("log")
         self.plots[1].set_ylabel("N_eff")
 
