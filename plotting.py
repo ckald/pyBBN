@@ -171,8 +171,8 @@ class EquilibriumRadiationParticleMonitor(RadiationParticleMonitor):
         aT = data['aT'].iloc[-1]
 
         rhoeq = self.particle.energy_density() / (
-            7. * self.particle.dof * numpy.pi**2
-            * T**4 / 240.
+            self.particle.dof * numpy.pi**2 / 30 * T**4
+            * (7./8. if self.particle.statistics == STATISTICS.FERMION else 1.)
         )
         feq = self.particle.equilibrium_distribution(aT=aT)
 
@@ -183,7 +183,7 @@ class EffectiveTemperatureRadiationPartileMonitor(RadiationParticleMonitor):
     def comparison_distributions(self, data):
         rho = self.particle.energy_density()
         const = (
-            numpy.pi**2 / 30.
+            self.particle.dof * numpy.pi**2 / 30.
             * (7./8. if self.particle.statistics == STATISTICS.FERMION else 1.)
         )
 
