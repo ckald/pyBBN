@@ -155,7 +155,7 @@ class RadiationParticleMonitor(ParticleMonitor):
     def plot(self, data):
         (T, rhoeq), feq = self.comparison_distributions(data)
 
-        self.plots[0].scatter(T, rhoeq, s=1)
+        self.plots[0].scatter(T / UNITS.MeV, rhoeq, s=1)
 
         age_lines(self.plots[1].get_axes().lines)
 
@@ -167,7 +167,7 @@ class RadiationParticleMonitor(ParticleMonitor):
 
 class EquilibriumRadiationParticleMonitor(RadiationParticleMonitor):
     def comparison_distributions(self, data):
-        T = data['a'].iloc[-1]
+        T = data['T'].iloc[-1]
         aT = data['aT'].iloc[-1]
 
         rhoeq = self.particle.energy_density() / (
@@ -257,11 +257,11 @@ class AbundanceMonitor(ParticleMonitor):
         self.particle, self.plots = particle, plots
 
         self.plots[0].set_title(particle.name)
-        self.plots[0].set_xlabel("T")
+        self.plots[0].set_xlabel("T, MeV")
         self.plots[0].set_xscale("log")
         self.plots[0].set_ylabel("Energy density fraction")
 
-        self.plots[1].set_xlabel("T")
+        self.plots[1].set_xlabel("T, MeV")
         self.plots[1].set_xscale("log")
         self.plots[1].set_ylabel("N_eff")
 
@@ -270,10 +270,10 @@ class AbundanceMonitor(ParticleMonitor):
 
         total_rho = data['rho'].iloc[-1]
         rho = self.particle.energy_density()
-        self.plots[0].scatter(T, rho / total_rho, s=1)
+        self.plots[0].scatter(T / UNITS.MeV, rho / total_rho, s=1)
 
         N_eff = (total_rho - (numpy.pi**2 / 15 * T**4)) * 120 / 7 / numpy.pi**2 / T**4
-        self.plots[1].scatter(T, N_eff, s=1)
+        self.plots[1].scatter(T / UNITS.MeV, N_eff, s=1)
 
 
 def age_lines(lines):
