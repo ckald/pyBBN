@@ -156,14 +156,16 @@ class RadiationParticleMonitor(ParticleMonitor):
     def plot(self, data):
         (T, rhoeq), feq = self.comparison_distributions(data)
 
+        if not self.particle.in_equilibrium:
+            ratio = numpy.vectorize(self.particle.distribution)(GRID.TEMPLATE) / feq
+        else:
+            ratio = numpy.ones(GRID.TEMPLATE.shape)
+            rhoeq = 1.
+
         self.plots[0].scatter(T / UNITS.MeV, rhoeq, s=1)
 
         age_lines(self.plots[1].get_axes().lines)
-
-        self.plots[1].plot(
-            GRID.TEMPLATE / UNITS.MeV,
-            numpy.vectorize(self.particle.distribution)(GRID.TEMPLATE) / feq
-        )
+        self.plots[1].plot(GRID.TEMPLATE / UNITS.MeV, ratio)
 
 
 class EquilibriumRadiationParticleMonitor(RadiationParticleMonitor):
