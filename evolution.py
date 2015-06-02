@@ -260,6 +260,7 @@ class Universe(object):
             'a': self.params.a,
             'x': self.params.x,
             'rho': self.params.rho,
+            'N_eff': self.N_eff,
             't': self.params.t,
             'fraction': self.fraction
         }, ignore_index=True)

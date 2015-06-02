@@ -23,8 +23,8 @@ class Plotting(object):
         self.plots = list(itertools.chain(*self.plots))
         self.params_figure.subplots_adjust(hspace=0.5, wspace=0.5)
 
-        self.plot_map = ['T', 'a', 'aT', 'rho']
-        self.divider_map = [UNITS.MeV, 1, UNITS.MeV, UNITS.eV**4]
+        self.plot_map = ['T', 'a', 'aT', 'N_eff']
+        self.divider_map = [UNITS.MeV, 1, UNITS.MeV, 1]
 
         self.plots[0].set_title("Temperature")
         self.plots[0].set_xlabel("time, s")
@@ -46,11 +46,10 @@ class Plotting(object):
         self.plots[2].set_ylabel("T * a, MeV")
         self.plots[2].set_ylim(1, 1.1)
 
-        self.plots[3].set_title("Total energy density")
-        self.plots[3].set_xlabel("time, s")
+        self.plots[3].set_xlabel("T, MeV")
+        self.plots[3].invert_xaxis()
         self.plots[3].set_xscale("log")
-        self.plots[3].set_yscale("log")
-        self.plots[3].set_ylabel(u"ρ, eV**4")
+        self.plots[3].set_ylabel("N_eff")
 
         self.lines = []
         self.plots_data = []
@@ -141,11 +140,11 @@ class RadiationParticleMonitor(ParticleMonitor):
         self.plots[1].set_ylabel("f/f_eq")
 
     def comparison_distributions(self, data):
-        T = self.particle.T
+        T = self.particle.params.T
         aT = self.particle.aT
 
         rhoeq = self.particle.energy_density() / (
-            self.particle.dof * numpy.pi**2 / 30. * T**4
+            self.particle.dof * numpy.pi**2 / 30. * self.particle.T**4
             * (7./8. if self.particle.statistics == STATISTICS.FERMION else 1.)
         )
         feq = self.particle.equilibrium_distribution(aT=aT)
@@ -193,7 +192,7 @@ class EffectiveTemperatureRadiationPartileMonitor(RadiationParticleMonitor):
         T_eff = (rho / const)**0.25
         aT = T_eff * self.particle.params.a
 
-        rhoeq = rho / const / T**4
+        rhoeq = rho / const / T_eff**4
         feq = self.particle.equilibrium_distribution(aT=aT)
 
         self.plots[1].set_title("T ~ {:3e}".format(T / UNITS.MeV))

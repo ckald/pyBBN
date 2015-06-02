@@ -64,7 +64,7 @@ class CONST(object):
 class Params(object):
 
     __slots__ = ('T_initial', 'T_final', 'm', 'dy', 't', 'H', 'rho',
-                 'a_initial', 'a', 'x', 'y', 'dx', 'T', 'aT')
+                 'a_initial', 'a', 'x', 'y', 'dx', 'T', 'aT', 'N_eff')
 
     def __init__(self, **kwargs):
         """ ## Parameters
@@ -84,6 +84,7 @@ class Params(object):
         self.H = 0.
         # Total energy density
         self.rho = 0.
+        self.N_eff = 0.
 
         for key in kwargs:
             setattr(self, key, kwargs[key])
@@ -133,6 +134,11 @@ class Params(object):
         """
         dt = (self.a / old_a - 1) / self.H
         self.t += dt
+
+        self.N_eff = (
+            (rho - (numpy.pi**2 / 15 * self.T**4))
+            / (7./8. * numpy.pi**2 / 15 * (self.T / 1.4)**4)
+        )
 
 
 class Grid(object):
