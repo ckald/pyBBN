@@ -141,7 +141,7 @@ class RadiationParticleMonitor(ParticleMonitor):
         self.plots[1].set_ylabel("f/f_eq")
 
     def comparison_distributions(self, data):
-        T = self.particle.params.T
+        T = self.particle.T
         aT = self.particle.aT
 
         rhoeq = self.particle.energy_density() / (
