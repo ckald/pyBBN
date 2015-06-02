@@ -277,7 +277,7 @@ class AbundanceMonitor(ParticleMonitor):
         rho = self.particle.energy_density()
         self.plots[0].scatter(T / UNITS.MeV, rho / total_rho, s=1)
 
-        density = self.particle.density() * self.particle.params.a**3
+        density = self.particle.density() * self.particle.params.x**3
         self.plots[1].scatter(T / UNITS.MeV, density, s=1)
 
 
