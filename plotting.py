@@ -142,10 +142,11 @@ class RadiationParticleMonitor(ParticleMonitor):
 
     def comparison_distributions(self, data):
         T = self.particle.params.T
+        a = self.particle.params.a
         aT = self.particle.aT
 
         rhoeq = self.particle.energy_density() / (
-            self.particle.dof * numpy.pi**2 / 30. * T**4
+            self.particle.dof * numpy.pi**2 / 30. * a**4 * T**4
             * (7./8. if self.particle.statistics == STATISTICS.FERMION else 1.)
         )
         feq = self.particle.equilibrium_distribution(aT=aT)
@@ -170,10 +171,11 @@ class RadiationParticleMonitor(ParticleMonitor):
 class EquilibriumRadiationParticleMonitor(RadiationParticleMonitor):
     def comparison_distributions(self, data):
         T = data['T'].iloc[-1]
+        a = data['a'].iloc[-1]
         aT = data['aT'].iloc[-1]
 
         rhoeq = self.particle.energy_density() / (
-            self.particle.dof * numpy.pi**2 / 30 * T**4
+            self.particle.dof * numpy.pi**2 / 30 * a**4 * T**4
             * (7./8. if self.particle.statistics == STATISTICS.FERMION else 1.)
         )
         feq = self.particle.equilibrium_distribution(aT=aT)
@@ -185,7 +187,7 @@ class EffectiveTemperatureRadiationPartileMonitor(RadiationParticleMonitor):
     def comparison_distributions(self, data):
         rho = self.particle.energy_density()
         const = (
-            self.particle.dof * numpy.pi**2 / 30.
+            self.particle.dof * numpy.pi**2 / 30. * self.particle.params.a**4
             * (7./8. if self.particle.statistics == STATISTICS.FERMION else 1.)
         )
 
@@ -221,7 +223,7 @@ class MassiveParticleMonitor(ParticleMonitor):
         from particles.NonEqParticle import energy_density, density
 
         self.plots[0].scatter(T / UNITS.MeV, energy_density(self.particle)
-                              / (self.particle.mass * density(self.particle)), s=1)
+                              / (self.particle.conformal_mass * density(self.particle)), s=1)
 
         age_lines(self.plots[1].get_axes().lines)
 
