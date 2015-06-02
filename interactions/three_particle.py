@@ -75,15 +75,19 @@ class ThreeParticleIntegral(BoltzmannIntegral):
         p = [p0, p1, 0]
         p, E, m = self.calculate_kinematics(p)
 
-        integrand = self.in_bounds(p, E, m) * self.constant / E[0]
+        integrand = self.in_bounds(p, E, m) * self.constant
 
         if p[0] != 0:
-            integrand /= p[0]
+            integrand /= p[0] * E[0]
 
             # Avoid rounding errors and division by zero
             if m[1] != 0:
                 integrand *= p[1] / E[1]
         else:
+            if m[0] == 0:
+                integrand *= 0
+                return integrand
+
             integrand *= 2 * p[1]**2
             if m[1] != 0:
                 integrand *= p[1] / E[1]
