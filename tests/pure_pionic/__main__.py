@@ -53,9 +53,6 @@ charged_pion = Particle(**SMP.hadrons.charged_pion)
 sterile = Particle(**NuP.dirac_sterile_neutrino(mass))
 
 sterile.decoupling_temperature = params.T_initial
-neutrino_e.decoupling_temperature = 50 * UNITS.MeV
-neutrino_mu.decoupling_temperature = 50 * UNITS.MeV
-neutrino_tau.decoupling_temperature = 50 * UNITS.MeV
 
 universe.add_particles([
     photon,
