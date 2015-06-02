@@ -263,12 +263,12 @@ class AbundanceMonitor(ParticleMonitor):
         self.plots[0].set_xlabel("T, MeV")
         self.plots[0].invert_xaxis()
         self.plots[0].set_xscale("log")
-        self.plots[0].set_ylabel("Energy density fraction")
+        self.plots[0].set_ylabel("rho fraction")
 
         self.plots[1].set_xlabel("T, MeV")
         self.plots[1].invert_xaxis()
         self.plots[1].set_xscale("log")
-        self.plots[1].set_ylabel("N_eff")
+        self.plots[1].set_ylabel("n a^3")
 
     def plot(self, data):
         T = data['T'].iloc[-1]
@@ -277,8 +277,8 @@ class AbundanceMonitor(ParticleMonitor):
         rho = self.particle.energy_density()
         self.plots[0].scatter(T / UNITS.MeV, rho / total_rho, s=1)
 
-        N_eff = (total_rho - (numpy.pi**2 / 15 * T**4)) * 120 / 7 / numpy.pi**2 / (1.4 * T)**4
-        self.plots[1].scatter(T / UNITS.MeV, N_eff, s=1)
+        density = self.particle.density() * self.particle.params.a**3
+        self.plots[1].scatter(T / UNITS.MeV, density, s=1)
 
 
 def age_lines(lines):
