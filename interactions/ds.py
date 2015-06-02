@@ -130,6 +130,42 @@ def D3(k1, k2, k3, k4):
     return result
 
 
+def Db(p, E, m, M=None, reaction=None):
+    """ Dimensionality: energy """
+
+    i, j, k, l = M.order
+    sisj = reaction[i].side * reaction[j].side
+    sksl = reaction[k].side * reaction[l].side
+
+    result = 0.
+
+    if M.K1 != 0:
+        subresult = E[1]*E[2]*E[3] * Db1(*p[1:])
+
+        if i * j == 0:
+            subresult += sisj * E[i+j] * Db2(p[i+j], p[k], p[l])
+        elif k * l == 0:
+            subresult += sksl * E[k+l] * Db2(p[i], p[j], p[k+l])
+        else:
+            raise Exception("No 0-th particle found in order of {}".format(M))
+
+        result += M.K1 * subresult
+
+    if M.K2 != 0:
+        subresult = 0
+
+        if i * j == 0:
+            subresult += m[i+j] * (E[k] * E[l] * Db1(*p[1:]) + sksl * Db2(p[i+j], p[k], p[l]))
+        elif k * l == 0:
+            subresult += m[i] * m[j] * m[k+l] * Db1(*p[1:])
+        else:
+            raise Exception("No 0-th particle found in order of {}".format(M))
+
+        result += M.K2 * subresult
+
+    return result
+
+
 def Db1(q2, q3, q4):
     if (q2 + q3 > q4) and (q2 + q4 > q3) and (q3 + q4 > q2):
         return 1.

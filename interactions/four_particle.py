@@ -2,7 +2,7 @@
 import numpy
 from common import GRID, integrators
 from interactions.boltzmann import BoltzmannIntegral
-from interactions.ds import D, Db1, Db2
+from interactions.ds import D, Db
 
 
 class FourParticleM(object):
@@ -130,7 +130,7 @@ class FourParticleIntegral(BoltzmannIntegral):
             ds = ds / p[0] / E[0]
         else:
             for M in self.Ms:
-                ds += Db1(*p[1:]) + m[1] * (E[2] * E[3] + Db2(*p[1:]))
+                ds += Db(p=p, E=E, m=m, M=M, reaction=self.reaction)
         integrand *= ds
 
         # Avoid rounding errors and division by zero
