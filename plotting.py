@@ -193,7 +193,7 @@ class EffectiveTemperatureRadiationPartileMonitor(RadiationParticleMonitor):
         T_eff = (rho / const)**0.25
         aT = T_eff * self.particle.params.a
 
-        rhoeq = rho / const / T**4
+        rhoeq = rho / const / (self.particle.aT / self.particle.params.a)**4
         feq = self.particle.equilibrium_distribution(aT=aT)
 
         self.plots[1].set_title("T ~ {:3e}".format(T_eff / UNITS.MeV))
@@ -263,11 +263,13 @@ class AbundanceMonitor(ParticleMonitor):
         self.plots[0].set_xlabel("T, MeV")
         self.plots[0].invert_xaxis()
         self.plots[0].set_xscale("log")
+        self.plots[0].set_yscale("log")
         self.plots[0].set_ylabel("rho fraction")
 
         self.plots[1].set_xlabel("T, MeV")
         self.plots[1].invert_xaxis()
         self.plots[1].set_xscale("log")
+        self.plots[1].set_yscale("log")
         self.plots[1].set_ylabel("n a^3")
 
     def plot(self, data):
