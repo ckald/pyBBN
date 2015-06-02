@@ -145,7 +145,7 @@ class RadiationParticleMonitor(ParticleMonitor):
         aT = self.particle.aT
 
         rhoeq = self.particle.energy_density() / (
-            self.particle.dof * numpy.pi**2 / 30. * self.particle.T**4
+            self.particle.dof * numpy.pi**2 / 30. * aT**4 / self.particle.params.a
             * (7./8. if self.particle.statistics == STATISTICS.FERMION else 1.)
         )
         feq = self.particle.equilibrium_distribution(aT=aT)
@@ -193,10 +193,10 @@ class EffectiveTemperatureRadiationPartileMonitor(RadiationParticleMonitor):
         T_eff = (rho / const)**0.25
         aT = T_eff * self.particle.params.a
 
-        rhoeq = rho / const / T_eff**4
+        rhoeq = rho / const / T**4
         feq = self.particle.equilibrium_distribution(aT=aT)
 
-        self.plots[1].set_title("T ~ {:3e}".format(T / UNITS.MeV))
+        self.plots[1].set_title("T ~ {:3e}".format(T_eff / UNITS.MeV))
 
         return (T, rhoeq), feq
 
