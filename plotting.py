@@ -145,8 +145,7 @@ class RadiationParticleMonitor(ParticleMonitor):
         aT = self.particle.aT
 
         rhoeq = self.particle.energy_density() / (
-            self.particle.dof * numpy.pi**2
-            * T**4 / 30.
+            self.particle.dof * numpy.pi**2 / 30. * T**4
             * (7./8. if self.particle.statistics == STATISTICS.FERMION else 1.)
         )
         feq = self.particle.equilibrium_distribution(aT=aT)
@@ -278,7 +277,7 @@ class AbundanceMonitor(ParticleMonitor):
         rho = self.particle.energy_density()
         self.plots[0].scatter(T / UNITS.MeV, rho / total_rho, s=1)
 
-        N_eff = (total_rho - (numpy.pi**2 / 15 * T**4)) * 120 / 7 / numpy.pi**2 / T**4
+        N_eff = (total_rho - (numpy.pi**2 / 15 * T**4)) * 120 / 7 / numpy.pi**2 / (1.4 * T)**4
         self.plots[1].scatter(T / UNITS.MeV, N_eff, s=1)
 
 
