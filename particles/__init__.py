@@ -165,6 +165,7 @@ class Particle(PicklableObject):
             return
 
         self._distribution += self.collision_integral * self.params.dy
+        self._distribution = numpy.maximum(self._distribution, 0)
 
         # Clear collision integrands for the next computation step
         self.collision_integrals = []
