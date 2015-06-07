@@ -22,13 +22,14 @@
     Contents
     <div id="jump_wrapper">
       <div id="jump_page">
-          <a class="source source-1" href="#weak-interactions-matrix-element"> Weak interactions matrix element</a>
+          <a class="source source-1" href="#standard-model-particles-and-interactions"> Standard Model particles and interactions</a>
+          <a class="source source-2" href="#weak-interactions-matrix-element"> Weak interactions matrix element</a>
       </div>
     </div>
     </div>
     <div class="generation-time">
         Generated at
-        <code>2015-05-21 18:14</code>
+        <code>2015-06-07 02:03</code>
         by a diligent
         <a target="_blank" href="http://ckald.github.io/pyccoon/" title="Pyccoon: side-to-side documentation generator">
             <img id="pyccoon-icon" src="../pyccoon_icon.svg" alt="Pyccoon: side-to-side documentation generator" />pyccoon</a>
@@ -37,7 +38,7 @@
   <a id="top"></a>
   <div class='section'>
     <div class='docs nav'>
-      <nav id="breadcrumbs">/ <a href="SM.py.html/../../index.html">.</a> / <a href="SM.py.html/../index.html">library</a> / <a href="SM.py.html">SM.py</a> </nav>
+      <nav id="breadcrumbs">/ <a href="SM.py.html/../../index.html">.</a> / <a href="SM.py.html/../index.html">library</a> / SM.py</nav>
       <ul id="children"></ul>
     </div>
   </div>
@@ -65,12 +66,13 @@
           <div class='octowrap'>
             <a class='octothorpe' href='#section-1'>#</a>
           </div>
-          <p>Standard Model particles and interactions</p>
+          <h1><a id="standard-model-particles-and-interactions" class="header-anchor" href="#standard-model-particles-and-interactions"> Standard Model particles and interactions</a></h1>
         </div>
         <div class='code'>
           <div class="highlight"><pre><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">division</span>
 
 <span class="kn">import</span> <span class="nn">itertools</span>
+<span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">sin</span><span class="p">,</span> <span class="n">cos</span>
 
 <span class="kn">from</span> <span class="nn">common</span> <span class="kn">import</span> <span class="n">UNITS</span><span class="p">,</span> <span class="n">CONST</span>
 <span class="kn">from</span> <span class="nn">particles</span> <span class="kn">import</span> <span class="n">STATISTICS</span>
@@ -87,9 +89,8 @@
           <div class='octowrap'>
             <a class='octothorpe' href='#section-2'>#</a>
           </div>
-          <h1><a id="weak-interactions-matrix-element" class="header-anchor" href="#weak-interactions-matrix-element"> Weak interactions matrix element</a></h1>
-<div class="codehilite"><pre>    Weak processes usually include a common factor of $32 G_F^2$
-</pre></div>
+          <h2><a id="weak-interactions-matrix-element" class="header-anchor" href="#weak-interactions-matrix-element"> Weak interactions matrix element</a></h2>
+<p>Weak processes usually include a common factor of $32 G_F^2$ </p>
         </div>
         <div class='code'>
           <div class="highlight"><pre><span class="k">class</span> <span class="nc">WeakM</span><span class="p">(</span><span class="n">FourParticleM</span><span class="p">):</span>
@@ -159,7 +160,7 @@
             <span class="s">&#39;statistics&#39;</span><span class="p">:</span> <span class="n">STATISTICS</span><span class="o">.</span><span class="n">BOSON</span><span class="p">,</span>
             <span class="s">&#39;mass&#39;</span><span class="p">:</span> <span class="mf">134.98</span> <span class="o">*</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">MeV</span><span class="p">,</span>
             <span class="s">&#39;dof&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
-            <span class="s">&#39;majorana&#39;</span><span class="p">:</span> <span class="bp">False</span><span class="p">,</span>
+            <span class="s">&#39;majorana&#39;</span><span class="p">:</span> <span class="bp">True</span><span class="p">,</span>
             <span class="s">&#39;Q&#39;</span><span class="p">:</span> <span class="mi">0</span>
         <span class="p">}</span>
         <span class="n">charged_pion</span> <span class="o">=</span> <span class="p">{</span>
@@ -167,7 +168,7 @@
             <span class="s">&#39;symbol&#39;</span><span class="p">:</span> <span class="s">&#39;π&#39;</span><span class="p">,</span>
             <span class="s">&#39;statistics&#39;</span><span class="p">:</span> <span class="n">STATISTICS</span><span class="o">.</span><span class="n">BOSON</span><span class="p">,</span>
             <span class="s">&#39;mass&#39;</span><span class="p">:</span> <span class="mf">139.57</span> <span class="o">*</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">MeV</span><span class="p">,</span>
-            <span class="s">&#39;dof&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+            <span class="s">&#39;dof&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
             <span class="s">&#39;majorana&#39;</span><span class="p">:</span> <span class="bp">False</span><span class="p">,</span>
             <span class="s">&#39;Q&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span>
         <span class="p">}</span></pre></div>
@@ -243,7 +244,30 @@
             <span class="s">&#39;dof&#39;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span>
             <span class="s">&#39;majorana&#39;</span><span class="p">:</span> <span class="bp">False</span><span class="p">,</span>
             <span class="s">&#39;flavour&#39;</span><span class="p">:</span> <span class="s">&#39;tau&#39;</span>
-        <span class="p">}</span></pre></div>
+        <span class="p">}</span>
+
+        <span class="nd">@staticmethod</span>
+        <span class="k">def</span> <span class="nf">oscillations_map</span><span class="p">(</span><span class="n">angles</span><span class="o">=</span><span class="p">(</span><span class="mf">0.5905</span><span class="p">,</span> <span class="mf">0.805404</span><span class="p">,</span> <span class="mf">0.152346</span><span class="p">)):</span>
+
+            <span class="n">oscillations</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="p">(</span><span class="s">&#39;electron&#39;</span><span class="p">,</span> <span class="s">&#39;electron&#39;</span><span class="p">):</span>
+                    <span class="mi">1</span> <span class="o">-</span> <span class="o">.</span><span class="mi">5</span> <span class="o">*</span> <span class="p">(</span><span class="n">sin</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">angles</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">cos</span><span class="p">(</span><span class="n">angles</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span><span class="o">**</span><span class="mi">4</span> <span class="o">*</span> <span class="n">sin</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">angles</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">**</span><span class="mi">2</span><span class="p">),</span>
+                <span class="p">(</span><span class="s">&#39;electron&#39;</span><span class="p">,</span> <span class="s">&#39;muon&#39;</span><span class="p">):</span>
+                    <span class="o">.</span><span class="mi">5</span> <span class="o">*</span> <span class="n">cos</span><span class="p">(</span><span class="n">angles</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="n">sin</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">angles</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span>
+                <span class="p">(</span><span class="s">&#39;electron&#39;</span><span class="p">,</span> <span class="s">&#39;tau&#39;</span><span class="p">):</span>
+                    <span class="n">sin</span><span class="p">(</span><span class="n">angles</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="n">cos</span><span class="p">(</span><span class="n">angles</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="mi">2</span> <span class="o">-</span> <span class="o">.</span><span class="mi">5</span> <span class="o">*</span> <span class="n">sin</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">angles</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">**</span><span class="mi">2</span><span class="p">),</span>
+                <span class="p">(</span><span class="s">&#39;muon&#39;</span><span class="p">,</span> <span class="s">&#39;muon&#39;</span><span class="p">):</span>
+                    <span class="mi">1</span> <span class="o">-</span> <span class="o">.</span><span class="mi">5</span> <span class="o">*</span> <span class="n">sin</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">angles</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span>
+                <span class="p">(</span><span class="s">&#39;muon&#39;</span><span class="p">,</span> <span class="s">&#39;tau&#39;</span><span class="p">):</span>
+                    <span class="o">.</span><span class="mi">5</span> <span class="o">*</span> <span class="n">sin</span><span class="p">(</span><span class="n">angles</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="n">sin</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">angles</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span>
+                <span class="p">(</span><span class="s">&#39;tau&#39;</span><span class="p">,</span> <span class="s">&#39;tau&#39;</span><span class="p">):</span>
+                    <span class="mi">1</span> <span class="o">-</span> <span class="n">sin</span><span class="p">(</span><span class="n">angles</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">cos</span><span class="p">(</span><span class="n">angles</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span>
+                                             <span class="o">.</span><span class="mi">5</span> <span class="o">*</span> <span class="n">sin</span><span class="p">(</span><span class="n">angles</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="n">sin</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">angles</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+            <span class="p">}</span>
+            <span class="n">oscillations</span><span class="p">[(</span><span class="s">&#39;muon&#39;</span><span class="p">,</span> <span class="s">&#39;electron&#39;</span><span class="p">)]</span> <span class="o">=</span> <span class="n">oscillations</span><span class="p">[(</span><span class="s">&#39;electron&#39;</span><span class="p">,</span> <span class="s">&#39;muon&#39;</span><span class="p">)]</span>
+            <span class="n">oscillations</span><span class="p">[(</span><span class="s">&#39;tau&#39;</span><span class="p">,</span> <span class="s">&#39;electron&#39;</span><span class="p">)]</span> <span class="o">=</span> <span class="n">oscillations</span><span class="p">[(</span><span class="s">&#39;electron&#39;</span><span class="p">,</span> <span class="s">&#39;tau&#39;</span><span class="p">)]</span>
+            <span class="n">oscillations</span><span class="p">[(</span><span class="s">&#39;tau&#39;</span><span class="p">,</span> <span class="s">&#39;muon&#39;</span><span class="p">)]</span> <span class="o">=</span> <span class="n">oscillations</span><span class="p">[(</span><span class="s">&#39;muon&#39;</span><span class="p">,</span> <span class="s">&#39;tau&#39;</span><span class="p">)]</span>
+            <span class="k">return</span> <span class="n">oscillations</span></pre></div>
         </div>
         <div class='clearall'></div>
     </section>

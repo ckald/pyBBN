@@ -79,10 +79,10 @@ C-------REMARKS.
 C     Generates rate coefficients for weak n->p and p->n reactions.
 
       USE commons
-      USE model_parameters
 
 C-------COMMON AREAS.
       COMMON /rates/  f,r                            !Reaction rates.
+      COMMON /modpr/  g,tau,xnu,c(3),cosmo,xi        !Model parameters.
       COMMON /xtherm/  thm,hubcst                     !Dynamic variables.
       COMMON /nupar/  t9mev,tnmev,tnu,cnorm,nu,rhonu !Integration parameters.
 
@@ -98,6 +98,13 @@ C=================DECLARATION DIVISION=====================
 C-------REACTION RATES.
       DOUBLE PRECISION    f(nrec)              !Forward reaction rate coefficients.
       DOUBLE PRECISION    r(nrec)              !Reverse reaction rate coefficients.
+
+C-------EARLY UNIVERSE MODEL PARAMETERS.
+      DOUBLE PRECISION    tau                  !Neutron lifetime.
+      DOUBLE PRECISION    xi(3)                !Neutrino degeneracy parameters.
+     |                             !xi(1) is e neutrino degeneracy parameter.
+     |                             !xi(2) is m neutrino degeneracy parameter.
+     |                             !xi(3) is t neutrino degeneracy parameter.
 
 C-------DYNAMIC VARIABLES.
       DOUBLE PRECISION    thm(14)              !Thermodynamic variables (energy densities).
@@ -150,16 +157,20 @@ C     Generates rate coefficients for reactions involving nuclides
 C     up to A = 9.
 
       USE commons
-      USE evolution_parameters
 
 C-------COMMON AREAS.
       COMMON /rates/  f,r(nrec)           !Reaction rates.
+      COMMON /evolp1/ t9,hv,phie,y(nnuc)  !Evolution parameters.
 
 
 C=================DECLARATION DIVISION=====================
 
 C-------REACTION RATES.
       DOUBLE PRECISION    f(nrec)              !Forward reaction rate coefficients.
+
+C-------EVOLUTION PARAMETER.
+      DOUBLE PRECISION    t9                   !Temperature of photons (units of 10**9 K).
+
 
 C==================PROCEDURE DIVISION======================
 
@@ -337,16 +348,20 @@ C     Generates rate coefficients for reactions involving nuclides
 C     up to A = 18.
 
       USE commons
-      USE evolution_parameters
 
 C-------COMMON AREAS.
       COMMON /rates/  f,r(nrec)           !Reaction rates.
+      COMMON /evolp1/ t9,hv,phie,y(nnuc)  !Evolution parameters.
 
 
 C=================DECLARATION DIVISION=====================
 
 C-------REACTION RATES.
       DOUBLE PRECISION    f(nrec)              !Forward reaction rate coefficients.
+
+C-------EVOLUTION PARAMETER.
+      DOUBLE PRECISION    t9                   !Temperature of photons (units of 10**9 K).
+
 
 C==================PROCEDURE DIVISION======================
 
@@ -546,16 +561,20 @@ C-------REMARKS.
 C     Generates rate coefficients for rest of reactions.
 
       USE commons
-      USE evolution_parameters
 
 C-------COMMON AREAS.
       COMMON /rates/  f,r(nrec)           !Reaction rates.
+      COMMON /evolp1/ t9,hv,phie,y(nnuc)  !Evolution parameters.
 
 
 C=================DECLARATION DIVISION=====================
 
 C-------REACTION RATES.
       DOUBLE PRECISION    f(nrec)              !Forward reaction rate coefficients.
+
+C-------EVOLUTION PARAMETER.
+      DOUBLE PRECISION    t9                   !Temperature of photons (units of 10**9 K).
+
 
 C==================PROCEDURE DIVISION======================
 
@@ -728,12 +747,12 @@ C===============IDENTIFICATION DIVISION====================
       BLOCK DATA
 
       USE commons
-      USE model_parameters
-      USE computation_parameters
-      USE variational_parameters
 
 C-------COMMON AREAS.
       COMMON /recpr0/ reacpr                         !Reaction parameter values.
+      COMMON /compr0/ cy0,ct0,t9i0,t9f0,ytmin0,inc0  !Default comp parameters.
+      COMMON /modpr0/ c0,cosmo0,xi0                  !Default model parameters.
+      COMMON /varpr0/ dt0,eta0                       !Default variationl params.
       COMMON /nucdat/ am,zm,dm                       !Nuclide data.
 
 
@@ -742,12 +761,29 @@ C=================DECLARATION DIVISION=====================
 C-------REACTION PARAMETERS VALUES.
       DOUBLE PRECISION    reacpr(nrec,8)       !Reaction parameters.
 
+C-------DEFAULT COMPUTATION PARAMETERS.
+      DOUBLE PRECISION    cy0                  !Default time step limiting constant.
+      DOUBLE PRECISION    ct0                  !Default time step limiting constant.
+      DOUBLE PRECISION    t9i0                 !Default initial temperature (in 10**9 K).
+      DOUBLE PRECISION    t9f0                 !Default final temperature (in 10**9 K).
+      DOUBLE PRECISION    ytmin0               !Default smallest abundances allowed.
+      INTEGER inc0                 !Default accumulation increment.
+
+C-------DEFAULT MODEL PARAMETERS.
+      DOUBLE PRECISION    c0(3)               !c0(1) is default variation of grav constant.
+     |                             !c0(2) is default neutron half-life.
+     |                             !c0(3) is default number of neutrinos.
+      DOUBLE PRECISION    cosmo0               !Default cosmological constant.
+      DOUBLE PRECISION    xi0(3)               !Default neutrino degeneracy parameters.
+
+C-------DEFAULT VARIATIONAL PARAMETERS.
+      DOUBLE PRECISION    dt0                  !Default initial time step.
+      DOUBLE PRECISION    eta0                 !Default baryon-to-photon ratio.
+
 C-------NUCLIDE DATA.
       DOUBLE PRECISION    am(nnuc)             !Atomic number of nuclide.
       DOUBLE PRECISION    zm(nnuc)             !Charge of nuclide.
       DOUBLE PRECISION    dm(nnuc)             !Mass excess of nuclide.
-
-      INTEGER i,j
 
 
 C=====================DATA DIVISION========================
@@ -884,5 +920,22 @@ C              ----  ---- -- -- -- -- ------ -------
      |            86.,3.,14.,6.,1.,22., 3.67 ,   1.835,    !B11(a,n)N14
      |            87.,3.,16.,6.,1.,24., 4.25 ,  88.47,     !B12(a,n)N15
      |            88.,3.,19.,6.,1.,26., 5.79 ,  25.711/    !C13(a,n)O16
+
+C-------DEFAULT COMPUTATION PARAMETERS.
+      DATA cy0    /.300/           !Default time step limiting constant.
+      DATA ct0    /.030/           !Default time step limiting constant.
+      DATA t9i0   /1.00e+02/       !Default initial temperature.
+      DATA t9f0   /1.00e-02/       !Default final temperature.
+      DATA ytmin0 /1.00e-25/       !Default smallest abundances allowed.
+      DATA inc0   /30/             !Default accumulation increment.
+
+C--------DEFAULT MODEL PARAMETERS.
+      DATA c0     /1.00,885.7,3.0/!Default variation of 3 parameters.
+      DATA cosmo0 /0.00/           !Default cosmological constant.
+      DATA xi0    /0.00,0.00,0.00/ !Default neutrino degeneracy parameter.
+
+C--------DEFAULT VARIATIONAL PARAMETERS.
+      DATA dt0    /1.00e-04/       !Default initial time step.
+      DATA eta0   /6.000e-10/      !Default baryon-to-photon ratio.
 
       END

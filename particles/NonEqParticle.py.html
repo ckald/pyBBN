@@ -22,17 +22,18 @@
     Contents
     <div id="jump_wrapper">
       <div id="jump_page">
-          <a class="source source-2" href="#energy-density"> Energy density</a>
-          <a class="source source-2" href="#pressure"> Pressure</a>
-          <a class="source source-1" href="#master-equation-terms"> Master equation terms </a>
-          <a class="source source-2" href="#numerator"> Numerator</a>
-          <a class="source source-2" href="#denominator"> Denominator</a>
+          <a class="source source-1" href="#non-equilibrium-particles"> Non-equilibrium particles</a>
+          <a class="source source-3" href="#energy-density"> Energy density</a>
+          <a class="source source-3" href="#pressure"> Pressure</a>
+          <a class="source source-2" href="#master-equation-terms"> Master equation terms </a>
+          <a class="source source-3" href="#numerator"> Numerator</a>
+          <a class="source source-3" href="#denominator"> Denominator</a>
       </div>
     </div>
     </div>
     <div class="generation-time">
         Generated at
-        <code>2015-05-21 18:14</code>
+        <code>2015-06-07 02:03</code>
         by a diligent
         <a target="_blank" href="http://ckald.github.io/pyccoon/" title="Pyccoon: side-to-side documentation generator">
             <img id="pyccoon-icon" src="../pyccoon_icon.svg" alt="Pyccoon: side-to-side documentation generator" />pyccoon</a>
@@ -41,7 +42,7 @@
   <a id="top"></a>
   <div class='section'>
     <div class='docs nav'>
-      <nav id="breadcrumbs">/ <a href="NonEqParticle.py.html/../../index.html">.</a> / <a href="NonEqParticle.py.html/../index.html">particles</a> / <a href="NonEqParticle.py.html">NonEqParticle.py</a> </nav>
+      <nav id="breadcrumbs">/ <a href="NonEqParticle.py.html/../../index.html">.</a> / <a href="NonEqParticle.py.html/../index.html">particles</a> / NonEqParticle.py</nav>
       <ul id="children"></ul>
     </div>
   </div>
@@ -54,7 +55,7 @@
           <div class='octowrap'>
             <a class='octothorpe' href='#section-0'>#</a>
           </div>
-          <p>Non-equilibrium particles</p>
+          <h1><a id="non-equilibrium-particles" class="header-anchor" href="#non-equilibrium-particles"> Non-equilibrium particles</a></h1>
         </div>
         <div class='code'>
           <div class="highlight"><pre><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">division</span>
@@ -95,11 +96,10 @@
           <div class='octowrap'>
             <a class='octothorpe' href='#section-2'>#</a>
           </div>
-          <h2><a id="energy-density" class="header-anchor" href="#energy-density"> Energy density</a></h2>
-<div class="codehilite"><pre>    \begin{equation}
-        \rho = \frac{g}{2 \pi^2} \frac{m^4}{x^4} \int dy y^2 \sqrt{y^2 + \frac{M_N^2 x^2}{m^2}} f(y)
-    \end{equation}
-</pre></div>
+          <h3><a id="energy-density" class="header-anchor" href="#energy-density"> Energy density</a></h3>
+<p>\begin{equation}
+       \rho = \frac{g}{2 \pi^2} \frac{m^4}{x^4} \int dy y^2 \sqrt{y^2 + \frac{M_N^2 x^2}{m^2}} f(y)
+   \end{equation}</p>
         </div>
         <div class='code'>
           <div class="highlight"><pre><span class="nd">@lambda_integrate</span><span class="p">()</span>
@@ -121,11 +121,10 @@
           <div class='octowrap'>
             <a class='octothorpe' href='#section-3'>#</a>
           </div>
-          <h2><a id="pressure" class="header-anchor" href="#pressure"> Pressure</a></h2>
-<div class="codehilite"><pre>    \begin{equation}
-        p = \frac{g}{6 \pi^2} \frac{m^4}{x^4} \int \frac{dy \, y^4 f(y)} { \sqrt{y^2 + \frac{M_N^2 x^2}{m^2}} }
-    \end{equation}
-</pre></div>
+          <h3><a id="pressure" class="header-anchor" href="#pressure"> Pressure</a></h3>
+<p>\begin{equation}
+       p = \frac{g}{6 \pi^2} \frac{m^4}{x^4} \int \frac{dy \, y^4 f(y)} { \sqrt{y^2 + \frac{M_N^2 x^2}{m^2}} }
+   \end{equation}</p>
         </div>
         <div class='code'>
           <div class="highlight"><pre><span class="nd">@lambda_integrate</span><span class="p">()</span>
@@ -147,7 +146,7 @@
           <div class='octowrap'>
             <a class='octothorpe' href='#section-4'>#</a>
           </div>
-          <h1><a id="master-equation-terms" class="header-anchor" href="#master-equation-terms"> Master equation terms </a></h1>
+          <h2><a id="master-equation-terms" class="header-anchor" href="#master-equation-terms"> Master equation terms </a></h2>
         </div>
         <div class='code'>
           
@@ -162,11 +161,10 @@
           <div class='octowrap'>
             <a class='octothorpe' href='#section-5'>#</a>
           </div>
-          <h2><a id="numerator" class="header-anchor" href="#numerator"> Numerator</a></h2>
-<div class="codehilite"><pre>\begin{equation}
-    -\frac{g}{2 \pi^2} \int dy \, y^2 \sqrt{y^2 + \frac{M_N^2 x^2}{m^2}} I_{coll}(y)
-\end{equation}
-</pre></div>
+          <h3><a id="numerator" class="header-anchor" href="#numerator"> Numerator</a></h3>
+<p>\begin{equation}
+       -\frac{g}{2 \pi^2} \int dy \, y^2 \sqrt{y^2 + \frac{M_N^2 x^2}{m^2}} I_{coll}(y)
+   \end{equation}</p>
         </div>
         <div class='code'>
           <div class="highlight"><pre><span class="nd">@lambda_integrate</span><span class="p">()</span>
@@ -188,7 +186,7 @@
           <div class='octowrap'>
             <a class='octothorpe' href='#section-6'>#</a>
           </div>
-          <h2><a id="denominator" class="header-anchor" href="#denominator"> Denominator</a></h2>
+          <h3><a id="denominator" class="header-anchor" href="#denominator"> Denominator</a></h3>
 <p>\begin{equation}
     0
 \end{equation}</p>

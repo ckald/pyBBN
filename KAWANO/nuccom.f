@@ -10,17 +10,39 @@ C-------REMARKS.
 C     Runge-Kutta computational routine
 
       USE commons
-      USE computation_parameters
-      USE flags
-      USE evolution_parameters
+      USE sterile
 
 C-------COMMON AREAS.
+      COMMON /evolp1/ t9,hv,phie,y                   !Evolution parameters.
+      COMMON /evolp2/ dt9,dhv,dphie,dydt             !Evolution parameters.
+      COMMON /evolp3/ t90,hv0,phie0,y0               !Evolution parameters.
+      COMMON /compr/  cy,ct,t9i,t9f,ytmin,inc        !Computation parameters.
       COMMON /time/   t,dt,dlt9dt                    !Time variables.
+      COMMON /flags/  ltime,is,ip,it,mbad            !Flags,counters.
       COMMON /check1/  itime                          !Computation location.
       COMMON /runopt/ irun,isize,jsize               !Run options.
 
 
 C=================DECLARATION DIVISION=====================
+
+C-------EVOLUTION PARAMETERS.
+      DOUBLE PRECISION    t9                   !Temperature (in units of 10**9 K).
+      DOUBLE PRECISION    hv                   !Defined by hv = M(atomic)n(baryon)/t9**3.
+      DOUBLE PRECISION    phie                 !Chemical potential for electron.
+      DOUBLE PRECISION    y(nnuc)              !Relative number abundances.
+
+C-------EVOLUTION PARAMETERS (DERIVATIVES).
+      DOUBLE PRECISION    dydt(nnuc)           !Change in rel number abundances.
+
+C-------EVOLUTION PARAMETERS (ORIGINAL VALUES).
+      DOUBLE PRECISION    y0(nnuc)             !Rel # abund at beginning of iteration.
+
+C-------COMPUTATION PARAMETERS.
+      DOUBLE PRECISION    cy                   !Time step limiting constant on abundances.
+      DOUBLE PRECISION    ct                  !Time step limiting constant on temperature.
+      DOUBLE PRECISION    t9f                  !Final temperature (in 10**9 K).
+      DOUBLE PRECISION    ytmin                !Smallest abundances allowed.
+      INTEGER inc                  !Accumulation increment.
 
 C-------TIME AND TIME STEP VARIABLES.
       DOUBLE PRECISION    t                    !Time.
@@ -29,7 +51,9 @@ C-------TIME AND TIME STEP VARIABLES.
 
 C-------COUNTERS AND FLAGS.
       INTEGER loop                 !Counts which Runge-Kutta loop.
-      INTEGER i
+      INTEGER ltime                !Indicates termination status.
+      INTEGER is                   !# total time steps for particular run.
+      INTEGER ip                   !# time steps after outputting a line.
 
 C-------COMPUTATION LOCATION.
       INTEGER itime                !Time check.
@@ -47,6 +71,8 @@ C-------LABELS FOR VARIABLES TO BE TIME EVOLVED.
       DOUBLE PRECISION    dvdt(nvar)           !Time derivatives.
       DOUBLE PRECISION    v0(nvar)             !Value of variables at original point.
       DOUBLE PRECISION    dvdt0(nvar)          !Value of derivatives at original point.
+
+      DOUBLE PRECISION    h_interp
 
 C-------EQUIVALENCE STATEMENTS.
       EQUIVALENCE (v(4),y(1)),(dvdt(4),dydt(1)),(v0(4),y0(1))
@@ -117,6 +143,9 @@ C..........INCREMENT VALUES.
         IF ((i.ge.4).and.(v(i).lt.ytmin)) v(i) = ytmin  !Set at minimum value.
       END DO
 
+      CALL log_interp_values(h_interp, t9, t9s, hvs, .true., nlines)
+      v(2) = h_interp
+
       GO TO 200
 
 C-------REFERENCES--------------------------------------
@@ -145,20 +174,22 @@ C-------REMARKS.
 C     Sets initial conditions.
 
       USE commons
-      USE model_parameters
-      USE computation_parameters
-      USE variational_parameters
-      USE flags
-      USE evolution_parameters
       USE sterile
 
 C-------COMMON AREAS.
       COMMON /rates/  f,r                            !Reaction rates.
+      COMMON /evolp1/ t9,hv,phie,y                   !Evolution parameters.
+      COMMON /evolp2/ dt9,dhv,dphie,dydt(nnuc)       !Evolution parameters.
+      COMMON /evolp3/ t90,hv0,phie0,y0               !Evolution parameters.
+      COMMON /compr/  cy,ct,t9i,t9f,ytmin,inc        !Computation parameters.
+      COMMON /modpr/  g,tau,xnu,c,cosmo,xi           !Model parameters.
+      COMMON /varpr/  dt1,eta1                       !Variational parameters.
       COMMON /time/   t,dt,dlt9dt                    !Time variables.
       COMMON /endens/ rhone0,rhob0,rhob,rnb          !Energy densities.
       COMMON /xbessel/ bl1,bl2,bl3,bl4,bl5,          !Eval of function bl(z).
      |                bm1,bm2,bm3,bm4,bm5,           !Eval of function bm(z).
      |                bn1,bn2,bn3,bn4,bn5            !Eval of function bn(z).
+      COMMON /flags/  ltime,is,ip,it,mbad            !Flags,counters.
       COMMON /nupar/  t9mev,tnmev,tnu,cnorm,nu,rhonu !Neutrino parameters.
       COMMON /runopt/ irun,isize,jsize               !Run options.
 
@@ -167,6 +198,32 @@ C=================DECLARATION DIVISION=====================
 C-------REACTION RATES.
       DOUBLE PRECISION    f(nrec)              !Forward reaction rate coefficients.
       DOUBLE PRECISION r(nrec)
+C-------EVOLUTION PARAMETERS.
+      DOUBLE PRECISION    t9                   !Temperature (in units of 10**9 K).
+      DOUBLE PRECISION    hv                   !Defined by hv = M(atomic)n(baryon)/t9**3.
+      DOUBLE PRECISION    phie                 !Chemical potential of electron.
+      DOUBLE PRECISION    y(nnuc)              !Relative number abundances.
+
+C-------EVOLUTION PARAMETERS (ORIGINAL VALUES).
+      DOUBLE PRECISION    y0(nnuc)             !Rel # abund at start of iteration.
+
+C-------COMPUTATION SETTINGS.
+      DOUBLE PRECISION    t9i                  !Initial temperature (in 10**9 K).
+      DOUBLE PRECISION    ytmin                !Smallest abundances allowed.
+      INTEGER inc                  !Accumulation increment.
+
+C-------EARLY UNIVERSE MODEL PARAMETERS.
+      DOUBLE PRECISION    g                    !Gravitational constant.
+      DOUBLE PRECISION    tau                  !Neutron lifetime.
+      DOUBLE PRECISION    xnu                  !Number of neutrino species.
+      DOUBLE PRECISION    c(3)               !c(1) is variation of gravitational constant.
+     |                             !c(2) is neutron lifetime (sec).
+     |                             !c(3) is number of neutrino species.
+      DOUBLE PRECISION    xi(3)                !Neutrino degeneracy parameters.
+
+C-------VARIATIONAL PARAMETERS.
+      DOUBLE PRECISION    dt1                  !Initial time step.
+      DOUBLE PRECISION    eta1                 !Baryon-to-photon ratio.
 
 C-------TIME VARIABLES.
       DOUBLE PRECISION    t                    !Time.
@@ -178,6 +235,13 @@ C-------ENERGY DENSITIES.
 
 C-------EVALUATION OF FUNCTIONS bl,bm,bn.
       DOUBLE PRECISION    bl1,bl2,bl3,bl4,bl5  !Evaluation of function bl(z).
+
+C-------COUNTERS AND FLAGS.
+      INTEGER ltime                !Indicates if output buffer printed.
+      INTEGER is                   !# total time steps for particular run.
+      INTEGER ip                   !# time steps after outputting a line.
+      INTEGER it                   !# times accumulated in output buffer.
+      INTEGER mbad                 !Indicates if gaussian elimination fails.
 
 C-------NEUTRINO PARAMETERS.
       DOUBLE PRECISION    tnu                  !Neutrino temperature.
@@ -194,9 +258,10 @@ c Julien modified, 28-02-08
      |     r1r,r2r,r3r,r4r,r5r,r6r !Variables used to read the data file
       DOUBLE PRECISION t_interp             !This is used to obtain the correct time values
       CHARACTER trash           !Used to remove the first line from the data
+      DOUBLE PRECISION aT
 c Julien end mod 28-02-08
 
-      INTEGER :: i, e
+      INTEGER :: e
       CHARACTER(255) :: input_file
 
 C==================PROCEDURE DIVISION======================
@@ -247,27 +312,6 @@ C30-----COMPUTE INITIAL ABUNDANCES FOR NEUTRON AND PROTON--------------
       y0(1) = y(1)
       y0(2) = y(2)
 
-C40-----FIND RATIO OF BARYON DENSITY TO TEMPERATURE CUBED--------------
-
-      z      = 5.930/t9            !Inverse of temperature.
-      CALL bessel(z)
-      hv     = 3.3683e+4*eta1*2.75 !(Ref 4 but with final eta).
-      phie   = hv*(1.784e-5*y(2))  !Chemical potential of electron (Ref 5).
-     |            /(.5*z**3*(bl1-2.*bl2+3.*bl3-4.*bl4+5.*bl5))
-      rhob0  = hv*t9**3            !Baryon density.
-      IF ((xi(1).eq.0.).and.(xi(2).eq.0.).and.(xi(3).eq.0)) THEN  !Nondegen.
-        rhone0 = 7.366*t9**4       !Electron neutrino density (Ref 6).
-      END IF
-
-C50-----SET ABUNDANCES FOR REST OF NUCLIDES----------------------
-
-      y(3)  = y(1)*y(2)*rhob0*ex(25.82/t9)/(.471e+10*t9**1.5)  !(Ref 7).
-      y0(3) = y(3)
-      DO i = 4,isize
-        y(i)  = ytmin              !Set rest to minimum abundance.
-        y0(i) = y(i)               !Init abundances at beginning of iteration.
-      END DO
-      CALL rate0                   !Compute weak decay rates.
 
 c Julien modified, 28-02-08 - 05-03-08
 C60----READ OUTPUT FILE FROM OTHER PROGRAM AND SAVE DATA -------
@@ -295,10 +339,16 @@ C60----READ OUTPUT FILE FROM OTHER PROGRAM AND SAVE DATA -------
         rho_tot(nlines) = rhor
         ratef(nlines) = (r1r + r3r + r5r) !Will divide them by tau later on
         rater(nlines) = (r2r + r4r + r6r)
+	aTs(nlines) = xx*t9r
+	hvs(nlines) =  1. / aTs(nlines)**3
       END DO
 c Saves the different used datas from the file into the corresponding
 c  arrays
 10    CLOSE(1)
+
+      hvs = 3.3683e+4 * eta1 * hvs * aTs(nlines)**3
+      !hvs = 3.3683e+4 * 4.75e-10 * hvs * aTs(nlines)**3
+      !aT = aTs(nlines) / aTs(1)
 
       rater = rater / ratef(nlines)
       ratef = ratef / ratef(nlines)
@@ -310,7 +360,7 @@ c  the other program so that ratef(nlines) was already nearly equal to 1,
 c  but the previous normalization is not taking into account the change that
 c  could come from adding sterile neutrinos.
 
-      call log_interp_values(t_interp, t9, t9s, ts, .true., nlines)
+      CALL log_interp_values(t_interp, t9, t9s, ts, .true., nlines)
       ts = ts - (t_interp - t)
 c In these 2 lines we do the following: the value from our time ts is
 c  not the same as the one used by Kawano (not same initial time condition)
@@ -323,6 +373,31 @@ c  we have exactly the same time value.
 c But this time is in fact not really used in our modifications.
 
 c Julien end mod 28-02-08 - 05-03-08
+
+
+C40-----FIND RATIO OF BARYON DENSITY TO TEMPERATURE CUBED--------------
+
+      z      = 5.930/t9            !Inverse of temperature.
+      CALL bessel(z)
+      !hv     = 3.3683e+4*eta1*aT**3 !(Ref 4 but with final
+      !hv = hvs(1) 
+      CALL log_interp_values(hv, t9, t9s, hvs, .true., nlines)
+      phie   = hv*(1.784e-5*y(2))  !Chemical potential of electron (Ref 5).
+     |            /(.5*z**3*(bl1-2.*bl2+3.*bl3-4.*bl4+5.*bl5))
+      rhob0  = hv*t9**3            !Baryon density.
+      IF ((xi(1).eq.0.).and.(xi(2).eq.0.).and.(xi(3).eq.0)) THEN  !Nondegen.
+        rhone0 = 7.366*t9**4       !Electron neutrino density (Ref 6).
+      END IF
+
+C50-----SET ABUNDANCES FOR REST OF NUCLIDES----------------------
+
+      y(3)  = y(1)*y(2)*rhob0*ex(25.82/t9)/(.471e+10*t9**1.5)  !(Ref 7).
+      y0(3) = y(3)
+      DO i = 4,isize
+        y(i)  = ytmin              !Set rest to minimum abundance.
+        y0(i) = y(i)               !Init abundances at beginning of iteration.
+      END DO
+      CALL rate0                   !Compute weak decay rates.
 
 
       RETURN
@@ -374,19 +449,41 @@ C       - Chemical potential
 C       - abundances
 
       USE commons
-      USE model_parameters
-      USE evolution_parameters
       USE sterile
 
 C-------COMMON AREAS.
+      COMMON /evolp1/ t9,hv,phie,y                   !Evolution parameters.
+      COMMON /evolp2/ dt9,dhv,dphie,dydt             !Evolution parameters.
+      COMMON /evolp3/ t90,hv0,phie0,y0               !Evolution parameters.
+      COMMON /modpr/  g,tau,xnu,c(3),cosmo,xi(3)     !Model parameters.
       COMMON /time/   t,dt,dlt9dt                    !Time variables.
       COMMON /xtherm/  thm,hubcst                     !Dynamic variables.
       COMMON /endens/ rhone0,rhob0,rhob,rnb          !Energy densities.
       COMMON /nucdat/ am(nnuc),zm,dm                 !Nuclide data.
+      COMMON /flags/  ltime,is,ip,it,mbad            !Flags,counters.
       COMMON /runopt/ irun,isize,jsize               !Run options.
 
 
 C=================DECLARATION DIVISION=====================
+
+C-------EVOLUTION PARAMETERS.
+      DOUBLE PRECISION    t9                   !Temperature (in units of 10**9 K).
+      DOUBLE PRECISION    hv                   !Defined by hv = M(atomic)n(baryon)/t9**3.
+      DOUBLE PRECISION    phie                 !Chemical potential for electron.
+      DOUBLE PRECISION    y(nnuc)              !Relative number abundances.
+
+C-------EVOLUTION PARAMETERS (DERIVATIVES).
+      DOUBLE PRECISION    dt9                  !Change in temperature.
+      DOUBLE PRECISION    dhv                  !Change in hv.
+      DOUBLE PRECISION    dphie                !Change in chemical potential.
+      DOUBLE PRECISION    dydt(nnuc)           !Change in rel number abundances.
+
+C-------EVOLUTION PARAMETERS (ORIGINAL VALUES).
+      DOUBLE PRECISION    y0(nnuc)             !Rel # abund at beginning of iteration.
+
+C-------MODEL PARAMETERS.
+      DOUBLE PRECISION    g                    !Gravitational constant.
+      DOUBLE PRECISION    cosmo                !Cosmological constant.
 
 C-------TIME VARIABLES.
       DOUBLE PRECISION    dlt9dt               !(1/t9)*d(t9)/d(t).
@@ -403,6 +500,9 @@ C-------ENERGY DENSITIES.
 C-------NUCLIDE DATA.
       DOUBLE PRECISION    zm(nnuc)             !Charge of nuclide.
       DOUBLE PRECISION    dm(nnuc)             !Mass excess of nuclide.
+
+C-------COUNTERS AND FLAGS.
+      INTEGER mbad                 !Indicates if gaussian elimination fails.
 
 C-------RUN OPTION.
       INTEGER irun                 !Run network size.
@@ -483,7 +583,7 @@ c Julien modified, 29-02-08 - 05-03-08
 c  was:
 c      dt9    = (3.*hubcst)/dlndt9
 c  we use:
-      call log_interp_values(dt9_interp, t9, t9s, dt9s, .true., nlines)
+      CALL log_interp_values(dt9_interp, t9, t9s, dt9s, .true., nlines)
       dt9 = dt9_interp
 c Julien end mod 05-03-08
 
@@ -516,20 +616,29 @@ C-------REMARKS.
 C     Output accumulator.
 
       USE commons
-      USE computation_parameters
-      USE flags
-      USE evolution_parameters
 
 C-------COMMON AREAS.
+      COMMON /evolp1/ t9,hv,phie,y                   !Evolution parameters.
+      COMMON /compr/  cy,ct,t9i,t9f,ytmin,inc        !Computation parameters.
       COMMON /time/   t,dt,dlt9dt                    !Time variables.
       COMMON /xtherm/  thm,hubcst                     !Dynamic variables.
       COMMON /nucdat/ am,zm(nnuc),dm(nnuc)           !Nuclide data.
+      COMMON /flags/  ltime,is,ip,it,mbad            !Flags,counters.
       COMMON /outdat/ xout,thmout,t9out,tout,dtout,  !Output data.
      |                etaout,hubout
       COMMON /runopt/ irun,isize,jsize               !Run options.
 
 
 C=================DECLARATION DIVISION=====================
+
+C-------EVOLUTION PARAMETERS.
+      DOUBLE PRECISION    t9                   !Temperature (in units of 10**9 K).
+      DOUBLE PRECISION    hv                   !Defined by hv = M(atomic)n(baryon)/t9**3.
+      DOUBLE PRECISION    phie                 !Chemical potential for electron.
+      DOUBLE PRECISION    y(nnuc)              !Relative number abundances.
+
+C-------COMPUTATION PARAMETERS.
+      INTEGER inc                  !Accumulation increment.
 
 C-------TIME PARAMETERS.
       DOUBLE PRECISION    t                    !Time.
@@ -541,6 +650,11 @@ C-------DYNAMIC VARIABLES.
 
 C-------NUCLIDE DATA.
       DOUBLE PRECISION    am(nnuc)             !Atomic number of nuclide.
+
+C-------COUNTERS AND FLAGS.
+      INTEGER ltime                !Indicates if output buffer printed.
+      INTEGER it                   !# times accumulated in output buffer.
+      INTEGER ip                   !# time steps after outputting a line.
 
 C-------OUTPUT ARRAYS.
       DOUBLE PRECISION    xout(itmax,nnuc)     !Nuclide mass fractions.
@@ -608,12 +722,12 @@ C-------REMARKS.
 C     Computes various temperature dependent thermodynamic quantities.
 
       USE commons
-      USE model_parameters
-      USE computation_parameters
-      USE evolution_parameters
       USE sterile
 
 C-------COMMON AREAS.
+      COMMON /evolp1/ t9,hv,phie,y(nnuc)             !Evolution parameters.
+      COMMON /compr/  cy,ct,t9i,t9f,ytmin,inc        !Computation parameters.
+      COMMON /modpr/  g,tau,xnu,c(3),cosmo,xi        !Model parameters.
       COMMON /xtherm/  thm,hubcst                     !Dynamic variables.
       COMMON /endens/ rhone0,rhob0,rhob,rnb          !Energy densities.
       COMMON /xbessel/ bl1,bl2,bl3,bl4,bl5,           !Eval of function bl(z).
@@ -623,6 +737,17 @@ C-------COMMON AREAS.
 
 
 C=================DECLARATION DIVISION=====================
+
+C-------EVOLUTION PARAMETERS.
+      DOUBLE PRECISION    t9                   !Temperature (in units of 10**9 K).
+      DOUBLE PRECISION    phie                 !Chemical potential for electron.
+
+C-------COMPUTATION PARAMETERS.
+      DOUBLE PRECISION    t9i                  !Initial temperature (in 10**9 K).
+
+C-------EARLY UNIVERSE MODEL PARAMETERS.
+      DOUBLE PRECISION    xnu                  !Number of neutrino species.
+      DOUBLE PRECISION    xi(3)                !Neutrino degeneracy parameters.
 
 C-------DYNAMIC VARIABLES.
       DOUBLE PRECISION    thm(14)              !Thermodynamic variables.
@@ -721,7 +846,7 @@ c Julien modified, 28-02-08
 c  was:
 c      thm(10) = thm(1) + thm(4) + thm(8) + thm(9)               !(Ref 10).
 c  we use:
-      call log_interp_values(rho, t9, t9s, rho_tot, .true., nlines)
+      CALL log_interp_values(rho, t9, t9s, rho_tot, .true., nlines)
       thm(10) = rho + thm(9)                                    !(Ref 10).
 c Julien end mod 28-02-08
 
@@ -739,9 +864,9 @@ c     |          + 36.492/z4 + 27.512/z5
 c      thm(14) = (5.252/z1 - 16.229/z2 + 18.059/z3 + 34.181/z4   !(Ref 14).
 c     |          + 27.617/z5)*ex(-q*z)
 c  we use:
-      call log_interp_values(rate, t9, t9s, ratef, .true., nlines)
+      CALL log_interp_values(rate, t9, t9s, ratef, .true., nlines)
       thm(13) = rate                                            !(Ref 13).
-      call log_interp_values(rate, t9, t9s, rater, .true., nlines)
+      CALL log_interp_values(rate, t9, t9s, rater, .true., nlines)
       thm(14) = rate                                            !(Ref 14).
 c Julien end mod 28-02-08
 
@@ -982,6 +1107,7 @@ C-------REMARKS.
 C     Computes energy density contribution from neutrinos.
 
 C-------COMMON AREAS.
+      COMMON /modpr/  g,tau,xnu,c(3),cosmo,xi        !Model parameters.
       COMMON /nupar/  t9mev,tnmev,tnu,cnorm,nu,rhonu !Integration parameters.
 
 C-------EXTERNAL FUNCTIONS.
@@ -1057,6 +1183,7 @@ C-------REMARKS.
 C     Contains integrands to be integrated.
 
 C-------COMMON AREAS.
+      COMMON /modpr/  g,tau,xnu,c(3),cosmo,xi        !Model parameters.
       COMMON /nupar/  t9mev,tnmev,tnu,cnorm,nu,rhonu !Integration parameters.
 
 C=================DECLARATION DIVISION=====================
@@ -1273,11 +1400,13 @@ C     Computes reverse strong and electromagnetic reaction rates.
 C     Fills and solves matrix equation for dydt(i).
 
       USE commons
-      USE evolution_parameters
 
 C--------COMMON AREAS.
       COMMON /recpr/  iform,ii,jj,kk,ll,rev,q9     !Reaction parameters names.
       COMMON /rates/  f,r                            !Reaction rates.
+      COMMON /evolp1/ t9,hv,phie,y                   !Evolution parameters.
+      COMMON /evolp2/ dt9,dhv,dphie,dydt             !Evolution parameters.
+      COMMON /evolp3/ t90,hv0,phie0,y0               !Evolution parameters.
       COMMON /time/   t,dt,dlt9dt                    !Time varying parameters.
       COMMON /xtherm/  thm(14),hubcst                 !Dynamic variables.
       COMMON /endens/ rhone0,rhob0,rhob,rnb          !Energy densities.
@@ -1300,6 +1429,16 @@ C-------REACTION PARAMETERS.
 C-------REACTION RATES.
       DOUBLE PRECISION    f(nrec)              !Forward reaction rate coefficients.
       DOUBLE PRECISION    r(nrec)              !Reverse reaction rate coefficients.
+
+C-------EVOLUTION PARAMETERS.
+      DOUBLE PRECISION    t9                   !Temperature (in units of 10**9 K).
+      DOUBLE PRECISION    y(nnuc)              !Relative number abundances.
+
+C-------EVOLUTION PARAMETERS (DERIVATIVES).
+      DOUBLE PRECISION    dydt(nnuc)           !Change in rel number abundances.
+
+C-------EVOLUTION PARAMETERS (ORIGINAL VALUES).
+      DOUBLE PRECISION    y0(nnuc)             !Rel # abund at start of iteration.
 
 C-------TIME VARIABLES.
       DOUBLE PRECISION    dt                   !Time step.

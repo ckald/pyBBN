@@ -22,17 +22,19 @@
     Contents
     <div id="jump_wrapper">
       <div id="jump_page">
-          <a class="source source-1" href="#units"> Units</a>
-          <a class="source source-2" href="#physical-constants"> Physical constants </a>
-          <a class="source source-1" href="#parameters"> Parameters</a>
-          <a class="source source-2" href="#distribution-functions-grid"> Distribution functions grid</a>
-          <a class="source source-2" href="#linear-interpolation"> Linear interpolation </a>
+          <a class="source source-1" href="#common"> Common</a>
+          <a class="source source-2" href="#units"> Units</a>
+          <a class="source source-3" href="#physical-constants"> Physical constants </a>
+          <a class="source source-2" href="#parameters"> Parameters</a>
+          <a class="source source-3" href="#distribution-functions-grid"> Distribution functions grid</a>
+          <a class="source source-3" href="#linear-interpolation"> Linear interpolation </a>
+          <a class="source source-1" href="#cubic-interpolation"> Cubic interpolation </a>
       </div>
     </div>
     </div>
     <div class="generation-time">
         Generated at
-        <code>2015-05-21 18:14</code>
+        <code>2015-06-07 02:03</code>
         by a diligent
         <a target="_blank" href="http://ckald.github.io/pyccoon/" title="Pyccoon: side-to-side documentation generator">
             <img id="pyccoon-icon" src="../pyccoon_icon.svg" alt="Pyccoon: side-to-side documentation generator" />pyccoon</a>
@@ -41,7 +43,7 @@
   <a id="top"></a>
   <div class='section'>
     <div class='docs nav'>
-      <nav id="breadcrumbs">/ <a href="index.html/../../index.html">.</a> / <a href="index.html/../index.html">common</a> / <a href="index.html">__init__.py</a> </nav>
+      <nav id="breadcrumbs">/ <a href="index.html/../../index.html">.</a> / <a href="index.html/../index.html">common</a> / __init__.py</nav>
       <ul id="children"><li><a href="index.html">__init__.py</a></li><li><a href="integrators.py.html">integrators.py</a></li><li><a href="parallelization.py.html">parallelization.py</a></li><li><a href="utils.py.html">utils.py</a></li></ul>
     </div>
   </div>
@@ -69,7 +71,7 @@
           <div class='octowrap'>
             <a class='octothorpe' href='#section-1'>#</a>
           </div>
-          <p>Common</p>
+          <h1><a id="common" class="header-anchor" href="#common"> Common</a></h1>
 <p>This file contains constants and utilities shared by all other modules in the project.</p>
         </div>
         <div class='code'>
@@ -103,9 +105,8 @@
           <div class='octowrap'>
             <a class='octothorpe' href='#section-3'>#</a>
           </div>
-          <h1><a id="units" class="header-anchor" href="#units"> Units</a></h1>
-<div class="codehilite"><pre>    As we use natural units in the project, all units from `numericalunits` except energy units are useless. Here some useful units are defined in terms of `GeV`s.
-</pre></div>
+          <h2><a id="units" class="header-anchor" href="#units"> Units</a></h2>
+<p>As we use natural units in the project, all units from <code>numericalunits</code> except energy units are useless. Here some useful units are defined in terms of <code>GeV</code>s. </p>
         </div>
         <div class='code'>
           <div class="highlight"><pre>    <span class="n">use_numericalunits</span> <span class="o">=</span> <span class="bp">False</span>
@@ -178,7 +179,7 @@
           <div class='octowrap'>
             <a class='octothorpe' href='#section-7'>#</a>
           </div>
-          <h2><a id="physical-constants" class="header-anchor" href="#physical-constants"> Physical constants </a></h2>
+          <h3><a id="physical-constants" class="header-anchor" href="#physical-constants"> Physical constants </a></h3>
         </div>
         <div class='code'>
           
@@ -282,7 +283,7 @@
           <div class="highlight"><pre><span class="k">class</span> <span class="nc">Params</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 
     <span class="n">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s">&#39;T_initial&#39;</span><span class="p">,</span> <span class="s">&#39;T_final&#39;</span><span class="p">,</span> <span class="s">&#39;m&#39;</span><span class="p">,</span> <span class="s">&#39;dy&#39;</span><span class="p">,</span> <span class="s">&#39;t&#39;</span><span class="p">,</span> <span class="s">&#39;H&#39;</span><span class="p">,</span> <span class="s">&#39;rho&#39;</span><span class="p">,</span>
-                 <span class="s">&#39;a_initial&#39;</span><span class="p">,</span> <span class="s">&#39;a&#39;</span><span class="p">,</span> <span class="s">&#39;x&#39;</span><span class="p">,</span> <span class="s">&#39;y&#39;</span><span class="p">,</span> <span class="s">&#39;dx&#39;</span><span class="p">,</span> <span class="s">&#39;T&#39;</span><span class="p">,</span> <span class="s">&#39;aT&#39;</span><span class="p">)</span></pre></div>
+                 <span class="s">&#39;a_initial&#39;</span><span class="p">,</span> <span class="s">&#39;a&#39;</span><span class="p">,</span> <span class="s">&#39;x&#39;</span><span class="p">,</span> <span class="s">&#39;y&#39;</span><span class="p">,</span> <span class="s">&#39;dx&#39;</span><span class="p">,</span> <span class="s">&#39;T&#39;</span><span class="p">,</span> <span class="s">&#39;aT&#39;</span><span class="p">,</span> <span class="s">&#39;N_eff&#39;</span><span class="p">)</span></pre></div>
         </div>
         <div class='clearall'></div>
     </section>
@@ -294,9 +295,8 @@
           <div class='octowrap'>
             <a class='octothorpe' href='#section-14'>#</a>
           </div>
-          <h1><a id="parameters" class="header-anchor" href="#parameters"> Parameters</a></h1>
-<div class="codehilite"><pre>    Master object carrying the cosmological state of the system and initial conditions
-</pre></div>
+          <h2><a id="parameters" class="header-anchor" href="#parameters"> Parameters</a></h2>
+<p>Master object carrying the cosmological state of the system and initial conditions </p>
         </div>
         <div class='code'>
           <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span></pre></div>
@@ -391,6 +391,7 @@
         </div>
         <div class='code'>
           <div class="highlight"><pre>        <span class="bp">self</span><span class="o">.</span><span class="n">rho</span> <span class="o">=</span> <span class="mf">0.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">N_eff</span> <span class="o">=</span> <span class="mf">0.</span>
 
         <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
             <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
@@ -506,7 +507,12 @@
         </div>
         <div class='code'>
           <div class="highlight"><pre>        <span class="n">dt</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">a</span> <span class="o">/</span> <span class="n">old_a</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">H</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">t</span> <span class="o">+=</span> <span class="n">dt</span></pre></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">t</span> <span class="o">+=</span> <span class="n">dt</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">N_eff</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="p">(</span><span class="n">rho</span> <span class="o">-</span> <span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">pi</span><span class="o">**</span><span class="mi">2</span> <span class="o">/</span> <span class="mi">15</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">T</span><span class="o">**</span><span class="mi">4</span><span class="p">))</span>
+            <span class="o">/</span> <span class="p">(</span><span class="mf">7.</span><span class="o">/</span><span class="mf">8.</span> <span class="o">*</span> <span class="n">numpy</span><span class="o">.</span><span class="n">pi</span><span class="o">**</span><span class="mi">2</span> <span class="o">/</span> <span class="mi">15</span> <span class="o">*</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">T</span> <span class="o">/</span> <span class="mf">1.4</span><span class="p">)</span><span class="o">**</span><span class="mi">4</span><span class="p">)</span>
+        <span class="p">)</span></pre></div>
         </div>
         <div class='clearall'></div>
     </section>
@@ -518,18 +524,15 @@
           <div class='octowrap'>
             <a class='octothorpe' href='#section-27'>#</a>
           </div>
-          <h2><a id="distribution-functions-grid" class="header-anchor" href="#distribution-functions-grid"> Distribution functions grid</a></h2>
-<p><span class=todo><strong>TODO</strong>: try a log-spaced grid instead of equally-spaced</span>
-<span class=todo><strong>TODO</strong>: try an irregular grid based on the Gauss-Legendre quadrature roots to minimize the interpolation for the massless particles.</span></p>
-<div class="codehilite"><pre>    <span class="nx">To</span> <span class="nx">capture</span> <span class="nx">non</span><span class="o">-</span><span class="nx">equilibrium</span> <span class="nx">effects</span> <span class="k">in</span> <span class="nx">the</span> <span class="nx">Early</span> <span class="nx">Universe</span><span class="p">,</span> <span class="nx">we</span> <span class="nx">work</span> <span class="kd">with</span> <span class="nx">particle</span> <span class="nx">species</span> <span class="nx">distribution</span> <span class="nx">functions</span> <span class="nx">$f</span><span class="p">(</span><span class="err">\</span><span class="nx">vec</span><span class="p">{</span><span class="nx">p</span><span class="p">},</span> <span class="err">\</span><span class="nx">vec</span><span class="p">{</span><span class="nx">r</span><span class="p">},</span> <span class="nx">t</span><span class="p">)</span><span class="nx">$</span><span class="p">.</span> <span class="nx">Assuming</span> <span class="nx">that</span> <span class="nx">the</span> <span class="nx">Universe</span> <span class="nx">is</span> <span class="nx">homogeneous</span> <span class="nx">and</span> <span class="nx">isotropic</span><span class="p">,</span> <span class="nx">we</span> <span class="nx">can</span> <span class="nx">forget</span> <span class="nx">dependency</span> <span class="nx">on</span> <span class="nx">the</span> <span class="nx">position</span> <span class="nx">and</span> <span class="nx">the</span> <span class="nx">momentum</span> <span class="nx">direction</span><span class="o">:</span> <span class="nx">$f</span><span class="p">(</span><span class="nx">p</span><span class="p">,</span> <span class="nx">t</span><span class="p">)</span><span class="nx">$</span><span class="p">.</span>
-
-    <span class="nx">Resulting</span> <span class="nx">functions</span> <span class="nx">are</span> <span class="nx">sampled</span> <span class="nx">across</span> <span class="nx">a</span> <span class="nx">wide</span> <span class="nx">range</span> <span class="nx">of</span> <span class="nx">momenta</span><span class="p">.</span> <span class="nx">However</span><span class="p">,</span> <span class="nx">momentum</span> <span class="nx">range</span> <span class="nx">cannot</span> <span class="nx">include</span> <span class="nx">both</span> <span class="mi">0</span> <span class="nx">momenta</span> <span class="nx">and</span> <span class="nx">very</span> <span class="nx">large</span> <span class="nx">momenta</span> <span class="p">(</span><span class="nx">either</span> <span class="nx">leads</span> <span class="nx">to</span> <span class="nx">numerical</span> <span class="nx">overflows</span> <span class="nx">and</span> <span class="nx">errors</span><span class="p">).</span>
-</pre></div>
+          <h3><a id="distribution-functions-grid" class="header-anchor" href="#distribution-functions-grid"> Distribution functions grid</a></h3>
+<p><span class=todo><strong>TODO</strong>: try an irregular grid based on the Gauss-Legendre quadrature roots to minimize the interpolation for the massless particles.</span></p>
+<p>To capture non-equilibrium effects in the Early Universe, we work with particle species distribution functions $f(\vec{p}, \vec{r}, t)$. Assuming that the Universe is homogeneous and isotropic, we can forget dependency on the position and the momentum direction: $f(p, t)$.</p>
+<p>Resulting functions are sampled across a wide range of momenta. However, momentum range cannot include both 0 momenta and very large momenta (either leads to numerical overflows and errors).</p>
         </div>
         <div class='code'>
           <div class="highlight"><pre><span class="k">class</span> <span class="nc">Grid</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 
-    <span class="n">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s">&#39;MIN_MOMENTUM&#39;</span><span class="p">,</span> <span class="s">&#39;MAX_MOMENTUM&#39;</span><span class="p">,</span> <span class="s">&#39;MOMENTUM_SAMPLES&#39;</span><span class="p">,</span> <span class="s">&#39;MOMENTUM_STEP&#39;</span><span class="p">,</span> <span class="s">&#39;TEMPLATE&#39;</span><span class="p">)</span></pre></div>
+    <span class="n">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s">&#39;MIN_MOMENTUM&#39;</span><span class="p">,</span> <span class="s">&#39;MAX_MOMENTUM&#39;</span><span class="p">,</span> <span class="s">&#39;MOMENTUM_SAMPLES&#39;</span><span class="p">,</span> <span class="s">&#39;MOMENTUM_RATIO&#39;</span><span class="p">,</span> <span class="s">&#39;TEMPLATE&#39;</span><span class="p">)</span></pre></div>
         </div>
         <div class='clearall'></div>
     </section>
@@ -541,11 +544,12 @@
           <div class='octowrap'>
             <a class='octothorpe' href='#section-28'>#</a>
           </div>
-          
+          <p>self.MIN_MOMENTUM = 1. * UNITS.eV</p>
         </div>
         <div class='code'>
           <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">MIN_MOMENTUM</span> <span class="o">=</span> <span class="mf">0.</span>  <span class="c"># 1. * UNITS.eV</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">MIN_MOMENTUM</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">MAX_MOMENTUM</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">MIN_MOMENTUM</span> <span class="o">+</span> <span class="mi">20</span> <span class="o">*</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">MeV</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">MOMENTUM_SAMPLES</span> <span class="o">=</span> <span class="mi">50</span></pre></div>
         </div>
@@ -567,10 +571,9 @@
 <p>yields an array of particle conformal energy mapped over the <code>GRID</code></p>
         </div>
         <div class='code'>
-          <div class="highlight"><pre>        <span class="bp">self</span><span class="o">.</span><span class="n">TEMPLATE</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">MIN_MOMENTUM</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">MAX_MOMENTUM</span><span class="p">,</span>
-                                       <span class="n">num</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">MOMENTUM_SAMPLES</span><span class="p">,</span> <span class="n">endpoint</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+          <div class="highlight"><pre>        <span class="bp">self</span><span class="o">.</span><span class="n">TEMPLATE</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">generate_template</span><span class="p">()</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">MOMENTUM_STEP</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">TEMPLATE</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">TEMPLATE</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span></pre></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">MOMENTUM_RATIO</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">TEMPLATE</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">TEMPLATE</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span></pre></div>
         </div>
         <div class='clearall'></div>
     </section>
@@ -585,7 +588,14 @@
           
         </div>
         <div class='code'>
-          <div class="highlight"><pre><span class="n">GRID</span> <span class="o">=</span> <span class="n">Grid</span><span class="p">()</span></pre></div>
+          <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">generate_template</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">base</span> <span class="o">=</span> <span class="mf">1.2</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">MIN_MOMENTUM</span>
+            <span class="o">+</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">MAX_MOMENTUM</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">MIN_MOMENTUM</span><span class="p">)</span>
+            <span class="o">*</span> <span class="p">(</span><span class="n">base</span> <span class="o">**</span> <span class="n">numpy</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">MOMENTUM_SAMPLES</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-</span> <span class="mf">1.</span><span class="p">)</span>
+            <span class="o">/</span> <span class="p">(</span><span class="n">base</span> <span class="o">**</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">MOMENTUM_SAMPLES</span> <span class="o">-</span> <span class="mf">1.</span><span class="p">)</span> <span class="o">-</span> <span class="mf">1.</span><span class="p">)</span>
+        <span class="p">)</span></pre></div>
         </div>
         <div class='clearall'></div>
     </section>
@@ -596,6 +606,22 @@
         <div class='docs'>
           <div class='octowrap'>
             <a class='octothorpe' href='#section-31'>#</a>
+          </div>
+          <p>self.TEMPLATE = numpy.linspace(self.MIN_MOMENTUM, self.MAX_MOMENTUM,
+                               num=self.MOMENTUM_SAMPLES, endpoint=True)</p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre><span class="n">GRID</span> <span class="o">=</span> <span class="n">Grid</span><span class="p">()</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+    </div>
+    <div class='section'>
+    <a id="section-32" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-32'>#</a>
           </div>
           <p>Heaviside $\theta$ function </p>
         </div>
@@ -612,13 +638,13 @@
     </section>
     </div>
     <div class='section'>
-    <a id="section-32" class="section-anchor"></a>
+    <a id="section-33" class="section-anchor"></a>
     <section>
         <div class='docs'>
           <div class='octowrap'>
-            <a class='octothorpe' href='#section-32'>#</a>
+            <a class='octothorpe' href='#section-33'>#</a>
           </div>
-          <h2><a id="linear-interpolation" class="header-anchor" href="#linear-interpolation"> Linear interpolation </a></h2>
+          <h3><a id="linear-interpolation" class="header-anchor" href="#linear-interpolation"> Linear interpolation </a></h3>
         </div>
         <div class='code'>
           <div class="highlight"><pre><span class="k">def</span> <span class="nf">linear_interpolation</span><span class="p">(</span><span class="n">function</span><span class="p">,</span> <span class="n">grid</span><span class="p">):</span>
@@ -636,11 +662,11 @@
     </section>
     </div>
     <div class='section'>
-    <a id="section-33" class="section-anchor"></a>
+    <a id="section-34" class="section-anchor"></a>
     <section>
         <div class='docs'>
           <div class='octowrap'>
-            <a class='octothorpe' href='#section-33'>#</a>
+            <a class='octothorpe' href='#section-34'>#</a>
           </div>
           <p>Determine the closest grid points</p>
         </div>
@@ -659,11 +685,117 @@
     </section>
     </div>
     <div class='section'>
-    <a id="section-34" class="section-anchor"></a>
+    <a id="section-35" class="section-anchor"></a>
     <section>
         <div class='docs'>
           <div class='octowrap'>
-            <a class='octothorpe' href='#section-34'>#</a>
+            <a class='octothorpe' href='#section-35'>#</a>
+          </div>
+          
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>    <span class="k">return</span> <span class="n">interpolation</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+    </div>
+    <div class='section'>
+    <a id="section-36" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-36'>#</a>
+          </div>
+          <h1><a id="cubic-interpolation" class="header-anchor" href="#cubic-interpolation"> Cubic interpolation </a></h1>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre><span class="k">def</span> <span class="nf">cubic_interpolation</span><span class="p">(</span><span class="n">function</span><span class="p">,</span> <span class="n">grid</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="nf">interpolation</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+        <span class="n">index</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">searchsorted</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">index</span> <span class="o">&gt;=</span> <span class="nb">len</span><span class="p">(</span><span class="n">grid</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">function</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">grid</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="n">x</span> <span class="o">==</span> <span class="n">grid</span><span class="p">[</span><span class="n">index</span><span class="p">]:</span>
+            <span class="k">return</span> <span class="n">function</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="n">index</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">index</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">grid</span><span class="p">)</span> <span class="o">-</span> <span class="mi">2</span><span class="p">:</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+    </div>
+    <div class='section'>
+    <a id="section-37" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-37'>#</a>
+          </div>
+          <p>Determine the closest grid points</p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>            <span class="n">i_low</span> <span class="o">=</span> <span class="n">index</span>
+            <span class="n">x_low</span> <span class="o">=</span> <span class="n">grid</span><span class="p">[</span><span class="n">i_low</span><span class="p">]</span>
+
+            <span class="n">i_high</span> <span class="o">=</span> <span class="n">index</span> <span class="o">+</span> <span class="mi">1</span>
+            <span class="n">x_high</span> <span class="o">=</span> <span class="n">grid</span><span class="p">[</span><span class="n">i_high</span><span class="p">]</span>
+
+            <span class="k">return</span> <span class="p">(</span>
+                <span class="n">function</span><span class="p">[</span><span class="n">i_low</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">x_high</span> <span class="o">-</span> <span class="n">x</span><span class="p">)</span> <span class="o">+</span> <span class="n">function</span><span class="p">[</span><span class="n">i_high</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="n">x_low</span><span class="p">)</span>
+            <span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">x_high</span> <span class="o">-</span> <span class="n">x_low</span><span class="p">)</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+    </div>
+    <div class='section'>
+    <a id="section-38" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-38'>#</a>
+          </div>
+          
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>        <span class="k">else</span><span class="p">:</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+    </div>
+    <div class='section'>
+    <a id="section-39" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-39'>#</a>
+          </div>
+          <p>Otherwise, use cubic interpolation</p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>            <span class="n">y0</span> <span class="o">=</span> <span class="n">function</span><span class="p">[</span><span class="n">index</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
+            <span class="n">y1</span> <span class="o">=</span> <span class="n">function</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
+            <span class="n">y2</span> <span class="o">=</span> <span class="n">function</span><span class="p">[</span><span class="n">index</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
+            <span class="n">y3</span> <span class="o">=</span> <span class="n">function</span><span class="p">[</span><span class="n">index</span> <span class="o">+</span> <span class="mi">2</span><span class="p">]</span>
+
+            <span class="n">a0</span> <span class="o">=</span> <span class="o">-</span><span class="mf">0.5</span><span class="o">*</span><span class="n">y0</span> <span class="o">+</span> <span class="mf">1.5</span><span class="o">*</span><span class="n">y1</span> <span class="o">-</span> <span class="mf">1.5</span><span class="o">*</span><span class="n">y2</span> <span class="o">+</span> <span class="mf">0.5</span><span class="o">*</span><span class="n">y3</span>
+            <span class="n">a1</span> <span class="o">=</span> <span class="n">y0</span> <span class="o">-</span> <span class="mf">2.5</span><span class="o">*</span><span class="n">y1</span> <span class="o">+</span> <span class="mi">2</span><span class="o">*</span><span class="n">y2</span> <span class="o">-</span> <span class="mf">0.5</span><span class="o">*</span><span class="n">y3</span>
+            <span class="n">a2</span> <span class="o">=</span> <span class="o">-</span><span class="mf">0.5</span><span class="o">*</span><span class="n">y0</span> <span class="o">+</span> <span class="mf">0.5</span><span class="o">*</span><span class="n">y2</span>
+            <span class="n">a3</span> <span class="o">=</span> <span class="n">y1</span>
+
+            <span class="n">mu</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="n">grid</span><span class="p">[</span><span class="n">index</span><span class="p">])</span> <span class="o">/</span> <span class="p">(</span><span class="n">grid</span><span class="p">[</span><span class="n">index</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">grid</span><span class="p">[</span><span class="n">index</span><span class="p">])</span>
+
+            <span class="k">return</span> <span class="n">a0</span><span class="o">*</span><span class="n">mu</span><span class="o">*</span><span class="n">mu</span><span class="o">*</span><span class="n">mu</span> <span class="o">+</span> <span class="n">a1</span><span class="o">*</span><span class="n">mu</span><span class="o">*</span><span class="n">mu</span> <span class="o">+</span> <span class="n">a2</span><span class="o">*</span><span class="n">mu</span> <span class="o">+</span> <span class="n">a3</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+    </div>
+    <div class='section'>
+    <a id="section-40" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-40'>#</a>
           </div>
           
         </div>

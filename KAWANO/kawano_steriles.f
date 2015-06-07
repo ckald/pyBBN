@@ -1,149 +1,49 @@
 
       MODULE commons
 C----------PARAMETERS.
-        DOUBLE PRECISION, PARAMETER :: pi=3.141593
-        DOUBLE PRECISION, PARAMETER :: q=2.531          !(mass(neutron)-mass(proton))/m(electron)
-        DOUBLE PRECISION, PARAMETER :: const1=0.09615 !Relation between time and temperature.
-        DOUBLE PRECISION, PARAMETER :: const2=6.6700e-8 !Gravitational constant.
+        PARAMETER (pi=3.141593)
+        PARAMETER (q=2.531)          !(mass(neutron)-mass(proton))/m(electron)
+        PARAMETER (const1=0.09615) !Relation between time and temperature.
+        PARAMETER (const2=6.6700e-8) !Gravitational constant.
 
-        INTEGER, PARAMETER :: ir=1             !Input unit number.
-        INTEGER, PARAMETER :: iw=1             !Output unit number.
-        INTEGER, PARAMETER :: itmax=40         !Maximum # of line to be printed.
-        DOUBLE PRECISION, PARAMETER :: min_time_step=1.e-16   !Lower limit on size of time step.
-        INTEGER, PARAMETER :: iter=50          !Number of gaussian quads.
-        DOUBLE PRECISION, PARAMETER :: eps=2.e-4        !Tolerance for convergence (.ge. 1.e-7).
-        INTEGER, PARAMETER :: mord=1           !Higher order in correction.
+        PARAMETER (ir=1)             !Input unit number.
+        PARAMETER (iw=1)             !Output unit number.
+        PARAMETER (itmax=40)         !Maximum # of line to be printed.
+        PARAMETER (min_time_step=1.e-16)        !Lower limit on size of time step.
+        PARAMETER (iter=50)          !Number of gaussian quads.
+        PARAMETER (eps=2.e-4)        !Tolerance for convergence (.ge. 1.e-7).
+        PARAMETER (mord=1)           !Higher order in correction.
 
-        INTEGER, PARAMETER :: nrec=88          !Number of nuclear reactions.
-        INTEGER, PARAMETER :: nnuc=26          !Number of nuclides in calculation.
+        PARAMETER (nrec=88)          !Number of nuclear reactions.
+        PARAMETER (nnuc=26)          !Number of nuclides in calculation.
 
-        INTEGER, PARAMETER :: nvar=29          !Number of variables to be evolved.
+        PARAMETER (nvar=29)          !Number of variables to be evolved.
 
-        INTEGER, PARAMETER :: lrec=64          !Total # of nuclear reactions for irun = 2.
-        INTEGER, PARAMETER :: krec=34          !Total # of nuclear reactions for irun = 3.
-        INTEGER, PARAMETER :: lnuc=18          !Total # of nuclides for irun = 2.
-        INTEGER, PARAMETER :: knuc=9           !Total # of nuclides for irun = 3.
+        PARAMETER (lrec=64)          !Total # of nuclear reactions for irun = 2.
+        PARAMETER (krec=34)          !Total # of nuclear reactions for irun = 3.
+        PARAMETER (lnuc=18)          !Total # of nuclides for irun = 2.
+        PARAMETER (knuc=9)           !Total # of nuclides for irun = 3.
 
         CHARACTER(255) :: output_file
-
-      END
-
-      MODULE model_parameters
-C------MODEL PARAMETERS
-
-C-------DEFAULT MODEL PARAMETERS.
-        DOUBLE PRECISION, DIMENSION(3) :: c0 = (/1.00,885.7,3.0/)  !Default c.
-        DOUBLE PRECISION :: cosmo0 = 0.00                        !Default cosmological constant.
-        DOUBLE PRECISION, DIMENSION(3) :: xi0 = (/0.00,0.00,0.00/) !Default neutrino degeneracy parameters.
-
-C-------EARLY UNIVERSE MODEL PARAMETERS.
-        DOUBLE PRECISION    g                    !Gravitational constant.
-        DOUBLE PRECISION    tau                  !Neutron lifetime (sec).
-        DOUBLE PRECISION    xnu                  !Number of neutrino species.
-        DOUBLE PRECISION    c(3)               !c(1) is variation of gravitational constant.
-     |                             !c(2) is neutron half-life (min).
-     |                             !c(3) is number of neutrino species.
-        DOUBLE PRECISION    cosmo                !Cosmological constant.
-        DOUBLE PRECISION    xi(3)                !Neutrino degeneracy parameters.
-     |                             !xi(1) is e neutrino degeneracy parameter.
-     |                             !xi(2) is m neutrino degeneracy parameter.
-     |                             !xi(3) is t neutrino degeneracy parameter.
-
-      CONTAINS
-
-        SUBROUTINE vary_parameters(pos, value)
-C-------VARY COSMOLOGICAL PARAMETERS
-        ! This subroutine emulates the deprecated EQUIVALENCE statement for
-        ! variables c, cosmo and xi
-          INTEGER pos
-          DOUBLE PRECISION value
-
-          !Vary other quantities.
-          IF (pos .lt. 4) THEN
-            c(pos) = value
-          ELSE IF (pos .eq. 4) THEN
-            cosmo = value
-          ELSE
-            xi(pos - 4) = value
-          END IF
-        END SUBROUTINE
-
-      END
-
-      MODULE variational_parameters
-C------VARIATIONAL PARAMETERS
-
-C----------DEFAULT VARIATIONAL PARAMETERS.
-        DOUBLE PRECISION :: dt0 = 1.00e-04                 !Default initial time step.
-        DOUBLE PRECISION :: eta0 = 6.00e-10                !Default baryon-to-photon ratio.
-
-C----------VARIATIONAL PARAMETERS.
-        DOUBLE PRECISION    dt1                  !Initial time step.
-        DOUBLE PRECISION    eta1                 !Baryon-to-photon ratio.
-
-      END
-
-      MODULE computation_parameters
-C----------DEFAULT COMPUTATION PARAMETERS.
-        DOUBLE PRECISION :: cy0 = .300                 !Default cy.
-        DOUBLE PRECISION :: ct0 = .030                 !Default ct.
-        DOUBLE PRECISION :: t9i0 = 1.00e+02            !Default t9i.
-        DOUBLE PRECISION :: t9f0 = 1.00e-02            !Default t9f.
-        DOUBLE PRECISION :: ytmin0 = 1.00e-25          !Default ytmin.
-        INTEGER :: inc0 = 30                 !Default accumulation increment.
-
-C----------COMPUTATIONAL PARAMETERS.
-        DOUBLE PRECISION    cy                   !Time step limiting constant on abundances.
-        DOUBLE PRECISION    ct                   !Time step limiting constant on temperature.
-        DOUBLE PRECISION    t9i                  !Initial temperature (in 10**9 K).
-        DOUBLE PRECISION    t9f                  !Final temperature (in 10**9 k).
-        DOUBLE PRECISION    ytmin                !Smallest abundances allowed.
-        INTEGER inc                  !Accumulation increment.
-
-      END
-
-      MODULE flags
-C-------FLAGS AND COUNTERS.
-      INTEGER ltime                !Indicates if output buffer printed.
-      INTEGER is                   !# total iterations for particular model.
-      INTEGER ip                   !# iterations after outputing a line.
-      INTEGER it                   !# times accumulated in output buffer.
-      INTEGER mbad                 !Indicates if gaussian elimination failed.
-
-      END
-
-      MODULE evolution_parameters
-        USE commons
-C-------EVOLUTION PARAMETERS.
-        DOUBLE PRECISION    t9                   !Temperature of photons (units of 10**9 K).
-        DOUBLE PRECISION    hv                   !Defined by hv = M(atomic)n(baryon)/t9**3.
-        DOUBLE PRECISION    phie                 !Chemical potential of electron.
-        DOUBLE PRECISION    y(nnuc)              !Relative number abundances.
-
-C-------EVOLUTION PARAMETERS (DERIVATIVES).
-        DOUBLE PRECISION    dt9                  !Change in temperature.
-        DOUBLE PRECISION    dhv                  !Change in hv.
-        DOUBLE PRECISION    dphie                !Change in chemical potential.
-        DOUBLE PRECISION    dydt(nnuc)           !Change in relative number abundances.
-
-C-------EVOLUTION PARAMETERS (ORIGINAL VALUES).
-        DOUBLE PRECISION    y0(nnuc)             !Rel # abundances at end of 1st R-K loop.
 
       END
 
       MODULE sterile
         !Parameters from steriles prog
 C------VARIABLES FOR STERILES
-        INTEGER, PARAMETER :: n_big=1e7
+        PARAMETER (n_big=1e7)
         DOUBLE PRECISION ts(n_big)             !Time array (in seconds)
+	DOUBLE PRECISION aTs(n_big)
         DOUBLE PRECISION t9s(n_big)            !Photon temperature array (in 10**9 K)
         DOUBLE PRECISION dt9s(n_big)           !Temperature variation (in 10**9 K / s)
         DOUBLE PRECISION rho_tot(n_big)        !Total energy density array (in g cm**-3)
         DOUBLE PRECISION ratef(n_big)          !Array for the total rate n -> p
         DOUBLE PRECISION rater(n_big)          !Array for the total rate p -> n
+	DOUBLE PRECISION hvs(n_big)
         INTEGER nlines            !An integer telling the number of lines
      |                            ! of data coming from the other program
       END
+
 
 
       PROGRAM nuc123
@@ -173,16 +73,21 @@ C     Copy -
 C       Version 4.1 (December 1991)
 
       USE commons
-      USE variational_parameters
-      USE computation_parameters
 
 C----------COMMON AREAS.
       COMMON /recpr0/ reacpr                        !Reaction parameter values.
       COMMON /recpr/  iform,ii,jj,kk,ll,rev,q9       !Reaction parameter names.
       COMMON /rates/  f,r                            !Reaction rates.
+      COMMON /compr0/ cy0,ct0,t9i0,t9f0,ytmin0,inc0  !Default comp parameters.
+      COMMON /compr/  cy,ct,t9i,t9f,ytmin,inc        !Computation parameters.
+      COMMON /modpr0/ c0,cosmo0,xi0                  !Default model parameters.
+      COMMON /modpr/  g,tau,xnu,c,cosmo,xi           !Model parameters.
+      COMMON /varpr0/ dt0,eta0                      !Default variationl params.
+      COMMON /varpr/  dt1,eta1                       !Variational parameters.
       COMMON /check1/  itime                          !Computation location.
       COMMON /runopt/ irun,isize,jsize               !Run options.
       COMMON /outopt/ nout,outfile                   !Output option.
+
 
 C==========================DECLARATION DIVISION============================
 
@@ -202,6 +107,22 @@ C----------REACTION RATES.
       DOUBLE PRECISION    f(nrec)              !Forward reaction rate coefficients.
       DOUBLE PRECISION    r(nrec)              !Reverse reaction rate coefficients.
 
+C----------DEFAULT COMPUTATION PARAMETERS.
+      DOUBLE PRECISION    cy0                  !Default cy.
+      DOUBLE PRECISION    ct0                  !Default ct.
+      DOUBLE PRECISION    t9i0                 !Default t9i.
+      DOUBLE PRECISION    t9f0                 !Default t9f.
+      DOUBLE PRECISION    ytmin0               !Default ytmin.
+      INTEGER inc0                 !Default accumulation increment.
+
+C----------COMPUTATIONAL PARAMETERS.
+      DOUBLE PRECISION    cy                   !Time step limiting constant on abundances.
+      DOUBLE PRECISION    ct                   !Time step limiting constant on temperature.
+      DOUBLE PRECISION    t9i                  !Initial temperature (in 10**9 K).
+      DOUBLE PRECISION    t9f                  !Final temperature (in 10**9 k).
+      DOUBLE PRECISION    ytmin                !Smallest abundances allowed.
+      INTEGER inc                  !Accumulation increment.
+
 C----------DEFAULT MODEL PARAMETERS.
       DOUBLE PRECISION    c0(3)                !Default c.
       DOUBLE PRECISION    cosmo0               !Default cosmological constant.
@@ -213,6 +134,14 @@ C----------EARLY UNIVERSE MODEL PARAMETERS.
      |                             !c(3) is number of neutrino species.
       DOUBLE PRECISION    cosmo                !Cosmological constant.
       DOUBLE PRECISION    xi(3)                !Neutrino degeneracy parameters.
+
+C----------DEFAULT VARIATIONAL PARAMETERS.
+      DOUBLE PRECISION    dt0                  !Default initial time step.
+      DOUBLE PRECISION    eta0                 !Default baryon-to-photon ratio.
+
+C----------VARIATIONAL PARAMETERS.
+      DOUBLE PRECISION    dt1                  !Initial time step.
+      DOUBLE PRECISION    eta1                 !Baryon-to-photon ratio.
 
 C----------COMPUTATION LOCATION.
       INTEGER itime                !Time check.
@@ -228,9 +157,6 @@ C----------OUTPUT FILE STATUS.
 
 C----------USER RESPONSE VARIABLES.
       INTEGER inum                 !Selection number.
-
-C----------TEMP VARIABLES.
-      INTEGER i
 
 C===========================PROCEDURE DIVISION=====================
 
@@ -266,7 +192,7 @@ C--------OPEN FILES AND PRINT GREETING-----------------------------
 
 C20--------INPUT INITIALIZATION INFORMATION AND PAUSE------------------------
 
-      DO i=1,nrec
+      DO i  = 1,nrec
 C..........READ IN REACTION PARAMETERS.
         iform(i) = int(reacpr(i,2))!Reaction type.
         ii(i)    = int(reacpr(i,3))!Incoming nuclide type.
@@ -353,14 +279,14 @@ C40--------BRANCH TO APPROPRIATE SECTION--------------------------------
         CALL output
         GO TO 500
  460  CONTINUE                     !Exit section.
+ccccccccccc  CLOSE (unit=1)             !End terminal session.
+        itime = 10                 !Time = end of program.
+        CALL check                 !Check interface subroutine.
         IF (outfile) THEN
           close (unit=2,status='keep')   !Close output file.
         ELSE
           CLOSE (unit=2,status='delete') !File not used - dispose.
         END IF
-ccccccccccc  CLOSE (unit=1)             !End terminal session.
-        itime = 10                 !Time = end of program.
-        CALL check                 !Check interface subroutine.
         STOP
 
 C50---------GO BACK TO MENU-----------------------------------------
@@ -889,11 +815,12 @@ C----------REMARKS.
 C     Allows resetting of computation parameters.
 
       USE commons
-      USE variational_parameters
 
 C----------COMMON AREAS.
       COMMON /compr0/ cy0,ct0,t9i0,t9f0,ytmin0,inc0  !Default comp parameters.
       COMMON /compr/  cy,ct,t9i,t9f,ytmin,inc        !Computation parameters.
+      COMMON /varpr0/ dt0,eta0                      !Default variationl params.
+      COMMON /varpr/  dt1,eta1                       !Variational parameters.
 
 
 C==========================DECLARATION DIVISION=============================
@@ -913,6 +840,12 @@ C----------COMPUTATION PARAMETERS.
       DOUBLE PRECISION    t9f                  !Final temperature (in 10**9 K).
       DOUBLE PRECISION    ytmin                !Smallest abundances allowed.
       INTEGER inc                  !Accumulation increment.
+
+C----------DEFAULT VARIATIONAL  PARAMETERS.
+      DOUBLE PRECISION    dt0                  !Default initial dt.
+
+C----------VARIATIONAL  PARAMETERS.
+      DOUBLE PRECISION    dt1                  !Initial time step.
 
 C----------LOCAL VARIABLES.
       INTEGER inum                 !Selection number.
@@ -1027,7 +960,13 @@ C----------REMARKS.
 C     Allows resetting of model parameters.
 
       USE commons
-      USE variational_parameters
+
+C----------COMMON AREAS.
+      COMMON /modpr0/ c0,cosmo0,xi0                  !Default model parameters.
+      COMMON /modpr/  g,tau,xnu,c,cosmo,xi           !Model parameters.
+      COMMON /varpr0/ dt0,eta0                      !Default variationl params.
+      COMMON /varpr/  dt1,eta1                       !Variational parameters.
+
 
 C==========================DECLARATION DIVISION==========================
 
@@ -1042,6 +981,12 @@ C----------EARLY UNIVERSE MODEL PARAMETERS.
      |                             !c(3) is number of neutrino species.
       DOUBLE PRECISION    cosmo                !Cosmological constant.
       DOUBLE PRECISION    xi(3)                !Neutrino degeneracy parameters.
+
+C----------DEFAULT VARIATIONAL PARAMETERS.
+      DOUBLE PRECISION    eta0                 !Default eta.
+
+C----------VARIATIONAL PARAMETERS.
+      DOUBLE PRECISION    eta1                 !Intial baryon-to-photon ratio.
 
 C----------USER RESPONSE VARIABLES.
       INTEGER inum                 !Selection number.
@@ -1172,15 +1117,23 @@ C----------REMARKS.
 C     Activates computation routine.
 
       USE commons
-      USE model_parameters
-      USE variational_parameters
 
 C----------COMMON AREAS.
+      COMMON /modpr/  g,tau,xnu,c,cosmo,xi           !Model parameters.
+      COMMON /varpr/  dt1,eta1                       !Variational parameters.
       COMMON /check1/  itime                          !Computation location.
       COMMON /runopt/ irun,isize,jsize               !Run options.
 
 
 C==========================DECLARATION DIVISION===========================
+
+C----------MODEL PARAMETERS.
+      DOUBLE PRECISION    eta1                 !Baryon-to-photon ratio.
+      DOUBLE PRECISION    c(3)                !c(1) is variation of gravitational constant.
+     |                             !c(2) is neutron lifetime (sec).
+     |                             !c(3) is number of neutrino species.
+      DOUBLE PRECISION    cosmo                !Cosmological constant.
+      DOUBLE PRECISION    xi(3)                !Neutrino degeneracy parameters.
 
 C----------RUN OPTION.
       INTEGER irun                 !Run network size.
@@ -1205,9 +1158,15 @@ C----------USER INTERACTION VARIABLES.
       INTEGER lchose               !User response (alphanumeric).
 
 C----------FLAG AND LABELS.
-      INTEGER i,l                    !Loop counters
       INTEGER itime                !Computation location.
       CHARACTER*22 vtype(8)        !Label for quantities being varied.
+
+C----------EQUIVALENCE VARIABLE.
+      DOUBLE PRECISION    qvary(7)             !Array set equal to c, cosmo, and xi.
+
+C----------EQUIVALENCE STATEMENTS.
+      EQUIVALENCE (qvary(1),c(1)), (qvary(4),cosmo), (qvary(5),xi(1))
+
 
 C==============================DATA DIVISION=========================
 
@@ -1399,7 +1358,7 @@ C..........DO MULTIPLE RUNS.
               IF (inum(1).eq.1) THEN
                 eta1 = 10**rnumb1    !Vary baryon-to-photon ratio.
               ELSE
-                CALL vary_parameters(inum(1)-1, rnumb1)
+                qvary(inum(1)-1) = rnumb1  !Vary other quantities.
               END IF
             END IF
             DO lnumb2 = 0,lnum(2)-1  !Middle loop.
@@ -1408,7 +1367,7 @@ C..........DO MULTIPLE RUNS.
                 IF (inum(2).eq.1) THEN
                   eta1 = 10**rnumb2  !Vary baryon-to-photon ratio.
                 ELSE
-                  CALL vary_parameters(inum(2)-1, rnumb2)
+                  qvary(inum(2)-1) = rnumb2  !Vary other quantities.
                 END IF
               END IF
               DO lnumb3 = 0,lnum(3)-1  !Inner loop.
@@ -1417,7 +1376,7 @@ C..........DO MULTIPLE RUNS.
                   IF (inum(3).eq.1) THEN
                     eta1 = 10**rnumb3  !Vary baryon-to-photon ratio.
                   ELSE
-                    CALL vary_parameters(inum(3)-1, rnumb3)
+                    qvary(inum(3)-1) = rnumb3  !Vary other quantities.
                   END IF
                 END IF
                 itime = 3
@@ -1464,16 +1423,24 @@ C     Outputs computational results either into an output file or onto
 C     the screen
 
       USE commons
-      USE computation_parameters
-      USE flags
 
 C----------COMMON AREAS.
+      COMMON /compr/  cy,ct,t9i,t9f,ytmin,inc        !Computation parameters.
+      COMMON /modpr/  g,tau,xnu,c,cosmo,xi           !Model parameters.
+      COMMON /flags/  ltime,is,ip,it,mbad            !Flags, counters.
       COMMON /outdat/ xout,thmout,t9out,tout,dtout,  !Output data.
      |                etaout,hubout
       COMMON /outopt/ nout,outfile                   !Output option.
 
 
 C==========================DECLARATION DIVISION=============================
+
+C----------COMPUTATION SETTINGS.
+      DOUBLE PRECISION    cy                   !Time step limiting constant on abundances.
+      DOUBLE PRECISION    ct                   !Time step limiting constant on temperature.
+      DOUBLE PRECISION    t9i                  !Initial temperature (in 10**9 K).
+      DOUBLE PRECISION    t9f                  !Final temperature (in 10**9 K).
+      DOUBLE PRECISION    ytmin                !Smallest abundances allowed.
 
 C----------EARLY UNIVERSE MODEL PARAMETERS.
       DOUBLE PRECISION    c(3)                !c(1) is variation of gravitational constant.
@@ -1483,7 +1450,7 @@ C----------EARLY UNIVERSE MODEL PARAMETERS.
       DOUBLE PRECISION    xi(3)                !Neutrino degeneracy parameters.
 
 C----------COUNTER.
-      INTEGER i, j
+      INTEGER it                   !# times accumulated in output buffer.
 
 C----------OUTPUT ARRAYS.
       DOUBLE PRECISION    xout(itmax,nnuc)     !Nuclide mass fractions.

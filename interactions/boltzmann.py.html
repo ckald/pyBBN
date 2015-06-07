@@ -22,18 +22,18 @@
     Contents
     <div id="jump_wrapper">
       <div id="jump_page">
-          <a class="source source-1" href="#$\mathcal{f}(f_\alpha)$-functional"> $\mathcal{F}(f_\alpha)$ functional </a>
-          <a class="source source-2" href="#naive-form"> Naive form</a>
-          <a class="source source-2" href="#linearized-in-$\,-f_1$-form"> Linearized in $\, f_1$ form</a>
-          <a class="source source-1" href="#integral"> Integral</a>
-          <a class="source source-2" href="#crossed-particles-in-the-integral"> Crossed particles in the integral</a>
-          <a class="source source-2" href="#integration-region-bounds-methods"> Integration region bounds methods </a>
+          <a class="source source-2" href="#$\mathcal{f}(f_\alpha)$-functional"> $\mathcal{F}(f_\alpha)$ functional </a>
+          <a class="source source-3" href="#naive-form"> Naive form</a>
+          <a class="source source-3" href="#linearized-in-$\,-f_1$-form"> Linearized in $\, f_1$ form</a>
+          <a class="source source-2" href="#integral"> Integral</a>
+          <a class="source source-3" href="#crossed-particles-in-the-integral"> Crossed particles in the integral</a>
+          <a class="source source-3" href="#integration-region-bounds-methods"> Integration region bounds methods </a>
       </div>
     </div>
     </div>
     <div class="generation-time">
         Generated at
-        <code>2015-05-21 18:14</code>
+        <code>2015-06-07 02:03</code>
         by a diligent
         <a target="_blank" href="http://ckald.github.io/pyccoon/" title="Pyccoon: side-to-side documentation generator">
             <img id="pyccoon-icon" src="../pyccoon_icon.svg" alt="Pyccoon: side-to-side documentation generator" />pyccoon</a>
@@ -42,7 +42,7 @@
   <a id="top"></a>
   <div class='section'>
     <div class='docs nav'>
-      <nav id="breadcrumbs">/ <a href="boltzmann.py.html/../../index.html">.</a> / <a href="boltzmann.py.html/../index.html">interactions</a> / <a href="boltzmann.py.html">boltzmann.py</a> </nav>
+      <nav id="breadcrumbs">/ <a href="boltzmann.py.html/../../index.html">.</a> / <a href="boltzmann.py.html/../index.html">interactions</a> / boltzmann.py</nav>
       <ul id="children"></ul>
     </div>
   </div>
@@ -72,7 +72,7 @@
           <div class='octowrap'>
             <a class='octothorpe' href='#section-1'>#</a>
           </div>
-          <h1><a id="$\mathcal{f}(f_\alpha)$-functional" class="header-anchor" href="#$\mathcal{f}(f_\alpha)$-functional"> $\mathcal{F}(f_\alpha)$ functional </a></h1>
+          <h2><a id="$\mathcal{f}(f_\alpha)$-functional" class="header-anchor" href="#$\mathcal{f}(f_\alpha)$-functional"> $\mathcal{F}(f_\alpha)$ functional </a></h2>
         </div>
         <div class='code'>
           <div class="highlight"><pre><span class="k">class</span> <span class="nc">DistributionFunctional</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span></pre></div>
@@ -87,12 +87,11 @@
           <div class='octowrap'>
             <a class='octothorpe' href='#section-2'>#</a>
           </div>
-          <h2><a id="naive-form" class="header-anchor" href="#naive-form"> Naive form</a></h2>
-<div class="codehilite"><pre>    \begin{align}
-        \mathcal{F} &amp;= (1 \pm f_1)(1 \pm f_2) f_3 f_4 - f_1 f_2 (1 \pm f_3) (1 \pm f_4)
-        \\\\ &amp;= \mathcal{F}_B + \mathcal{F}_A
-    \end{align}
-</pre></div>
+          <h3><a id="naive-form" class="header-anchor" href="#naive-form"> Naive form</a></h3>
+<p>\begin{align}
+       \mathcal{F} &amp;= (1 \pm f_1)(1 \pm f_2) f_3 f_4 - f_1 f_2 (1 \pm f_3) (1 \pm f_4)
+       \\ &amp;= \mathcal{F}_B + \mathcal{F}_A
+   \end{align}</p>
         </div>
         <div class='code'>
           
@@ -167,7 +166,7 @@
           <div class='octowrap'>
             <a class='octothorpe' href='#section-5'>#</a>
           </div>
-          <h2><a id="linearized-in-$\,-f_1$-form" class="header-anchor" href="#linearized-in-$\,-f_1$-form"> Linearized in $\, f_1$ form</a></h2>
+          <h3><a id="linearized-in-$\,-f_1$-form" class="header-anchor" href="#linearized-in-$\,-f_1$-form"> Linearized in $\, f_1$ form</a></h3>
 <p>\begin{equation}
     \mathcal{F}(f) = f_3 f_4 (1 \pm f_1) (1 \pm f_2) - f_1 f_2 (1 \pm f_3) (1 \pm f_4)
 \end{equation}</p>
@@ -228,9 +227,8 @@
           <div class='octowrap'>
             <a class='octothorpe' href='#section-8'>#</a>
           </div>
-          <h1><a id="integral" class="header-anchor" href="#integral"> Integral</a></h1>
-<div class="codehilite"><pre>    Representation of the concrete collision integral for a specific particle `Integral.reaction[0]`
-</pre></div>
+          <h2><a id="integral" class="header-anchor" href="#integral"> Integral</a></h2>
+<p>Representation of the concrete collision integral for a specific particle <code>Integral.reaction[0]</code> </p>
         </div>
         <div class='code'>
           <div class="highlight"><pre><span class="k">class</span> <span class="nc">BoltzmannIntegral</span><span class="p">(</span><span class="n">PicklableObject</span><span class="p">,</span> <span class="n">DistributionFunctional</span><span class="p">):</span>
@@ -251,17 +249,13 @@
           <div class='octowrap'>
             <a class='octothorpe' href='#section-9'>#</a>
           </div>
-          <h2><a id="crossed-particles-in-the-integral" class="header-anchor" href="#crossed-particles-in-the-integral"> Crossed particles in the integral</a></h2>
-<div class="codehilite"><pre>    If the Boltzmann integral is obtained as a crossing of some other process, the mass of the crossed fermion in the matrix element has to change sign.
-
-    For example, compare the matrix elements of reactions
-
-    \begin{align}
-        \nu + e &amp;\to \nu + e \\\ \nu + \overline{\nu} &amp;\to e + e^+
-    \end{align}
-
-    In particular, this has something to do with the `K2` term in the `FourParticleIntegral`.
-</pre></div>
+          <h3><a id="crossed-particles-in-the-integral" class="header-anchor" href="#crossed-particles-in-the-integral"> Crossed particles in the integral</a></h3>
+<p>If the Boltzmann integral is obtained as a crossing of some other process, the mass of the crossed fermion in the matrix element has to change sign.</p>
+<p>For example, compare the matrix elements of reactions</p>
+<p>\begin{align}
+       \nu + e &amp;\to \nu + e \\ \nu + \overline{\nu} &amp;\to e + e^+
+   \end{align}</p>
+<p>In particular, this has something to do with the <code>K2</code> term in the <code>FourParticleIntegral</code>.</p>
         </div>
         <div class='code'>
           
@@ -608,7 +602,7 @@
           <div class='octowrap'>
             <a class='octothorpe' href='#section-28'>#</a>
           </div>
-          <h2><a id="integration-region-bounds-methods" class="header-anchor" href="#integration-region-bounds-methods"> Integration region bounds methods </a></h2>
+          <h3><a id="integration-region-bounds-methods" class="header-anchor" href="#integration-region-bounds-methods"> Integration region bounds methods </a></h3>
         </div>
         <div class='code'>
           <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">in_bounds</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">E</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">m</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>

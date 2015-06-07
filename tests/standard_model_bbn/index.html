@@ -22,16 +22,16 @@
     Contents
     <div id="jump_wrapper">
       <div id="jump_page">
-          <a class="source source-1" href="#standard-model-bbn-test"> Standard Model BBN test</a>
-          <a class="source source-1" href="#plots-for-comparison-with-articles"> Plots for comparison with articles </a>
-          <a class="source source-2" href="#jcap10(2012)014,-figure-9"> JCAP10(2012)014, Figure 9</a>
-          <a class="source source-2" href="#jcap10(2012)014,-figure-10"> JCAP10(2012)014, Figure 10</a>
+          <a class="source source-2" href="#standard-model-bbn-test"> Standard Model BBN test</a>
+          <a class="source source-3" href="#plots-for-comparison-with-articles"> Plots for comparison with articles</a>
+          <a class="source source-3" href="#jcap10(2012)014,-figure-9"> JCAP10(2012)014, Figure 9</a>
+          <a class="source source-3" href="#jcap10(2012)014,-figure-10"> JCAP10(2012)014, Figure 10</a>
       </div>
     </div>
     </div>
     <div class="generation-time">
         Generated at
-        <code>2015-05-21 18:14</code>
+        <code>2015-06-07 02:04</code>
         by a diligent
         <a target="_blank" href="http://ckald.github.io/pyccoon/" title="Pyccoon: side-to-side documentation generator">
             <img id="pyccoon-icon" src="../../pyccoon_icon.svg" alt="Pyccoon: side-to-side documentation generator" />pyccoon</a>
@@ -40,8 +40,8 @@
   <a id="top"></a>
   <div class='section'>
     <div class='docs nav'>
-      <nav id="breadcrumbs">/ <a href="index.html/../../../index.html">.</a> / <a href="index.html/../../index.html">tests</a> / <a href="index.html/../index.html">standard_model_bbn</a> / <a href="index.html">__init__.py</a> </nav>
-      <ul id="children"><li><a href="reproduced/index.html" class="directory">reproduced</a></li><li><a href="index.html">__init__.py</a></li><li><a href="distributions.txt">distributions.txt</a></li><li><a href="figure_10.png">figure_10.png</a></li><li><a href="figure_10.svg">figure_10.svg</a></li><li><a href="figure_10_full.png">figure_10_full.png</a></li><li><a href="figure_10_full.svg">figure_10_full.svg</a></li><li><a href="figure_9.png">figure_9.png</a></li><li><a href="figure_9.svg">figure_9.svg</a></li><li><a href="kawano_output.dat">kawano_output.dat</a></li><li><a href="log.txt">log.txt</a></li><li><a href="particles.png">particles.png</a></li><li><a href="particles.svg">particles.svg</a></li><li><a href="plots.png">plots.png</a></li><li><a href="plots.svg">plots.svg</a></li><li><a href="s4.dat">s4.dat</a></li><li><a href="s4.dat_params.svg">s4.dat_params.svg</a></li><li><a href="s4.dat_rates.svg">s4.dat_rates.svg</a></li></ul>
+      <nav id="breadcrumbs">/ <a href="index.html/../../../index.html">.</a> / <a href="index.html/../../index.html">tests</a> / <a href="index.html/../index.html">standard_model_bbn</a> / __init__.py</nav>
+      <ul id="children"><li><a href="reproduced/index.html" class="directory">reproduced</a></li><li><a href="index.html">__init__.py</a></li><li><a href="__main__.py.html">__main__.py</a></li><li><a href="distributions.txt">distributions.txt</a></li><li><a href="figure_10.svg">figure_10.svg</a></li><li><a href="figure_10_full.svg">figure_10_full.svg</a></li><li><a href="figure_9.svg">figure_9.svg</a></li><li><a href="kawano_output_0.025.dat">kawano_output_0.025.dat</a></li><li><a href="kawano_output_0.05.dat">kawano_output_0.05.dat</a></li><li><a href="log.txt">log.txt</a></li><li><a href="nucint.dat">nucint.dat</a></li><li><a href="particles.svg">particles.svg</a></li><li><a href="plots.svg">plots.svg</a></li><li><a href="s4.dat">s4.dat</a></li><li><a href="s4.dat_params.svg">s4.dat_params.svg</a></li><li><a href="s4.dat_rates.svg">s4.dat_rates.svg</a></li></ul>
     </div>
   </div>
   <div id="everything" class='clearall'>
@@ -53,7 +53,7 @@
           <div class='octowrap'>
             <a class='octothorpe' href='#section-0'>#</a>
           </div>
-          <h1><a id="standard-model-bbn-test" class="header-anchor" href="#standard-model-bbn-test"> Standard Model BBN test</a></h1>
+          <h2><a id="standard-model-bbn-test" class="header-anchor" href="#standard-model-bbn-test"> Standard Model BBN test</a></h2>
 <p><img src="plots.svg" width=100% />
 <img src="particles.svg" width=100% /></p>
 <p>This test checks that in the universe filled with photons, electrons and neutrinos:</p>
@@ -66,21 +66,19 @@
         </div>
         <div class='code'>
           <div class="highlight"><pre><span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">numpy</span>
-<span class="kn">import</span> <span class="nn">matplotlib</span>
 
-<span class="kn">from</span> <span class="nn">plotting</span> <span class="kn">import</span> <span class="n">plt</span><span class="p">,</span> <span class="n">RadiationParticleMonitor</span>
+<span class="kn">from</span> <span class="nn">plotting</span> <span class="kn">import</span> <span class="n">RadiationParticleMonitor</span>
 <span class="kn">from</span> <span class="nn">particles</span> <span class="kn">import</span> <span class="n">Particle</span>
 <span class="kn">from</span> <span class="nn">library.SM</span> <span class="kn">import</span> <span class="n">particles</span> <span class="k">as</span> <span class="n">SMP</span><span class="p">,</span> <span class="n">interactions</span> <span class="k">as</span> <span class="n">SMI</span>
 <span class="kn">from</span> <span class="nn">evolution</span> <span class="kn">import</span> <span class="n">Universe</span>
-<span class="kn">from</span> <span class="nn">common</span> <span class="kn">import</span> <span class="n">UNITS</span><span class="p">,</span> <span class="n">Params</span><span class="p">,</span> <span class="n">GRID</span>
+<span class="kn">from</span> <span class="nn">common</span> <span class="kn">import</span> <span class="n">UNITS</span><span class="p">,</span> <span class="n">Params</span>
 
 
 <span class="n">folder</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">__file__</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
 
 <span class="n">params</span> <span class="o">=</span> <span class="n">Params</span><span class="p">(</span><span class="n">T_initial</span><span class="o">=</span><span class="mf">10.</span> <span class="o">*</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">MeV</span><span class="p">,</span>
                 <span class="n">T_final</span><span class="o">=</span><span class="mf">0.0008</span> <span class="o">*</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">MeV</span><span class="p">,</span>
-		<span class="n">dy</span><span class="o">=</span><span class="mf">0.0125</span><span class="p">)</span>
+                <span class="n">dy</span><span class="o">=</span><span class="mf">0.025</span><span class="p">)</span>
 
 <span class="n">universe</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">,</span> <span class="n">folder</span><span class="o">=</span><span class="n">folder</span><span class="p">)</span>
 
@@ -160,111 +158,16 @@
           <div class='octowrap'>
             <a class='octothorpe' href='#section-3'>#</a>
           </div>
-          <h1><a id="plots-for-comparison-with-articles" class="header-anchor" href="#plots-for-comparison-with-articles"> Plots for comparison with articles </a></h1>
-        </div>
-        <div class='code'>
-          <div class="highlight"><pre><span class="n">plt</span><span class="o">.</span><span class="n">ion</span><span class="p">()</span></pre></div>
-        </div>
-        <div class='clearall'></div>
-    </section>
-    </div>
-    <div class='section'>
-    <a id="section-4" class="section-anchor"></a>
-    <section>
-        <div class='docs'>
-          <div class='octowrap'>
-            <a class='octothorpe' href='#section-4'>#</a>
-          </div>
-          <h2><a id="jcap10(2012)014,-figure-9" class="header-anchor" href="#jcap10(2012)014,-figure-9"> JCAP10(2012)014, Figure 9</a></h2>
-<p><img src="figure_9.svg" width=100% /> </p>
-        </div>
-        <div class='code'>
-          <div class="highlight"><pre><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="mi">9</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s">&#39;Figure 9&#39;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s">&#39;MeV/T&#39;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s">u&#39;aT&#39;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">xscale</span><span class="p">(</span><span class="s">&#39;log&#39;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">xlim</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">MeV</span><span class="o">/</span><span class="n">universe</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">T_final</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">xticks</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">])</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">axes</span><span class="p">()</span><span class="o">.</span><span class="n">get_xaxis</span><span class="p">()</span><span class="o">.</span><span class="n">set_major_formatter</span><span class="p">(</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">ticker</span><span class="o">.</span><span class="n">ScalarFormatter</span><span class="p">())</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">UNITS</span><span class="o">.</span><span class="n">MeV</span> <span class="o">/</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">universe</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s">&#39;T&#39;</span><span class="p">]),</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">universe</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s">&#39;aT&#39;</span><span class="p">])</span> <span class="o">/</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">MeV</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">folder</span><span class="p">,</span> <span class="s">&#39;figure_9.svg&#39;</span><span class="p">))</span></pre></div>
-        </div>
-        <div class='clearall'></div>
-    </section>
-    </div>
-    <div class='section'>
-    <a id="section-5" class="section-anchor"></a>
-    <section>
-        <div class='docs'>
-          <div class='octowrap'>
-            <a class='octothorpe' href='#section-5'>#</a>
-          </div>
-          <h2><a id="jcap10(2012)014,-figure-10" class="header-anchor" href="#jcap10(2012)014,-figure-10"> JCAP10(2012)014, Figure 10</a></h2>
+          <h3><a id="plots-for-comparison-with-articles" class="header-anchor" href="#plots-for-comparison-with-articles"> Plots for comparison with articles</a></h3>
+<h3><a id="jcap10(2012)014,-figure-9" class="header-anchor" href="#jcap10(2012)014,-figure-9"> JCAP10(2012)014, Figure 9</a></h3>
+<p><img src="figure_9.svg" width=100% /></p>
+<h3><a id="jcap10(2012)014,-figure-10" class="header-anchor" href="#jcap10(2012)014,-figure-10"> JCAP10(2012)014, Figure 10</a></h3>
 <p><img src="figure_10.svg" width=100% />
-<img src="figure_10_full.svg" width=100% /> </p>
+<img src="figure_10_full.svg" width=100% /></p>
         </div>
         <div class='code'>
-          <div class="highlight"><pre><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s">&#39;Figure 10&#39;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s">&#39;Conformal momentum y = pa&#39;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s">&#39;f/f_eq&#39;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">xlim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span></pre></div>
-        </div>
-        <div class='clearall'></div>
-    </section>
-    </div>
-    <div class='section'>
-    <a id="section-6" class="section-anchor"></a>
-    <section>
-        <div class='docs'>
-          <div class='octowrap'>
-            <a class='octothorpe' href='#section-6'>#</a>
-          </div>
-          <p>Distribution functions arrays</p>
-        </div>
-        <div class='code'>
-          <div class="highlight"><pre><span class="n">distributions_file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">folder</span><span class="p">,</span> <span class="s">&#39;distributions.txt&#39;</span><span class="p">),</span> <span class="s">&quot;w&quot;</span><span class="p">)</span>
-
-<span class="k">for</span> <span class="n">neutrino</span> <span class="ow">in</span> <span class="p">(</span><span class="n">neutrino_e</span><span class="p">,</span> <span class="n">neutrino_mu</span><span class="p">,</span> <span class="n">neutrino_tau</span><span class="p">):</span>
-    <span class="n">f</span> <span class="o">=</span> <span class="n">neutrino</span><span class="o">.</span><span class="n">_distribution</span>
-    <span class="n">feq</span> <span class="o">=</span> <span class="n">neutrino</span><span class="o">.</span><span class="n">equilibrium_distribution</span><span class="p">()</span>
-    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">GRID</span><span class="o">.</span><span class="n">TEMPLATE</span><span class="o">/</span><span class="n">UNITS</span><span class="o">.</span><span class="n">MeV</span><span class="p">,</span> <span class="n">f</span><span class="o">/</span><span class="n">feq</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="n">neutrino</span><span class="o">.</span><span class="n">flavour</span><span class="p">)</span>
-
-    <span class="n">numpy</span><span class="o">.</span><span class="n">savetxt</span><span class="p">(</span><span class="n">distributions_file</span><span class="p">,</span> <span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">feq</span><span class="p">,</span> <span class="n">f</span><span class="o">/</span><span class="n">feq</span><span class="p">),</span> <span class="n">header</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">neutrino</span><span class="p">),</span>
-                  <span class="n">footer</span><span class="o">=</span><span class="s">&#39;-&#39;</span><span class="o">*</span><span class="mi">80</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s">&quot;</span><span class="si">%1.5e</span><span class="s">&quot;</span><span class="p">)</span>
-
-<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">folder</span><span class="p">,</span> <span class="s">&#39;figure_10_full.svg&#39;</span><span class="p">))</span>
-
-<span class="n">plt</span><span class="o">.</span><span class="n">xlim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">(</span><span class="mf">0.99</span><span class="p">,</span> <span class="mf">1.06</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">folder</span><span class="p">,</span> <span class="s">&#39;figure_10.svg&#39;</span><span class="p">))</span>
-
-
-<span class="n">distributions_file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></pre></div>
-        </div>
-        <div class='clearall'></div>
-    </section>
-    </div>
-    <div class='section'>
-    <a id="section-7" class="section-anchor"></a>
-    <section>
-        <div class='docs'>
-          <div class='octowrap'>
-            <a class='octothorpe' href='#section-7'>#</a>
-          </div>
-          <p>Just to be sure everything is okay
-import ipdb
-ipdb.set_trace()</p>
-        </div>
-        <div class='code'>
-          <div class="highlight"><pre><span class="c"># raw_input(&quot;...&quot;)</span>
+          <div class="highlight"><pre><span class="kn">from</span> <span class="nn">tests.plots</span> <span class="kn">import</span> <span class="n">articles_comparison_plots</span>
+<span class="n">articles_comparison_plots</span><span class="p">(</span><span class="n">universe</span><span class="p">,</span> <span class="p">[</span><span class="n">neutrino_e</span><span class="p">,</span> <span class="n">neutrino_mu</span><span class="p">,</span> <span class="n">neutrino_tau</span><span class="p">])</span>
 
 </pre></div>
         </div>

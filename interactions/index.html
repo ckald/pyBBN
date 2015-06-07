@@ -22,14 +22,14 @@
     Contents
     <div id="jump_wrapper">
       <div id="jump_page">
-          <a class="source source-1" href="#boltzmann-collision-integral"> Boltzmann collision integral</a>
-          <a class="source source-1" href="#interaction"> Interaction</a>
+          <a class="source source-2" href="#boltzmann-collision-integral"> Boltzmann collision integral</a>
+          <a class="source source-2" href="#interaction"> Interaction</a>
       </div>
     </div>
     </div>
     <div class="generation-time">
         Generated at
-        <code>2015-05-21 18:14</code>
+        <code>2015-06-07 02:03</code>
         by a diligent
         <a target="_blank" href="http://ckald.github.io/pyccoon/" title="Pyccoon: side-to-side documentation generator">
             <img id="pyccoon-icon" src="../pyccoon_icon.svg" alt="Pyccoon: side-to-side documentation generator" />pyccoon</a>
@@ -38,7 +38,7 @@
   <a id="top"></a>
   <div class='section'>
     <div class='docs nav'>
-      <nav id="breadcrumbs">/ <a href="index.html/../../index.html">.</a> / <a href="index.html/../index.html">interactions</a> / <a href="index.html">__init__.py</a> </nav>
+      <nav id="breadcrumbs">/ <a href="index.html/../../index.html">.</a> / <a href="index.html/../index.html">interactions</a> / __init__.py</nav>
       <ul id="children"><li><a href="index.html">__init__.py</a></li><li><a href="boltzmann.py.html">boltzmann.py</a></li><li><a href="ds.py.html">ds.py</a></li><li><a href="four_particle.py.html">four_particle.py</a></li><li><a href="three_particle.py.html">three_particle.py</a></li></ul>
     </div>
   </div>
@@ -70,7 +70,7 @@
           <div class='octowrap'>
             <a class='octothorpe' href='#section-1'>#</a>
           </div>
-          <h1><a id="boltzmann-collision-integral" class="header-anchor" href="#boltzmann-collision-integral"> Boltzmann collision integral</a></h1>
+          <h2><a id="boltzmann-collision-integral" class="header-anchor" href="#boltzmann-collision-integral"> Boltzmann collision integral</a></h2>
 <p>\begin{multline}
     I_{coll}(t,p_i) = \frac{1}{2 E_i} \sum_{reactions} \int \cdots \int
         \prod_{j} \frac{d^3 p_{in,j}}{(2 \pi)^3 2 E_{in,j}}
@@ -90,7 +90,7 @@
           <div class='octowrap'>
             <a class='octothorpe' href='#section-2'>#</a>
           </div>
-          <h1><a id="interaction" class="header-anchor" href="#interaction"> Interaction</a></h1>
+          <h2><a id="interaction" class="header-anchor" href="#interaction"> Interaction</a></h2>
 <p>Helper class that takes care of creating all necessary <code>Integral</code>s for the actual interaction.</p>
         </div>
         <div class='code'>
@@ -305,6 +305,25 @@
           <div class='octowrap'>
             <a class='octothorpe' href='#section-13'>#</a>
           </div>
+          <p>Produces more reactions, but with double-counting in neutrinos-leptons reactions
+perms = itertools.chain(
+    self.permutations(self.particles, self.antiparticles),
+    self.permutations(tuple(reversed(self.particles)), tuple(reversed(self.antiparticles)))
+)</p>
+        </div>
+        <div class='code'>
+          
+        </div>
+        <div class='clearall'></div>
+    </section>
+    </div>
+    <div class='section'>
+    <a id="section-14" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-14'>#</a>
+          </div>
           <p>if any(specie.majorana for specie in itertools.chain.from_iterable(self.particles)):
     print "There is Majorana in da house!"
     conjugated_antiparticles = (
@@ -323,11 +342,11 @@
     </section>
     </div>
     <div class='section'>
-    <a id="section-14" class="section-anchor"></a>
+    <a id="section-15" class="section-anchor"></a>
     <section>
         <div class='docs'>
           <div class='octowrap'>
-            <a class='octothorpe' href='#section-14'>#</a>
+            <a class='octothorpe' href='#section-15'>#</a>
           </div>
           <p>Generate all possible permutations of particles</p>
         </div>
@@ -338,11 +357,11 @@
     </section>
     </div>
     <div class='section'>
-    <a id="section-15" class="section-anchor"></a>
+    <a id="section-16" class="section-anchor"></a>
     <section>
         <div class='docs'>
           <div class='octowrap'>
-            <a class='octothorpe' href='#section-15'>#</a>
+            <a class='octothorpe' href='#section-16'>#</a>
           </div>
           <p>Generate possible reactions by inserting an arrow at every position</p>
         </div>
@@ -353,11 +372,11 @@
     </section>
     </div>
     <div class='section'>
-    <a id="section-16" class="section-anchor"></a>
+    <a id="section-17" class="section-anchor"></a>
     <section>
         <div class='docs'>
           <div class='octowrap'>
-            <a class='octothorpe' href='#section-16'>#</a>
+            <a class='octothorpe' href='#section-17'>#</a>
           </div>
           <p>Cross particles according to their position relative to the reaction arrow</p>
         </div>
@@ -382,11 +401,11 @@
     </section>
     </div>
     <div class='section'>
-    <a id="section-17" class="section-anchor"></a>
+    <a id="section-18" class="section-anchor"></a>
     <section>
         <div class='docs'>
           <div class='octowrap'>
-            <a class='octothorpe' href='#section-17'>#</a>
+            <a class='octothorpe' href='#section-18'>#</a>
           </div>
           <p>Skip kinematically impossible reactions</p>
         </div>
@@ -406,11 +425,11 @@
     </section>
     </div>
     <div class='section'>
-    <a id="section-18" class="section-anchor"></a>
+    <a id="section-19" class="section-anchor"></a>
     <section>
         <div class='docs'>
           <div class='octowrap'>
-            <a class='octothorpe' href='#section-18'>#</a>
+            <a class='octothorpe' href='#section-19'>#</a>
           </div>
           
         </div>
@@ -421,11 +440,11 @@
     </section>
     </div>
     <div class='section'>
-    <a id="section-19" class="section-anchor"></a>
+    <a id="section-20" class="section-anchor"></a>
     <section>
         <div class='docs'>
           <div class='octowrap'>
-            <a class='octothorpe' href='#section-19'>#</a>
+            <a class='octothorpe' href='#section-20'>#</a>
           </div>
           <p>Starting from the single representation of the interaction, create integrals objects to be computed for every particle specie involved </p>
         </div>
@@ -436,7 +455,7 @@
         <span class="n">particle_Ms</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Ms</span><span class="p">)</span>
 
         <span class="k">for</span> <span class="n">M</span> <span class="ow">in</span> <span class="n">particle_Ms</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">M</span><span class="o">.</span><span class="n">__class__</span> <span class="ow">is</span> <span class="n">FourParticleM</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">FourParticleM</span><span class="p">):</span>
                 <span class="nb">map</span> <span class="o">=</span> <span class="p">{</span><span class="n">item</span><span class="o">.</span><span class="n">index</span><span class="p">:</span> <span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">item</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">reaction</span><span class="p">)}</span>
                 <span class="n">M</span><span class="o">.</span><span class="n">apply_order</span><span class="p">(</span><span class="nb">tuple</span><span class="p">(</span><span class="nb">map</span><span class="p">[</span><span class="n">val</span><span class="p">]</span> <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">M</span><span class="o">.</span><span class="n">order</span><span class="p">),</span> <span class="n">reaction</span><span class="p">)</span></pre></div>
         </div>
@@ -444,11 +463,11 @@
     </section>
     </div>
     <div class='section'>
-    <a id="section-20" class="section-anchor"></a>
+    <a id="section-21" class="section-anchor"></a>
     <section>
         <div class='docs'>
           <div class='octowrap'>
-            <a class='octothorpe' href='#section-20'>#</a>
+            <a class='octothorpe' href='#section-21'>#</a>
           </div>
           <p>Add interaction integrals by putting each incoming particle as the first one</p>
         </div>
@@ -464,11 +483,11 @@
     </section>
     </div>
     <div class='section'>
-    <a id="section-21" class="section-anchor"></a>
+    <a id="section-22" class="section-anchor"></a>
     <section>
         <div class='docs'>
           <div class='octowrap'>
-            <a class='octothorpe' href='#section-21'>#</a>
+            <a class='octothorpe' href='#section-22'>#</a>
           </div>
           <p>Proxy method </p>
         </div>
@@ -482,11 +501,11 @@
     </section>
     </div>
     <div class='section'>
-    <a id="section-22" class="section-anchor"></a>
+    <a id="section-23" class="section-anchor"></a>
     <section>
         <div class='docs'>
           <div class='octowrap'>
-            <a class='octothorpe' href='#section-22'>#</a>
+            <a class='octothorpe' href='#section-23'>#</a>
           </div>
           
         </div>
@@ -504,11 +523,11 @@
     </section>
     </div>
     <div class='section'>
-    <a id="section-23" class="section-anchor"></a>
+    <a id="section-24" class="section-anchor"></a>
     <section>
         <div class='docs'>
           <div class='octowrap'>
-            <a class='octothorpe' href='#section-23'>#</a>
+            <a class='octothorpe' href='#section-24'>#</a>
           </div>
           
         </div>
@@ -523,11 +542,11 @@
     </section>
     </div>
     <div class='section'>
-    <a id="section-24" class="section-anchor"></a>
+    <a id="section-25" class="section-anchor"></a>
     <section>
         <div class='docs'>
           <div class='octowrap'>
-            <a class='octothorpe' href='#section-24'>#</a>
+            <a class='octothorpe' href='#section-25'>#</a>
           </div>
           
         </div>
@@ -541,11 +560,11 @@
     </section>
     </div>
     <div class='section'>
-    <a id="section-25" class="section-anchor"></a>
+    <a id="section-26" class="section-anchor"></a>
     <section>
         <div class='docs'>
           <div class='octowrap'>
-            <a class='octothorpe' href='#section-25'>#</a>
+            <a class='octothorpe' href='#section-26'>#</a>
           </div>
           <p>Check if there is already a similar integral</p>
         </div>
@@ -559,11 +578,11 @@
     </section>
     </div>
     <div class='section'>
-    <a id="section-26" class="section-anchor"></a>
+    <a id="section-27" class="section-anchor"></a>
     <section>
         <div class='docs'>
           <div class='octowrap'>
-            <a class='octothorpe' href='#section-26'>#</a>
+            <a class='octothorpe' href='#section-27'>#</a>
           </div>
           <p>If there is no, just append a new one</p>
         </div>
@@ -576,11 +595,11 @@
     </section>
     </div>
     <div class='section'>
-    <a id="section-27" class="section-anchor"></a>
+    <a id="section-28" class="section-anchor"></a>
     <section>
         <div class='docs'>
           <div class='octowrap'>
-            <a class='octothorpe' href='#section-27'>#</a>
+            <a class='octothorpe' href='#section-28'>#</a>
           </div>
           <p>Otherwise, check all matrix elements</p>
         </div>

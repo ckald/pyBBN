@@ -22,19 +22,20 @@
     Contents
     <div id="jump_wrapper">
       <div id="jump_page">
-          <a class="source source-1" href="#particle-species-statistics"> Particle species statistics </a>
-          <a class="source source-1" href="#particle-dynamical-regimes"> Particle dynamical regimes</a>
-          <a class="source source-1" href="#particle"> Particle</a>
-          <a class="source source-2" href="#particle-collisions-integration"> Particle collisions integration </a>
-          <a class="source source-2" href="#regime-switching-ratio"> Regime-switching ratio</a>
-          <a class="source source-1" href="#distribution-function-interpolation"> Distribution function interpolation</a>
-          <a class="source source-2" href="#exponential-interpolation"> Exponential interpolation </a>
+          <a class="source source-1" href="#particles"> Particles</a>
+          <a class="source source-2" href="#particle-species-statistics"> Particle species statistics </a>
+          <a class="source source-2" href="#particle-dynamical-regimes"> Particle dynamical regimes</a>
+          <a class="source source-2" href="#particle"> Particle</a>
+          <a class="source source-3" href="#particle-collisions-integration"> Particle collisions integration </a>
+          <a class="source source-3" href="#regime-switching-ratio"> Regime-switching ratio</a>
+          <a class="source source-2" href="#distribution-function-interpolation"> Distribution function interpolation</a>
+          <a class="source source-3" href="#exponential-interpolation"> Exponential interpolation </a>
       </div>
     </div>
     </div>
     <div class="generation-time">
         Generated at
-        <code>2015-05-21 18:14</code>
+        <code>2015-06-07 02:03</code>
         by a diligent
         <a target="_blank" href="http://ckald.github.io/pyccoon/" title="Pyccoon: side-to-side documentation generator">
             <img id="pyccoon-icon" src="../pyccoon_icon.svg" alt="Pyccoon: side-to-side documentation generator" />pyccoon</a>
@@ -43,7 +44,7 @@
   <a id="top"></a>
   <div class='section'>
     <div class='docs nav'>
-      <nav id="breadcrumbs">/ <a href="index.html/../../index.html">.</a> / <a href="index.html/../index.html">particles</a> / <a href="index.html">__init__.py</a> </nav>
+      <nav id="breadcrumbs">/ <a href="index.html/../../index.html">.</a> / <a href="index.html/../index.html">particles</a> / __init__.py</nav>
       <ul id="children"><li><a href="interpolation/index.html" class="directory">interpolation</a></li><li><a href="index.html">__init__.py</a></li><li><a href="DustParticle.py.html">DustParticle.py</a></li><li><a href="IntermediateParticle.py.html">IntermediateParticle.py</a></li><li><a href="NonEqParticle.py.html">NonEqParticle.py</a></li><li><a href="RadiationParticle.py.html">RadiationParticle.py</a></li></ul>
     </div>
   </div>
@@ -71,7 +72,7 @@
           <div class='octowrap'>
             <a class='octothorpe' href='#section-1'>#</a>
           </div>
-          <p>Particles</p>
+          <h1><a id="particles" class="header-anchor" href="#particles"> Particles</a></h1>
 <p>This file contains <code>Particle</code> class definition and code governing the switching of the dynamical regimes</p>
         </div>
         <div class='code'>
@@ -82,7 +83,7 @@
 
 <span class="kn">from</span> <span class="nn">common</span> <span class="kn">import</span> <span class="n">GRID</span><span class="p">,</span> <span class="n">UNITS</span>
 <span class="kn">from</span> <span class="nn">common.integrators</span> <span class="kn">import</span> <span class="n">adams_moulton_solver</span>
-<span class="kn">from</span> <span class="nn">common.utils</span> <span class="kn">import</span> <span class="n">PicklableObject</span>
+<span class="kn">from</span> <span class="nn">common.utils</span> <span class="kn">import</span> <span class="n">PicklableObject</span><span class="p">,</span> <span class="n">trace_unhandled_exceptions</span>
 
 <span class="kn">from</span> <span class="nn">particles</span> <span class="kn">import</span> <span class="n">DustParticle</span><span class="p">,</span> <span class="n">RadiationParticle</span><span class="p">,</span> <span class="n">IntermediateParticle</span><span class="p">,</span> <span class="n">NonEqParticle</span>
 <span class="kn">from</span> <span class="nn">KAWANO.interpolation</span> <span class="kn">import</span> <span class="n">dist_interp_values</span> <span class="k">as</span> <span class="n">distribution_interpolation</span></pre></div>
@@ -97,7 +98,7 @@
           <div class='octowrap'>
             <a class='octothorpe' href='#section-2'>#</a>
           </div>
-          <h1><a id="particle-species-statistics" class="header-anchor" href="#particle-species-statistics"> Particle species statistics </a></h1>
+          <h2><a id="particle-species-statistics" class="header-anchor" href="#particle-species-statistics"> Particle species statistics </a></h2>
         </div>
         <div class='code'>
           <div class="highlight"><pre><span class="k">class</span> <span class="nc">STATISTICS</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span></pre></div>
@@ -172,23 +173,17 @@
           <div class='octowrap'>
             <a class='octothorpe' href='#section-6'>#</a>
           </div>
-          <h1><a id="particle-dynamical-regimes" class="header-anchor" href="#particle-dynamical-regimes"> Particle dynamical regimes</a></h1>
-<div class="codehilite"><pre>    <span class="nx">Radiation</span> <span class="p">(</span><span class="nx">ultra</span><span class="o">-</span><span class="nx">relativistic</span><span class="p">)</span> <span class="err">`</span><span class="nx">RADIATION</span><span class="err">`</span>
-    
-   <span class="o">:</span>   <span class="nx">particle</span> <span class="nx">mass</span> <span class="nx">is</span> <span class="nx">neglected</span><span class="p">,</span> <span class="nx">all</span> <span class="nx">values</span> <span class="nx">obtained</span> <span class="nx">analytically</span>
-
-    <span class="nx">Dust</span> <span class="p">(</span><span class="nx">non</span><span class="o">-</span><span class="nx">relativistic</span><span class="p">)</span> <span class="err">`</span><span class="nx">DUST</span><span class="err">`</span>
-    
-   <span class="o">:</span>   <span class="nx">Boltzman</span> <span class="nx">law</span> <span class="nx">is</span> <span class="nx">used</span> <span class="nx">as</span> <span class="nx">species</span> <span class="nx">distribution</span> <span class="kd">function</span><span class="p">,</span> <span class="nx">simplifying</span> <span class="nx">the</span> <span class="nx">computations</span>
-
-    <span class="nx">Intermediate</span> <span class="nx">regime</span> <span class="err">`</span><span class="nx">INTERMEDIATE</span><span class="err">`</span>
-    
-   <span class="o">:</span>   <span class="nx">values</span> <span class="nx">are</span> <span class="nx">computed</span> <span class="nx">explicitly</span> <span class="nx">using</span> <span class="nx">the</span> <span class="nx">precise</span> <span class="nx">form</span> <span class="nx">of</span> <span class="nx">the</span> <span class="nx">Bose</span><span class="o">-</span><span class="nx">Einstein</span> <span class="nx">and</span> <span class="nx">Fermi</span><span class="o">-</span><span class="nx">Dirac</span> <span class="nx">distributions</span> <span class="nx">including</span> <span class="nx">particle</span> <span class="nx">mass</span> <span class="nx">term</span>
-
-    <span class="nx">Non</span><span class="o">-</span><span class="nx">equilibrium</span> <span class="err">`</span><span class="nx">NONEQ</span><span class="err">`</span>
-    
-   <span class="o">:</span>   <span class="nx">particle</span> <span class="nx">quantum</span> <span class="nx">interactions</span> <span class="nx">have</span> <span class="nx">to</span> <span class="nx">be</span> <span class="nx">computed</span> <span class="nx">explicitly</span> <span class="nx">by</span> <span class="nx">solving</span> <span class="nx">Boltzman</span> <span class="nx">equation</span><span class="p">;</span> <span class="nx">individual</span> <span class="nx">distribution</span> <span class="kd">function</span> <span class="nx">of</span> <span class="nx">the</span> <span class="nx">species</span> <span class="nx">becomes</span> <span class="nx">utilized</span> <span class="nx">to</span> <span class="nx">obtain</span> <span class="nx">any</span> <span class="nx">species</span><span class="o">-</span><span class="nx">related</span> <span class="nx">values</span>
-</pre></div>
+          <h2><a id="particle-dynamical-regimes" class="header-anchor" href="#particle-dynamical-regimes"> Particle dynamical regimes</a></h2>
+<dl>
+<dt>Radiation (ultra-relativistic) <code>RADIATION</code></dt>
+<dd>particle mass is neglected, all values obtained analytically</dd>
+<dt>Dust (non-relativistic) <code>DUST</code></dt>
+<dd>Boltzman law is used as species distribution function, simplifying the computations</dd>
+<dt>Intermediate regime <code>INTERMEDIATE</code></dt>
+<dd>values are computed explicitly using the precise form of the Bose-Einstein and Fermi-Dirac distributions including particle mass term</dd>
+<dt>Non-equilibrium <code>NONEQ</code></dt>
+<dd>particle quantum interactions have to be computed explicitly by solving Boltzman equation; individual distribution function of the species becomes utilized to obtain any species-related values</dd>
+</dl>
         </div>
         <div class='code'>
           <div class="highlight"><pre><span class="k">class</span> <span class="nc">REGIMES</span><span class="p">(</span><span class="nb">dict</span><span class="p">):</span>
@@ -208,9 +203,8 @@
           <div class='octowrap'>
             <a class='octothorpe' href='#section-7'>#</a>
           </div>
-          <h1><a id="particle" class="header-anchor" href="#particle"> Particle</a></h1>
-<div class="codehilite"><pre>    Master-class for particle species. Realized as finite state machine that switches to different regime when temperature becomes comparable to the particle mass or drops below particle `decoupling_temperature`
-</pre></div>
+          <h2><a id="particle" class="header-anchor" href="#particle"> Particle</a></h2>
+<p>Master-class for particle species. Realized as finite state machine that switches to different regime when temperature becomes comparable to the particle mass or drops below particle <code>decoupling_temperature</code></p>
         </div>
         <div class='code'>
           <div class="highlight"><pre><span class="k">class</span> <span class="nc">Particle</span><span class="p">(</span><span class="n">PicklableObject</span><span class="p">):</span>
@@ -472,7 +466,8 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">in_equilibrium</span><span class="p">:</span>
             <span class="k">return</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_distribution</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">collision_integral</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">dy</span></pre></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_distribution</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">collision_integral</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">dy</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_distribution</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_distribution</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span></pre></div>
         </div>
         <div class='clearall'></div>
     </section>
@@ -517,10 +512,11 @@
           <div class='octowrap'>
             <a class='octothorpe' href='#section-23'>#</a>
           </div>
-          <h2><a id="particle-collisions-integration" class="header-anchor" href="#particle-collisions-integration"> Particle collisions integration </a></h2>
+          <h3><a id="particle-collisions-integration" class="header-anchor" href="#particle-collisions-integration"> Particle collisions integration </a></h3>
         </div>
         <div class='code'>
-          <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">calculate_collision_integral</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p0</span><span class="p">):</span>
+          <div class="highlight"><pre>    <span class="nd">@trace_unhandled_exceptions</span>
+    <span class="k">def</span> <span class="nf">calculate_collision_integral</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p0</span><span class="p">):</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">collision_integrals</span><span class="p">:</span>
             <span class="k">return</span> <span class="mi">0</span>
@@ -562,7 +558,7 @@
           <div class='octowrap'>
             <a class='octothorpe' href='#section-24'>#</a>
           </div>
-          <h2><a id="regime-switching-ratio" class="header-anchor" href="#regime-switching-ratio"> Regime-switching ratio</a></h2>
+          <h3><a id="regime-switching-ratio" class="header-anchor" href="#regime-switching-ratio"> Regime-switching ratio</a></h3>
 <p>For ultra-relativistic particles the mass is effectively <code>0</code>. This implies that all computed numerically values can be as well obtained analytically: energy density, pressure, etc.</p>
 <p>Let particle mass be equal $M$ and regime factor equal $\gamma$. As soon as the temperature of the system $T$ drops to the value about $ M \gamma $, particle should be switched to the computation regime where its mass is also considered: <code>REGIMES.INTERMEDIATE</code>. When $T$ drops down even further to the value $ M / \gamma $, particle species can be treated as <code>REGIMES.DUST</code> with a Boltzmann distribution function.</p>
         </div>
@@ -674,7 +670,7 @@
           <div class='octowrap'>
             <a class='octothorpe' href='#section-30'>#</a>
           </div>
-          <h1><a id="distribution-function-interpolation" class="header-anchor" href="#distribution-function-interpolation"> Distribution function interpolation</a></h1>
+          <h2><a id="distribution-function-interpolation" class="header-anchor" href="#distribution-function-interpolation"> Distribution function interpolation</a></h2>
 <p>Two possible strategies for the distribution function interpolation are implemented:</p>
 <ul>
 <li>linear interpolation</li>
@@ -733,7 +729,7 @@
           <div class='octowrap'>
             <a class='octothorpe' href='#section-32'>#</a>
           </div>
-          <h2><a id="exponential-interpolation" class="header-anchor" href="#exponential-interpolation"> Exponential interpolation </a></h2>
+          <h3><a id="exponential-interpolation" class="header-anchor" href="#exponential-interpolation"> Exponential interpolation </a></h3>
         </div>
         <div class='code'>
           <div class="highlight"><pre>        <span class="n">E_p</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">conformal_energy</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>

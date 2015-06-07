@@ -20,7 +20,7 @@
     <a class="btn" class="source source-1" href="#top">Back to top</a>
     <div class="generation-time">
         Generated at
-        <code>2015-05-21 18:14</code>
+        <code>2015-06-07 02:04</code>
         by a diligent
         <a target="_blank" href="http://ckald.github.io/pyccoon/" title="Pyccoon: side-to-side documentation generator">
             <img id="pyccoon-icon" src="../../pyccoon_icon.svg" alt="Pyccoon: side-to-side documentation generator" />pyccoon</a>
@@ -29,7 +29,7 @@
   <a id="top"></a>
   <div class='section'>
     <div class='docs nav'>
-      <nav id="breadcrumbs">/ <a href="non_equilibrium_test.py.html/../../../index.html">.</a> / <a href="non_equilibrium_test.py.html/../../index.html">tests</a> / <a href="non_equilibrium_test.py.html/../index.html">unit</a> / <a href="non_equilibrium_test.py.html">non_equilibrium_test.py</a> </nav>
+      <nav id="breadcrumbs">/ <a href="non_equilibrium_test.py.html/../../../index.html">.</a> / <a href="non_equilibrium_test.py.html/../../index.html">tests</a> / <a href="non_equilibrium_test.py.html/../index.html">unit</a> / non_equilibrium_test.py</nav>
       <ul id="children"></ul>
     </div>
   </div>
@@ -45,14 +45,7 @@
           
         </div>
         <div class='code'>
-          <div class="highlight"><pre><span class="kn">from</span> <span class="nn">evolution</span> <span class="kn">import</span> <span class="n">Universe</span>
-<span class="kn">from</span> <span class="nn">particles</span> <span class="kn">import</span> <span class="n">Particle</span>
-<span class="kn">from</span> <span class="nn">library.SM</span> <span class="kn">import</span> <span class="n">particles</span> <span class="k">as</span> <span class="n">SMP</span><span class="p">,</span> <span class="n">interactions</span> <span class="k">as</span> <span class="n">SMI</span>
-
-<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">eps</span><span class="p">,</span> <span class="n">setup</span><span class="p">,</span> <span class="n">with_setup_args</span>
-
-
-<span class="n">universe</span> <span class="o">=</span> <span class="bp">None</span></pre></div>
+          <div class="highlight"><pre><span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">eps</span><span class="p">,</span> <span class="n">non_equilibium_setup</span><span class="p">,</span> <span class="n">with_setup_args</span></pre></div>
         </div>
         <div class='clearall'></div>
     </section>
@@ -67,38 +60,8 @@
           
         </div>
         <div class='code'>
-          <div class="highlight"><pre><span class="k">def</span> <span class="nf">non_equilibium_setup</span><span class="p">():</span>
-    <span class="k">global</span> <span class="n">universe</span>
-    <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span> <span class="o">=</span> <span class="n">setup</span><span class="p">()</span>
-    <span class="n">params</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-
-    <span class="n">photon</span> <span class="o">=</span> <span class="n">Particle</span><span class="p">(</span><span class="o">**</span><span class="n">SMP</span><span class="o">.</span><span class="n">photon</span><span class="p">)</span>
-    <span class="n">neutrino_e</span> <span class="o">=</span> <span class="n">Particle</span><span class="p">(</span><span class="o">**</span><span class="n">SMP</span><span class="o">.</span><span class="n">leptons</span><span class="o">.</span><span class="n">neutrino_e</span><span class="p">)</span>
-    <span class="n">neutrino_mu</span> <span class="o">=</span> <span class="n">Particle</span><span class="p">(</span><span class="o">**</span><span class="n">SMP</span><span class="o">.</span><span class="n">leptons</span><span class="o">.</span><span class="n">neutrino_mu</span><span class="p">)</span>
-
-    <span class="n">neutrino_self_scattering</span> <span class="o">=</span> <span class="n">SMI</span><span class="o">.</span><span class="n">neutrino_scattering</span><span class="p">(</span><span class="n">neutrino_e</span><span class="p">,</span> <span class="n">neutrino_e</span><span class="p">)</span>
-
-    <span class="n">universe</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">,</span> <span class="n">plotting</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
-    <span class="n">universe</span><span class="o">.</span><span class="n">add_particles</span><span class="p">([</span><span class="n">photon</span><span class="p">,</span> <span class="n">neutrino_e</span><span class="p">,</span> <span class="n">neutrino_mu</span><span class="p">])</span>
-    <span class="n">universe</span><span class="o">.</span><span class="n">interactions</span> <span class="o">+=</span> <span class="p">[</span><span class="n">neutrino_self_scattering</span><span class="p">]</span>
-
-    <span class="k">return</span> <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span></pre></div>
-        </div>
-        <div class='clearall'></div>
-    </section>
-    </div>
-    <div class='section'>
-    <a id="section-2" class="section-anchor"></a>
-    <section>
-        <div class='docs'>
-          <div class='octowrap'>
-            <a class='octothorpe' href='#section-2'>#</a>
-          </div>
-          
-        </div>
-        <div class='code'>
           <div class="highlight"><pre><span class="nd">@with_setup_args</span><span class="p">(</span><span class="n">non_equilibium_setup</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">free_non_equilibrium_test</span><span class="p">(</span><span class="n">params</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">free_non_equilibrium_test</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">universe</span><span class="p">):</span>
 
     <span class="n">params</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">universe</span><span class="o">.</span><span class="n">total_energy_density</span><span class="p">())</span>
 

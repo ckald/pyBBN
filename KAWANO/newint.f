@@ -11,16 +11,20 @@ C     helium-4, and lithium-7 for eventual plotting, taking into account
 C     the contribution of beryllium-7 to lithium-7 and tritium to helium-3.
 
       USE commons
-      USE model_parameters
-      USE variational_parameters
-      USE computation_parameters
-      USE flags
-      USE evolution_parameters
 
 C-------COMMON AREAS.
       COMMON /recpr0/ reacpr                       !Reaction parameter values.
       COMMON /recpr/  iform,ii,jj,kk,ll,rev,q9     !Reaction parameter names.
       COMMON /rates/  f,r                            !Reaction rates.
+      COMMON /evolp1/ t9,hv,phie,y                   !Evolution parameters.
+      COMMON /evolp2/ dt9,dhv,dphie,dydt             !Evolution parameters.
+      COMMON /evolp3/ t90,hv0,phie0,y0               !Evolution parameters.
+      COMMON /compr0/ cy0,ct0,t9i0,t9f0,ytmin0,inc0  !Default comp parameters.
+      COMMON /compr/  cy,ct,t9i,t9f,ytmin,inc        !Computation parameters.
+      COMMON /modpr0/ c0,cosmo0,xi0                !Default model parameters.
+      COMMON /modpr/  g,tau,xnu,c,cosmo,xi           !Model parameters.
+      COMMON /varpr0/ dt0,eta0                     !Default variationl params.
+      COMMON /varpr/  dt1,eta1                       !Variational parameters.
       COMMON /time/   t,dt,dlt9dt                    !Time variables.
       COMMON /xtherm/  thm,hubcst                     !Dynamic variables.
       COMMON /endens/ rhone0,rhob0,rhob,rnb          !Energy densities.
@@ -30,6 +34,7 @@ C-------COMMON AREAS.
      |                bm1,bm2,bm3,bm4,bm5,           !Eval function bm(z).
      |                bn1,bn2,bn3,bn4,bn5            !Eval function bn(z).
       COMMON /kays/   bk0,bk1,bk2,bk3,bk4            !Coefficients K.
+      COMMON /flags/  ltime,is,ip,it,mbad            !Flags,counters.
       COMMON /check1/  itime                          !Computation location.
       COMMON /outdat/ xout,thmout,t9out,tout,dtout,  !Output data.
      |                etaout,hubout
@@ -55,6 +60,63 @@ C-------REACTION PARAMETER NAMES.
 C-------REACTION RATES.
       DOUBLE PRECISION    f(nrec)              !Forward reaction rate coefficients.
       DOUBLE PRECISION    r(nrec)              !Reverse reaction rate coefficients.
+
+C-------EVOLUTION PARAMETERS.
+      DOUBLE PRECISION    t9                   !Temperature of photons (units of 10**9 K).
+      DOUBLE PRECISION    hv                   !Defined by hv = M(atomic)n(baryon)/t9**3.
+      DOUBLE PRECISION    phie                 !Chemical potential of electron.
+      DOUBLE PRECISION    y(nnuc)              !Relative number abundances.
+
+C-------EVOLUTION PARAMETERS (DERIVATIVES).
+      DOUBLE PRECISION    dt9                  !Change in temperature.
+      DOUBLE PRECISION    dhv                  !Change in hv.
+      DOUBLE PRECISION    dphie                !Change in chemical potential.
+      DOUBLE PRECISION    dydt(nnuc)           !Change in relative number abundances.
+
+C-------EVOLUTION PARAMETERS (ORIGINAL VALUES).
+      DOUBLE PRECISION    y0(nnuc)             !Rel # abundances at end of 1st R-K loop.
+
+C-------DEFAULT COMPUTATION PARAMETERS.
+      DOUBLE PRECISION    cy0                  !Default cy.
+      DOUBLE PRECISION    ct0                  !Default ct.
+      DOUBLE PRECISION    t9i0                 !Default t9i.
+      DOUBLE PRECISION    t9f0                 !Default t9f.
+      DOUBLE PRECISION    ytmin0               !Default ytmin.
+      INTEGER inc0                 !Default accumulation increment.
+
+C-------COMPUTATION PARAMETERS.
+      DOUBLE PRECISION    cy                   !Time step limiting constant on abundances.
+      DOUBLE PRECISION    ct                  !Time step limiting constant on temperature.
+      DOUBLE PRECISION    t9i                  !Initial temperature (in 10**9 K).
+      DOUBLE PRECISION    t9f                  !Final temperature (in 10**9 K).
+      DOUBLE PRECISION    ytmin                !Smallest abundances allowed.
+      INTEGER inc                  !Accumulation increment.
+
+C-------DEFAULT MODEL PARAMETERS.
+      DOUBLE PRECISION    c0(3)                !Default c.
+      DOUBLE PRECISION    cosmo0               !Default cosmological constant.
+      DOUBLE PRECISION    xi0(3)               !Default neutrino degeneracy parameters.
+
+C-------EARLY UNIVERSE MODEL PARAMETERS.
+      DOUBLE PRECISION    g                    !Gravitational constant.
+      DOUBLE PRECISION    tau                  !Neutron lifetime (sec).
+      DOUBLE PRECISION    xnu                  !Number of neutrino species.
+      DOUBLE PRECISION    c(3)               !c(1) is variation of gravitational constant.
+     |                             !c(2) is neutron half-life (min).
+     |                             !c(3) is number of neutrino species.
+      DOUBLE PRECISION    cosmo                !Cosmological constant.
+      DOUBLE PRECISION    xi(3)                !Neutrino degeneracy parameters.
+     |                             !xi(1) is e neutrino degeneracy parameter.
+     |                             !xi(2) is m neutrino degeneracy parameter.
+     |                             !xi(3) is t neutrino degeneracy parameter.
+
+C-------DEFAULT VARIATIONAL PARAMETERS.
+      DOUBLE PRECISION    dt0                  !Default initial time step.
+      DOUBLE PRECISION    eta0                 !Default baryon-to-photon ratio.
+
+C-------VARIATIONAL PARAMETERS.
+      DOUBLE PRECISION    dt1                  !Initial time step.
+      DOUBLE PRECISION    eta1                 !Baryon-to-photon ratio.
 
 C-------TIME VARIABLES.
       DOUBLE PRECISION    t                    !Time.
@@ -89,6 +151,13 @@ C-------EVALUATION OF FUNCTIONS bl,bm,bn.
 C-------EVALUATION OF MODIFIED BESSEL FUNCTIONS.
       DOUBLE PRECISION    bk0,bk1,bk2,bk3,bk4  !Values k0(r),k1(r),k2(r),k3(r),k4(r).
 
+C-------FLAGS AND COUNTERS.
+      INTEGER ltime                !Indicates if output buffer printed.
+      INTEGER is                   !# total iterations for particular model.
+      INTEGER ip                   !# iterations after outputing a line.
+      INTEGER it                   !# times accumulated in output buffer.
+      INTEGER mbad                 !Indicates if gaussian elimination failed.
+
 C-------COMPUTATION LOCATION.
       INTEGER itime                !Time check.
 
@@ -117,6 +186,8 @@ C-------RUN OPTION.
 C-------OUTPUT FILE STATUS.
       INTEGER nout                 !Number of output requests.
       LOGICAL outfile              !Indicates if output file used.
+      INTEGER outunit
+      DOUBLE PRECISION    shout(itmax,nnuc)     !Nuclide mass fractions.
 
 
 C==================PROCEDURE DIVISION======================
@@ -129,21 +200,35 @@ C10-----OPEN FILE---------------------------------------
 
 C20-----PRINTINTO FILE------------------------------------
 
-      IF (itime.eq.8) THEN         !Right after a run.
-        xout(it,8) = xout(it,8) + xout(it,9)  !Add beryllium to lithium.
-        xout(it,5) = xout(it,5) + xout(it,4)  !Add tritium to helium-3.
-        xout(it,6) = xout(it,6)-0.0003
+      IF (itime.eq.8 .or. itime.eq.10) THEN         !Right after a run.
+
+        IF (outfile) THEN
+          outunit = 2
+        ELSE
+          outunit = 3
+        END IF
+
+        shout = xout
+        shout(it,8) = shout(it,8) + shout(it,9)  !Add beryllium to lithium.
+        shout(it,5) = shout(it,5) + shout(it,4)  !Add tritium to helium-3.
+        shout(it,6) = shout(it,6)-0.0003
      |            !Radiative, coulomb, finite-temperature corrections (Ref 1).
-        write(3,200) etaout(it),xout(it,3),
-     |                xout(it,5),xout(it,6),xout(it,8)
+        write(outunit,199) "", "eta", "D", "He3", "He4", "Li7"
+ 199    FORMAT(6(A13, ' '))
+        write(outunit,200) "Observables:", etaout(it),shout(it,3),
+     |                shout(it,5),shout(it,6),shout(it,8)
      |                             !Output eta, H2, He3, He4, and Li7.
- 200    FORMAT (5(e13.5,' '))
+ 200    FORMAT (A13, ' ', 5(e13.5,' '))
       END IF
 
 C30-----close FILE--------------------------------------
 
       IF (itime.eq.10) THEN        !End of program.
-        CLOSE (unit=3)
+        IF (outfile) THEN
+          CLOSE (unit=3, status='delete')
+        ELSE
+          CLOSE (unit=3, status='keep')
+        END IF
       END IF
       RETURN
 
