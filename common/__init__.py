@@ -68,7 +68,7 @@ class Params(object):
 
     def __init__(self, **kwargs):
         """ ## Parameters
-        Master object carrying the cosmological state of the system and initial conditions """
+            Master object carrying the cosmological state of the system and initial conditions """
 
         # Temperature bounds define the simulations boundaries of the system
         self.T_initial = 10 * UNITS.MeV
@@ -145,7 +145,6 @@ class Grid(object):
 
     """ ### Distribution functions grid
 
-        TODO: try a log-spaced grid instead of equally-spaced
         TODO: try an irregular grid based on the Gauss-Legendre quadrature roots to minimize \
               the interpolation for the massless particles.
 
