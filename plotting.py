@@ -47,7 +47,7 @@ class Plotting(object):
         self.plots[2].set_ylim(1, 1.1)
 
         self.plots[3].set_title("N_eff")
-        self.plots[3].set_xlabel("T, MeV")
+        self.plots[3].set_xlabel("time, s")
         self.plots[3].invert_xaxis()
         self.plots[3].set_xscale("log")
         self.plots[3].set_ylabel("N_eff")
