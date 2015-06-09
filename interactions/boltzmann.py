@@ -28,7 +28,7 @@ class DistributionFunctional(object):
         temp = -1.
 
         for i, particle in enumerate(self.reaction):
-            if skip_index is None or i != skip_index:
+            if i != skip_index:
                 if particle.side == -1:
                     temp *= particle.specie.distribution(p[i])
                 else:
@@ -49,7 +49,7 @@ class DistributionFunctional(object):
         temp = 1.
 
         for i, particle in enumerate(self.reaction):
-            if skip_index is None or i != skip_index:
+            if i != skip_index:
                 if particle.side == 1:
                     temp *= particle.specie.distribution(p[i])
                 else:
@@ -85,6 +85,25 @@ class DistributionFunctional(object):
     def F_1(self, p):
         """ Constant part of the distribution functional """
         return self.F_B(p=p, skip_index=0)
+
+    def linearized_distribution_functional(self, p):
+        fs = tuple(particle.specie.distribution(p[i]) for i, particle in enumerate(self.reaction))
+
+        F_B = 1.
+        for i, particle in enumerate(self.reaction[1:]):
+            if particle.side == 1:
+                F_B *= fs[i]
+            else:
+                F_B *= 1. - particle.specie.eta * fs[i]
+
+        F_A = -1.
+        for i, particle in enumerate(self.reaction[1:]):
+            if particle.side == -1:
+                F_A *= fs[i]
+            else:
+                F_A *= 1. - fs[i]
+
+        return (F_B, F_A - self.particle.eta * F_B)
 
 
 class BoltzmannIntegral(PicklableObject, DistributionFunctional):
