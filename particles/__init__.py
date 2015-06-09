@@ -192,9 +192,9 @@ class Particle(PicklableObject):
             B_integrand_groups[i.__class__].append(i.integrand_f)
 
         for cls, integrands in A_integrand_groups.items():
-            As.append(cls.integrate(p0, integrands)[0])
+            As.append(cls.integrate(self.params, p0, integrands)[0])
         for cls, integrands in B_integrand_groups.items():
-            Bs.append(cls.integrate(p0, integrands)[0])
+            Bs.append(cls.integrate(self.params, p0, integrands)[0])
 
         order = min(len(self.data['collision_integral']) + 1, 5)
 

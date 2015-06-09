@@ -39,14 +39,11 @@ class ThreeParticleIntegral(BoltzmannIntegral):
         """
         params = self.particle.params
         if params.T > self.decoupling_temperature and not self.particle.in_equilibrium:
-            MM = 0
-            for M in self.Ms:
-                MM += M.K
-            self.constant = MM / 16. / numpy.pi * (params.m / params.x)
+            self.constant = sum(M.K for M in self.Ms)
             self.particle.collision_integrals.append(self)
 
     @staticmethod
-    def integrate(p0, integrand, bounds=None, kwargs=None):
+    def integrate(params, p0, integrand, bounds=None, kwargs=None):
         kwargs = kwargs if kwargs else {}
 
         if bounds is None:
@@ -63,8 +60,9 @@ class ThreeParticleIntegral(BoltzmannIntegral):
             prepared_integrand,
             bounds=bounds
         )
+        constant = (params.m / params.x) / 16. / numpy.pi
 
-        return integral, error
+        return constant * integral, error
 
     def integrand(self, p0, p1, fau=None):
 

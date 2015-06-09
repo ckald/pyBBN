@@ -80,11 +80,10 @@ class FourParticleIntegral(BoltzmannIntegral):
         """
         params = self.particle.params
         if params.T > self.decoupling_temperature and not self.particle.in_equilibrium:
-            self.constant = 1./64. / numpy.pi**3 * (params.m / params.x)**5
             self.particle.collision_integrals.append(self)
 
     @staticmethod
-    def integrate(p0, integrand, bounds=None, kwargs=None):
+    def integrate(params, p0, integrand, bounds=None, kwargs=None):
         kwargs = kwargs if kwargs else {}
 
         if bounds is None:
@@ -102,12 +101,13 @@ class FourParticleIntegral(BoltzmannIntegral):
             def prepared_integrand(p1, p2):
                 return integrand(p0, p1, p2, **kwargs)
 
+        constant = (params.m / params.x)**5 / 64. / numpy.pi**3
         integral, error = integrators.integrate_2D(
             prepared_integrand,
             bounds=bounds
         )
 
-        return integral, error
+        return constant * integral, error
 
     def integrand(self, p0, p1, p2, fau=None):
 
@@ -121,7 +121,7 @@ class FourParticleIntegral(BoltzmannIntegral):
         if not self.in_bounds(p, E, m):
             return 0.
 
-        integrand = self.constant
+        integrand = 1.
 
         ds = 0.
         if p[0] != 0:
