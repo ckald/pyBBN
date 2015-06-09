@@ -29,7 +29,7 @@ class DistributionFunctional(object):
 
         for i, particle in enumerate(self.reaction):
             if skip_index is None or i != skip_index:
-                if self.reaction[i].side == -1:
+                if particle.side == -1:
                     temp *= particle.specie.distribution(p[i])
                 else:
                     temp *= 1. - particle.specie.eta * particle.specie.distribution(p[i])
@@ -50,7 +50,7 @@ class DistributionFunctional(object):
 
         for i, particle in enumerate(self.reaction):
             if skip_index is None or i != skip_index:
-                if self.reaction[i].side == 1:
+                if particle.side == 1:
                     temp *= particle.specie.distribution(p[i])
                 else:
                     temp *= 1. - particle.specie.eta * particle.specie.distribution(p[i])
