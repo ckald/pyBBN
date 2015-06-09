@@ -204,8 +204,8 @@ class Particle(PicklableObject):
         H = self.params.H
 
         if p0 == 0:
-            A = sum(As) / H
-            B = sum(Bs) / H
+            A = sum(As)
+            B = sum(Bs)
             feq = self.equilibrium_distribution(p0)
             print "{} p0 = {:.3e} A = {:.3e} t = {:.3e} d = {:.3e}".format(
                 self.symbol, p0 / UNITS.MeV, A * UNITS.s, -1. / B / UNITS.s, -(A/B) / feq
