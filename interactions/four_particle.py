@@ -80,7 +80,7 @@ class FourParticleIntegral(BoltzmannIntegral):
         """
         params = self.particle.params
         if params.T > self.decoupling_temperature and not self.particle.in_equilibrium:
-            self.constant = 1./64. / numpy.pi**3 * (params.m / params.x)**5 / params.H
+            self.constant = 1./64. / numpy.pi**3 * (params.m / params.x)**5
             self.particle.collision_integrals.append(self)
 
     @staticmethod

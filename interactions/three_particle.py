@@ -42,7 +42,7 @@ class ThreeParticleIntegral(BoltzmannIntegral):
             MM = 0
             for M in self.Ms:
                 MM += M.K
-            self.constant = MM / 16. / numpy.pi * params.m / params.x / params.H
+            self.constant = MM / 16. / numpy.pi * (params.m / params.x)
             self.particle.collision_integrals.append(self)
 
     @staticmethod

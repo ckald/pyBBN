@@ -201,16 +201,18 @@ class Particle(PicklableObject):
         index = numpy.argwhere(GRID.TEMPLATE == p0)[0][0]
         fs = [i[index] for i in self.data['collision_integral'][-order+1:]]
 
+        H = self.params.H
+
         if p0 == 0:
-            A = sum(As)
-            B = sum(Bs)
+            A = sum(As) / H
+            B = sum(Bs) / H
             feq = self.equilibrium_distribution(p0)
             print "{} p0 = {:.3e} A = {:.3e} t = {:.3e} d = {:.3e}".format(
                 self.symbol, p0 / UNITS.MeV, A * UNITS.s, -1. / B / UNITS.s, -(A/B) / feq
             )
 
         prediction = adams_moulton_solver(y=self.distribution(p0), fs=fs,
-                                          A=sum(As), B=sum(Bs),
+                                          A=sum(As) / H, B=sum(Bs) / H,
                                           h=self.params.dy, order=order)
 
         total_integral = (prediction - self.distribution(p0)) / self.params.dy
