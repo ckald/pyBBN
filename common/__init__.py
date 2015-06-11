@@ -198,8 +198,8 @@ class HeuristicGrid(object):
 
     __slots__ = ('MIN_MOMENTUM', 'MAX_MOMENTUM', 'MOMENTUM_SAMPLES', 'TEMPLATE')
 
-    def __init__(self, M, tau, aT=1, b=-numpy.log(10 * sys.float_info.epsilon), c=3):
-        H = 0.5 * UNITS.s  # such that at T=1 <=> t=1
+    def __init__(self, M, tau, aT=1*UNITS.MeV, b=-numpy.log(10 * sys.float_info.epsilon), c=3):
+        H = 0.5 / UNITS.s  # such that at T=1 <=> t=1
         T_max = aT / numpy.sqrt(2 * H * b*tau)
 
         T = T_max
@@ -207,7 +207,7 @@ class HeuristicGrid(object):
 
         while grid[-1] > 0:
             g = grid[-1]
-            T = M * (1 + g*c**2 - numpy.sqrt(1 + 2 * g * c**2)) / (2 * g**2 * c**2)
+            T = aT * M * (aT + g*c**2 - numpy.sqrt(aT * (aT + 2*g*c**2))) / (2 * g**2 * c**2)
             grid.append(max(g - numpy.sqrt(M*T/c) * aT/T, 0))
 
         self.TEMPLATE = numpy.array(grid[::-1])
