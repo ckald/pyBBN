@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import numpy
-from common import GRID, integrators
+from common import integrators
 from interactions.boltzmann import BoltzmannIntegral
 
 

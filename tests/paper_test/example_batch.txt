@@ -1,86 +1,112 @@
-python tests/paper_test/__init__.py --mass 20 --theta 0.0556863
-python tests/paper_test/__init__.py --mass 20 --theta 0.0393762
+python tests/paper_test/__main__.py --mass 20 --theta 0.0556863
+python tests/paper_test/__main__.py --mass 20 --theta 0.0393762
 
-python tests/paper_test/__init__.py --mass 50 --theta 0.0177946
-python tests/paper_test/__init__.py --mass 50 --theta 0.0125827
+python tests/paper_test/__main__.py --mass 50 --theta 0.0177946
+python tests/paper_test/__main__.py --mass 50 --theta 0.0125827
 
-python tests/paper_test/__init__.py --mass 100 --theta 0.00889551
-python tests/paper_test/__init__.py --mass 100 --theta 0.00629008
-python tests/paper_test/__init__.py --mass 100 --theta 0.00444776
-python tests/paper_test/__init__.py --mass 100 --theta 0.00314504
+python tests/paper_test/__main__.py --mass 100 --theta 0.00889551
+python tests/paper_test/__main__.py --mass 100 --theta 0.00629008
+python tests/paper_test/__main__.py --mass 100 --theta 0.00444776
+python tests/paper_test/__main__.py --mass 100 --theta 0.00314504
 
-python tests/paper_test/__init__.py --mass 120 --theta 0.00563852
-python tests/paper_test/__init__.py --mass 120 --theta 0.00398704
-python tests/paper_test/__init__.py --mass 120 --theta 0.00238271
-python tests/paper_test/__init__.py --mass 120 --theta 0.00281926
+python tests/paper_test/__main__.py --mass 120 --theta 0.00563852
+python tests/paper_test/__main__.py --mass 120 --theta 0.00398704
+python tests/paper_test/__main__.py --mass 120 --theta 0.00238271
+python tests/paper_test/__main__.py --mass 120 --theta 0.00281926
 
 
-python tests/paper_test/__init__.py --mass 130 --theta 0.00326175
-python tests/paper_test/__init__.py --mass 130 --theta 0.00257864
+python tests/paper_test/__main__.py --mass 130 --theta 0.00326175
+python tests/paper_test/__main__.py --mass 130 --theta 0.00257864
 
-python tests/paper_test/__init__.py --mass 80 --theta 0.0122858
-python tests/paper_test/__init__.py --mass 80 --theta 0.0109887
-python tests/paper_test/__init__.py --mass 80 --theta 0.0077702
+python tests/paper_test/__main__.py --mass 80 --theta 0.0122858
+python tests/paper_test/__main__.py --mass 80 --theta 0.0109887
+python tests/paper_test/__main__.py --mass 80 --theta 0.0077702
 
 
 
 # New batch
 sleep 7200
-python tests/paper_test/__init__.py --mass 20 --theta 0.111792 --comment '_t=0.496257'
-python tests/paper_test/__init__.py --mass 20 --theta 0.0782721 --comment '_t=1.01231'
-python tests/paper_test/__init__.py --mass 20 --theta 0.055284 --comment '_t=2.02922'
-python tests/paper_test/__init__.py --mass 50 --theta 0.0265091 --comment '_t=0.0901193'
-python tests/paper_test/__init__.py --mass 50 --theta 0.0198906 --comment '_t=0.16007'
-python tests/paper_test/__init__.py --mass 80 --theta 0.00996268 --comment '_t=0.0608292'
-python tests/paper_test/__init__.py --mass 80 --theta 0.0077048 --comment '_t=0.101705'
-python tests/paper_test/__init__.py --mass 100 --theta 0.00624422 --comment '_t=0.0507371'
-python tests/paper_test/__init__.py --mass 100 --theta 0.00444378 --comment '_t=0.100179'
-python tests/paper_test/__init__.py --mass 120 --theta 0.00395797 --comment '_t=0.0507371'
-python tests/paper_test/__init__.py --mass 120 --theta 0.00306096 --comment '_t=0.0848312'
+python tests/paper_test/__main__.py --mass 20 --tau 0.496257 --theta 0.111792
+python tests/paper_test/__main__.py --mass 20 --tau 1.01231 --theta 0.0782721
+python tests/paper_test/__main__.py --mass 20 --tau 2.02922 --theta 0.055284
+python tests/paper_test/__main__.py --mass 50 --tau 0.0901193 --theta 0.0265091
+python tests/paper_test/__main__.py --mass 50 --tau 0.16007 --theta 0.0198906
+python tests/paper_test/__main__.py --mass 80 --tau 0.0608292 --theta 0.00996268
+python tests/paper_test/__main__.py --mass 80 --tau 0.101705 --theta 0.0077048
+python tests/paper_test/__main__.py --mass 100 --tau 0.0507371 --theta 0.00624422
+python tests/paper_test/__main__.py --mass 100 --tau 0.100179 --theta 0.00444378
+python tests/paper_test/__main__.py --mass 120 --tau 0.0507371 --theta 0.00395797
+python tests/paper_test/__main__.py --mass 120 --tau 0.0848312 --theta 0.00306096
 
 
-python tests/standard_model_bbn/__init__.py
-python tests/sbbn_oscillations/__init__.py
-python tests/paper_oscillations/__init__.py --mass 50 --theta 0.0265091 --comment '_t=0.0901193'
-python tests/paper_oscillations/__init__.py --mass 50 --theta 0.0198906 --comment '_t=0.16007'
-python tests/paper_oscillations/__init__.py --mass 80 --theta 0.00996268 --comment '_t=0.0608292'
-python tests/paper_oscillations/__init__.py --mass 80 --theta 0.0077048 --comment '_t=0.101705'
-python tests/paper_oscillations/__init__.py --mass 100 --theta 0.00624422 --comment '_t=0.0507371'
-python tests/paper_oscillations/__init__.py --mass 100 --theta 0.00444378 --comment '_t=0.100179'
-python tests/paper_oscillations/__init__.py --mass 120 --theta 0.00395797 --comment '_t=0.0507371'
-python tests/paper_oscillations/__init__.py --mass 120 --theta 0.00306096 --comment '_t=0.0848312'
+python tests/standard_model_bbn/__main__.py
+python tests/sbbn_oscillations/__main__.py
+python tests/paper_oscillations/__main__.py --mass 50 --tau 0.0901193 --theta 0.0265091
+python tests/paper_oscillations/__main__.py --mass 50 --tau 0.16007 --theta 0.0198906
+python tests/paper_oscillations/__main__.py --mass 80 --tau 0.0608292 --theta 0.00996268
+python tests/paper_oscillations/__main__.py --mass 80 --tau 0.101705 --theta 0.0077048
+python tests/paper_oscillations/__main__.py --mass 100 --tau 0.0507371 --theta 0.00624422
+python tests/paper_oscillations/__main__.py --mass 100 --tau 0.100179 --theta 0.00444378
+python tests/paper_oscillations/__main__.py --mass 120 --tau 0.0507371 --theta 0.00395797
+python tests/paper_oscillations/__main__.py --mass 120 --tau 0.0848312 --theta 0.00306096
 
 
 sleep 21600
-python tests/paper_test/__init__.py --mass 50 --theta 0.0169934 --comment '_t=0.219305'
-python tests/paper_test/__init__.py --mass 100 --theta 0.0075119 --comment '_t=0.0350576'
-python tests/paper_test/__init__.py --mass 120 --theta 0.00476151 --comment '_t=0.0350576'
-python tests/paper_test/__init__.py --mass 30 --theta 0.0656252 --comment '_t=0.189288'
-python tests/paper_test/__init__.py --mass 30 --theta 0.0449535 --comment '_t=0.403401'
+python tests/paper_test/__main__.py --mass 50 --tau 0.219305 --theta 0.0169934
+python tests/paper_test/__main__.py --mass 100 --tau 0.0350576 --theta 0.0075119
+python tests/paper_test/__main__.py --mass 120 --tau 0.0350576 --theta 0.00476151
+python tests/paper_test/__main__.py --mass 30 --tau 0.189288 --theta 0.0656252
+python tests/paper_test/__main__.py --mass 30 --tau 0.403401 --theta 0.0449535
 
 
-python tests/paper_oscillations/__init__.py --mass 20 --theta 0.111792 --comment '_t=0.496257'
-python tests/paper_oscillations/__init__.py --mass 20 --theta 0.0782721 --comment '_t=1.01231'
+python tests/paper_oscillations/__main__.py --mass 20 --tau 0.496257 --theta 0.111792
+python tests/paper_oscillations/__main__.py --mass 20 --tau 1.01231 --theta 0.0782721
 
 
 # Pionic batches
 
-python tests/pionic --mass 150 --theta 0.000936349 --comment '_t=0.1'
-python tests/pionic --mass 150 --theta 0.0013242 --comment '_t=0.05'
-python tests/pionic --mass 150 --theta 0.00170953 --comment '_t=0.03'
-python tests/pionic --mass 150 --theta 0.002961 --comment '_t=0.01'
-python tests/pionic --mass 250 --theta 0.000115584 --comment '_t=0.1'
-python tests/pionic --mass 250 --theta 0.00016346 --comment '_t=0.05'
-python tests/pionic --mass 250 --theta 0.000211026 --comment '_t=0.03'
-python tests/pionic --mass 250 --theta 0.000365508 --comment '_t=0.01'
-python tests/pionic --mass 350 --theta 0.0000563524 --comment '_t=0.1'
-python tests/pionic --mass 350 --theta 0.0000796943 --comment '_t=0.05'
-python tests/pionic --mass 350 --theta 0.000102885 --comment '_t=0.03'
-python tests/pionic --mass 350 --theta 0.000178202 --comment '_t=0.01'
-python tests/pionic --mass 450 --theta 0.0000349638 --comment '_t=0.1'
-python tests/pionic --mass 450 --theta 0.0000494463 --comment '_t=0.05'
-python tests/pionic --mass 450 --theta 0.0000638349 --comment '_t=0.03'
-python tests/pionic --mass 450 --theta 0.000110565 --comment '_t=0.01'
+python tests/pionic --mass 150 --tau 0.1 --theta 0.000936349
+python tests/pionic --mass 150 --tau 0.05 --theta 0.0013242
+python tests/pionic --mass 150 --tau 0.03 --theta 0.00170953
+python tests/pionic --mass 150 --tau 0.01 --theta 0.002961
+python tests/pionic --mass 250 --tau 0.1 --theta 0.000115584
+python tests/pionic --mass 250 --tau 0.05 --theta 0.00016346
+python tests/pionic --mass 250 --tau 0.03 --theta 0.000211026
+python tests/pionic --mass 250 --tau 0.01 --theta 0.000365508
+python tests/pionic --mass 350 --tau 0.1 --theta 0.0000563524
+python tests/pionic --mass 350 --tau 0.05 --theta 0.0000796943
+python tests/pionic --mass 350 --tau 0.03 --theta 0.000102885
+python tests/pionic --mass 350 --tau 0.01 --theta 0.000178202
+python tests/pionic --mass 450 --tau 0.1 --theta 0.0000349638
+python tests/pionic --mass 450 --tau 0.05 --theta 0.0000494463
+python tests/pionic --mass 450 --tau 0.03 --theta 0.0000638349
+python tests/pionic --mass 450 --tau 0.01 --theta 0.000110565
+
+# Pure pionic batches
+
+python tests/pionic --mass 150 --tau 0.2 --theta 0.000662099
+python tests/pionic --mass 150 --tau 0.1 --theta 0.000936349
+python tests/pionic --mass 150 --tau 0.05 --theta 0.0013242
+python tests/pionic --mass 150 --tau 0.03 --theta 0.00170953
+python tests/pionic --mass 150 --tau 0.01 --theta 0.002961
+python tests/pionic --mass 150 --tau 0.3 --theta 0.000540602
+python tests/pionic --mass 150 --tau 0.4 --theta 0.000468175
+python tests/pionic --mass 150 --tau 0.5 --theta 0.000418748
+
+python tests/pionic --mass 250 --tau 0.1 --theta 0.000115584
+python tests/pionic --mass 250 --tau 0.05 --theta 0.00016346
+python tests/pionic --mass 250 --tau 0.03 --theta 0.000211026
+python tests/pionic --mass 250 --tau 0.01 --theta 0.000365508
+
+python tests/pionic --mass 350 --tau 0.1 --theta 0.0000563524
+python tests/pionic --mass 350 --tau 0.05 --theta 0.0000796943
+python tests/pionic --mass 350 --tau 0.03 --theta 0.000102885
+python tests/pionic --mass 350 --tau 0.01 --theta 0.000178202
+
+python tests/pionic --mass 450 --tau 0.1 --theta 0.0000349638
+python tests/pionic --mass 450 --tau 0.05 --theta 0.0000494463
+python tests/pionic --mass 450 --tau 0.03 --theta 0.0000638349
+python tests/pionic --mass 450 --tau 0.01 --theta 0.000110565
 
 
 
