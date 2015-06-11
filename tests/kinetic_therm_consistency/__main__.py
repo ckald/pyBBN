@@ -21,7 +21,7 @@ from plotting import plt
 from particles import Particle
 from library.SM import particles as SMP, interactions as SMI
 from evolution import Universe
-from common import UNITS, Params, GRID
+from common import UNITS, Params
 
 
 folder = os.path.split(__file__)[0]
@@ -94,15 +94,15 @@ plt.xlim(0, 20)
 
 f_e = neutrino_e._distribution
 feq_e = neutrino_e.equilibrium_distribution()
-plt.plot(GRID.TEMPLATE/UNITS.MeV, f_e/feq_e, label="nu_e")
+plt.plot(neutrino_e.grid.TEMPLATE/UNITS.MeV, f_e/feq_e, label="nu_e")
 
 f_mu = neutrino_mu._distribution
 feq_mu = neutrino_mu.equilibrium_distribution()
-plt.plot(GRID.TEMPLATE/UNITS.MeV, f_mu/feq_mu, label="nu_mu")
+plt.plot(neutrino_mu.grid.TEMPLATE/UNITS.MeV, f_mu/feq_mu, label="nu_mu")
 
 f_tau = neutrino_tau._distribution
 feq_tau = neutrino_tau.equilibrium_distribution()
-plt.plot(GRID.TEMPLATE/UNITS.MeV, f_tau/feq_tau, label="nu_tau")
+plt.plot(neutrino_tau.grid.TEMPLATE/UNITS.MeV, f_tau/feq_tau, label="nu_tau")
 
 plt.legend()
 plt.draw()

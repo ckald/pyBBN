@@ -28,6 +28,6 @@ environment variable:
 
 For example, to run the cosmic neutrino background temperature test:
 
-    PYTHONPATH=. python tests/cosmic_neutrino_temperature/__init__.py
+    PYTHONPATH=. python tests/cosmic_neutrino_temperature
 
 """
