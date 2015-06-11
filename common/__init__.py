@@ -48,6 +48,8 @@ class CONST(object):
     M_p = 1.2209 * 1e19 * UNITS.GeV
     # Fermi constant
     G_F = 1.166 * 1e-5 / UNITS.GeV**2
+    # Hubble constant
+    H = 1. / (4.55e17 * UNITS.s)
     # Weinberg angle
     sin_theta_w_2 = 0.2312
     g_R = sin_theta_w_2
@@ -197,7 +199,7 @@ class HeuristicGrid(object):
     __slots__ = ('MIN_MOMENTUM', 'MAX_MOMENTUM', 'MOMENTUM_SAMPLES', 'TEMPLATE')
 
     def __init__(self, M, tau, aT=1, b=-numpy.log(10 * sys.float_info.epsilon), c=3):
-        T_max = aT / numpy.sqrt(b*tau)
+        T_max = aT / numpy.sqrt(2 * CONST.H * b*tau)
 
         T = T_max
         grid = [aT/T * (M/2 + numpy.sqrt(M*T))]
