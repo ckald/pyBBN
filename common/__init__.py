@@ -207,7 +207,7 @@ class HeuristicGrid(object):
             T = M * (1 + g*c**2 - numpy.sqrt(1 + 2 * g * c**2)) / (2 * g**2 * c**2)
             grid.append(max(g - numpy.sqrt(M*T/c) * aT/T, 0))
 
-        self.TEMPLATE = numpy.array(reversed(grid))
+        self.TEMPLATE = numpy.array(grid[::-1])
         self.MOMENTUM_SAMPLES = len(self.TEMPLATE)
 
         self.MIN_MOMENTUM = 0
