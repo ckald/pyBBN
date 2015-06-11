@@ -7,7 +7,7 @@ import pandas
 import time
 from datetime import timedelta
 
-from common import UNITS, Params, Grid, CONST, integrators, parallelization, utils
+from common import UNITS, Params, CONST, integrators, parallelization, utils
 
 import kawano
 
@@ -45,7 +45,6 @@ class Universe(object):
         self.clock_start = time.time()
 
         self.params = Params() if not params else params
-        self.grid = Grid() if not grid else grid
 
         self.graphics = None
         if utils.getboolenv("PLOT", plotting):
@@ -180,7 +179,7 @@ class Universe(object):
                 maps = [
                     (particle,
                      parallelization.poolmap(particle, 'calculate_collision_integral',
-                                             self.grid.TEMPLATE))
+                                             particle.grid.TEMPLATE))
                     for particle in particles
                 ]
                 # Collect results
