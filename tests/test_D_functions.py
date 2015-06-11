@@ -8,21 +8,21 @@ from common import GRID
 cwd = os.path.split(__file__)[0]
 
 
-def grid_iterator(dimension=4):
+def grid_iterator(dimension=4, grid=GRID):
     value = numpy.zeros(dimension)
 
     dim = dimension - 1
     while dim >= 0:
         # print value
         value[dim] += 1
-        if value[dim] >= GRID.MOMENTUM_SAMPLES:
-            while dim >= 0 and value[dim] >= GRID.MOMENTUM_SAMPLES:
+        if value[dim] >= grid.MOMENTUM_SAMPLES:
+            while dim >= 0 and value[dim] >= grid.MOMENTUM_SAMPLES:
                 value[dim] = 0
                 value[dim-1] += 1
                 dim -= 1
             if dim > -1:
                 dim = dimension - 1
-        yield value, map(lambda i: GRID.TEMPLATE[i], value)
+        yield value, map(lambda i: grid.TEMPLATE[i], value)
 
 
 grid_json = json.dumps(GRID.TEMPLATE.tolist())
