@@ -111,7 +111,7 @@ class FourParticleIntegral(BoltzmannIntegral):
 
         return constant * integral, error
 
-    def integrands(self, p0, p1, p2):
+    def integrand(self, p0, p1, p2, fau=None):
 
         """
         Collision integral interior.
@@ -143,9 +143,9 @@ class FourParticleIntegral(BoltzmannIntegral):
         if integrand == 0:
             return 0
 
-        F_1, F_f = self.linearized_distribution_functional(p)
+        integrand *= fau(p)
 
-        return integrand * F_1, integrand * F_f
+        return integrand
 
     """ ### Integration region bounds methods """
 

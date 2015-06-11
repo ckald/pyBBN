@@ -64,7 +64,7 @@ class ThreeParticleIntegral(BoltzmannIntegral):
 
         return constant * integral, error
 
-    def integrands(self, p0, p1):
+    def integrand(self, p0, p1, fau=None):
 
         """
         Collision integral interior.
@@ -92,14 +92,9 @@ class ThreeParticleIntegral(BoltzmannIntegral):
             if m[2] != 0:
                 integrand *= p[1] / E[2]
 
-        F_1 = []
-        F_f = []
-        for i in range(len(p[1])):
-            f_1, f_f = self.linearized_distribution_functional([p[0], p[1][i], p[2][i]])
-            F_1.append(f_1)
-            F_f.append(f_f)
+        integrand *= numpy.array([fau([p[0], p[1][i], p[2][i]]) for i in range(len(p[1]))])
 
-        return integrand * F_1, integrand * F_f
+        return integrand
 
     """ ### Integration region bounds methods """
 
