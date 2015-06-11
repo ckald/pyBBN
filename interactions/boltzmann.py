@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import numpy
-from common import GRID, integrators
+from common import integrators
 from common.utils import PicklableObject
 
 
@@ -203,11 +203,13 @@ class BoltzmannIntegral(PicklableObject, DistributionFunctional):
             return numpy.vectorize(lambda p0: p0**2 / (2 * numpy.pi)**3
                                    * self.integrate(p0, self.integrand_B)[0])(p)
 
+        grid = self.particle.grid
+
         forward_rate, _ = integrators.integrate_1D(forward_integral,
-                                                   (GRID.MIN_MOMENTUM, GRID.MAX_MOMENTUM))
+                                                   (grid.MIN_MOMENTUM, grid.MAX_MOMENTUM))
 
         backward_rate, _ = integrators.integrate_1D(backward_integral,
-                                                    (GRID.MIN_MOMENTUM, GRID.MAX_MOMENTUM))
+                                                    (grid.MIN_MOMENTUM, grid.MAX_MOMENTUM))
 
         return -forward_rate, backward_rate
 
@@ -245,36 +247,40 @@ class BoltzmannIntegral(PicklableObject, DistributionFunctional):
         raise NotImplementedError()
 
     def bounds(self, p0):
-        """ Coarse integration region based on the `GRID` points. Assumes that integration region\
-            is connected. """
+        """ Coarse integration region based on the `self.particle.grid` points.
+            Assumes that integration region is connected. """
         points = []
-        for p1 in GRID.TEMPLATE:
+        for p1 in self.particle.grid.TEMPLATE:
             points.append((p1, self.lower_bound(p0, p1),))
             points.append((p1, self.upper_bound(p0, p1),))
 
         return points
 
     def lower_bound(self, p0, p1):
-        """ Find the first `GRID` point in the integration region """
+        """ Find the first `self.particle.grid` point in the integration region """
 
         index = 0
-        while index < GRID.MOMENTUM_SAMPLES and not self.in_bounds([p0, p1, GRID.TEMPLATE[index]]):
+        while (index < self.particle.grid.MOMENTUM_SAMPLES
+               and not self.in_bounds([p0, p1, self.particle.grid.TEMPLATE[index]])):
             index += 1
 
-        if index == GRID.MOMENTUM_SAMPLES:
-            return GRID.MIN_MOMENTUM
+        if index == self.particle.grid.MOMENTUM_SAMPLES:
+            return self.particle.grid.MIN_MOMENTUM
 
-        return GRID.TEMPLATE[index]
+        return self.particle.grid.TEMPLATE[index]
 
     def upper_bound(self, p0, p1):
-        """ Find the last `GRID` point in the integration region """
+        """ Find the last `self.particle.grid` point in the integration region """
 
-        index = int((min(p0 + p1, GRID.MAX_MOMENTUM) - GRID.MIN_MOMENTUM) / GRID.MOMENTUM_STEP)
+        index = int(
+            (min(p0 + p1, self.particle.grid.MAX_MOMENTUM) - self.particle.grid.MIN_MOMENTUM)
+            / self.particle.grid.MOMENTUM_STEP
+        )
 
-        while index >= 0 and not self.in_bounds([p0, p1, GRID.TEMPLATE[index]]):
+        while index >= 0 and not self.in_bounds([p0, p1, self.particle.grid.TEMPLATE[index]]):
             index -= 1
 
         if index == -1:
-            return GRID.MIN_MOMENTUM
+            return self.particle.grid.MIN_MOMENTUM
 
-        return GRID.TEMPLATE[index]
+        return self.particle.grid.TEMPLATE[index]

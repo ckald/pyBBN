@@ -59,7 +59,7 @@ def articles_comparison_plots(universe, particles):
     for neutrino in particles:
         f = neutrino._distribution
         feq = neutrino.equilibrium_distribution()
-        plt.plot(GRID.TEMPLATE/UNITS.MeV, f/feq, label=neutrino.name)
+        plt.plot(neutrino.grid.TEMPLATE/UNITS.MeV, f/feq, label=neutrino.name)
 
         numpy.savetxt(distributions_file, (f, feq, f/feq), header=str(neutrino),
                       footer='-'*80, fmt="%1.5e")

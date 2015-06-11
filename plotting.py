@@ -137,7 +137,8 @@ class RadiationParticleMonitor(ParticleMonitor):
         self.plots[0].set_ylabel("rho/rho_eq")
 
         self.plots[1].set_xlabel("y, MeV")
-        self.plots[1].set_xlim(GRID.MIN_MOMENTUM / UNITS.MeV, GRID.MAX_MOMENTUM / UNITS.MeV)
+        self.plots[1].set_xlim(self.particle.grid.MIN_MOMENTUM / UNITS.MeV,
+                               self.particle.grid.MAX_MOMENTUM / UNITS.MeV)
         self.plots[1].set_ylabel("f/f_eq")
 
     def comparison_distributions(self, data):
@@ -156,15 +157,15 @@ class RadiationParticleMonitor(ParticleMonitor):
         (T, rhoeq), feq = self.comparison_distributions(data)
 
         if not self.particle.in_equilibrium:
-            ratio = numpy.vectorize(self.particle.distribution)(GRID.TEMPLATE) / feq
+            ratio = numpy.vectorize(self.particle.distribution)(self.particle.grid.TEMPLATE) / feq
         else:
-            ratio = numpy.ones(GRID.TEMPLATE.shape)
+            ratio = numpy.ones(self.particle.grid.TEMPLATE.shape)
             rhoeq = 1.
 
         self.plots[0].scatter(T / UNITS.MeV, rhoeq, s=1)
 
         age_lines(self.plots[1].get_axes().lines)
-        self.plots[1].plot(GRID.TEMPLATE / UNITS.MeV, ratio)
+        self.plots[1].plot(self.particle.grid.TEMPLATE / UNITS.MeV, ratio)
 
 
 class EquilibriumRadiationParticleMonitor(RadiationParticleMonitor):
@@ -212,7 +213,8 @@ class MassiveParticleMonitor(ParticleMonitor):
         self.plots[0].set_ylabel("rho/(n M)")
 
         self.plots[1].set_xlabel("y, MeV")
-        self.plots[1].set_xlim(GRID.MIN_MOMENTUM / UNITS.MeV, GRID.MAX_MOMENTUM / UNITS.MeV)
+        self.plots[1].set_xlim(self.particle.grid.MIN_MOMENTUM / UNITS.MeV,
+                               self.particle.grid.MAX_MOMENTUM / UNITS.MeV)
         self.plots[1].set_ylabel("(f-f_eq) y^2")
 
     def plot(self, data):
@@ -225,11 +227,11 @@ class MassiveParticleMonitor(ParticleMonitor):
 
         age_lines(self.plots[1].get_axes().lines)
 
-        yy = GRID.TEMPLATE * GRID.TEMPLATE / UNITS.MeV**2
+        yy = self.particle.grid.TEMPLATE * self.particle.grid.TEMPLATE / UNITS.MeV**2
 
         f = self.particle._distribution
         feq = self.particle.equilibrium_distribution()
-        self.plots[1].plot(GRID.TEMPLATE / UNITS.MeV, yy*(f-feq))
+        self.plots[1].plot(self.particle.grid.TEMPLATE / UNITS.MeV, yy*(f-feq))
 
 
 class EquilibrationMonitor(ParticleMonitor):

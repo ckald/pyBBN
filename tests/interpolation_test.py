@@ -3,7 +3,7 @@ from interactions import Interaction
 from interactions.four_particle import FourParticleM, FourParticleIntegral
 from particles import Particle
 from evolution import Universe
-from common import CONST, UNITS, Params, GRID
+from common import CONST, UNITS, Params
 
 
 params = Params(T_initial=2 * UNITS.MeV,
@@ -30,7 +30,7 @@ universe.interactions += [neutrino_scattering]
 import numpy
 addition = numpy.vectorize(lambda x: 0.1 * numpy.exp(-(x/UNITS.MeV-5)**2),
                            otypes=[numpy.float_])
-# neutrino._distribution += addition(GRID.TEMPLATE)
+# neutrino._distribution += addition(neutrino.grid.TEMPLATE)
 
 # def check(p=[]):
 #     return neutrino_scattering.F_B(in_p=p[:2], out_p=p[2:]) * (1 - neutrino.distribution(p[0])) \
@@ -38,13 +38,13 @@ addition = numpy.vectorize(lambda x: 0.1 * numpy.exp(-(x/UNITS.MeV-5)**2),
 
 
 # # print [neutrino.distribution(p) - neutrino._distribution_interpolation(p)
-# #        for p in numpy.linspace(GRID.MIN_MOMENTUM, GRID.MAX_MOMENTUM,
+# #        for p in numpy.linspace(neutrino.grid.MIN_MOMENTUM, neutrino.grid.MAX_MOMENTUM,
 # #                                num=200, endpoint=True)]
 
 import matplotlib.pyplot as plt
 
-x = numpy.linspace(GRID.MIN_MOMENTUM, GRID.MAX_MOMENTUM*2,
-                   num=GRID.MOMENTUM_SAMPLES*10, endpoint=True)
+x = numpy.linspace(neutrino.grid.MIN_MOMENTUM, neutrino.grid.MAX_MOMENTUM*2,
+                   num=neutrino.grid.MOMENTUM_SAMPLES*10, endpoint=True)
 y = numpy.vectorize(neutrino.distribution)(x)
 z = numpy.vectorize(neutrino.equilibrium_distribution_function)(x / universe.params.aT)
 w = z + addition(x)
@@ -54,11 +54,11 @@ plt.plot(x, w)
 plt.show()
 
 # res = []
-# for p0 in GRID.TEMPLATE:
-#     for p1 in GRID.TEMPLATE:
-#         for p2 in GRID.TEMPLATE:
+# for p0 in neutrino.grid.TEMPLATE:
+#     for p1 in neutrino.grid.TEMPLATE:
+#         for p2 in neutrino.grid.TEMPLATE:
 #             p3 = p0 + p1 - p2
-#             if p3 >= 0 and p3 <= GRID.MAX_MOMENTUM:
+#             if p3 >= 0 and p3 <= neutrino.grid.MAX_MOMENTUM:
 #                 # val = check(p=[p0, p1, p2, p3])
 #                 # f0 = neutrino.distribution(p0)
 #                 # f1 = neutrino.distribution(p1)

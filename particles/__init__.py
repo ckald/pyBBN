@@ -80,7 +80,8 @@ class Particle(PicklableObject):
         'data',
         '_distribution',
         'collision_integral', 'collision_integrals',
-        'T', 'aT', 'params'
+        'T', 'aT', 'params',
+        'grid'
     ]
 
     _defaults = {
@@ -90,7 +91,8 @@ class Particle(PicklableObject):
         'symbol': 'p',
         'dof': 2,
         'statistics': STATISTICS.FERMION,
-        'params': None
+        'params': None,
+        'grid': GRID
     }
 
     def __init__(self, **kwargs):
@@ -103,11 +105,7 @@ class Particle(PicklableObject):
 
         self.eta = 1. if self.statistics == STATISTICS.FERMION else -1.
 
-        """ For equilibrium particles distribution function is by definition given by its\
-            statistics and will not be used until species comes into non-equilibrium regime """
-        self._distribution = numpy.zeros(GRID.MOMENTUM_SAMPLES, dtype=numpy.float_)
-        """ Particle collision integral is not effective in the equilibrium as well """
-        self.collision_integral = numpy.zeros(GRID.MOMENTUM_SAMPLES, dtype=numpy.float_)
+        self.set_grid(self.grid)
         self.calculate_collision_integral = numpy.vectorize(self.calculate_collision_integral)
 
         self.collision_integrals = []
@@ -141,6 +139,14 @@ class Particle(PicklableObject):
         self.update()
         self.init_distribution()
 
+    def set_grid(self, grid):
+        self.grid = grid
+        """ For equilibrium particles distribution function is by definition given by its\
+            statistics and will not be used until species comes into non-equilibrium regime """
+        self._distribution = numpy.zeros(self.grid.MOMENTUM_SAMPLES, dtype=numpy.float_)
+        """ Particle collision integral is not effective in the equilibrium as well """
+        self.collision_integral = numpy.zeros(self.grid.MOMENTUM_SAMPLES, dtype=numpy.float_)
+
     def update(self, force_print=False):
         """ Update the particle parameters according to the new state of the system """
         oldregime = self.regime
@@ -173,7 +179,7 @@ class Particle(PicklableObject):
         self.data['distribution'].append(self._distribution)
 
     def integrate_collisions(self):
-        return numpy.vectorize(self.calculate_collision_integral)(GRID.TEMPLATE)
+        return numpy.vectorize(self.calculate_collision_integral)(self.grid.TEMPLATE)
 
     @trace_unhandled_exceptions
     def calculate_collision_integral(self, p0):
@@ -190,13 +196,13 @@ class Particle(PicklableObject):
             integrand_groups[i.__class__].append(i.integrands)
 
         for cls, integrands in integrand_groups.items():
-            result = cls.integrate(self.params, p0, integrands)
+            result = cls.integrate(self.particle, p0, integrands)
             As.append(result[0])
             Bs.append(result[1])
 
         order = min(len(self.data['collision_integral']) + 1, 5)
 
-        index = numpy.searchsorted(GRID.TEMPLATE, p0)
+        index = numpy.searchsorted(self.grid.TEMPLATE, p0)
         fs = [i[index] for i in self.data['collision_integral'][-order+1:]]
 
         H = self.params.H
@@ -280,30 +286,30 @@ class Particle(PicklableObject):
         """
 
         p = abs(p)
-        if self.in_equilibrium or p > GRID.MAX_MOMENTUM:
+        if self.in_equilibrium or p > self.grid.MAX_MOMENTUM:
             return self.equilibrium_distribution(p)
 
         return distribution_interpolation(
             p,
-            GRID.TEMPLATE,
+            self.grid.TEMPLATE,
             self._distribution
         )
 
-        index = numpy.searchsorted(GRID.TEMPLATE, p)
+        index = numpy.searchsorted(self.grid.TEMPLATE, p)
 
-        if index >= GRID.MOMENTUM_SAMPLES - 1:
+        if index >= self.grid.MOMENTUM_SAMPLES - 1:
             return self._distribution[-1]
 
-        if p == GRID.TEMPLATE[index]:
+        if p == self.grid.TEMPLATE[index]:
             return self._distribution[index]
 
         # Determine the closest grid points
 
         i_low = index
-        p_low = GRID.TEMPLATE[i_low]
+        p_low = self.grid.TEMPLATE[i_low]
 
         i_high = index + 1
-        p_high = GRID.TEMPLATE[i_high]
+        p_high = self.grid.TEMPLATE[i_high]
 
         """ ### Exponential interpolation """
         E_p = self.conformal_energy(p)
@@ -331,7 +337,7 @@ class Particle(PicklableObject):
             aT = self.aT
         if y is None:
             return self.equilibrium_distribution_function(
-                numpy.vectorize(self.conformal_energy)(GRID.TEMPLATE) / aT
+                numpy.vectorize(self.conformal_energy)(self.grid.TEMPLATE) / aT
             )
         else:
             return self.equilibrium_distribution_function(self.conformal_energy(y) / aT)

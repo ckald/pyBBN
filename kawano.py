@@ -110,16 +110,18 @@ def baryonic_rates(_a):
     global a
     a = _a
 
+    grid = particles.neutrino.grid
+
     return [
         CONST.rate_normalization / a**5 * integrate_1D(numpy.vectorize(integrand), bounds=bounds)[0]
         if bounds[0] < bounds[1] else 0.
         for integrand, bounds in [
-            (_rate1, (GRID.MIN_MOMENTUM, GRID.MAX_MOMENTUM)),
-            (_rate2, (GRID.MIN_MOMENTUM, GRID.MAX_MOMENTUM)),
-            (_rate3, (GRID.MIN_MOMENTUM, (q - m_e)*a)),
-            (_rate4, (GRID.MIN_MOMENTUM, (q - m_e)*a)),
-            (_rate5, ((q + m_e)*a, GRID.MAX_MOMENTUM)),
-            (_rate6, ((q + m_e)*a, GRID.MAX_MOMENTUM))]
+            (_rate1, (grid.MIN_MOMENTUM, grid.MAX_MOMENTUM)),
+            (_rate2, (grid.MIN_MOMENTUM, grid.MAX_MOMENTUM)),
+            (_rate3, (grid.MIN_MOMENTUM, (q - m_e)*a)),
+            (_rate4, (grid.MIN_MOMENTUM, (q - m_e)*a)),
+            (_rate5, ((q + m_e)*a, grid.MAX_MOMENTUM)),
+            (_rate6, ((q + m_e)*a, grid.MAX_MOMENTUM))]
     ]
 
 

@@ -5,6 +5,7 @@
 
 This file contains constants and utilities shared by all other modules in the project.
 """
+import sys
 import numpy
 import numericalunits as nu
 
@@ -141,7 +142,7 @@ class Params(object):
         )
 
 
-class Grid(object):
+class LogSpacedGrid(object):
 
     """ ### Distribution functions grid
 
@@ -158,7 +159,7 @@ class Grid(object):
         and errors).
         """
 
-    __slots__ = ('MIN_MOMENTUM', 'MAX_MOMENTUM', 'MOMENTUM_SAMPLES', 'MOMENTUM_RATIO', 'TEMPLATE')
+    __slots__ = ('MIN_MOMENTUM', 'MAX_MOMENTUM', 'MOMENTUM_SAMPLES', 'TEMPLATE')
 
     def __init__(self):
         # self.MIN_MOMENTUM = 1. * UNITS.eV
@@ -178,8 +179,6 @@ class Grid(object):
         """
         self.TEMPLATE = self.generate_template()
 
-        self.MOMENTUM_RATIO = self.TEMPLATE[-1] / self.TEMPLATE[-2]
-
     def generate_template(self):
         base = 1.2
         return (
@@ -193,7 +192,29 @@ class Grid(object):
         #                                num=self.MOMENTUM_SAMPLES, endpoint=True)
 
 
-GRID = Grid()
+class HeuristicGrid(object):
+
+    __slots__ = ('MIN_MOMENTUM', 'MAX_MOMENTUM', 'MOMENTUM_SAMPLES', 'TEMPLATE')
+
+    def __init__(self, M, tau, aT=1, b=-numpy.log(10 * sys.float_info.epsilon), c=3):
+        T_max = aT / numpy.sqrt(b*tau)
+
+        T = T_max
+        grid = [aT/T * (M/2 + numpy.sqrt(M*T))]
+
+        while grid[-1] > 0:
+            g = grid[-1]
+            T = M * (1 + g*c**2 - numpy.sqrt(1 + 2 * g * c**2)) / (2 * g**2 * c**2)
+            grid.append(max(g - numpy.sqrt(M*T/c) * aT/T), 0)
+
+        self.TEMPLATE = numpy.array(reversed(grid))
+        self.MOMENTUM_SAMPLES = len(self.TEMPLATE)
+
+        self.MIN_MOMENTUM = 0
+        self.MAX_MOMENTUM = grid[0]
+
+
+GRID = LogSpacedGrid()
 
 
 def theta(f):

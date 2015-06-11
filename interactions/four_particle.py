@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import numpy
-from common import GRID, integrators
+from common import integrators
 from interactions.boltzmann import BoltzmannIntegral
 from interactions.ds import D, Db
 
@@ -83,15 +83,16 @@ class FourParticleIntegral(BoltzmannIntegral):
             self.particle.collision_integrals.append(self)
 
     @staticmethod
-    def integrate(params, p0, integrand, bounds=None, kwargs=None):
+    def integrate(particle, p0, integrand, bounds=None, kwargs=None):
         kwargs = kwargs if kwargs else {}
+        grid = particle.grid
 
         if bounds is None:
             bounds = (
-                (GRID.MIN_MOMENTUM,
-                 GRID.MAX_MOMENTUM),
-                (lambda p1: GRID.MIN_MOMENTUM,
-                 lambda p1: min(p0 + p1, GRID.MAX_MOMENTUM)),
+                (grid.MIN_MOMENTUM,
+                 grid.MAX_MOMENTUM),
+                (lambda p1: grid.MIN_MOMENTUM,
+                 lambda p1: min(p0 + p1, grid.MAX_MOMENTUM)),
             )
 
         if isinstance(integrand, list):
@@ -101,6 +102,7 @@ class FourParticleIntegral(BoltzmannIntegral):
             def prepared_integrand(p1, p2):
                 return integrand(p0, p1, p2, **kwargs)
 
+        params = particle.params
         constant = (params.m / params.x)**5 / 64. / numpy.pi**3
         integral, error = integrators.integrate_2D(
             prepared_integrand,

@@ -5,7 +5,6 @@ are obtained through integration of distribution function
 
 from common import integrators
 import numpy
-from common import GRID
 
 
 name = 'intermediate'
@@ -23,7 +22,8 @@ def density(particle):
             particle.equilibrium_distribution_function(
                 particle.energy(p) / particle.T
             ) * p**2 * particle.dof / 2. / numpy.pi**2
-        ), (GRID.MIN_MOMENTUM / particle.params.a, GRID.MAX_MOMENTUM / particle.params.a)
+        ), (particle.grid.MIN_MOMENTUM / particle.params.a,
+            particle.grid.MAX_MOMENTUM / particle.params.a)
     )
     return density
 
@@ -50,7 +50,8 @@ def energy_density(particle):
     """
     energy_density, _ = integrators.integrate_1D(
         lambda p: energy_density_integrand(p, particle),
-        (GRID.MIN_MOMENTUM / particle.params.a, GRID.MAX_MOMENTUM / particle.params.a)
+        (particle.grid.MIN_MOMENTUM / particle.params.a,
+         particle.grid.MAX_MOMENTUM / particle.params.a)
     )
     return energy_density
 
@@ -77,7 +78,8 @@ def pressure(particle):
     """
     pressure, _ = integrators.integrate_1D(
         lambda p: pressure_integrand(p, particle),
-        (GRID.MIN_MOMENTUM / particle.params.a, GRID.MAX_MOMENTUM / particle.params.a)
+        (particle.grid.MIN_MOMENTUM / particle.params.a,
+         particle.grid.MAX_MOMENTUM / particle.params.a)
     )
     return pressure
 
@@ -113,5 +115,5 @@ def I(particle, y_power=2):
             y**y_power * numpy.exp(-particle.conformal_energy(y) / particle.aT)
             / (numpy.exp(-particle.conformal_energy(y) / particle.aT) + particle.eta) ** 2
         ),
-        (GRID.MIN_MOMENTUM, GRID.MAX_MOMENTUM)
+        (particle.grid.MIN_MOMENTUM, particle.grid.MAX_MOMENTUM)
     )[0]

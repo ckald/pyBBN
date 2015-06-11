@@ -14,21 +14,25 @@ from particles import Particle
 from library.SM import particles as SMP, interactions as SMI
 from library.NuMSM import particles as NuP, interactions as NuI
 from evolution import Universe
-from common import UNITS, Params, utils
+from common import UNITS, Params, utils, HeuristicGrid
 
 
 parser = argparse.ArgumentParser(description='Run simulation for given mass and mixing angle')
 parser.add_argument('--mass', required=True)
 parser.add_argument('--theta', required=True)
+parser.add_argument('--tau', required=True)
 parser.add_argument('--comment', default='')
 args = parser.parse_args()
 
 mass = float(args.mass) * UNITS.MeV
 theta = float(args.theta)
+lifetime = float(args.tau) * UNITS.s
 
-folder = utils.ensure_dir(os.path.split(__file__)[0],
-                          "mass={:e}_theta={:e}".format(mass / UNITS.MeV, theta)
-                          + args.comment)
+folder = utils.ensure_dir(
+    os.path.split(__file__)[0],
+    "mass={:e}_theta={:e}_tau={:e}".format(mass / UNITS.MeV, theta, lifetime / UNITS.s)
+    + args.comment
+)
 
 
 params = Params(T_initial=200. * UNITS.MeV,
@@ -52,7 +56,14 @@ charged_pion = Particle(**SMP.hadrons.charged_pion)
 
 sterile = Particle(**NuP.dirac_sterile_neutrino(mass))
 
+
+grid = HeuristicGrid(mass, lifetime)
+
 sterile.decoupling_temperature = params.T_initial
+for neutrino in [neutrino_e, neutrino_mu, neutrino_tau]:
+    neutrino.decoupling_temperature = 10 * UNITS.MeV
+    neutrino.set_grid(grid)
+
 
 universe.add_particles([
     photon,

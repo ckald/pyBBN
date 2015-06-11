@@ -62,7 +62,8 @@ def pressure(particle):
 
 @lambda_integrate()
 def numerator(particle):
-    integral = linear_interpolation(particle.collision_integral / particle.params.x, GRID.TEMPLATE)
+    integral = linear_interpolation(particle.collision_integral / particle.params.x,
+                                    particle.grid.TEMPLATE)
     return numpy.vectorize(lambda y: (
         -1. * particle.dof / 2. / numpy.pi**2
         * y**2 * particle.conformal_energy(y)
