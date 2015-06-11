@@ -205,7 +205,7 @@ class HeuristicGrid(object):
         while grid[-1] > 0:
             g = grid[-1]
             T = M * (1 + g*c**2 - numpy.sqrt(1 + 2 * g * c**2)) / (2 * g**2 * c**2)
-            grid.append(max(g - numpy.sqrt(M*T/c) * aT/T), 0)
+            grid.append(max(g - numpy.sqrt(M*T/c) * aT/T, 0))
 
         self.TEMPLATE = numpy.array(reversed(grid))
         self.MOMENTUM_SAMPLES = len(self.TEMPLATE)
