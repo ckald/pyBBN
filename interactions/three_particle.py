@@ -63,7 +63,7 @@ class ThreeParticleIntegral(BoltzmannIntegral):
         )
         constant = (self.particle.params.m / self.particle.params.x) / 16. / numpy.pi
 
-        return constant * integral, error
+        return constant * integral
 
     def integrand(self, p0, p1, fau=None):
 

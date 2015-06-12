@@ -108,7 +108,7 @@ class FourParticleIntegral(BoltzmannIntegral):
             bounds=bounds
         )
 
-        return constant * integral, error
+        return constant * integral
 
     def integrand(self, p0, p1, p2, fau=None):
 
