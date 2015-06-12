@@ -161,7 +161,7 @@ class LogSpacedGrid(object):
         and errors).
         """
 
-    __slots__ = ('MIN_MOMENTUM', 'MAX_MOMENTUM', 'MOMENTUM_SAMPLES', 'TEMPLATE')
+    __slots__ = ('MIN_MOMENTUM', 'MAX_MOMENTUM', 'BOUNDS', 'MOMENTUM_SAMPLES', 'TEMPLATE')
 
     def __init__(self):
         # self.MIN_MOMENTUM = 1. * UNITS.eV
@@ -197,7 +197,7 @@ class LogSpacedGrid(object):
 
 class HeuristicGrid(object):
 
-    __slots__ = ('MIN_MOMENTUM', 'MAX_MOMENTUM', 'MOMENTUM_SAMPLES', 'TEMPLATE')
+    __slots__ = ('MIN_MOMENTUM', 'MAX_MOMENTUM', 'BOUNDS', 'MOMENTUM_SAMPLES', 'TEMPLATE')
 
     def __init__(self, M, tau, aT=1*UNITS.MeV, b=100, c=5):
         H = 0.5 / UNITS.s  # such that at T=1 <=> t=1
