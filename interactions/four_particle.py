@@ -78,7 +78,7 @@ class FourParticleIntegral(BoltzmannIntegral):
         super(FourParticleIntegral, self).__init__(**kwargs)
 
         if self.grids is None:
-            self.grids = tuple(self.reaction[1].specie.grid, self.reaction[2].specie.grid)
+            self.grids = tuple([self.reaction[1].specie.grid, self.reaction[2].specie.grid])
 
     def initialize(self):
         """

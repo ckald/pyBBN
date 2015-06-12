@@ -37,7 +37,7 @@ class ThreeParticleIntegral(BoltzmannIntegral):
         super(ThreeParticleIntegral, self).__init__(**kwargs)
 
         if self.grids is None:
-            self.grids = tuple(self.reaction[1].specie.grid)
+            self.grids = tuple([self.reaction[1].specie.grid])
 
     def initialize(self):
         """
