@@ -167,6 +167,7 @@ class LogSpacedGrid(object):
         # self.MIN_MOMENTUM = 1. * UNITS.eV
         self.MIN_MOMENTUM = 0
         self.MAX_MOMENTUM = self.MIN_MOMENTUM + 20 * UNITS.MeV
+        self.BOUNDS = (self.MIN_MOMENTUM, self.MAX_MOMENTUM)
         self.MOMENTUM_SAMPLES = 50
 
         """
@@ -216,6 +217,7 @@ class HeuristicGrid(object):
 
         self.MIN_MOMENTUM = 0
         self.MAX_MOMENTUM = grid[0]
+        self.BOUNDS = (self.MIN_MOMENTUM, self.MAX_MOMENTUM)
 
 
 GRID = LogSpacedGrid()

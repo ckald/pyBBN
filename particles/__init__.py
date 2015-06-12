@@ -191,16 +191,9 @@ class Particle(PicklableObject):
         As = []
         Bs = []
 
-        A_integrand_groups = defaultdict(list)
-        B_integrand_groups = defaultdict(list)
-        for i in self.collision_integrals:
-            A_integrand_groups[i.__class__].append(i.integrand_1)
-            B_integrand_groups[i.__class__].append(i.integrand_f)
-
-        for cls, integrands in A_integrand_groups.items():
-            As.append(cls.integrate(self, p0, integrands)[0])
-        for cls, integrands in B_integrand_groups.items():
-            Bs.append(cls.integrate(self, p0, integrands)[0])
+        for integral in self.collision_integrals:
+            As.append(integral.integrate(p0, integral.integrand_1))
+            Bs.append(integral.integrate(p0, integral.integrand_f))
 
         order = min(len(self.data['collision_integral']) + 1, 5)
 

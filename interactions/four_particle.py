@@ -74,6 +74,12 @@ class FourParticleM(object):
 
 class FourParticleIntegral(BoltzmannIntegral):
 
+    def __init__(self, **kwargs):
+        super(FourParticleIntegral, self).__init__(**kwargs)
+
+        if self.grids is None:
+            self.grids = tuple(self.reaction[1].specie.grid, self.reaction[2].specie.grid)
+
     def initialize(self):
         """
         Initialize collision integral constants and save them to the first involved particle
@@ -82,27 +88,20 @@ class FourParticleIntegral(BoltzmannIntegral):
         if params.T > self.decoupling_temperature and not self.particle.in_equilibrium:
             self.particle.collision_integrals.append(self)
 
-    @staticmethod
-    def integrate(particle, p0, integrand, bounds=None, kwargs=None):
+    def integrate(self, p0, integrand, bounds=None, kwargs=None):
         kwargs = kwargs if kwargs else {}
-        grid = particle.grid
 
         if bounds is None:
             bounds = (
-                (grid.MIN_MOMENTUM,
-                 grid.MAX_MOMENTUM),
-                (lambda p1: grid.MIN_MOMENTUM,
-                 lambda p1: min(p0 + p1, grid.MAX_MOMENTUM)),
+                self.grids[0].BOUNDS,
+                (lambda p1: self.grids[1].MIN_MOMENTUM,
+                 lambda p1: min(p0 + p1, self.grids[1].MAX_MOMENTUM)),
             )
 
-        if isinstance(integrand, list):
-            def prepared_integrand(p1, p2):
-                return sum([i(p0, p1, p2, **kwargs) for i in integrand])
-        else:
-            def prepared_integrand(p1, p2):
-                return integrand(p0, p1, p2, **kwargs)
+        def prepared_integrand(p1, p2):
+            return integrand(p0, p1, p2, **kwargs)
 
-        params = particle.params
+        params = self.particle.params
         constant = (params.m / params.x)**5 / 64. / numpy.pi**3
         integral, error = integrators.integrate_2D(
             prepared_integrand,

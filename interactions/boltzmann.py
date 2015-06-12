@@ -94,10 +94,10 @@ class BoltzmannIntegral(PicklableObject, DistributionFunctional):
         `Integral.reaction[0]` """
 
     _saveable_fields = [
-        'particle', 'reaction', 'decoupling_temperature', 'constant', 'Ms',
+        'particle', 'reaction', 'decoupling_temperature', 'constant', 'Ms', 'grids',
     ]
 
-    reaction = []  # All particles involved
+    reaction = None  # All particles involved
 
     """ ### Crossed particles in the integral
 
@@ -127,9 +127,13 @@ class BoltzmannIntegral(PicklableObject, DistributionFunctional):
 
     Ms = None
 
+    """ Grids corresponding to particles integrated over """
+    grids = None
+
     def __init__(self, **kwargs):
         """ Update self with configuration `kwargs`, construct particles list and \
             energy conservation law of the integral. """
+
         for key in kwargs:
             setattr(self, key, kwargs[key])
 

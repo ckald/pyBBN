@@ -33,6 +33,12 @@ class ThreeParticleM(object):
 
 class ThreeParticleIntegral(BoltzmannIntegral):
 
+    def __init__(self, **kwargs):
+        super(ThreeParticleIntegral, self).__init__(**kwargs)
+
+        if self.grids is None:
+            self.grids = tuple(self.reaction[1].specie.grid)
+
     def initialize(self):
         """
         Initialize collision integral constants and save them to the first involved particle
@@ -42,25 +48,20 @@ class ThreeParticleIntegral(BoltzmannIntegral):
             self.constant = sum(M.K for M in self.Ms)
             self.particle.collision_integrals.append(self)
 
-    @staticmethod
-    def integrate(particle, p0, integrand, bounds=None, kwargs=None):
+    def integrate(self, p0, integrand, bounds=None, kwargs=None):
         kwargs = kwargs if kwargs else {}
 
         if bounds is None:
-            bounds = (particle.grid.MIN_MOMENTUM, particle.grid.MAX_MOMENTUM)
+            bounds = (self.particle.grid.MIN_MOMENTUM, self.particle.grid.MAX_MOMENTUM)
 
-        if isinstance(integrand, list):
-            def prepared_integrand(p1):
-                return sum([i(p0, p1, **kwargs) for i in integrand])
-        else:
-            def prepared_integrand(p1):
-                return integrand(p0, p1, **kwargs)
+        def prepared_integrand(p1):
+            return integrand(p0, p1, **kwargs)
 
         integral, error = integrators.integrate_1D(
             prepared_integrand,
             bounds=bounds
         )
-        constant = (particle.params.m / particle.params.x) / 16. / numpy.pi
+        constant = (self.particle.params.m / self.particle.params.x) / 16. / numpy.pi
 
         return constant * integral, error
 
