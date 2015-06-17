@@ -3,6 +3,7 @@ import functools
 from numpy import polynomial
 
 from common import GRID
+from common import orthopoly
 
 
 def euler_correction(y, t, f, h):
@@ -123,8 +124,10 @@ def integrate_2D(integrand, bounds):
     return integral, error
 
 
-GAUSS_LEGENDRE_ORDER = 30
-points, weights = polynomial.legendre.leggauss(GAUSS_LEGENDRE_ORDER)
+# GAUSS_LEGENDRE_ORDER = 30
+# points, weights = polynomial.legendre.leggauss(GAUSS_LEGENDRE_ORDER)
+alpha, beta = orthopoly.rec_jacobi(n, -1, 1)
+points, weights = orthopoly.radau(alpha, beta, 0)
 grid = numpy.meshgrid(points, points)
 
 
