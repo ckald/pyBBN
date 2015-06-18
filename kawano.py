@@ -138,7 +138,7 @@ def baryonic_rates(_a):
             (_rate4, (grid.MIN_MOMENTUM, (q - m_e)*a)),
             (_rate5, ((q + m_e)*a, grid.MAX_MOMENTUM)),
             (_rate6, ((q + m_e)*a, grid.MAX_MOMENTUM))]:
-        print integrand(grid.TEMPLATE)
+
         if bounds[0] < bounds[1]:
             data.append(CONST.rate_normalization / a**5
                         * integrate_1D(integrand, bounds=bounds)[0])
