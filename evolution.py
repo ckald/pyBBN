@@ -105,6 +105,8 @@ class Universe(object):
 
         if self.PARALLELIZE:
             parallelization.pool.close()
+            parallelization.pool.terminate()
+            parallelization.pool.join()
 
         self.log()
         for particle in self.particles:
