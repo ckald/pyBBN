@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import math
 import numpy
 from common import integrators
 from interactions.boltzmann import BoltzmannIntegral
@@ -61,7 +62,7 @@ class ThreeParticleIntegral(BoltzmannIntegral):
             prepared_integrand,
             bounds=bounds
         )
-        constant = (self.particle.params.m / self.particle.params.x) / 16. / numpy.pi
+        constant = (self.particle.params.m / self.particle.params.x) / 16. / math.pi
 
         return constant * integral
 

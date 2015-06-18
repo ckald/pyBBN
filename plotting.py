@@ -2,6 +2,7 @@
 
 import os
 import itertools
+import math
 
 import numpy
 import matplotlib.pyplot as plt
@@ -146,7 +147,7 @@ class RadiationParticleMonitor(ParticleMonitor):
         aT = self.particle.aT
 
         rhoeq = self.particle.energy_density() / (
-            self.particle.dof * numpy.pi**2 / 30. * (aT / self.particle.params.a)**4
+            self.particle.dof * math.pi**2 / 30. * (aT / self.particle.params.a)**4
             * (7./8. if self.particle.statistics == STATISTICS.FERMION else 1.)
         )
         feq = self.particle.equilibrium_distribution(aT=aT)
@@ -174,7 +175,7 @@ class EquilibriumRadiationParticleMonitor(RadiationParticleMonitor):
         aT = data['aT'].iloc[-1]
 
         rhoeq = self.particle.energy_density() / (
-            self.particle.dof * numpy.pi**2 / 30 * T**4
+            self.particle.dof * math.pi**2 / 30 * T**4
             * (7./8. if self.particle.statistics == STATISTICS.FERMION else 1.)
         )
         feq = self.particle.equilibrium_distribution(aT=aT)
@@ -186,7 +187,7 @@ class EffectiveTemperatureRadiationPartileMonitor(RadiationParticleMonitor):
     def comparison_distributions(self, data):
         rho = self.particle.energy_density()
         const = (
-            self.particle.dof * numpy.pi**2 / 30.
+            self.particle.dof * math.pi**2 / 30.
             * (7./8. if self.particle.statistics == STATISTICS.FERMION else 1.)
         )
 

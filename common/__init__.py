@@ -5,7 +5,7 @@
 
 This file contains constants and utilities shared by all other modules in the project.
 """
-import sys
+import math
 import numpy
 import numericalunits as nu
 
@@ -103,8 +103,8 @@ class Params(object):
         # Compute present-state parameters that can be inferred from the base ones
         self.a = self.a_initial
         self.x = self.a * self.m
-        self.y = numpy.log(self.x)
-        self.dx = self.x * (numpy.exp(self.dy) - 1.)
+        self.y = math.log(self.x)
+        self.dx = self.x * (math.exp(self.dy) - 1.)
         self.T = self.T_initial
         self.aT = self.a * self.T
 
@@ -116,7 +116,7 @@ class Params(object):
             \end{equation}
         """
         self.rho = rho
-        self.H = numpy.sqrt(8./3.*numpy.pi * rho) / CONST.M_p
+        self.H = math.sqrt(8./3.*math.pi * rho) / CONST.M_p
 
         old_a = self.a
         """ Physical scale factor and temperature for convenience """
@@ -139,8 +139,8 @@ class Params(object):
         self.t += dt
 
         self.N_eff = (
-            (rho - (numpy.pi**2 / 15 * self.T**4))
-            / (7./8. * numpy.pi**2 / 15 * (self.T / 1.4)**4)
+            (rho - (math.pi**2 / 15 * self.T**4))
+            / (7./8. * math.pi**2 / 15 * (self.T / 1.4)**4)
         )
 
 
@@ -201,16 +201,16 @@ class HeuristicGrid(object):
 
     def __init__(self, M, tau, aT=1*UNITS.MeV, b=100, c=5):
         H = 0.5 / UNITS.s  # such that at T=1 <=> t=1
-        a_max = numpy.sqrt(2 * H * b * tau)
+        a_max = math.sqrt(2 * H * b * tau)
         T_max = aT / a_max
 
         T = T_max
-        grid = [a_max * (M + numpy.sqrt(M*T))]
+        grid = [a_max * (M + math.sqrt(M*T))]
 
         while grid[-1] > 0:
             g = grid[-1]
-            T = aT * M * (aT + g*c**2 - numpy.sqrt(aT * (aT + 2*g*c**2))) / (2 * g**2 * c**2)
-            grid.append(max(g - numpy.sqrt(M*T/c) * aT/T, 0))
+            T = aT * M * (aT + g*c**2 - math.sqrt(aT * (aT + 2*g*c**2))) / (2 * g**2 * c**2)
+            grid.append(max(g - math.sqrt(M*T/c) * aT/T, 0))
 
         self.TEMPLATE = numpy.array(grid[::-1])
         self.MOMENTUM_SAMPLES = len(self.TEMPLATE)

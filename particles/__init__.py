@@ -7,8 +7,8 @@ regimes
 """
 from __future__ import division
 
+import math
 import numpy
-from collections import defaultdict
 
 from common import GRID, UNITS
 from common.integrators import adams_moulton_solver
@@ -29,7 +29,7 @@ class STATISTICS(object):
                 \frac{1}{e^E + 1}
             \end{equation}
         """
-        return 1. / (numpy.exp(e) + 1.)
+        return 1. / (math.exp(e) + 1.)
 
     @staticmethod
     @numpy.vectorize
@@ -39,7 +39,7 @@ class STATISTICS(object):
                 \frac{1}{e^E - 1}
             \end{equation}
         """
-        return 1. / (numpy.exp(e) - 1.)
+        return 1. / (math.exp(e) - 1.)
 
     BOSON = Bose
     FERMION = Fermi
@@ -318,12 +318,12 @@ class Particle(PicklableObject):
         \end{equation}
         """
 
-        g_high = numpy.log(1 / self._distribution[i_high] - 1)
-        g_low = numpy.log(1 / self._distribution[i_low] - 1)
+        g_high = math.log(1. / self._distribution[i_high] - 1)
+        g_low = math.log(1. / self._distribution[i_low] - 1)
 
         g = ((E_p - E_low) * g_high + (E_high - E_p) * g_low) / (E_high - E_low)
 
-        return 1. / (numpy.exp(g) + self.eta)
+        return 1. / (math.exp(g) + self.eta)
 
     def equilibrium_distribution(self, y=None, aT=None):
 
@@ -363,7 +363,7 @@ class Particle(PicklableObject):
         if self.mass > 0:
             return numpy.sqrt(p**2 + self.mass**2)
         else:
-            return abs(p)
+            return numpy.abs(p)
 
     def conformal_energy(self, y):
         """ Conformal energy of the particle in comoving coordinates with evolving mass term
@@ -375,7 +375,7 @@ class Particle(PicklableObject):
         if self.mass > 0:
             return numpy.sqrt(y**2 + self.conformal_mass**2)
         else:
-            return abs(y)
+            return numpy.abs(y)
 
     @property
     def conformal_mass(self):

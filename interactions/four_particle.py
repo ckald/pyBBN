@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-import numpy
+import math
 from common import integrators
 from interactions.boltzmann import BoltzmannIntegral
 from interactions.ds import D, Db
@@ -102,7 +102,7 @@ class FourParticleIntegral(BoltzmannIntegral):
             return integrand(p0, p1, p2, **kwargs)
 
         params = self.particle.params
-        constant = (params.m / params.x)**5 / 64. / numpy.pi**3
+        constant = (params.m / params.x)**5 / 64. / math.pi**3
         integral, error = integrators.integrate_2D(
             prepared_integrand,
             bounds=bounds

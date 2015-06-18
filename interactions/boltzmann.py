@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import math
 import numpy
 from common import integrators
 from common.utils import PicklableObject
@@ -181,11 +182,11 @@ class BoltzmannIntegral(PicklableObject, DistributionFunctional):
 
     def rates(self):
         def forward_integral(p):
-            return numpy.vectorize(lambda p0: p0**2 / (2 * numpy.pi)**3
+            return numpy.vectorize(lambda p0: p0**2 / (2 * math.pi)**3
                                    * self.integrate(p0, self.integrand_A)[0])(p)
 
         def backward_integral(p):
-            return numpy.vectorize(lambda p0: p0**2 / (2 * numpy.pi)**3
+            return numpy.vectorize(lambda p0: p0**2 / (2 * math.pi)**3
                                    * self.integrate(p0, self.integrand_B)[0])(p)
 
         grid = self.particle.grid
