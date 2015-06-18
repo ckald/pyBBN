@@ -126,17 +126,15 @@ def integrate_2D(integrand, bounds):
 
 GAUSS_LEGENDRE_ORDER = 30
 # points, weights = polynomial.legendre.leggauss(GAUSS_LEGENDRE_ORDER)
-alpha, beta = orthopoly.rec_jacobi(GAUSS_LEGENDRE_ORDER, 0, 1)
-points, weights = orthopoly.radau(alpha, beta, 0)
+alpha, beta = orthopoly.rec_jacobi(GAUSS_LEGENDRE_ORDER, 0, 0)
+points, weights = orthopoly.lobatto(alpha, beta, -1, 1)
 grid = numpy.meshgrid(points, points)
 
 
 def gaussian(f, a, b):
 
-    sub = b - a
-    add = a
-    # sub = (b - a) / 2.
-    # add = (b + a) / 2.
+    sub = (b - a) / 2.
+    add = (b + a) / 2.
 
     if sub == 0:
         return 0.
@@ -147,18 +145,14 @@ def gaussian(f, a, b):
 def remap_interval(f, x, y, bounds):
     a, b, g, h = bounds
 
-    sub_x = b - a
-    add_x = a
-    # sub_x = (b - a) / 2.
-    # add_x = (b + a) / 2.
+    sub_x = (b - a) / 2.
+    add_x = (b + a) / 2.
     norm_x = sub_x * x + add_x
 
     h_x = numpy.vectorize(h)(norm_x)
     g_x = numpy.vectorize(g)(norm_x)
-    # sub_y = (h_x - g_x) / 2.
-    # add_y = (h_x + g_x) / 2.
-    sub_y = h_x - g_x
-    add_y = h_x + g_x
+    sub_y = (h_x - g_x) / 2.
+    add_y = (h_x + g_x) / 2.
     norm_y = sub_y * y + add_y
 
     return sub_x * sub_y * f(norm_x, norm_y)
