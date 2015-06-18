@@ -256,3 +256,46 @@ def linear_interpolation(function, grid):
         ) / (x_high - x_low)
 
     return interpolation
+
+
+def cubic_interpolation(function, grid):
+    """ # Cubic interpolation """
+
+    def interpolation(x):
+        index = numpy.searchsorted(grid, x)
+
+        if index >= len(grid) - 1:
+            return function[len(grid) - 1]
+
+        if x == grid[index]:
+            return function[index]
+
+        if index == 0 or index == len(grid) - 2:
+            # Determine the closest grid points
+            i_low = index
+            x_low = grid[i_low]
+
+            i_high = index + 1
+            x_high = grid[i_high]
+
+            return (
+                function[i_low] * (x_high - x) + function[i_high] * (x - x_low)
+            ) / (x_high - x_low)
+
+        else:
+            # Otherwise, use cubic interpolation
+            y0 = function[index - 1]
+            y1 = function[index]
+            y2 = function[index + 1]
+            y3 = function[index + 2]
+
+            a0 = -0.5*y0 + 1.5*y1 - 1.5*y2 + 0.5*y3
+            a1 = y0 - 2.5*y1 + 2*y2 - 0.5*y3
+            a2 = -0.5*y0 + 0.5*y2
+            a3 = y1
+
+            mu = (x - grid[index]) / (grid[index + 1] - grid[index])
+
+            return a0*mu*mu*mu + a1*mu*mu + a2*mu + a3
+
+    return interpolation
