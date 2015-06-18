@@ -103,6 +103,9 @@ class Universe(object):
                 print "Keyboard interrupt!"
                 break
 
+        if self.PARALLELIZE:
+            parallelization.pool.close()
+
         self.log()
         for particle in self.particles:
             print particle
@@ -120,9 +123,6 @@ class Universe(object):
             self.kawano_data.to_pickle(os.path.join(self.folder, "kawano.pickle"))
 
         print "Data saved to file {}".format(self.logfile)
-
-        if self.PARALLELIZE:
-            parallelization.pool.close()
 
         self.data.to_pickle(os.path.join(self.folder, "evolution.pickle"))
 
