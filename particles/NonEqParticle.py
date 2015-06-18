@@ -2,9 +2,8 @@
 # Non-equilibrium particles
 """
 from __future__ import division
-import math
 import numpy
-from common import linear_interpolation
+from common import GRID, linear_interpolation
 from common.integrators import lambda_integrate
 
 
@@ -15,7 +14,7 @@ name = 'non-equilibrium'
 def density(particle):
     return numpy.vectorize(lambda y: (
         particle.distribution(y) * y**2
-        * particle.dof / 2. / math.pi**2 / particle.params.a**3
+        * particle.dof / 2. / numpy.pi**2 / particle.params.a**3
     ), otypes=[numpy.float_])
 
 
@@ -31,7 +30,7 @@ def energy_density(particle):
     return numpy.vectorize(lambda y: (
         particle.distribution(y)
         * y**2 * particle.conformal_energy(y)
-        * particle.dof / 2. / math.pi**2 / particle.params.a**4
+        * particle.dof / 2. / numpy.pi**2 / particle.params.a**4
     ), otypes=[numpy.float_])
 
 
@@ -47,7 +46,7 @@ def pressure(particle):
     return numpy.vectorize(lambda p: (
         particle.distribution(p) * p ** 4
         / particle.conformal_energy(p)
-        * particle.dof / 6. / math.pi**2 / particle.params.a**4
+        * particle.dof / 6. / numpy.pi**2 / particle.params.a**4
     ), otypes=[numpy.float_])
 
 
@@ -66,7 +65,7 @@ def numerator(particle):
     integral = linear_interpolation(particle.collision_integral / particle.params.x,
                                     particle.grid.TEMPLATE)
     return numpy.vectorize(lambda y: (
-        -1. * particle.dof / 2. / math.pi**2
+        -1. * particle.dof / 2. / numpy.pi**2
         * y**2 * particle.conformal_energy(y)
         * integral(y)
     ), otypes=[numpy.float_])

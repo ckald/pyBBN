@@ -2,7 +2,6 @@
 
 import os
 import sys
-import math
 import numpy
 import pandas
 import time
@@ -130,7 +129,7 @@ class Universe(object):
         return self.data
 
     def make_step(self):
-        self.params.dx = self.params.x * (math.exp(self.params.dy) - 1.)
+        self.params.dx = self.params.x * (numpy.exp(self.params.dy) - 1.)
         self.integrand(self.params.x, self.params.aT)
 
         order = min(self.step + 1, 5)

@@ -3,8 +3,8 @@ For intermediate regime equilibrium particles, density, energy density and press
 are obtained through integration of distribution function
 """
 
-import math
 from common import integrators
+import numpy
 
 
 name = 'intermediate'
@@ -21,7 +21,7 @@ def density(particle):
         lambda p: (
             particle.equilibrium_distribution_function(
                 particle.energy(p) / particle.T
-            ) * p**2 * particle.dof / 2. / math.pi**2
+            ) * p**2 * particle.dof / 2. / numpy.pi**2
         ), (particle.grid.MIN_MOMENTUM / particle.params.a,
             particle.grid.MAX_MOMENTUM / particle.params.a)
     )
@@ -39,7 +39,7 @@ def energy_density_integrand(p, particle):
     return (
         particle.equilibrium_distribution_function(E / particle.T)
         * p**2 * E
-        * particle.dof / 2. / math.pi**2
+        * particle.dof / 2. / numpy.pi**2
     )
 
 
@@ -67,7 +67,7 @@ def pressure_integrand(p, particle):
     return (
         particle.equilibrium_distribution_function(E / particle.T)
         * p**4 / E
-        * particle.dof / 6. / math.pi**2
+        * particle.dof / 6. / numpy.pi**2
     )
 
 
@@ -110,10 +110,10 @@ def I(particle, y_power=2):
             { \left(e^{-\frac{E_N(y)}{a T}} + \eta \right)^2 }
         \end{equation}
     """
-    return particle.dof / 2. / math.pi**2 * integrators.integrate_1D(
+    return particle.dof / 2. / numpy.pi**2 * integrators.integrate_1D(
         lambda y: (
-            y**y_power * math.exp(-particle.conformal_energy(y) / particle.aT)
-            / (math.exp(-particle.conformal_energy(y) / particle.aT) + particle.eta) ** 2
+            y**y_power * numpy.exp(-particle.conformal_energy(y) / particle.aT)
+            / (numpy.exp(-particle.conformal_energy(y) / particle.aT) + particle.eta) ** 2
         ),
         (particle.grid.MIN_MOMENTUM, particle.grid.MAX_MOMENTUM)
     )[0]

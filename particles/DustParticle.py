@@ -1,7 +1,7 @@
 """
 Non-relativistic simplifications of density, energy density and pressure calculations
 """
-import math
+import numpy
 import IntermediateParticle
 
 
@@ -16,8 +16,8 @@ def density(particle):
     """
     return (
         particle.dof
-        * math.sqrt(particle.mass * particle.T / 2. / math.pi)**3
-        * math.exp(- particle.mass / particle.T)
+        * numpy.sqrt(particle.mass * particle.T / 2. / numpy.pi)**3
+        * numpy.exp(- particle.mass / particle.T)
     )
 
 
