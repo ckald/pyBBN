@@ -29,7 +29,7 @@ class STATISTICS(object):
                 \frac{1}{e^E + 1}
             \end{equation}
         """
-        return 1. / (numpy.exp(e) + 1.)
+        return 1. / (math.exp(e) + 1.)
 
     @staticmethod
     @numpy.vectorize
@@ -39,7 +39,7 @@ class STATISTICS(object):
                 \frac{1}{e^E - 1}
             \end{equation}
         """
-        return 1. / (numpy.exp(e) - 1.)
+        return 1. / (math.exp(e) - 1.)
 
     BOSON = Bose
     FERMION = Fermi
