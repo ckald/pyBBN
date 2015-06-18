@@ -60,6 +60,8 @@ def run(data_folder, input="s4.dat", output="kawano_output.dat"):
 def _rate1(y):
     """ n + ν_e ⟶  e + p """
     E_e = q*a + y
+    if E_e < m_e*a:
+        return 0.
     y_e = numpy.sqrt(E_e**2 - (m_e*a)**2)
     return (y**2 * y_e * E_e
             * (1. - particles.electron.distribution(y_e)) * particles.neutrino.distribution(y))
@@ -69,6 +71,8 @@ def _rate1(y):
 def _rate2(y):
     """ e + p ⟶  n + ν_e """
     E_e = q*a + y
+    if E_e < m_e*a:
+        return 0.
     y_e = numpy.sqrt(E_e**2 - (m_e*a)**2)
     return (y**2 * y_e * E_e
             * particles.electron.distribution(y_e) * (1. - particles.neutrino.distribution(y)))
@@ -78,6 +82,8 @@ def _rate2(y):
 def _rate3(y):
     """ n ⟶  e + ν_e' + p """
     E_e = q*a - y
+    if E_e < m_e*a:
+        return 0.
     y_e = numpy.sqrt(E_e**2 - (m_e*a)**2)
     return (y**2 * y_e * E_e
             * (1. - particles.electron.distribution(y_e))
@@ -88,6 +94,8 @@ def _rate3(y):
 def _rate4(y):
     """ e + ν_e' + p ⟶  n """
     E_e = q*a - y
+    if E_e < m_e*a:
+        return 0.
     y_e = numpy.sqrt(E_e**2 - (m_e*a)**2)
     return (y**2 * y_e * E_e
             * particles.electron.distribution(y_e) * particles.neutrino.distribution(y))
@@ -97,6 +105,8 @@ def _rate4(y):
 def _rate5(y):
     """ n + e' ⟶  ν_e' + p """
     E_e = -q*a + y
+    if E_e < m_e*a:
+        return 0.
     y_e = numpy.sqrt(E_e**2 - (m_e*a)**2)
     return (y**2 * y_e * E_e
             * particles.electron.distribution(y_e) * (1. - particles.neutrino.distribution(y)))
@@ -106,6 +116,8 @@ def _rate5(y):
 def _rate6(y):
     """ ν_e' + p ⟶  n + e' """
     E_e = -q*a + y
+    if E_e < m_e*a:
+        return 0.
     y_e = numpy.sqrt(E_e**2 - (m_e*a)**2)
 
     return (y**2 * y_e * E_e
