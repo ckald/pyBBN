@@ -9,7 +9,7 @@ import argparse
 from subprocess import Popen, PIPE
 
 from collections import namedtuple
-from common import GRID, CONST, utils
+from common import CONST, utils
 from common.integrators import integrate_1D
 from library import SM
 
@@ -56,6 +56,7 @@ def run(data_folder, input="s4.dat", output="kawano_output.dat"):
         return kawano_output.read()
 
 
+@numpy.vectorize
 def _rate1(y):
     """ n + ν_e ⟶  e + p """
     E_e = q*a + y
@@ -64,6 +65,7 @@ def _rate1(y):
             * (1. - particles.electron.distribution(y_e)) * particles.neutrino.distribution(y))
 
 
+@numpy.vectorize
 def _rate2(y):
     """ e + p ⟶  n + ν_e """
     E_e = q*a + y
@@ -72,6 +74,7 @@ def _rate2(y):
             * particles.electron.distribution(y_e) * (1. - particles.neutrino.distribution(y)))
 
 
+@numpy.vectorize
 def _rate3(y):
     """ n ⟶  e + ν_e' + p """
     E_e = q*a - y
@@ -81,6 +84,7 @@ def _rate3(y):
             * (1. - particles.neutrino.distribution(y)))
 
 
+@numpy.vectorize
 def _rate4(y):
     """ e + ν_e' + p ⟶  n """
     E_e = q*a - y
@@ -89,6 +93,7 @@ def _rate4(y):
             * particles.electron.distribution(y_e) * particles.neutrino.distribution(y))
 
 
+@numpy.vectorize
 def _rate5(y):
     """ n + e' ⟶  ν_e' + p """
     E_e = -q*a + y
@@ -97,6 +102,7 @@ def _rate5(y):
             * particles.electron.distribution(y_e) * (1. - particles.neutrino.distribution(y)))
 
 
+@numpy.vectorize
 def _rate6(y):
     """ ν_e' + p ⟶  n + e' """
     E_e = -q*a + y
@@ -112,17 +118,22 @@ def baryonic_rates(_a):
 
     grid = particles.neutrino.grid
 
-    return [
-        CONST.rate_normalization / a**5 * integrate_1D(numpy.vectorize(integrand), bounds=bounds)[0]
-        if bounds[0] < bounds[1] else 0.
-        for integrand, bounds in [
+    data = []
+    for integrand, bounds in [
             (_rate1, (grid.MIN_MOMENTUM, grid.MAX_MOMENTUM)),
             (_rate2, (grid.MIN_MOMENTUM, grid.MAX_MOMENTUM)),
             (_rate3, (grid.MIN_MOMENTUM, (q - m_e)*a)),
             (_rate4, (grid.MIN_MOMENTUM, (q - m_e)*a)),
             (_rate5, ((q + m_e)*a, grid.MAX_MOMENTUM)),
-            (_rate6, ((q + m_e)*a, grid.MAX_MOMENTUM))]
-    ]
+            (_rate6, ((q + m_e)*a, grid.MAX_MOMENTUM))]:
+        print integrand(grid.TEMPLATE)
+        if bounds[0] < bounds[1]:
+            data.append(CONST.rate_normalization / a**5
+                        * integrate_1D(integrand, bounds=bounds)[0])
+        else:
+            data.append(0.)
+
+    return data
 
 
 Plotting = namedtuple('Plotting', 'figure plots')
