@@ -14,7 +14,7 @@ from particles import Particle
 from library.SM import particles as SMP, interactions as SMI
 from library.NuMSM import particles as NuP, interactions as NuI
 from evolution import Universe
-from common import UNITS, Params, utils
+from common import UNITS, Params, utils, HeuristicGrid, LogSpacedGrid
 
 
 parser = argparse.ArgumentParser(description='Run simulation for given mass and mixing angle')
@@ -35,9 +35,9 @@ folder = utils.ensure_dir(
 )
 
 
-params = Params(T_initial=200. * UNITS.MeV,
+params = Params(T_initial=400. * UNITS.MeV,
                 T_final=0.0008 * UNITS.MeV,
-                dy=0.025)
+                dy=0.05)
 
 universe = Universe(params=params, folder=folder)
 
@@ -55,11 +55,14 @@ neutral_pion = Particle(**SMP.hadrons.neutral_pion)
 charged_pion = Particle(**SMP.hadrons.charged_pion)
 
 sterile = Particle(**NuP.dirac_sterile_neutrino(mass))
-
-
+sterile_grid = LogSpacedGrid(10, params.T_initial * 5)
+sterile.set_grid(sterile_grid)
 sterile.decoupling_temperature = params.T_initial
+
+grid = HeuristicGrid(mass, lifetime)
 for neutrino in [neutrino_e, neutrino_mu, neutrino_tau]:
     neutrino.decoupling_temperature = 0 * UNITS.MeV
+    neutrino.set_grid(grid)
 
 
 universe.add_particles([
