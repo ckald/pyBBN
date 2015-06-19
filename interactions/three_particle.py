@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
+import math
 import numpy
+import operator
 from common import integrators
 from interactions.boltzmann import BoltzmannIntegral
 
@@ -51,6 +53,9 @@ class ThreeParticleIntegral(BoltzmannIntegral):
     def integrate(self, p0, integrand, bounds=None, kwargs=None):
         kwargs = kwargs if kwargs else {}
 
+        if p0 == 0:
+            return self.rest_integral(**kwargs)
+
         if bounds is None:
             bounds = (self.particle.grid.MIN_MOMENTUM, self.particle.grid.MAX_MOMENTUM)
 
@@ -61,9 +66,27 @@ class ThreeParticleIntegral(BoltzmannIntegral):
             prepared_integrand,
             bounds=bounds
         )
-        constant = (self.particle.params.m / self.particle.params.x) / 16. / numpy.pi
+        constant = (self.particle.params.m / self.particle.params.x) / 16. / math.pi
 
         return constant * integral
+
+    def rest_integral(self, fau=None):
+        m = [particle.specie.conformal_mass for particle in self.reaction]
+
+        signs = ((1, 1, 1), (1, -1, -1),
+                 (1, -1, 1), (1, 1, -1))
+
+        p1 = math.sqrt(reduce(operator.mul, (
+            reduce(operator.add, map(operator.mul, m, sign))
+            for sign in signs
+        ))) / (2. * m[0])
+
+        p = [0, p1, 0]
+        p, E, m = self.calculate_kinematics(p)
+
+        integral = -self.constant / (8 * math.pi * m[0]) * p1**2 / E[1] / E[2] * fau(p)
+
+        return integral
 
     def integrand(self, p0, p1, fau=None):
 
