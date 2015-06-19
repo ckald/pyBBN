@@ -82,7 +82,7 @@ class ThreeParticleIntegral(BoltzmannIntegral):
         p = [0, p1, 0]
         p, E, m = self.calculate_kinematics(p)
 
-        integral = -self.constant / (8 * math.pi * m[0]) * p1**2 / E[1] / E[2] * fau(p)
+        integral = self.constant / (8 * math.pi * m[0]) * p1**2 / E[1] / E[2] * fau(p)
 
         return integral
 
