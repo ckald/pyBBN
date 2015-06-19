@@ -69,12 +69,13 @@ class ThreeParticleIntegral(BoltzmannIntegral):
         return constant * integral
 
     def rest_integral(self, fau=None):
-        m = [particle.specie.conformal_mass for particle in self.reaction]
+        a = self.particle.params.a
+        m = [particle.specie.mass for particle in self.reaction]
 
         signs = ((1, 1, 1), (1, -1, -1),
                  (1, -1, 1), (1, 1, -1))
 
-        p1 = math.sqrt(reduce(operator.mul, (
+        p1 = a * math.sqrt(reduce(operator.mul, (
             reduce(operator.add, map(operator.mul, m, sign))
             for sign in signs
         ))) / (2. * m[0])
@@ -82,9 +83,10 @@ class ThreeParticleIntegral(BoltzmannIntegral):
         p = [0, p1, 0]
         p, E, m = self.calculate_kinematics(p)
 
-        integral = self.constant / (8 * math.pi * m[0]) * p1**2 / E[1] / E[2] * fau(p)
-
-        return integral
+        return (
+            a * self.constant / (8 * math.pi * self.particle.conformal_mass)
+            * p1**2 / E[1] / E[2] * fau(p)
+        )
 
     def integrand(self, p0, p1, fau=None):
 
