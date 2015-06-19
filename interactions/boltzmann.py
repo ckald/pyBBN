@@ -182,11 +182,11 @@ class BoltzmannIntegral(PicklableObject, DistributionFunctional):
     def rates(self):
         def forward_integral(p):
             return numpy.vectorize(lambda p0: p0**2 / (2 * numpy.pi)**3
-                                   * self.integrate(p0, self.integrand_A)[0])(p)
+                                   * self.integrate(p0, self.F_A)[0])(p)
 
         def backward_integral(p):
             return numpy.vectorize(lambda p0: p0**2 / (2 * numpy.pi)**3
-                                   * self.integrate(p0, self.integrand_B)[0])(p)
+                                   * self.integrate(p0, self.F_B)[0])(p)
 
         grid = self.particle.grid
 
@@ -209,22 +209,6 @@ class BoltzmannIntegral(PicklableObject, DistributionFunctional):
     def integrand(self, *args, **kwargs):
         """ Collision integral interior. """
         raise NotImplementedError()
-
-    def integrand_1(self, *args, **kwargs):
-        kwargs['fau'] = self.F_1
-        return self.integrand(*args, **kwargs)
-
-    def integrand_f(self, *args, **kwargs):
-        kwargs['fau'] = self.F_f
-        return self.integrand(*args, **kwargs)
-
-    def integrand_A(self, *args, **kwargs):
-        kwargs['fau'] = self.F_A
-        return self.integrand(*args, **kwargs)
-
-    def integrand_B(self, *args, **kwargs):
-        kwargs['fau'] = self.F_B
-        return self.integrand(*args, **kwargs)
 
     """ ### Integration region bounds methods """
 

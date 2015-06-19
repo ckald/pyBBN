@@ -192,8 +192,8 @@ class Particle(PicklableObject):
         Bs = []
 
         for integral in self.collision_integrals:
-            As.append(integral.integrate(p0, integral.integrand_1))
-            Bs.append(integral.integrate(p0, integral.integrand_f))
+            As.append(integral.integrate(p0, integral.F_1))
+            Bs.append(integral.integrate(p0, integral.F_f))
 
         order = min(len(self.data['collision_integral']) + 1, 5)
 

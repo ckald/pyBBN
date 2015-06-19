@@ -50,17 +50,15 @@ class ThreeParticleIntegral(BoltzmannIntegral):
             self.constant = sum(M.K for M in self.Ms)
             self.particle.collision_integrals.append(self)
 
-    def integrate(self, p0, integrand, bounds=None, kwargs=None):
-        kwargs = kwargs if kwargs else {}
-
+    def integrate(self, p0, fau=None, bounds=None):
         if p0 == 0:
-            return self.rest_integral(**kwargs)
+            return self.rest_integral(fau)
 
         if bounds is None:
             bounds = (self.particle.grid.MIN_MOMENTUM, self.particle.grid.MAX_MOMENTUM)
 
         def prepared_integrand(p1):
-            return integrand(p0, p1, **kwargs)
+            return self.integrand(p0, p1, fau)
 
         integral, error = integrators.integrate_1D(
             prepared_integrand,

@@ -88,9 +88,7 @@ class FourParticleIntegral(BoltzmannIntegral):
         if params.T > self.decoupling_temperature and not self.particle.in_equilibrium:
             self.particle.collision_integrals.append(self)
 
-    def integrate(self, p0, integrand, bounds=None, kwargs=None):
-        kwargs = kwargs if kwargs else {}
-
+    def integrate(self, p0, fau=None, bounds=None):
         if bounds is None:
             bounds = (
                 self.grids[0].BOUNDS,
@@ -99,7 +97,7 @@ class FourParticleIntegral(BoltzmannIntegral):
             )
 
         def prepared_integrand(p1, p2):
-            return integrand(p0, p1, p2, **kwargs)
+            return self.integrand(p0, p1, p2, fau)
 
         params = self.particle.params
         constant = (params.m / params.x)**5 / 64. / numpy.pi**3
