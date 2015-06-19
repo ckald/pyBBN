@@ -163,12 +163,12 @@ class LogSpacedGrid(object):
 
     __slots__ = ('MIN_MOMENTUM', 'MAX_MOMENTUM', 'BOUNDS', 'MOMENTUM_SAMPLES', 'TEMPLATE')
 
-    def __init__(self, MAX_MOMENTUM=20 * UNITS.MeV):
+    def __init__(self, MOMENTUM_SAMPLES=50, MAX_MOMENTUM=20 * UNITS.MeV):
         # self.MIN_MOMENTUM = 1. * UNITS.eV
         self.MIN_MOMENTUM = 0
         self.MAX_MOMENTUM = self.MIN_MOMENTUM + MAX_MOMENTUM
         self.BOUNDS = (self.MIN_MOMENTUM, self.MAX_MOMENTUM)
-        self.MOMENTUM_SAMPLES = 50
+        self.MOMENTUM_SAMPLES = MOMENTUM_SAMPLES
 
         """
         Grid template can be copied when defining a new distribution function and is convenient to\
