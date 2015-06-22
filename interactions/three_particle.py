@@ -72,6 +72,9 @@ class ThreeParticleIntegral(BoltzmannIntegral):
         a = self.particle.params.a
         m = [particle.specie.mass for particle in self.reaction]
 
+        if m[0] == 0:
+            return 0
+
         signs = ((1, 1, 1), (1, -1, -1),
                  (1, -1, 1), (1, 1, -1))
 
