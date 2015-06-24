@@ -35,7 +35,8 @@ folder = utils.ensure_dir(
 )
 
 
-params = Params(T_initial=400. * UNITS.MeV,
+T_initial = 400. * UNITS.MeV
+params = Params(T=T_initial,
                 T_final=0.0008 * UNITS.MeV,
                 dy=0.025)
 
@@ -57,7 +58,7 @@ charged_pion = Particle(**SMP.hadrons.charged_pion)
 sterile = Particle(**NuP.dirac_sterile_neutrino(mass))
 grid = HeuristicGrid(mass, lifetime)
 
-sterile.decoupling_temperature = params.T_initial
+sterile.decoupling_temperature = T_initial
 for neutrino in [neutrino_e, neutrino_mu, neutrino_tau]:
     neutrino.decoupling_temperature = 10 * UNITS.MeV
     neutrino.set_grid(grid)

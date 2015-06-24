@@ -20,7 +20,7 @@ from library.SM import particles as SMP
 from common import Params, UNITS
 
 
-params = Params(T_initial=100 * UNITS.MeV,
+params = Params(T=100 * UNITS.MeV,
                 T_final=100 * UNITS.keV,
                 dx=1e-2 * UNITS.MeV)
 

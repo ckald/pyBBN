@@ -58,6 +58,8 @@ class Universe(object):
 
         self.fraction = 0
 
+        self.step = 1
+
     def init_kawano(self, datafile='s4.dat', **kwargs):
         kawano.init_kawano(**kwargs)
         self.kawano_log = open(os.path.join(self.folder, datafile), 'w')
@@ -68,7 +70,7 @@ class Universe(object):
     def init_oscillations(self, pattern, particles):
         self.oscillations = (pattern, particles)
 
-    def evolve(self):
+    def evolve(self, export=True):
         """
         ## Main computing routine
 
@@ -86,12 +88,8 @@ class Universe(object):
         for interaction in self.interactions:
             print interaction
 
-        self.step = 0
-
         self.params.update(self.total_energy_density())
         self.save_params()
-
-        self.step += 1
 
         while self.params.T > self.params.T_final:
             try:
@@ -109,6 +107,12 @@ class Universe(object):
             parallelization.pool.join()
 
         self.log()
+        if export:
+            self.export()
+
+        return self.data
+
+    def export(self):
         for particle in self.particles:
             print particle
 
@@ -127,8 +131,6 @@ class Universe(object):
         print "Data saved to file {}".format(self.logfile)
 
         self.data.to_pickle(os.path.join(self.folder, "evolution.pickle"))
-
-        return self.data
 
     def make_step(self):
         self.params.dx = self.params.x * (numpy.exp(self.params.dy) - 1.)

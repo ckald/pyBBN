@@ -1,6 +1,5 @@
 import numpy
 import functools
-from numpy import polynomial
 
 from common import GRID
 from common import orthopoly

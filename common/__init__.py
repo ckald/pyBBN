@@ -66,15 +66,15 @@ class CONST(object):
 
 class Params(object):
 
-    __slots__ = ('T_initial', 'T_final', 'm', 'dy', 't', 'H', 'rho',
-                 'a_initial', 'a', 'x', 'y', 'dx', 'T', 'aT', 'N_eff')
+    __slots__ = ('T_final', 'm', 'dy', 't', 'H', 'rho',
+                 'a', 'x', 'y', 'dx', 'T', 'aT', 'N_eff')
 
     def __init__(self, **kwargs):
         """ ## Parameters
             Master object carrying the cosmological state of the system and initial conditions """
 
         # Temperature bounds define the simulations boundaries of the system
-        self.T_initial = 10 * UNITS.MeV
+        self.T = 10 * UNITS.MeV
         self.T_final = 10 * UNITS.keV
 
         # Arbitrary normalization of the conformal scale factor
@@ -92,20 +92,19 @@ class Params(object):
         for key in kwargs:
             setattr(self, key, kwargs[key])
 
+        # As the initial scale factor is arbitrary, it can be use to ensure the initial $aT$ value\
+        # equal to 1
+        self.a = self.m / self.T
+
         self.infer()
 
     def infer(self):
-        """ Set initial cosmological parameters based on the value of `T_initial` """
-        # As the initial scale factor is arbitrary, it can be use to ensure the initial $aT$ value\
-        # equal to 1
-        self.a_initial = self.m / self.T_initial
+        """ Set initial cosmological parameters based on the value of `T` """
 
         # Compute present-state parameters that can be inferred from the base ones
-        self.a = self.a_initial
         self.x = self.a * self.m
         self.y = numpy.log(self.x)
         self.dx = self.x * (numpy.exp(self.dy) - 1.)
-        self.T = self.T_initial
         self.aT = self.a * self.T
 
     def update(self, rho):

@@ -7,8 +7,7 @@ from . import eps, setup, with_setup_args
 
 @with_setup_args(setup)
 def params_inferrence_test(params):
-    assert params.T_initial == 5. * UNITS.MeV
-    assert params.T == params.T_initial
+    assert params.T == 5. * UNITS.MeV
     assert params.aT == params.m, "Initial `aT` must be equal to 1"
     assert params.x - params.m * params.aT / params.T < eps
 
@@ -94,7 +93,7 @@ def statistics_consistency_test(params):
 @with_setup_args(setup)
 def decoupling_test(params):
 
-    params.T_initial *= 2
+    params.T *= 2
     params.infer()
 
     neutrino = Particle(params=params, **SMP.leptons.neutrino_e)
@@ -102,7 +101,7 @@ def decoupling_test(params):
     assert neutrino.in_equilibrium
     eq_distribution = neutrino._distribution
 
-    params.T_initial /= 2
+    params.T /= 2
     params.infer()
 
     assert neutrino.in_equilibrium, "Neutrino should not depend on global temperature change"
@@ -118,7 +117,7 @@ def decoupling_test(params):
 @with_setup_args(setup)
 def homeostasis_test(params):
 
-    params.T_initial *= 2
+    params.T *= 2
     params.infer()
 
     neutrino = Particle(params=params, **SMP.leptons.neutrino_e)

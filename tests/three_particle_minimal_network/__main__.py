@@ -38,7 +38,8 @@ from common import UNITS, Params, GRID
 
 folder = os.path.split(__file__)[0]
 
-params = Params(T_initial=200 * UNITS.MeV,
+T_initial = 200 * UNITS.MeV
+params = Params(T=T_initial,
                 T_final=50 * UNITS.MeV,
                 dy=0.025)
 
@@ -53,7 +54,7 @@ neutrino_e = Particle(**SMP.leptons.neutrino_e)
 neutral_pion = Particle(**SMP.hadrons.neutral_pion)
 
 sterile = Particle(**NuP.sterile_neutrino(300 * UNITS.MeV))
-sterile.decoupling_temperature = params.T_initial
+sterile.decoupling_temperature = T_initial
 
 universe.add_particles([
     photon,
@@ -113,7 +114,7 @@ plt.title('Figure 9')
 plt.xlabel('MeV/T')
 plt.ylabel(u'aT')
 plt.xscale('log')
-plt.xlim(UNITS.MeV/universe.params.T_initial, UNITS.MeV/universe.params.T_final)
+plt.xlim(UNITS.MeV/T_initial, UNITS.MeV/universe.params.T_final)
 plt.plot(UNITS.MeV / numpy.array(universe.data['T']), numpy.array(universe.data['aT']) / UNITS.MeV)
 plt.show()
 plt.savefig(os.path.join(folder, 'figure_9.svg'))

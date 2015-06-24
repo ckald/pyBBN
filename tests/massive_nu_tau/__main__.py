@@ -27,7 +27,8 @@ from common import UNITS, Params, GRID
 
 folder = os.path.split(__file__)[0]
 
-params = Params(T_initial=20. * UNITS.MeV,
+T_initial = 20. * UNITS.MeV
+params = Params(T=T_initial,
                 T_final=0.015 * UNITS.MeV,
                 dy=0.05)
 
@@ -40,9 +41,9 @@ neutrino_mu = Particle(**SMP.leptons.neutrino_mu)
 neutrino_tau = Particle(**SMP.leptons.neutrino_tau)
 neutrino_tau.mass = 20 * UNITS.MeV
 
-neutrino_e.decoupling_temperature = params.T_initial
-neutrino_mu.decoupling_temperature = params.T_initial
-neutrino_tau.decoupling_temperature = params.T_initial
+neutrino_e.decoupling_temperature = T_initial
+neutrino_mu.decoupling_temperature = T_initial
+neutrino_tau.decoupling_temperature = T_initial
 
 
 universe.add_particles([

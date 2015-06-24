@@ -38,7 +38,8 @@ folder = utils.ensure_dir(os.path.split(__file__)[0],
                           + args.comment)
 
 
-params = Params(T_initial=100. * UNITS.MeV,
+T_initial = 100. * UNITS.MeV
+params = Params(T=T_initial,
                 T_final=0.0008 * UNITS.MeV,
                 dy=0.025)
 
@@ -52,7 +53,7 @@ neutrino_mu = Particle(**SMP.leptons.neutrino_mu)
 neutrino_tau = Particle(**SMP.leptons.neutrino_tau)
 sterile = Particle(**NuP.dirac_sterile_neutrino(mass))
 
-sterile.decoupling_temperature = params.T_initial
+sterile.decoupling_temperature = T_initial
 neutrino_e.decoupling_temperature = 10 * UNITS.MeV
 neutrino_mu.decoupling_temperature = 10 * UNITS.MeV
 neutrino_tau.decoupling_temperature = 10 * UNITS.MeV
