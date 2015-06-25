@@ -67,7 +67,7 @@ class CONST(object):
 class Params(object):
 
     __slots__ = ('T_final', 'm', 'dy', 't', 'H', 'rho',
-                 'a', 'x', 'y', 'dx', 'T', 'aT', 'N_eff')
+                 'a', 'x', 'y', 'T', 'aT', 'N_eff')
 
     def __init__(self, **kwargs):
         """ ## Parameters
@@ -104,7 +104,6 @@ class Params(object):
         # Compute present-state parameters that can be inferred from the base ones
         self.x = self.a * self.m
         self.y = numpy.log(self.x)
-        self.dx = self.x * (numpy.exp(self.dy) - 1.)
         self.aT = self.a * self.T
 
     def update(self, rho):
@@ -141,6 +140,10 @@ class Params(object):
             (rho - (numpy.pi**2 / 15 * self.T**4))
             / (7./8. * numpy.pi**2 / 15 * (self.T / 1.4)**4)
         )
+
+    @property
+    def dx(self):
+        return self.x * (numpy.exp(self.dy) - 1.)
 
 
 class LogSpacedGrid(object):

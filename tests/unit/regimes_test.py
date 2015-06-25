@@ -1,4 +1,4 @@
-from common import UNITS
+from common import Params, UNITS
 from particles import Particle, REGIMES
 from library.SM import particles as SMP
 
@@ -90,18 +90,18 @@ def statistics_consistency_test(params):
     assert 7./8. - neutrino.energy_density() / photon.energy_density() < eps
 
 
-@with_setup_args(setup)
-def decoupling_test(params):
+def decoupling_test():
 
-    params.T *= 2
-    params.infer()
-
+    params = Params(T=SMP.leptons.neutrino_e['decoupling_temperature'] * 2,
+                    T_final=0.075 * UNITS.MeV,
+                    dy=0.025)
     neutrino = Particle(params=params, **SMP.leptons.neutrino_e)
 
     assert neutrino.in_equilibrium
     eq_distribution = neutrino._distribution
 
     params.T /= 2
+    params.a = params.m / params.T
     params.infer()
 
     assert neutrino.in_equilibrium, "Neutrino should not depend on global temperature change"

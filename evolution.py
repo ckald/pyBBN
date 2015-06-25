@@ -133,7 +133,6 @@ class Universe(object):
         self.data.to_pickle(os.path.join(self.folder, "evolution.pickle"))
 
     def make_step(self):
-        self.params.dx = self.params.x * (numpy.exp(self.params.dy) - 1.)
         self.integrand(self.params.x, self.params.aT)
 
         order = min(self.step + 1, 5)
