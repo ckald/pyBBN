@@ -7,7 +7,6 @@ from common import CONST, UNITS, Params
 
 
 params = Params(T=2 * UNITS.MeV,
-                T_final=0.075 * UNITS.MeV,
                 dx=1e-1 * UNITS.MeV)
 
 photon = Particle(**SMP.photon)

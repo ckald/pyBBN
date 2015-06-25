@@ -28,8 +28,8 @@ from common import UNITS, Params, GRID
 folder = os.path.split(__file__)[0]
 
 T_initial = 1.5 * UNITS.GeV
+T_final = 100 * UNITS.MeV
 params = Params(T=T_initial,
-                T_final=100 * UNITS.MeV,
                 dy=0.025)
 
 universe = Universe(params=params, logfile=os.path.join(folder, 'log.txt'))
@@ -96,7 +96,7 @@ universe.graphics.monitor([
 ])
 
 
-universe.evolve()
+universe.evolve(T_final)
 
 universe.graphics.save(__file__)
 
@@ -114,7 +114,7 @@ plt.title('Figure 9')
 plt.xlabel('MeV/T')
 plt.ylabel(u'aT')
 plt.xscale('log')
-plt.xlim(UNITS.MeV/T_initial, UNITS.MeV/universe.params.T_final)
+plt.xlim(UNITS.MeV/T_initial, UNITS.MeV/universe.params.T)
 plt.plot(UNITS.MeV / numpy.array(universe.data['T']), numpy.array(universe.data['aT']) / UNITS.MeV)
 plt.show()
 plt.savefig(os.path.join(folder, 'figure_9.svg'))

@@ -26,8 +26,8 @@ from common import UNITS, Params
 
 folder = os.path.split(__file__)[0]
 
+T_final = 0.0008 * UNITS.MeV
 params = Params(T=10. * UNITS.MeV,
-                T_final=0.0008 * UNITS.MeV,
                 dy=0.025)
 
 universe = Universe(params=params, folder=folder)
@@ -72,7 +72,7 @@ if universe.graphics:
     ])
 
 
-universe.evolve()
+universe.evolve(T_final)
 
 """
 ### Plots for comparison with articles

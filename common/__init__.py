@@ -66,16 +66,14 @@ class CONST(object):
 
 class Params(object):
 
-    __slots__ = ('T_final', 'm', 'dy', 't', 'H', 'rho',
-                 'a', 'x', 'y', 'T', 'aT', 'N_eff')
+    __slots__ = ('m', 'dy', 't', 'H', 'rho', 'a', 'x', 'y', 'T', 'aT', 'N_eff')
 
     def __init__(self, **kwargs):
         """ ## Parameters
             Master object carrying the cosmological state of the system and initial conditions """
 
         # Temperature bounds define the simulations boundaries of the system
-        self.T = 10 * UNITS.MeV
-        self.T_final = 10 * UNITS.keV
+        self.T = None
 
         # Arbitrary normalization of the conformal scale factor
         self.m = 1. * UNITS.MeV

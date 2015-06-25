@@ -29,8 +29,8 @@ from common import UNITS, Params
 folder = os.path.split(__file__)[0]
 
 T_initial = 100. * UNITS.MeV
+T_final = 0.0008 * UNITS.MeV
 params = Params(T=T_initial,
-                T_final=0.0008 * UNITS.MeV,
                 dy=0.05)
 
 universe = Universe(params=params, folder=folder)
@@ -83,7 +83,7 @@ universe.graphics.monitor([
     (sterile, EquilibrationMonitor)
 ])
 
-universe.evolve()
+universe.evolve(T_final)
 
 
 """ ## Plots for comparison with articles"""
@@ -100,7 +100,7 @@ plt.title('Figure 9')
 plt.xlabel('MeV/T')
 plt.ylabel(u'aT')
 plt.xscale('log')
-plt.xlim(0.5, UNITS.MeV/universe.params.T_final)
+plt.xlim(0.5, UNITS.MeV/universe.params.T)
 plt.xticks([1, 2, 3, 5, 10, 20])
 plt.axes().get_xaxis().set_major_formatter(matplotlib.ticker.ScalarFormatter())
 plt.plot(UNITS.MeV / numpy.array(universe.data['T']), numpy.array(universe.data['aT']) / UNITS.MeV)

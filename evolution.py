@@ -70,7 +70,7 @@ class Universe(object):
     def init_oscillations(self, pattern, particles):
         self.oscillations = (pattern, particles)
 
-    def evolve(self, export=True):
+    def evolve(self, T_final, export=True):
         """
         ## Main computing routine
 
@@ -91,7 +91,7 @@ class Universe(object):
         self.params.update(self.total_energy_density())
         self.save_params()
 
-        while self.params.T > self.params.T_final:
+        while self.params.T > T_final:
             try:
                 self.log()
                 self.make_step()
@@ -306,7 +306,7 @@ class Universe(object):
 
         # Print parameters every now and then
         if self.step % self.log_freq == 0:
-            print ('[{clock}] #{step}\tt = {t:e}\taT = {aT:e}\tT = {T:e}\ta = {a:e}'
+            print ('[{clock}] #{step}\tt = {t:e}\taT = {aT:e}\tT = {T:e}\ta = {a:e}\tdx = {dx:e}'
                    .format(clock=str(timedelta(seconds=int(time.time() - self.clock_start))),
                            step=self.step,
                            t=self.params.t / UNITS.s,

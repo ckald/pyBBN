@@ -20,8 +20,8 @@ from library.SM import particles as SMP
 from common import Params, UNITS
 
 
+T_final = 100 * UNITS.keV
 params = Params(T=100 * UNITS.MeV,
-                T_final=100 * UNITS.keV,
                 dx=1e-2 * UNITS.MeV)
 
 universe = Universe(params=params, logfile="tests/photon_universe/log.txt")
@@ -29,7 +29,7 @@ universe = Universe(params=params, logfile="tests/photon_universe/log.txt")
 photon = Particle(**SMP.photon)
 
 universe.add_particles(photon)
-universe.evolve()
+universe.evolve(T_final)
 
 initial_aT = universe.data['aT'][0]
 print "a * T is conserved: {}".format(all([initial_aT == value for value in universe.data['aT']]))

@@ -93,7 +93,6 @@ def statistics_consistency_test(params):
 def decoupling_test():
 
     params = Params(T=SMP.leptons.neutrino_e['decoupling_temperature'] * 2,
-                    T_final=0.075 * UNITS.MeV,
                     dy=0.025)
     neutrino = Particle(params=params, **SMP.leptons.neutrino_e)
 

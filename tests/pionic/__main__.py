@@ -36,8 +36,8 @@ folder = utils.ensure_dir(
 
 
 T_initial = 400. * UNITS.MeV
+T_final = 0.0008 * UNITS.MeV
 params = Params(T=T_initial,
-                T_final=0.0008 * UNITS.MeV,
                 dy=0.025)
 
 universe = Universe(params=params, folder=folder)
@@ -113,7 +113,7 @@ if universe.graphics:
         (sterile, AbundanceMonitor)
     ])
 
-universe.evolve()
+universe.evolve(T_final)
 
 """
 ### Plots for comparison with articles

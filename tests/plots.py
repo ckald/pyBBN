@@ -33,7 +33,7 @@ def articles_comparison_plots(universe, particles):
     plt.xlabel('MeV/T')
     plt.ylabel(u'aT')
     plt.xscale('log')
-    plt.xlim(0.5, UNITS.MeV/universe.params.T_final)
+    plt.xlim(0.5, UNITS.MeV/universe.params.T)
     plt.xticks([1, 2, 3, 5, 10, 20])
     plt.axes().get_xaxis().set_major_formatter(matplotlib.ticker.ScalarFormatter())
     plt.plot(UNITS.MeV / numpy.array(universe.data['T']),

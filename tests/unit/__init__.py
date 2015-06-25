@@ -1,4 +1,4 @@
-from common import Params, UNITS
+from common import Params
 from evolution import Universe
 from particles import Particle
 from library.SM import (particles as SMP, interactions as SMI)
@@ -9,7 +9,6 @@ eps = 1e-5
 
 def setup():
     params = Params(T=SMP.leptons.neutrino_e['decoupling_temperature'],
-                    T_final=0.075 * UNITS.MeV,
                     dy=0.025)
     return [params], {}
 
