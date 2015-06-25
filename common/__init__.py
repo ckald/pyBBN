@@ -84,7 +84,7 @@ class Params(object):
         # Hubble rate
         self.H = 0.
         # Total energy density
-        self.rho = 0.
+        self.rho = None
         self.N_eff = 0.
 
         for key in kwargs:

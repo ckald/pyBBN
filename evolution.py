@@ -88,7 +88,8 @@ class Universe(object):
         for interaction in self.interactions:
             print interaction
 
-        self.params.update(self.total_energy_density())
+        if self.params.rho is None:
+            self.params.update(self.total_energy_density())
         self.save_params()
 
         while self.params.T > T_final:
