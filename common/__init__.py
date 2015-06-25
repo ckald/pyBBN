@@ -103,7 +103,7 @@ class Params(object):
 
         # Compute present-state parameters that can be inferred from the base ones
         self.x = self.a * self.m
-        self.y = numpy.log(self.x)
+        self.y = numpy.log(self.a)
         self.aT = self.a * self.T
 
     def update(self, rho):
