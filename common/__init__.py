@@ -114,6 +114,11 @@ class Params(object):
         self.rho = rho
         self.H = numpy.sqrt(8./3.*numpy.pi * rho) / CONST.M_p
 
+        self.N_eff = (
+            (rho - (numpy.pi**2 / 15 * self.T**4))
+            / (7./8. * numpy.pi**2 / 15 * (self.T / 1.4)**4)
+        )
+
         old_a = self.a
         """ Physical scale factor and temperature for convenience """
         self.a = self.x / self.m
@@ -133,11 +138,6 @@ class Params(object):
         """
         dt = (self.a / old_a - 1) / self.H
         self.t += dt
-
-        self.N_eff = (
-            (rho - (numpy.pi**2 / 15 * self.T**4))
-            / (7./8. * numpy.pi**2 / 15 * (self.T / 1.4)**4)
-        )
 
     @property
     def dx(self):
