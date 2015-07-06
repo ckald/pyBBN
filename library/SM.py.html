@@ -6,7 +6,7 @@
   <link rel="stylesheet" href="../pyccoon.css">
   <script type="text/x-mathjax-config">
   MathJax.Hub.Config({
-    tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+    tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']], processEscapes: true}
   });
   </script>
   <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
@@ -29,7 +29,7 @@
     </div>
     <div class="generation-time">
         Generated at
-        <code>2015-06-07 02:03</code>
+        <code>2015-07-06 18:48</code>
         by a diligent
         <a target="_blank" href="http://ckald.github.io/pyccoon/" title="Pyccoon: side-to-side documentation generator">
             <img id="pyccoon-icon" src="../pyccoon_icon.svg" alt="Pyccoon: side-to-side documentation generator" />pyccoon</a>
@@ -51,10 +51,10 @@
           <div class='octowrap'>
             <a class='octothorpe' href='#section-0'>#</a>
           </div>
-          <p>-<em>- coding: utf-8 -</em>-</p>
+          
         </div>
         <div class='code'>
-          
+          <div class="highlight"><pre><span class="c"># -*- coding: utf-8 -*-</span></pre></div>
         </div>
         <div class='clearall'></div>
     </section>
@@ -72,7 +72,9 @@
           <div class="highlight"><pre><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">division</span>
 
 <span class="kn">import</span> <span class="nn">itertools</span>
+<span class="kn">import</span> <span class="nn">math</span>
 <span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">sin</span><span class="p">,</span> <span class="n">cos</span>
+<span class="kn">import</span> <span class="nn">scipy</span>
 
 <span class="kn">from</span> <span class="nn">common</span> <span class="kn">import</span> <span class="n">UNITS</span><span class="p">,</span> <span class="n">CONST</span>
 <span class="kn">from</span> <span class="nn">particles</span> <span class="kn">import</span> <span class="n">STATISTICS</span>
@@ -90,7 +92,8 @@
             <a class='octothorpe' href='#section-2'>#</a>
           </div>
           <h2><a id="weak-interactions-matrix-element" class="header-anchor" href="#weak-interactions-matrix-element"> Weak interactions matrix element</a></h2>
-<p>Weak processes usually include a common factor of $32 G_F^2$ </p>
+<p>Weak processes usually include a common factor of <script type="math/tex">32 G_F^2</script>
+</p>
         </div>
         <div class='code'>
           <div class="highlight"><pre><span class="k">class</span> <span class="nc">WeakM</span><span class="p">(</span><span class="n">FourParticleM</span><span class="p">):</span>
@@ -382,12 +385,16 @@
           <div class='octowrap'>
             <a class='octothorpe' href='#section-8'>#</a>
           </div>
-          <p>\begin{align}
-       \nu_\alpha + \nu_\beta &amp;\to \nu_\alpha + \nu_\beta
-   \end{align}</p>
-<p>\begin{equation}
+          <p>
+<script type="math/tex; mode=display">\begin{align}
+       \nu_\alpha + \nu_\beta &\to \nu_\alpha + \nu_\beta
+   \end{align}</script>
+</p>
+<p>
+<script type="math/tex; mode=display">\begin{equation}
        |\mathcal{M}|^2 = 32 G_F^2 (p_0 \cdot p_1) (p_2 \cdot p_3)
-   \end{equation}</p>
+   \end{equation}</script>
+</p>
         </div>
         <div class='code'>
           <div class="highlight"><pre>    <span class="nd">@staticmethod</span>
@@ -412,17 +419,21 @@
           <div class='octowrap'>
             <a class='octothorpe' href='#section-9'>#</a>
           </div>
-          <p>\begin{align}
-       \nu_\alpha + \overline{\nu_\alpha} &amp;\to e^- + e^+
-   \end{align}</p>
-<p>\begin{align}
+          <p>
+<script type="math/tex; mode=display">\begin{align}
+       \nu_\alpha + \overline{\nu_\alpha} &\to e^- + e^+
+   \end{align}</script>
+</p>
+<p>
+<script type="math/tex; mode=display">\begin{align}
        |\mathcal{M}|^2 = 32 G_F^2 \left(
-       \\ 4 \, g_L^2 \, (p_0 \cdot p_3) (p_1 \cdot p_2) +
-       \\ +4 \, g_R^2 \, (p_0 \cdot p_2) (p_1 \cdot p_3) +
-       \\ +4 \, g_L g_R \, m_2 m_3 (p_0 \cdot p_1)
-       \\ \right)
-   \end{align}</p>
-<p>Depending of the neutrino generations involved, $g_L$ can either be equal to $g_R + \frac12$ (for $\nu_e$) or $g_R - \frac12$ (for others).</p>
+       \\\\ 4 \, g_L^2 \, (p_0 \cdot p_3) (p_1 \cdot p_2) +
+       \\\\ +4 \, g_R^2 \, (p_0 \cdot p_2) (p_1 \cdot p_3) +
+       \\\\ +4 \, g_L g_R \, m_2 m_3 (p_0 \cdot p_1)
+       \\\\ \right)
+   \end{align}</script>
+</p>
+<p>Depending of the neutrino generations involved, <script type="math/tex">g_L</script> can either be equal to <script type="math/tex">g_R + \frac12</script> (for <script type="math/tex">\nu_e</script>) or <script type="math/tex">g_R - \frac12</script> (for others).</p>
         </div>
         <div class='code'>
           <div class="highlight"><pre>    <span class="nd">@staticmethod</span>

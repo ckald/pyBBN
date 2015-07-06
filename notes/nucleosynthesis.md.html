@@ -6,7 +6,7 @@
   <link rel="stylesheet" href="../pyccoon.css">
   <script type="text/x-mathjax-config">
   MathJax.Hub.Config({
-    tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+    tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']], processEscapes: true}
   });
   </script>
   <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
@@ -31,7 +31,7 @@
     </div>
     <div class="generation-time">
         Generated at
-        <code>2015-06-07 02:03</code>
+        <code>2015-07-06 18:48</code>
         by a diligent
         <a target="_blank" href="http://ckald.github.io/pyccoon/" title="Pyccoon: side-to-side documentation generator">
             <img id="pyccoon-icon" src="../pyccoon_icon.svg" alt="Pyccoon: side-to-side documentation generator" />pyccoon</a>
@@ -58,28 +58,37 @@
 <p><center><img src="images/bbn_reactions.png" /></center></p>
 <h3><a id="deuterium-bottleneck" class="header-anchor" href="#deuterium-bottleneck"> Deuterium bottleneck</a></h3>
 <p>Generation of the nuclei is controlled by the balance of the deuterium generation reaction.</p>
-<p>\begin{equation}
+<p>
+<script type="math/tex; mode=display">\begin{equation}
 n + p \leftrightarrow D + \gamma
-\end{equation}</p>
-<p>The bounding energy of the deuterium nucleus is $\Delta_D \sim 2.2 MeV$ - the minimal energy requirement for deuterium generation. However, due to extremely small baryon-to-photon ratio, the are plenty high-energetic photons that drive the inverse reaction.</p>
-<p>The number of photons with $p &gt; \Delta_D$ is given by:</p>
-<p>\begin{align}
-n_\gamma (E&gt;\Delta_D) = \frac{1}{\pi^2} \int_{\Delta_D}^\infty \frac{p^2 dp}{e^\frac{p}{T}-1}
+\end{equation}</script>
+</p>
+<p>The bounding energy of the deuterium nucleus is <script type="math/tex">\Delta_D \sim 2.2 MeV</script> - the minimal energy requirement for deuterium generation. However, due to extremely small baryon-to-photon ratio, the are plenty high-energetic photons that drive the inverse reaction.</p>
+<p>The number of photons with <script type="math/tex">p > \Delta_D</script> is given by:</p>
+<p>
+<script type="math/tex; mode=display">\begin{align}
+n_\gamma (E>\Delta_D) = \frac{1}{\pi^2} \int_{\Delta_D}^\infty \frac{p^2 dp}{e^\frac{p}{T}-1}
 = \frac{T^3}{\pi^2} \int_{\Delta_D/T}^\infty \frac{x^2 dx}{e^x-1}
-\end{align}</p>
-<p>As the first approximation, for efficient deuterium generation to begin, this value has to be comparable with $n_B$</p>
-<p>\begin{equation}
-n_\gamma (E&gt;\Delta_D) \sim n_B = n_\gamma \eta \approx 0.244 T^3 \cdot \eta
-\end{equation}</p>
+\end{align}</script>
+</p>
+<p>As the first approximation, for efficient deuterium generation to begin, this value has to be comparable with <script type="math/tex">n_B</script>
+</p>
+<p>
+<script type="math/tex; mode=display">\begin{equation}
+n_\gamma (E>\Delta_D) \sim n_B = n_\gamma \eta \approx 0.244 T^3 \cdot \eta
+\end{equation}</script>
+</p>
 <h3><a id="backreaction" class="header-anchor" href="#backreaction"> Backreaction</a></h3>
 <p>Nucleosynthesis is a subleading process in the Early Universe as it governs mostly non-relativistic particles in the radiation dominated epoch. Due to this one can neglect any backreaction of the nuclear reactions on the expansion of the Universe and plasma.</p>
 <h3><a id="computation" class="header-anchor" href="#computation"> Computation</a></h3>
-<p>As all baryons are non-relativistic, their distribution functions are significantly spiked at the zero momentum and it is sufficient to treat them using simplified Boltzmann equations as in the case of sterile neutrinos. Originally nucleosynthesis was considered by Gamow as a system of neutron capture/emission processes (<a href="http://journals.aps.org/pr/pdf/10.1103/PhysRev.73.803"> $\alpha\beta\gamma$ paper</a>):</p>
-<p>\begin{equation}
+<p>As all baryons are non-relativistic, their distribution functions are significantly spiked at the zero momentum and it is sufficient to treat them using simplified Boltzmann equations as in the case of sterile neutrinos. Originally nucleosynthesis was considered by Gamow as a system of neutron capture/emission processes (<a href="http://journals.aps.org/pr/pdf/10.1103/PhysRev.73.803"> <script type="math/tex">\alpha\beta\gamma</script> paper</a>):</p>
+<p>
+<script type="math/tex; mode=display">\begin{equation}
 \frac{d n_i}{d t} = f(t)( \sigma_{i-1} n_{i-1} - \sigma_{i} n_i)
-\end{equation}</p>
-<p>($f(t)$ - expansion factor, $\sigma_i$ - neutron capture cross-sections).</p>
-<p>More precisely, one can consider a coupled system of ordinary differential equations expressing not only neutron capture processes, but all possible reactions between the nucleons and light nuclei. In conditions of primordial nucleosynthesis it is sufficient to include only 2-particle scatterings and nuclei up to $^7 Li, ^7 Be$. Heavier elements do not generate during the BBN because of absence of stable nuclei with $A=5,8$ and more complicated reactions like $^4 He + ^4 He + ^4 He \to ^{12} C$ are negligible at the densities of the interest.</p>
+\end{equation}</script>
+</p>
+<p>(<script type="math/tex">f(t)</script> - expansion factor, <script type="math/tex">\sigma_i</script> - neutron capture cross-sections).</p>
+<p>More precisely, one can consider a coupled system of ordinary differential equations expressing not only neutron capture processes, but all possible reactions between the nucleons and light nuclei. In conditions of primordial nucleosynthesis it is sufficient to include only 2-particle scatterings and nuclei up to <script type="math/tex">^7 Li, ^7 Be</script>. Heavier elements do not generate during the BBN because of absence of stable nuclei with <script type="math/tex">A=5,8</script> and more complicated reactions like <script type="math/tex">^4 He + ^4 He + ^4 He \to ^{12} C</script> are negligible at the densities of the interest.</p>
         </div>
         <div class='code'>
           

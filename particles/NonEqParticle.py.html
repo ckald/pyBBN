@@ -6,7 +6,7 @@
   <link rel="stylesheet" href="../pyccoon.css">
   <script type="text/x-mathjax-config">
   MathJax.Hub.Config({
-    tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+    tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']], processEscapes: true}
   });
   </script>
   <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
@@ -33,7 +33,7 @@
     </div>
     <div class="generation-time">
         Generated at
-        <code>2015-06-07 02:03</code>
+        <code>2015-07-06 18:48</code>
         by a diligent
         <a target="_blank" href="http://ckald.github.io/pyccoon/" title="Pyccoon: side-to-side documentation generator">
             <img id="pyccoon-icon" src="../pyccoon_icon.svg" alt="Pyccoon: side-to-side documentation generator" />pyccoon</a>
@@ -97,9 +97,11 @@
             <a class='octothorpe' href='#section-2'>#</a>
           </div>
           <h3><a id="energy-density" class="header-anchor" href="#energy-density"> Energy density</a></h3>
-<p>\begin{equation}
+<p>
+<script type="math/tex; mode=display">\begin{equation}
        \rho = \frac{g}{2 \pi^2} \frac{m^4}{x^4} \int dy y^2 \sqrt{y^2 + \frac{M_N^2 x^2}{m^2}} f(y)
-   \end{equation}</p>
+   \end{equation}</script>
+</p>
         </div>
         <div class='code'>
           <div class="highlight"><pre><span class="nd">@lambda_integrate</span><span class="p">()</span>
@@ -122,9 +124,11 @@
             <a class='octothorpe' href='#section-3'>#</a>
           </div>
           <h3><a id="pressure" class="header-anchor" href="#pressure"> Pressure</a></h3>
-<p>\begin{equation}
+<p>
+<script type="math/tex; mode=display">\begin{equation}
        p = \frac{g}{6 \pi^2} \frac{m^4}{x^4} \int \frac{dy \, y^4 f(y)} { \sqrt{y^2 + \frac{M_N^2 x^2}{m^2}} }
-   \end{equation}</p>
+   \end{equation}</script>
+</p>
         </div>
         <div class='code'>
           <div class="highlight"><pre><span class="nd">@lambda_integrate</span><span class="p">()</span>
@@ -162,14 +166,17 @@
             <a class='octothorpe' href='#section-5'>#</a>
           </div>
           <h3><a id="numerator" class="header-anchor" href="#numerator"> Numerator</a></h3>
-<p>\begin{equation}
+<p>
+<script type="math/tex; mode=display">\begin{equation}
        -\frac{g}{2 \pi^2} \int dy \, y^2 \sqrt{y^2 + \frac{M_N^2 x^2}{m^2}} I_{coll}(y)
-   \end{equation}</p>
+   \end{equation}</script>
+</p>
         </div>
         <div class='code'>
           <div class="highlight"><pre><span class="nd">@lambda_integrate</span><span class="p">()</span>
 <span class="k">def</span> <span class="nf">numerator</span><span class="p">(</span><span class="n">particle</span><span class="p">):</span>
-    <span class="n">integral</span> <span class="o">=</span> <span class="n">linear_interpolation</span><span class="p">(</span><span class="n">particle</span><span class="o">.</span><span class="n">collision_integral</span> <span class="o">/</span> <span class="n">particle</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">GRID</span><span class="o">.</span><span class="n">TEMPLATE</span><span class="p">)</span>
+    <span class="n">integral</span> <span class="o">=</span> <span class="n">linear_interpolation</span><span class="p">(</span><span class="n">particle</span><span class="o">.</span><span class="n">collision_integral</span> <span class="o">/</span> <span class="n">particle</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">x</span><span class="p">,</span>
+                                    <span class="n">particle</span><span class="o">.</span><span class="n">grid</span><span class="o">.</span><span class="n">TEMPLATE</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">numpy</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="k">lambda</span> <span class="n">y</span><span class="p">:</span> <span class="p">(</span>
         <span class="o">-</span><span class="mf">1.</span> <span class="o">*</span> <span class="n">particle</span><span class="o">.</span><span class="n">dof</span> <span class="o">/</span> <span class="mf">2.</span> <span class="o">/</span> <span class="n">numpy</span><span class="o">.</span><span class="n">pi</span><span class="o">**</span><span class="mi">2</span>
         <span class="o">*</span> <span class="n">y</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="n">particle</span><span class="o">.</span><span class="n">conformal_energy</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
@@ -187,9 +194,11 @@
             <a class='octothorpe' href='#section-6'>#</a>
           </div>
           <h3><a id="denominator" class="header-anchor" href="#denominator"> Denominator</a></h3>
-<p>\begin{equation}
+<p>
+<script type="math/tex; mode=display">\begin{equation}
     0
-\end{equation}</p>
+\end{equation}</script>
+</p>
         </div>
         <div class='code'>
           <div class="highlight"><pre><span class="k">def</span> <span class="nf">denominator</span><span class="p">(</span><span class="n">particle</span><span class="p">):</span>

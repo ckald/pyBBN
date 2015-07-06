@@ -6,7 +6,7 @@
   <link rel="stylesheet" href="../pyccoon.css">
   <script type="text/x-mathjax-config">
   MathJax.Hub.Config({
-    tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+    tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']], processEscapes: true}
   });
   </script>
   <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
@@ -29,7 +29,7 @@
     </div>
     <div class="generation-time">
         Generated at
-        <code>2015-06-07 02:03</code>
+        <code>2015-07-06 18:48</code>
         by a diligent
         <a target="_blank" href="http://ckald.github.io/pyccoon/" title="Pyccoon: side-to-side documentation generator">
             <img id="pyccoon-icon" src="../pyccoon_icon.svg" alt="Pyccoon: side-to-side documentation generator" />pyccoon</a>
@@ -53,62 +53,84 @@
           </div>
           <h2><a id="sterile-neutrinos-streaming-and-decay" class="header-anchor" href="#sterile-neutrinos-streaming-and-decay"> Sterile neutrinos streaming and decay</a></h2>
 <p>After sterile neutrinos had decoupled from the plasma, their distribution as a function of conformal momentum stays constant. During this time sterile neutrinos do not scatter with the equilibrated plasma but they do decay.</p>
-<p>Main decays channels for sterile neutrinos with masses $m_N &lt; m_K$ range are:</p>
-<p>\begin{align}
-    N &amp;\to \nu_\alpha + \nu_\beta + \overline{\nu_\beta} \\ N &amp;\to \nu_\alpha + l^+_\beta + l^-_\beta \\ N &amp;\to \nu_\alpha + l^+_\alpha + l^-_{\beta \neq \alpha} \\ N &amp;\to \pi^0 + \nu_\alpha \\ N &amp;\to \pi^+ + l^-_\alpha
-\end{align}</p>
+<p>Main decays channels for sterile neutrinos with masses <script type="math/tex">m_N < m_K</script> range are:</p>
+<p>
+<script type="math/tex; mode=display">\begin{align}
+    N &\to \nu_\alpha + \nu_\beta + \overline{\nu_\beta} \\\ N &\to \nu_\alpha + l^+\_\beta + l^-\_\beta \\\ N &\to \nu_\alpha + l^+\_\alpha + l^-\_{\beta \neq \alpha} \\\ N &\to \pi^0 + \nu_\alpha \\\ N &\to \pi^+ + l^-_\alpha
+\end{align}</script>
+</p>
 <p>Summed up decay rates of these processes gives us the total decay rate of the sterile neutrino. As the interaction rates of weak and electromagnetic processes are still sufficiently higher than the expansion rate of the Universe, all decay products of the sterile neutrino immediately equilibrate and affect only the temperature of the plasma.</p>
 <p>Then the kinetic equation on the sterile neutrino reads:</p>
-<p>\begin{align}
-    \frac{d f_N}{d t} &amp;= - (3 H + \tilde{\Gamma}_N(p)) f_N
-    \\ \tilde{\Gamma}_N(p) &amp;= \frac{\Gamma_N}\gamma = \sqrt{1-v^2} \Gamma_N =
+<p>
+<script type="math/tex; mode=display">\begin{align}
+    \frac{d f_N}{d t} &= - (3 H + \tilde{\Gamma}_N(p)) f_N
+    \\\\ \tilde{\Gamma}_N(p) &= \frac{\Gamma_N}\gamma = \sqrt{1-v^2} \Gamma_N =
         \sqrt{1-\left(\frac{p}{E}\right)^2} \Gamma_N = \frac{m}{E} \Gamma_N
-\end{align}</p>
-<p>The decay width is modified by the $\gamma$-factor of the particle, which can significantly prolong the lifetime of relativistic species. In the non-relativistic regime this allows to write a simplified Boltzmann equation on the density:</p>
-<p>$$
+\end{align}</script>
+</p>
+<p>The decay width is modified by the <script type="math/tex">\gamma</script>-factor of the particle, which can significantly prolong the lifetime of relativistic species. In the non-relativistic regime this allows to write a simplified Boltzmann equation on the density:</p>
+<p>
+<script type="math/tex; mode=display">
     \frac{d n_N}{d t} = - (3 H + \Gamma_N) n_N
-$$</p>
+</script>
+</p>
 <p>However, for relativistic regime it looks like:</p>
-<p>$$
-    \frac{d n_N}{d t} = - \left(3 H + \Gamma_N \frac{\left&lt; \frac{m}{E} \right&gt;}{n_N}\right) n_N
-$$</p>
+<p>
+<script type="math/tex; mode=display">
+    \frac{d n_N}{d t} = - \left(3 H + \Gamma_N \frac{\left< \frac{m}{E} \right>}{n_N}\right) n_N
+</script>
+</p>
 <p>where angular brackets denote the averaging over the distribution function of the specie.</p>
 <p><center><img src="images/relativistic_decay.png" /></center></p>
-<p>The value of the ratio $\frac{\left&lt; \frac{m}{E} \right&gt;}{n_N}$ defines, how much the decay law differs from the exponential radioactive decay law $e^{-\Gamma t}$. More energetic particles survive longer and the distribution function gains non-equilibrium high-energetic corrections.</p>
+<p>The value of the ratio <script type="math/tex">\frac{\left< \frac{m}{E} \right>}{n_N}</script> defines, how much the decay law differs from the exponential radioactive decay law <script type="math/tex">e^{-\Gamma t}</script>. More energetic particles survive longer and the distribution function gains non-equilibrium high-energetic corrections.</p>
 <p>Decay products function as a heating system of the plasma. This effect can be seen from the energy conservation law. For simplicity, let's consider a system consisting only of photons and non-relativistic sterile neutrinos:</p>
-<p>\begin{align}
-    &amp;\dot{\rho} + 3 H ( \rho + p ) = 0
-    \\ \rho_\gamma &amp;= \frac{2 \pi^2}{30} T^4
-        &amp; p_\gamma &amp;= \frac13 \rho_\gamma
-        &amp; \dot{\rho_\gamma} &amp;= 4 \rho_\gamma \frac{\dot{T}}{T}
-    \\ \rho_N &amp;= m n_N
-        &amp; p_N &amp;= 0
-\end{align}</p>
-<p>\begin{align}
+<p>
+<script type="math/tex; mode=display">\begin{align}
+    &\dot{\rho} + 3 H ( \rho + p ) = 0
+    \\\\ \rho_\gamma &= \frac{2 \pi^2}{30} T^4
+        & p_\gamma &= \frac13 \rho_\gamma
+        & \dot{\rho_\gamma} &= 4 \rho_\gamma \frac{\dot{T}}{T}
+    \\\\ \rho_N &= m n_N
+        & p_N &= 0
+\end{align}</script>
+</p>
+<p>
+<script type="math/tex; mode=display">\begin{align}
     \dot{\rho} + 3 H (\rho + p) = \dot{\rho_\gamma} + \dot{\rho_N} + 3 H (\frac43 \rho_\gamma + m n_N) = 0
-\end{align}</p>
-<p>\begin{align}
-    4 \rho_\gamma \frac{\dot{T}}{T} - (3 H + \Gamma_N) m n_N + 3 H (\frac43 \rho_\gamma + m n_N) &amp;= 0
-    \\ 4 \rho_\gamma \frac{\dot{T}}{T} - \Gamma_N m n_N + 4 H \rho_\gamma &amp;= 0
-\end{align}</p>
-<p>\begin{equation}
+\end{align}</script>
+</p>
+<p>
+<script type="math/tex; mode=display">\begin{align}
+    4 \rho_\gamma \frac{\dot{T}}{T} - (3 H + \Gamma_N) m n_N + 3 H (\frac43 \rho_\gamma + m n_N) &= 0
+    \\\\ 4 \rho_\gamma \frac{\dot{T}}{T} - \Gamma_N m n_N + 4 H \rho_\gamma &= 0
+\end{align}</script>
+</p>
+<p>
+<script type="math/tex; mode=display">\begin{equation}
     \frac{\dot{T}}{T} = \frac14 \Gamma_N \frac{\rho_N}{\rho_\gamma } - H
-\end{equation}</p>
+\end{equation}</script>
+</p>
 <p>This effect can be accounted for analytically without considering the precise dynamics of the decay products. From the equation follows that the amount of heating highly depends on the energy density ratio of the sterile neutrinos and photons, so non-relativistic particles won't affect the expansion rate significantly.</p>
-<p>Depending on the decoupling temperature, one might also have to account for a transition in the plasma similar to the electron-positron annihilation at temperature $\sim m_e$ that changes the number of relativistic degrees of freedom - hence, the entropy conservation of the Universe will require another boost of temperature. Transition in this case is the QCD transition.</p>
+<p>Depending on the decoupling temperature, one might also have to account for a transition in the plasma similar to the electron-positron annihilation at temperature <script type="math/tex">\sim m_e</script> that changes the number of relativistic degrees of freedom - hence, the entropy conservation of the Universe will require another boost of temperature. Transition in this case is the QCD transition.</p>
 <h3><a id="plasma-heating-by-decaying-non-relativistic-sterile-neutrinos" class="header-anchor" href="#plasma-heating-by-decaying-non-relativistic-sterile-neutrinos"> Plasma heating by decaying non-relativistic sterile neutrinos</a></h3>
-<p>$$
+<p>
+<script type="math/tex; mode=display">
     \frac{\rho_N}{\rho_\gamma} \sim \frac{m n_N}{\rho_\gamma}
     = \frac{m \left( \frac{m T}{2 \pi} \right)^\frac32 }{\frac{2\pi^2}{30} T^4} e^{-\frac{m}{T}} e^{-\Gamma_N t}
-$$</p>
-<p>The decrease in the sterile neutrinos density due to decays depends only on the time it took the Universe to cool down to the temperature $T$:</p>
-<p>$$
+</script>
+</p>
+<p>The decrease in the sterile neutrinos density due to decays depends only on the time it took the Universe to cool down to the temperature <script type="math/tex">T</script>:</p>
+<p>
+<script type="math/tex; mode=display">
     t = \frac{M_{pl}^*}{2 T^2}
-$$</p>
+</script>
+</p>
 <p>So, the final temperature correction is determined by the equation:</p>
-<p>$$
+<p>
+<script type="math/tex; mode=display">
     \frac{\dot{T}}{T} = \frac{1}{200} \Gamma_N \left(\frac{m}{T}\right)^\frac52 e^{-\frac{m}{T} -\frac{\Gamma_N M_{pl}^*}{2 T^2}} - H
-$$</p>
+</script>
+</p>
 <p>The relative size of the correction due to sterile neutrinos turns out to be insignificant:</p>
 <p><img src="images/H_correction.png" /></p>
         </div>

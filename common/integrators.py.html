@@ -6,7 +6,7 @@
   <link rel="stylesheet" href="../pyccoon.css">
   <script type="text/x-mathjax-config">
   MathJax.Hub.Config({
-    tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+    tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']], processEscapes: true}
   });
   </script>
   <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
@@ -20,7 +20,7 @@
     <a class="btn" class="source source-1" href="#top">Back to top</a>
     <div class="generation-time">
         Generated at
-        <code>2015-06-07 02:03</code>
+        <code>2015-07-06 18:48</code>
         by a diligent
         <a target="_blank" href="http://ckald.github.io/pyccoon/" title="Pyccoon: side-to-side documentation generator">
             <img id="pyccoon-icon" src="../pyccoon_icon.svg" alt="Pyccoon: side-to-side documentation generator" />pyccoon</a>
@@ -47,9 +47,9 @@
         <div class='code'>
           <div class="highlight"><pre><span class="kn">import</span> <span class="nn">numpy</span>
 <span class="kn">import</span> <span class="nn">functools</span>
-<span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">polynomial</span>
 
-<span class="kn">from</span> <span class="nn">common</span> <span class="kn">import</span> <span class="n">GRID</span></pre></div>
+<span class="kn">from</span> <span class="nn">common</span> <span class="kn">import</span> <span class="n">GRID</span>
+<span class="kn">from</span> <span class="nn">common</span> <span class="kn">import</span> <span class="n">orthopoly</span></pre></div>
         </div>
         <div class='clearall'></div>
     </section>
@@ -62,19 +62,25 @@
             <a class='octothorpe' href='#section-1'>#</a>
           </div>
           <p>Forward Euler integration method is a most basic way to solve an ODE of the kind:</p>
-<p>\begin{equation}
+<p>
+<script type="math/tex; mode=display">\begin{equation}
     \frac{d y(t)}{dt} = f(t, y(t))
-\end{equation}</p>
+\end{equation}</script>
+</p>
 <p>Derivation:</p>
-<p>\begin{equation}
+<p>
+<script type="math/tex; mode=display">\begin{equation}
     \frac{d y(t)}{dt} \approx \frac{y(t) - y(t-h)}{h}
-\end{equation}
-\begin{equation}
+\end{equation}</script>
+<script type="math/tex; mode=display">\begin{equation}
     y_{n+1} = y_n + h f(t_n, y_n)
-\end{equation}</p>
+\end{equation}</script>
+</p>
 <dl>
 <dt>Local Truncation Error (LTE)</dt>
-<dd>$y(t_0+h) - y_1 = \frac{h^2}{2} y''(t_0) + O(h^3) $</dd>
+<dd>
+<script type="math/tex">y(t_0+h) - y_1 = \frac{h^2}{2} y''(t_0) + O(h^3) </script>
+</dd>
 </dl>
         </div>
         <div class='code'>
@@ -120,16 +126,19 @@
             <a class='octothorpe' href='#section-3'>#</a>
           </div>
           <p>Implicit Euler solver for ODE with a linear function.</p>
-<p>\begin{equation}
+<p>
+<script type="math/tex; mode=display">\begin{equation}
     \frac{d y(t)}{dt} = A(t) + B(t) y(t)
-\end{equation}</p>
+\end{equation}</script>
+</p>
 <p>Derivation:
-\begin{equation}
+<script type="math/tex; mode=display">\begin{equation}
     \frac{d y(t)}{dt} \approx \frac{y(t+h) - y(t)}{h} = A(t+h) + B(t+h) y(t+h)
-\end{equation}
-\begin{equation}
+\end{equation}</script>
+<script type="math/tex; mode=display">\begin{equation}
     y(t+h) = \frac{y(t) + A(t+h) h}{1 - B(t+h) h}
-\end{equation}</p>
+\end{equation}</script>
+</p>
         </div>
         <div class='code'>
           <div class="highlight"><pre><span class="k">def</span> <span class="nf">implicit_euler</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">h</span><span class="p">):</span>
@@ -255,9 +264,7 @@
     <span class="k">return</span> <span class="n">integral</span><span class="p">,</span> <span class="n">error</span>
 
 
-<span class="n">GAUSS_LEGENDRE_ORDER</span> <span class="o">=</span> <span class="mi">30</span>
-<span class="n">points</span><span class="p">,</span> <span class="n">weights</span> <span class="o">=</span> <span class="n">polynomial</span><span class="o">.</span><span class="n">legendre</span><span class="o">.</span><span class="n">leggauss</span><span class="p">(</span><span class="n">GAUSS_LEGENDRE_ORDER</span><span class="p">)</span>
-<span class="n">grid</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="n">points</span><span class="p">)</span></pre></div>
+<span class="n">GAUSS_LEGENDRE_ORDER</span> <span class="o">=</span> <span class="mi">30</span></pre></div>
         </div>
         <div class='clearall'></div>
     </section>
@@ -268,6 +275,23 @@
         <div class='docs'>
           <div class='octowrap'>
             <a class='octothorpe' href='#section-9'>#</a>
+          </div>
+          <p>points, weights = polynomial.legendre.leggauss(GAUSS_LEGENDRE_ORDER)</p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre><span class="n">alpha</span><span class="p">,</span> <span class="n">beta</span> <span class="o">=</span> <span class="n">orthopoly</span><span class="o">.</span><span class="n">rec_jacobi</span><span class="p">(</span><span class="n">GAUSS_LEGENDRE_ORDER</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+<span class="n">points</span><span class="p">,</span> <span class="n">weights</span> <span class="o">=</span> <span class="n">orthopoly</span><span class="o">.</span><span class="n">lobatto</span><span class="p">(</span><span class="n">alpha</span><span class="p">,</span> <span class="n">beta</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">grid</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="n">points</span><span class="p">)</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+    </div>
+    <div class='section'>
+    <a id="section-10" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-10'>#</a>
           </div>
           
         </div>
@@ -286,11 +310,11 @@
     </section>
     </div>
     <div class='section'>
-    <a id="section-10" class="section-anchor"></a>
+    <a id="section-11" class="section-anchor"></a>
     <section>
         <div class='docs'>
           <div class='octowrap'>
-            <a class='octothorpe' href='#section-10'>#</a>
+            <a class='octothorpe' href='#section-11'>#</a>
           </div>
           
         </div>
@@ -316,11 +340,11 @@
     </section>
     </div>
     <div class='section'>
-    <a id="section-11" class="section-anchor"></a>
+    <a id="section-12" class="section-anchor"></a>
     <section>
         <div class='docs'>
           <div class='octowrap'>
-            <a class='octothorpe' href='#section-11'>#</a>
+            <a class='octothorpe' href='#section-12'>#</a>
           </div>
           
         </div>
@@ -337,11 +361,11 @@
     </section>
     </div>
     <div class='section'>
-    <a id="section-12" class="section-anchor"></a>
+    <a id="section-13" class="section-anchor"></a>
     <section>
         <div class='docs'>
           <div class='octowrap'>
-            <a class='octothorpe' href='#section-12'>#</a>
+            <a class='octothorpe' href='#section-13'>#</a>
           </div>
           <p>Gaussian integration over the momentum space of the lambda function </p>
         </div>
@@ -354,11 +378,11 @@
     </section>
     </div>
     <div class='section'>
-    <a id="section-13" class="section-anchor"></a>
+    <a id="section-14" class="section-anchor"></a>
     <section>
         <div class='docs'>
           <div class='octowrap'>
-            <a class='octothorpe' href='#section-13'>#</a>
+            <a class='octothorpe' href='#section-14'>#</a>
           </div>
           
         </div>
@@ -375,11 +399,11 @@
     </section>
     </div>
     <div class='section'>
-    <a id="section-14" class="section-anchor"></a>
+    <a id="section-15" class="section-anchor"></a>
     <section>
         <div class='docs'>
           <div class='octowrap'>
-            <a class='octothorpe' href='#section-14'>#</a>
+            <a class='octothorpe' href='#section-15'>#</a>
           </div>
           
         </div>

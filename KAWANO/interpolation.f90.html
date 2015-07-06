@@ -1,0 +1,903 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>pyBBN v0.9.0: KAWANO/interpolation.f90</title>
+  <link rel="stylesheet" href="../pyccoon.css">
+  <script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']], processEscapes: true}
+  });
+  </script>
+  <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</head>
+<body>
+<div id='container' >
+  <div id="footer">
+    <span id="project-name">
+        <a class="btn" href="../index.html">pyBBN v0.9.0</a>
+    </span>
+    <a class="btn" class="source source-1" href="#top">Back to top</a>
+    <div class="generation-time">
+        Generated at
+        <code>2015-07-06 18:48</code>
+        by a diligent
+        <a target="_blank" href="http://ckald.github.io/pyccoon/" title="Pyccoon: side-to-side documentation generator">
+            <img id="pyccoon-icon" src="../pyccoon_icon.svg" alt="Pyccoon: side-to-side documentation generator" />pyccoon</a>
+    </div>
+  </div>
+  <a id="top"></a>
+  <div class='section'>
+    <div class='docs nav'>
+      <nav id="breadcrumbs">/ <a href="interpolation.f90.html/../../index.html">.</a> / <a href="interpolation.f90.html/../index.html">KAWANO</a> / interpolation.f90</nav>
+      <ul id="children"></ul>
+    </div>
+  </div>
+  <div id="everything" class='clearall'>
+    <div id="background"></div>
+    <div class='section'>
+    <a id="section-0" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-0'>#</a>
+          </div>
+          <p>===============IDENTIFICATION DIVISION====================</p>
+        </div>
+        <div class='code'>
+          
+        </div>
+        <div class='clearall'></div>
+    </section>
+    </div>
+    <div class='section'>
+    <a id="section-1" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-1'>#</a>
+          </div>
+          <p>-------------TO FIND THE INTERPOLATION INDEX----------------</p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre><span class="k">SUBROUTINE </span><span class="n">binary_search</span><span class="p">(</span><span class="n">head</span><span class="p">,</span> <span class="n">tail</span><span class="p">,</span> <span class="n">needle</span><span class="p">,</span> <span class="n">haystack</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">decreasing</span><span class="p">)</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+    </div>
+    <div class='section'>
+    <a id="section-2" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-2'>#</a>
+          </div>
+          <p>Find the insert position for the <code>needle</code> that preserves the ordering of the
+<code>haystack</code>. Comparing to the regular binary search, this subroutine returns
+a pair of indices indicating the insertion interval. If the <code>needle</code> is
+found in the <code>haystack</code>, those indices coincide.</p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>  <span class="k">IMPLICIT NONE</span>
+
+<span class="k">  </span><span class="kt">INTEGER</span><span class="p">,</span> <span class="k">INTENT</span><span class="p">(</span><span class="n">out</span><span class="p">)</span> <span class="kd">::</span> <span class="n">head</span>
+  <span class="kt">INTEGER</span><span class="p">,</span> <span class="k">INTENT</span><span class="p">(</span><span class="n">out</span><span class="p">)</span> <span class="kd">::</span> <span class="n">tail</span>
+  <span class="kt">DOUBLE PRECISION</span><span class="p">,</span> <span class="k">INTENT</span><span class="p">(</span><span class="n">in</span><span class="p">)</span> <span class="kd">::</span> <span class="n">needle</span>
+  <span class="kt">INTEGER</span> <span class="kd">::</span> <span class="n">size</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+    </div>
+    <div class='section'>
+    <a id="section-3" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-3'>#</a>
+          </div>
+          <p>f2py INTEGER, INTENT(hide), DEPEND(haystack) :: size = len(haystack)</p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>  <span class="kt">DOUBLE PRECISION</span><span class="p">,</span> <span class="k">INTENT</span><span class="p">(</span><span class="n">in</span><span class="p">),</span> <span class="k">DIMENSION</span><span class="p">(</span><span class="n">size</span><span class="p">)</span> <span class="kd">::</span> <span class="n">haystack</span>
+  <span class="kt">LOGICAL</span><span class="p">,</span> <span class="k">INTENT</span><span class="p">(</span><span class="n">in</span><span class="p">)</span> <span class="kd">::</span> <span class="n">decreasing</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+    </div>
+    <div class='section'>
+    <a id="section-4" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-4'>#</a>
+          </div>
+          <p>f2py LOGICAL, INTENT(in), OPTIONAL :: decreasing = 0</p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>  <span class="kt">INTEGER </span><span class="nb">range</span>
+<span class="nb">  </span><span class="kt">INTEGER </span><span class="n">middle</span>
+
+  <span class="kt">DOUBLE PRECISION </span><span class="n">comparison</span>
+
+  <span class="k">IF</span> <span class="p">(</span><span class="n">decreasing</span><span class="p">)</span> <span class="k">THEN</span>
+<span class="k">    </span><span class="n">comparison</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1.</span>
+  <span class="k">ELSE</span>
+<span class="k">    </span><span class="n">comparison</span> <span class="o">=</span> <span class="mf">1.</span>
+  <span class="k">END IF</span>
+
+<span class="k">  </span><span class="n">head</span> <span class="o">=</span> <span class="mi">1</span>
+  <span class="n">tail</span> <span class="o">=</span> <span class="n">size</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+    </div>
+    <div class='section'>
+    <a id="section-5" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-5'>#</a>
+          </div>
+          <p>Check if the <code>needle</code> is outside the <code>haystack</code> range</p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>  <span class="k">IF</span> <span class="p">(</span><span class="nb">SIGN</span><span class="p">(</span><span class="mf">1.</span><span class="p">,</span> <span class="n">needle</span> <span class="o">-</span> <span class="n">haystack</span><span class="p">(</span><span class="n">head</span><span class="p">))</span> <span class="o">==</span> <span class="o">-</span><span class="n">comparison</span><span class="p">)</span> <span class="k">THEN</span>
+<span class="k">    </span><span class="n">tail</span> <span class="o">=</span> <span class="n">head</span>
+    <span class="k">RETURN</span>
+<span class="k">  ELSE IF</span> <span class="p">(</span><span class="nb">SIGN</span><span class="p">(</span><span class="mf">1.</span><span class="p">,</span> <span class="n">needle</span> <span class="o">-</span> <span class="n">haystack</span><span class="p">(</span><span class="n">tail</span><span class="p">))</span> <span class="o">==</span> <span class="n">comparison</span><span class="p">)</span> <span class="k">THEN</span>
+<span class="k">    </span><span class="n">head</span> <span class="o">=</span> <span class="n">tail</span>
+    <span class="k">RETURN</span>
+<span class="k">  END IF</span>
+
+<span class="k">  </span><span class="nb">range</span> <span class="o">=</span> <span class="n">tail</span> <span class="o">-</span> <span class="n">head</span>
+  <span class="n">middle</span> <span class="o">=</span> <span class="p">(</span><span class="n">tail</span> <span class="o">+</span> <span class="n">head</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>
+
+  <span class="k">DO WHILE</span> <span class="p">(</span> <span class="n">haystack</span><span class="p">(</span><span class="n">middle</span><span class="p">)</span> <span class="o">/=</span> <span class="n">needle</span> <span class="p">.</span><span class="nb">AND</span><span class="p">.</span> <span class="nb">range</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="k">IF</span> <span class="p">(</span><span class="nb">SIGN</span><span class="p">(</span><span class="mf">1.</span><span class="p">,</span> <span class="n">needle</span> <span class="o">-</span> <span class="n">haystack</span><span class="p">(</span><span class="n">middle</span><span class="p">))</span> <span class="o">==</span> <span class="n">comparison</span><span class="p">)</span> <span class="k">THEN</span>
+<span class="k">      </span><span class="n">head</span> <span class="o">=</span> <span class="n">middle</span>
+    <span class="k">ELSE</span>
+<span class="k">      </span><span class="n">tail</span> <span class="o">=</span> <span class="n">middle</span>
+    <span class="k">END IF</span>
+
+<span class="k">    </span><span class="nb">range</span> <span class="o">=</span> <span class="n">tail</span> <span class="o">-</span> <span class="n">head</span>
+    <span class="n">middle</span> <span class="o">=</span> <span class="p">(</span><span class="n">tail</span> <span class="o">+</span> <span class="n">head</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>
+  <span class="k">END DO</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+    </div>
+    <div class='section'>
+    <a id="section-6" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-6'>#</a>
+          </div>
+          <p>Identify if the needle is positioned exactly at <code>middle</code>/<code>head</code>/<code>tail</code></p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>  <span class="k">IF</span> <span class="p">(</span><span class="n">haystack</span><span class="p">(</span><span class="n">middle</span><span class="p">)</span> <span class="o">==</span> <span class="n">needle</span><span class="p">)</span> <span class="k">THEN</span>
+<span class="k">    </span><span class="n">head</span> <span class="o">=</span> <span class="n">middle</span>
+    <span class="n">tail</span> <span class="o">=</span> <span class="n">middle</span>
+  <span class="k">ELSE IF</span> <span class="p">(</span><span class="n">haystack</span><span class="p">(</span><span class="n">head</span><span class="p">)</span> <span class="o">==</span> <span class="n">needle</span><span class="p">)</span> <span class="k">THEN</span>
+<span class="k">    </span><span class="n">tail</span> <span class="o">=</span> <span class="n">head</span>
+  <span class="k">ELSE IF</span> <span class="p">(</span><span class="n">haystack</span><span class="p">(</span><span class="n">tail</span><span class="p">)</span> <span class="o">==</span> <span class="n">needle</span><span class="p">)</span> <span class="k">THEN</span>
+<span class="k">    </span><span class="n">head</span> <span class="o">=</span> <span class="n">tail</span>
+  <span class="k">END IF</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+    </div>
+    <div class='section'>
+    <a id="section-7" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-7'>#</a>
+          </div>
+          
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre><span class="k">END SUBROUTINE </span><span class="n">binary_search</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+    </div>
+    <div class='section'>
+    <a id="section-8" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-8'>#</a>
+          </div>
+          <p>-------THE FUNCTIONS DOING AN INTERPOLATION---------------</p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre><span class="k">SUBROUTINE </span><span class="n">interp_values</span><span class="p">(</span><span class="n">interp_val</span><span class="p">,</span> <span class="n">x_interp</span><span class="p">,</span> <span class="n">x_values</span><span class="p">,</span> <span class="n">y_values</span><span class="p">,</span> <span class="n">decreasing</span><span class="p">,</span> <span class="n">size</span><span class="p">)</span>
+
+  <span class="k">IMPLICIT NONE</span>
+
+<span class="k">  </span><span class="kt">DOUBLE PRECISION</span><span class="p">,</span> <span class="k">INTENT</span><span class="p">(</span><span class="n">out</span><span class="p">)</span> <span class="kd">::</span> <span class="n">interp_val</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+    </div>
+    <div class='section'>
+    <a id="section-9" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-9'>#</a>
+          </div>
+          <p>The interpolated y-result</p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>  <span class="kt">DOUBLE PRECISION</span><span class="p">,</span> <span class="k">INTENT</span><span class="p">(</span><span class="n">in</span><span class="p">)</span> <span class="kd">::</span> <span class="n">x_interp</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+    </div>
+    <div class='section'>
+    <a id="section-10" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-10'>#</a>
+          </div>
+          <p>The x-value at which interpolation happens</p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>  <span class="kt">DOUBLE PRECISION</span><span class="p">,</span> <span class="k">INTENT</span><span class="p">(</span><span class="n">in</span><span class="p">)</span> <span class="kd">::</span> <span class="n">x_values</span><span class="p">(</span><span class="n">size</span><span class="p">)</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+    </div>
+    <div class='section'>
+    <a id="section-11" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-11'>#</a>
+          </div>
+          <p>The abscissa discrete values</p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>  <span class="kt">DOUBLE PRECISION</span><span class="p">,</span> <span class="k">INTENT</span><span class="p">(</span><span class="n">in</span><span class="p">)</span> <span class="kd">::</span> <span class="n">y_values</span><span class="p">(</span><span class="n">size</span><span class="p">)</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+    </div>
+    <div class='section'>
+    <a id="section-12" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-12'>#</a>
+          </div>
+          <p>The array for which we interpolate</p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>  <span class="kt">LOGICAL</span><span class="p">,</span> <span class="k">INTENT</span><span class="p">(</span><span class="n">in</span><span class="p">)</span> <span class="kd">::</span> <span class="n">decreasing</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+    </div>
+    <div class='section'>
+    <a id="section-13" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-13'>#</a>
+          </div>
+          <p>f2py LOGICAL, INTENT(in), OPTIONAL :: decreasing = 0</p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>  <span class="kt">INTEGER</span> <span class="kd">::</span> <span class="n">size</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+    </div>
+    <div class='section'>
+    <a id="section-14" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-14'>#</a>
+          </div>
+          <p>f2py INTEGER, INTENT(hide), DEPEND(x_values) :: size = len(x_values)</p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>  <span class="kt">INTEGER </span><span class="n">head</span><span class="p">,</span> <span class="n">tail</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+    </div>
+    <div class='section'>
+    <a id="section-15" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-15'>#</a>
+          </div>
+          <p>The integer giving an x-value just below the one to be interpolated</p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>  <span class="kt">DOUBLE PRECISION</span> <span class="kd">::</span> <span class="n">x_lo</span><span class="p">,</span> <span class="n">x_up</span>
+  <span class="kt">DOUBLE PRECISION</span> <span class="kd">::</span> <span class="n">y0</span><span class="p">,</span> <span class="n">y1</span><span class="p">,</span> <span class="n">y2</span><span class="p">,</span> <span class="n">y3</span>
+  <span class="kt">DOUBLE PRECISION</span> <span class="kd">::</span> <span class="n">a0</span><span class="p">,</span> <span class="n">a1</span><span class="p">,</span> <span class="n">a2</span><span class="p">,</span> <span class="n">a3</span><span class="p">,</span> <span class="n">mu</span>
+
+  <span class="k">CALL </span><span class="n">binary_search</span><span class="p">(</span><span class="n">head</span><span class="p">,</span> <span class="n">tail</span><span class="p">,</span> <span class="n">x_interp</span><span class="p">,</span> <span class="n">x_values</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">decreasing</span><span class="p">)</span>
+
+  <span class="k">IF</span> <span class="p">(</span><span class="n">head</span> <span class="o">==</span> <span class="n">tail</span><span class="p">)</span> <span class="k">THEN</span>
+<span class="k">    </span><span class="n">interp_val</span> <span class="o">=</span> <span class="n">y_values</span><span class="p">(</span><span class="n">head</span><span class="p">)</span>
+  <span class="k">ELSE</span>
+
+<span class="k">    IF</span> <span class="p">(</span><span class="n">head</span> <span class="o">==</span> <span class="mi">1</span> <span class="p">.</span><span class="nb">OR</span><span class="p">.</span> <span class="n">tail</span> <span class="o">==</span> <span class="n">size</span><span class="p">)</span> <span class="k">THEN</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+    </div>
+    <div class='section'>
+    <a id="section-16" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-16'>#</a>
+          </div>
+          <p>If the value lies near the end of the interpolated region, use simple linear interpolation</p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>      <span class="n">x_lo</span> <span class="o">=</span> <span class="n">x_values</span><span class="p">(</span><span class="n">head</span><span class="p">)</span>
+      <span class="n">x_up</span> <span class="o">=</span> <span class="n">x_values</span><span class="p">(</span><span class="n">tail</span><span class="p">)</span>
+
+      <span class="n">interp_val</span> <span class="o">=</span> <span class="p">(</span> <span class="p">(</span><span class="n">x_up</span><span class="o">-</span><span class="n">x_interp</span><span class="p">)</span><span class="o">*</span><span class="n">y_values</span><span class="p">(</span><span class="n">head</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="n">x_interp</span><span class="o">-</span><span class="n">x_lo</span><span class="p">)</span><span class="o">*</span><span class="n">y_values</span><span class="p">(</span><span class="n">tail</span><span class="p">)</span> <span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">x_up</span> <span class="o">-</span> <span class="n">x_lo</span><span class="p">)</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+    </div>
+    <div class='section'>
+    <a id="section-17" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-17'>#</a>
+          </div>
+          
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>    <span class="k">ELSE</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+    </div>
+    <div class='section'>
+    <a id="section-18" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-18'>#</a>
+          </div>
+          <p>Otherwise, use cubic interpolation</p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>      <span class="n">y0</span> <span class="o">=</span> <span class="n">y_values</span><span class="p">(</span><span class="n">head</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+      <span class="n">y1</span> <span class="o">=</span> <span class="n">y_values</span><span class="p">(</span><span class="n">head</span><span class="p">)</span>
+      <span class="n">y2</span> <span class="o">=</span> <span class="n">y_values</span><span class="p">(</span><span class="n">tail</span><span class="p">)</span>
+      <span class="n">y3</span> <span class="o">=</span> <span class="n">y_values</span><span class="p">(</span><span class="n">tail</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+
+      <span class="n">a0</span> <span class="o">=</span> <span class="o">-</span><span class="mf">0.5</span><span class="o">*</span><span class="n">y0</span> <span class="o">+</span> <span class="mf">1.5</span><span class="o">*</span><span class="n">y1</span> <span class="o">-</span> <span class="mf">1.5</span><span class="o">*</span><span class="n">y2</span> <span class="o">+</span> <span class="mf">0.5</span><span class="o">*</span><span class="n">y3</span><span class="p">;</span>
+      <span class="n">a1</span> <span class="o">=</span> <span class="n">y0</span> <span class="o">-</span> <span class="mf">2.5</span><span class="o">*</span><span class="n">y1</span> <span class="o">+</span> <span class="mi">2</span><span class="o">*</span><span class="n">y2</span> <span class="o">-</span> <span class="mf">0.5</span><span class="o">*</span><span class="n">y3</span><span class="p">;</span>
+      <span class="n">a2</span> <span class="o">=</span> <span class="o">-</span><span class="mf">0.5</span><span class="o">*</span><span class="n">y0</span> <span class="o">+</span> <span class="mf">0.5</span><span class="o">*</span><span class="n">y2</span><span class="p">;</span>
+      <span class="n">a3</span> <span class="o">=</span> <span class="n">y1</span><span class="p">;</span>
+
+      <span class="n">mu</span> <span class="o">=</span> <span class="p">(</span><span class="n">x_interp</span> <span class="o">-</span> <span class="n">x_values</span><span class="p">(</span><span class="n">head</span><span class="p">))</span> <span class="o">/</span> <span class="p">(</span><span class="n">x_values</span><span class="p">(</span><span class="n">tail</span><span class="p">)</span> <span class="o">-</span> <span class="n">x_values</span><span class="p">(</span><span class="n">head</span><span class="p">))</span>
+
+      <span class="n">interp_val</span> <span class="o">=</span> <span class="n">a0</span><span class="o">*</span><span class="n">mu</span><span class="o">*</span><span class="n">mu</span><span class="o">*</span><span class="n">mu</span> <span class="o">+</span> <span class="n">a1</span><span class="o">*</span><span class="n">mu</span><span class="o">*</span><span class="n">mu</span> <span class="o">+</span> <span class="n">a2</span><span class="o">*</span><span class="n">mu</span> <span class="o">+</span> <span class="n">a3</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+    </div>
+    <div class='section'>
+    <a id="section-19" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-19'>#</a>
+          </div>
+          
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>    <span class="k">END IF</span>
+
+<span class="k">  END IF</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+    </div>
+    <div class='section'>
+    <a id="section-20" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-20'>#</a>
+          </div>
+          
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre><span class="k">END SUBROUTINE</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+    </div>
+    <div class='section'>
+    <a id="section-21" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-21'>#</a>
+          </div>
+          <p>--------LOGARITHMIC INTERPOLATION---------------------
+ We will usually do an interpolation of the log of the values as these
+  values are rapidly varying, instead of simply doing a linear interp.</p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre><span class="k">SUBROUTINE </span><span class="n">log_interp_values</span><span class="p">(</span><span class="n">interp_val</span><span class="p">,</span> <span class="n">x_interp</span><span class="p">,</span> <span class="n">x_values</span><span class="p">,</span> <span class="n">y_values</span><span class="p">,</span> <span class="n">decreasing</span><span class="p">,</span> <span class="n">size</span><span class="p">)</span>
+
+  <span class="k">IMPLICIT NONE</span>
+
+<span class="k">  </span><span class="kt">DOUBLE PRECISION</span><span class="p">,</span> <span class="k">INTENT</span><span class="p">(</span><span class="n">out</span><span class="p">)</span> <span class="kd">::</span> <span class="n">interp_val</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+    </div>
+    <div class='section'>
+    <a id="section-22" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-22'>#</a>
+          </div>
+          <p>The interpolated y-result</p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>  <span class="kt">DOUBLE PRECISION</span><span class="p">,</span> <span class="k">INTENT</span><span class="p">(</span><span class="n">in</span><span class="p">)</span> <span class="kd">::</span> <span class="n">x_interp</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+    </div>
+    <div class='section'>
+    <a id="section-23" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-23'>#</a>
+          </div>
+          <p>The x-value at which interpolation happens</p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>  <span class="kt">DOUBLE PRECISION</span><span class="p">,</span> <span class="k">INTENT</span><span class="p">(</span><span class="n">in</span><span class="p">),</span> <span class="k">DIMENSION</span><span class="p">(</span><span class="n">size</span><span class="p">)</span> <span class="kd">::</span> <span class="n">x_values</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+    </div>
+    <div class='section'>
+    <a id="section-24" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-24'>#</a>
+          </div>
+          <p>The abscissa</p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>  <span class="kt">DOUBLE PRECISION</span><span class="p">,</span> <span class="k">INTENT</span><span class="p">(</span><span class="n">in</span><span class="p">),</span> <span class="k">DIMENSION</span><span class="p">(</span><span class="n">size</span><span class="p">)</span> <span class="kd">::</span> <span class="n">y_values</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+    </div>
+    <div class='section'>
+    <a id="section-25" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-25'>#</a>
+          </div>
+          <p>The array for which we interpolate</p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>  <span class="kt">LOGICAL</span><span class="p">,</span> <span class="k">INTENT</span><span class="p">(</span><span class="n">in</span><span class="p">)</span> <span class="kd">::</span> <span class="n">decreasing</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+    </div>
+    <div class='section'>
+    <a id="section-26" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-26'>#</a>
+          </div>
+          <p>f2py LOGICAL, INTENT(in), OPTIONAL :: decreasing = 0</p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>  <span class="kt">INTEGER</span> <span class="kd">::</span> <span class="n">size</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+    </div>
+    <div class='section'>
+    <a id="section-27" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-27'>#</a>
+          </div>
+          <p>f2py INTEGER, INTENT(hide), DEPEND(x_values) :: size = len(x_values)</p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>  <span class="kt">INTEGER </span><span class="n">head</span><span class="p">,</span> <span class="n">tail</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+    </div>
+    <div class='section'>
+    <a id="section-28" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-28'>#</a>
+          </div>
+          <p>The integer giving an x-value just below the one to be interpolated</p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>  <span class="kt">LOGICAL </span><span class="n">positive</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+    </div>
+    <div class='section'>
+    <a id="section-29" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-29'>#</a>
+          </div>
+          <p>This tells if the y_values are positive, needed when taking the log.</p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>  <span class="kt">DOUBLE PRECISION </span><span class="n">x_lo</span><span class="p">,</span> <span class="n">x_up</span><span class="p">,</span> <span class="n">y_lo</span><span class="p">,</span> <span class="n">y_up</span>
+
+
+  <span class="k">CALL </span><span class="n">binary_search</span><span class="p">(</span><span class="n">head</span><span class="p">,</span> <span class="n">tail</span><span class="p">,</span> <span class="n">x_interp</span><span class="p">,</span> <span class="n">x_values</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">decreasing</span><span class="p">)</span>
+
+  <span class="k">IF</span> <span class="p">(</span><span class="n">head</span> <span class="o">==</span> <span class="n">tail</span><span class="p">)</span> <span class="k">THEN</span>
+<span class="k">    </span><span class="n">interp_val</span> <span class="o">=</span> <span class="n">y_values</span><span class="p">(</span><span class="n">head</span><span class="p">)</span>
+  <span class="k">ELSE</span>
+<span class="k">    </span><span class="n">y_lo</span> <span class="o">=</span> <span class="n">y_values</span><span class="p">(</span><span class="n">head</span><span class="p">)</span>
+    <span class="n">y_up</span> <span class="o">=</span> <span class="n">y_values</span><span class="p">(</span><span class="n">tail</span><span class="p">)</span>
+
+    <span class="k">IF</span> <span class="p">(</span> <span class="n">y_lo</span><span class="o">*</span><span class="n">y_up</span> <span class="o">&lt;=</span> <span class="mi">0</span> <span class="p">)</span> <span class="k">THEN</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+    </div>
+    <div class='section'>
+    <a id="section-30" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-30'>#</a>
+          </div>
+          <p>It is not possible to take the log if one of them is 0 or if they
+have different signs, so we do a linear interpolation in this case</p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>       <span class="k">CALL </span><span class="n">interp_values</span><span class="p">(</span><span class="n">interp_val</span><span class="p">,</span> <span class="n">x_interp</span><span class="p">,</span> <span class="n">x_values</span><span class="p">,</span> <span class="n">y_values</span><span class="p">,</span> <span class="n">decreasing</span><span class="p">,</span> <span class="n">size</span><span class="p">)</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+    </div>
+    <div class='section'>
+    <a id="section-31" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-31'>#</a>
+          </div>
+          
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>    <span class="k">ELSE</span>
+<span class="k">       </span><span class="n">positive</span> <span class="o">=</span> <span class="p">.</span><span class="n">true</span><span class="p">.</span>
+       <span class="k">IF</span> <span class="p">(</span><span class="n">y_lo</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="k">THEN</span>
+<span class="k">          </span><span class="n">positive</span> <span class="o">=</span> <span class="p">.</span><span class="n">false</span><span class="p">.</span>
+          <span class="n">y_lo</span> <span class="o">=</span> <span class="o">-</span><span class="n">y_lo</span>        <span class="c">!For negative numbers we take the log</span>
+          <span class="n">y_up</span> <span class="o">=</span> <span class="o">-</span><span class="n">y_up</span>        <span class="c">! of their opposite</span>
+       <span class="k">END IF</span>
+
+<span class="k">       </span><span class="n">y_lo</span> <span class="o">=</span> <span class="nb">log</span><span class="p">(</span><span class="n">y_lo</span><span class="p">)</span>
+       <span class="n">y_up</span> <span class="o">=</span> <span class="nb">log</span><span class="p">(</span><span class="n">y_up</span><span class="p">)</span>
+       <span class="n">x_lo</span> <span class="o">=</span> <span class="n">x_values</span><span class="p">(</span><span class="n">head</span><span class="p">)</span>
+       <span class="n">x_up</span> <span class="o">=</span> <span class="n">x_values</span><span class="p">(</span><span class="n">tail</span><span class="p">)</span>
+
+       <span class="n">interp_val</span> <span class="o">=</span> <span class="p">(</span> <span class="p">(</span><span class="n">x_up</span><span class="o">-</span><span class="n">x_interp</span><span class="p">)</span><span class="o">*</span><span class="n">y_lo</span> <span class="o">+</span> <span class="p">(</span><span class="n">x_interp</span><span class="o">-</span><span class="n">x_lo</span><span class="p">)</span><span class="o">*</span><span class="n">y_up</span> <span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">x_up</span> <span class="o">-</span> <span class="n">x_lo</span><span class="p">)</span>
+
+       <span class="n">interp_val</span> <span class="o">=</span> <span class="nb">exp</span><span class="p">(</span><span class="n">interp_val</span><span class="p">)</span>
+
+       <span class="k">IF</span> <span class="p">(.</span><span class="nb">not</span><span class="p">.</span><span class="n">positive</span><span class="p">)</span> <span class="k">THEN</span>
+<span class="k">          </span><span class="n">interp_val</span> <span class="o">=</span> <span class="o">-</span><span class="n">interp_val</span>
+       <span class="k">END IF</span>
+
+<span class="k">    END IF</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+    </div>
+    <div class='section'>
+    <a id="section-32" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-32'>#</a>
+          </div>
+          
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>  <span class="k">END IF</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+    </div>
+    <div class='section'>
+    <a id="section-33" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-33'>#</a>
+          </div>
+          
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre><span class="k">END SUBROUTINE</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+    </div>
+    <div class='section'>
+    <a id="section-34" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-34'>#</a>
+          </div>
+          <p>--------DISTRIBUTION FUNCTION LOGARITHMIC INTERPOLATION---------------------
+ We will usually do an interpolation of the log of the values as these
+  values are rapidly varying, instead of simply doing a linear interp.</p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre><span class="k">SUBROUTINE </span><span class="n">dist_interp_values</span><span class="p">(</span><span class="n">interp_val</span><span class="p">,</span> <span class="n">x_interp</span><span class="p">,</span> <span class="n">x_values</span><span class="p">,</span> <span class="n">y_values</span><span class="p">,</span> <span class="n">decreasing</span><span class="p">,</span> <span class="n">size</span><span class="p">)</span>
+
+  <span class="k">IMPLICIT NONE</span>
+
+<span class="k">  </span><span class="kt">DOUBLE PRECISION</span><span class="p">,</span> <span class="k">INTENT</span><span class="p">(</span><span class="n">out</span><span class="p">)</span> <span class="kd">::</span> <span class="n">interp_val</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+    </div>
+    <div class='section'>
+    <a id="section-35" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-35'>#</a>
+          </div>
+          <p>The interpolated y-result</p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>  <span class="kt">DOUBLE PRECISION</span><span class="p">,</span> <span class="k">INTENT</span><span class="p">(</span><span class="n">in</span><span class="p">)</span> <span class="kd">::</span> <span class="n">x_interp</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+    </div>
+    <div class='section'>
+    <a id="section-36" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-36'>#</a>
+          </div>
+          <p>The x-value at which interpolation happens</p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>  <span class="kt">DOUBLE PRECISION</span><span class="p">,</span> <span class="k">INTENT</span><span class="p">(</span><span class="n">in</span><span class="p">),</span> <span class="k">DIMENSION</span><span class="p">(</span><span class="n">size</span><span class="p">)</span> <span class="kd">::</span> <span class="n">x_values</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+    </div>
+    <div class='section'>
+    <a id="section-37" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-37'>#</a>
+          </div>
+          <p>The abscissa</p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>  <span class="kt">DOUBLE PRECISION</span><span class="p">,</span> <span class="k">INTENT</span><span class="p">(</span><span class="n">in</span><span class="p">),</span> <span class="k">DIMENSION</span><span class="p">(</span><span class="n">size</span><span class="p">)</span> <span class="kd">::</span> <span class="n">y_values</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+    </div>
+    <div class='section'>
+    <a id="section-38" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-38'>#</a>
+          </div>
+          <p>The array for which we interpolate</p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>  <span class="kt">LOGICAL</span><span class="p">,</span> <span class="k">INTENT</span><span class="p">(</span><span class="n">in</span><span class="p">)</span> <span class="kd">::</span> <span class="n">decreasing</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+    </div>
+    <div class='section'>
+    <a id="section-39" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-39'>#</a>
+          </div>
+          <p>f2py LOGICAL, INTENT(in), OPTIONAL :: decreasing = 0</p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>  <span class="kt">INTEGER</span> <span class="kd">::</span> <span class="n">size</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+    </div>
+    <div class='section'>
+    <a id="section-40" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-40'>#</a>
+          </div>
+          <p>f2py INTEGER, INTENT(hide), DEPEND(x_values) :: size = len(x_values)</p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>  <span class="kt">INTEGER </span><span class="n">head</span><span class="p">,</span> <span class="n">tail</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+    </div>
+    <div class='section'>
+    <a id="section-41" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-41'>#</a>
+          </div>
+          <p>The integer giving an x-value just below the one to be interpolated</p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>  <span class="kt">LOGICAL </span><span class="n">positive</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+    </div>
+    <div class='section'>
+    <a id="section-42" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-42'>#</a>
+          </div>
+          <p>This tells if the y_values are positive, needed when taking the log.</p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>  <span class="kt">DOUBLE PRECISION </span><span class="n">x_lo</span><span class="p">,</span> <span class="n">x_up</span><span class="p">,</span> <span class="n">y_lo</span><span class="p">,</span> <span class="n">y_up</span>
+
+
+  <span class="k">CALL </span><span class="n">binary_search</span><span class="p">(</span><span class="n">head</span><span class="p">,</span> <span class="n">tail</span><span class="p">,</span> <span class="n">x_interp</span><span class="p">,</span> <span class="n">x_values</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">decreasing</span><span class="p">)</span>
+
+  <span class="k">IF</span> <span class="p">(</span><span class="n">head</span> <span class="o">==</span> <span class="n">tail</span><span class="p">)</span> <span class="k">THEN</span>
+<span class="k">    </span><span class="n">interp_val</span> <span class="o">=</span> <span class="n">y_values</span><span class="p">(</span><span class="n">head</span><span class="p">)</span>
+  <span class="k">ELSE</span>
+<span class="k">    </span><span class="n">y_lo</span> <span class="o">=</span> <span class="n">y_values</span><span class="p">(</span><span class="n">head</span><span class="p">)</span>
+    <span class="n">y_up</span> <span class="o">=</span> <span class="n">y_values</span><span class="p">(</span><span class="n">tail</span><span class="p">)</span>
+
+    <span class="k">IF</span> <span class="p">(</span> <span class="n">y_lo</span><span class="o">*</span><span class="n">y_up</span> <span class="o">&lt;=</span> <span class="mi">0</span> <span class="p">)</span> <span class="k">THEN</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+    </div>
+    <div class='section'>
+    <a id="section-43" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-43'>#</a>
+          </div>
+          <p>It is not possible to take the log if one of them is 0 or if they
+have different signs, so we do a linear interpolation in this case</p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>       <span class="k">CALL </span><span class="n">interp_values</span><span class="p">(</span><span class="n">interp_val</span><span class="p">,</span> <span class="n">x_interp</span><span class="p">,</span> <span class="n">x_values</span><span class="p">,</span> <span class="n">y_values</span><span class="p">,</span> <span class="n">decreasing</span><span class="p">,</span> <span class="n">size</span><span class="p">)</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+    </div>
+    <div class='section'>
+    <a id="section-44" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-44'>#</a>
+          </div>
+          
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>    <span class="k">ELSE</span>
+<span class="k">       </span><span class="n">positive</span> <span class="o">=</span> <span class="p">.</span><span class="n">true</span><span class="p">.</span>
+       <span class="k">IF</span> <span class="p">(</span><span class="n">y_lo</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="k">THEN</span>
+<span class="k">          </span><span class="n">positive</span> <span class="o">=</span> <span class="p">.</span><span class="n">false</span><span class="p">.</span>
+          <span class="n">y_lo</span> <span class="o">=</span> <span class="o">-</span><span class="n">y_lo</span>        <span class="c">!For negative numbers we take the log</span>
+          <span class="n">y_up</span> <span class="o">=</span> <span class="o">-</span><span class="n">y_up</span>        <span class="c">! of their opposite</span>
+       <span class="k">END IF</span>
+
+<span class="k">       </span><span class="n">y_lo</span> <span class="o">=</span> <span class="nb">log</span><span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="n">y_lo</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+       <span class="n">y_up</span> <span class="o">=</span> <span class="nb">log</span><span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="n">y_up</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+       <span class="n">x_lo</span> <span class="o">=</span> <span class="n">x_values</span><span class="p">(</span><span class="n">head</span><span class="p">)</span>
+       <span class="n">x_up</span> <span class="o">=</span> <span class="n">x_values</span><span class="p">(</span><span class="n">tail</span><span class="p">)</span>
+
+       <span class="n">interp_val</span> <span class="o">=</span> <span class="p">(</span> <span class="p">(</span><span class="n">x_up</span><span class="o">-</span><span class="n">x_interp</span><span class="p">)</span><span class="o">*</span><span class="n">y_lo</span> <span class="o">+</span> <span class="p">(</span><span class="n">x_interp</span><span class="o">-</span><span class="n">x_lo</span><span class="p">)</span><span class="o">*</span><span class="n">y_up</span> <span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">x_up</span> <span class="o">-</span> <span class="n">x_lo</span><span class="p">)</span>
+
+       <span class="n">interp_val</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="p">(</span><span class="nb">exp</span><span class="p">(</span><span class="n">interp_val</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+
+       <span class="k">IF</span> <span class="p">(.</span><span class="nb">not</span><span class="p">.</span><span class="n">positive</span><span class="p">)</span> <span class="k">THEN</span>
+<span class="k">          </span><span class="n">interp_val</span> <span class="o">=</span> <span class="o">-</span><span class="n">interp_val</span>
+       <span class="k">END IF</span>
+
+<span class="k">    END IF</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+    </div>
+    <div class='section'>
+    <a id="section-45" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-45'>#</a>
+          </div>
+          
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>  <span class="k">END IF</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+    </div>
+    <div class='section'>
+    <a id="section-46" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-46'>#</a>
+          </div>
+          
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre><span class="k">END SUBROUTINE</span>
+
+</pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+    </div>
+  </div>
+</body>

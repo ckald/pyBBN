@@ -6,13 +6,13 @@
   <link rel="stylesheet" href="./pyccoon.css">
   <script type="text/x-mathjax-config">
   MathJax.Hub.Config({
-    tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+    tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']], processEscapes: true}
   });
   </script>
   <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 </head>
 <body>
-<div id='container' class="documentation">
+<div id='container' >
   <div id="footer">
     <span id="project-name">
         <a class="btn" href="./index.html">pyBBN v0.9.0</a>
@@ -29,7 +29,7 @@
     </div>
     <div class="generation-time">
         Generated at
-        <code>2015-06-07 02:03</code>
+        <code>2015-07-06 18:48</code>
         by a diligent
         <a target="_blank" href="http://ckald.github.io/pyccoon/" title="Pyccoon: side-to-side documentation generator">
             <img id="pyccoon-icon" src="./pyccoon_icon.svg" alt="Pyccoon: side-to-side documentation generator" />pyccoon</a>
@@ -51,10 +51,10 @@
           <div class='octowrap'>
             <a class='octothorpe' href='#section-0'>#</a>
           </div>
-          <p>-<em>- coding: utf-8 -</em>-</p>
+          
         </div>
         <div class='code'>
-          
+          <div class="highlight"><pre><span class="c"># -*- coding: utf-8 -*-</span></pre></div>
         </div>
         <div class='clearall'></div>
     </section>
@@ -94,7 +94,7 @@
 
 
 <p>For example, to run the cosmic neutrino background temperature test:</p>
-<div class="codehilite"><pre>PYTHONPATH=. python tests/cosmic_neutrino_temperature/__init__.py
+<div class="codehilite"><pre>PYTHONPATH=. python tests/cosmic_neutrino_temperature
 </pre></div>
         </div>
         <div class='code'>

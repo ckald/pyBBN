@@ -6,7 +6,7 @@
   <link rel="stylesheet" href="../pyccoon.css">
   <script type="text/x-mathjax-config">
   MathJax.Hub.Config({
-    tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+    tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']], processEscapes: true}
   });
   </script>
   <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
@@ -33,7 +33,7 @@
     </div>
     <div class="generation-time">
         Generated at
-        <code>2015-06-07 02:03</code>
+        <code>2015-07-06 18:48</code>
         by a diligent
         <a target="_blank" href="http://ckald.github.io/pyccoon/" title="Pyccoon: side-to-side documentation generator">
             <img id="pyccoon-icon" src="../pyccoon_icon.svg" alt="Pyccoon: side-to-side documentation generator" />pyccoon</a>
@@ -57,149 +57,191 @@
           </div>
           <h2><a id="sterile-neutrinos-generation-and-decoupling" class="header-anchor" href="#sterile-neutrinos-generation-and-decoupling"> Sterile neutrinos generation and decoupling</a></h2>
 <h3><a id="decoupling-temperature-and-regime" class="header-anchor" href="#decoupling-temperature-and-regime"> Decoupling temperature and regime</a></h3>
-<p>Heavy sterile neutrinos ($N_{1,2}$) are produced thermally at the temperatures $\gtrsim 10^2 MeV$ (vaguely, depending on the mixing angle and the mass). Influence on the universe expansion at the later stages depends on the regime in which sterile neutrinos decouple from the plasma.</p>
+<p>Heavy sterile neutrinos (<script type="math/tex">N_{1,2}</script>) are produced thermally at the temperatures <script type="math/tex">\gtrsim 10^2 MeV</script> (vaguely, depending on the mixing angle and the mass). Influence on the universe expansion at the later stages depends on the regime in which sterile neutrinos decouple from the plasma.</p>
 <p>Decoupling happens when the interaction rate of the equilibrium-supporting reactions drops below the Hubble rate. In the radiation dominated epoch, Hubble rate can be conveniently approximated:</p>
-<p>\begin{equation}
+<p>
+<script type="math/tex; mode=display">\begin{equation}
     H \approx \frac{T^2}{M_*}
-\end{equation}</p>
-<p>Typical interaction rate for 2-to-2 scattering ($N + \nu \to N + \nu$) of the sterile neutrino with the coupling constant $g$ is of the form</p>
-<p>\begin{equation}
-    \Gamma_N = \left&lt; \sigma n_\nu v\right&gt;
-\end{equation}</p>
-<p>where $\sigma$ is the cross-section of the reaction $\propto g^2$, and $v$ is the relative velocity.</p>
-<p>Coupling constant for sterile neutrinos is $G_F |\theta|$, so cross-section from dimensional considerations looks like</p>
-<p>\begin{equation}
+\end{equation}</script>
+</p>
+<p>Typical interaction rate for 2-to-2 scattering (<script type="math/tex">N + \nu \to N + \nu</script>) of the sterile neutrino with the coupling constant <script type="math/tex">g</script> is of the form</p>
+<p>
+<script type="math/tex; mode=display">\begin{equation}
+    \Gamma_N = \left< \sigma n_\nu v\right>
+\end{equation}</script>
+</p>
+<p>where <script type="math/tex">\sigma</script> is the cross-section of the reaction <script type="math/tex">\propto g^2</script>, and <script type="math/tex">v</script> is the relative velocity.</p>
+<p>Coupling constant for sterile neutrinos is <script type="math/tex">G_F |\theta|</script>, so cross-section from dimensional considerations looks like</p>
+<p>
+<script type="math/tex; mode=display">\begin{equation}
     \sigma \sim [E]^{-2} = G_F^2 |\theta|^2 \cdot [E]^2
-\end{equation}</p>
-<p>Kinematically considered reaction contains few parameters: invariant mass and scattering angles The total cross-section does not depend on the angle, so $\sigma = \sigma(s)$.</p>
-<p>\begin{equation}
+\end{equation}</script>
+</p>
+<p>Kinematically considered reaction contains few parameters: invariant mass and scattering angles The total cross-section does not depend on the angle, so <script type="math/tex">\sigma = \sigma(s)</script>.</p>
+<p>
+<script type="math/tex; mode=display">\begin{equation}
     s \sim
     \begin{cases}
-        m^2 &amp; \text{for non-relativistic N} \\ T^2 &amp; \text{for ultra-relativistic}
+        m^2 & \text{for non-relativistic N} \\\ T^2 & \text{for ultra-relativistic}
     \end{cases}
-\end{equation}</p>
+\end{equation}</script>
+</p>
 <p>Then</p>
-<p>\begin{equation}
+<p>
+<script type="math/tex; mode=display">\begin{equation}
     \Gamma_N \sim
     \begin{cases}
-        G_F^2 |\theta|^2 T^3 m^2 \\ G_F^2 |\theta|^2 T^5
+        G_F^2 |\theta|^2 T^3 m^2 \\\ G_F^2 |\theta|^2 T^5
     \end{cases}
-\end{equation}</p>
-<p>$$
+\end{equation}</script>
+</p>
+<p>
+<script type="math/tex; mode=display">
     \Gamma_N \sim \frac{T^2}{M_*}
-$$</p>
+</script>
+</p>
 <p>This gives us corresponding decoupling temperatures for sterile neutrinos:</p>
-<p>\begin{equation}
+<p>
+<script type="math/tex; mode=display">\begin{equation}
     T^{-1} \sim
     \begin{cases}
-        G_F^2 |\theta|^2 M_* m^2
-        \\ (G_F^2 |\theta|^2 M_*)^\frac13
+        G_F^2 |\theta|^2 M_\* m^2
+        \\\\ (G_F^2 |\theta|^2 M_\*)^\frac13
     \end{cases}
-\end{equation}</p>
+\end{equation}</script>
+</p>
 <p>Hence, the distribution function of sterile neutrinos at the later times highly depends on the following factors:</p>
 <ul>
 <li>sterile-active mixing angle temperature dependence</li>
 <li>mass of the sterile neutrino</li>
 <li>regime of decoupling (relativistic/non-relativistic)</li>
 </ul>
-<p>For example, if thermal corrections of $\theta$ are significant at the time of relativistic decoupling "in vacuum", sterile neutrinos might stay in the equilibrium longer and decouple being non-relativistic.</p>
+<p>For example, if thermal corrections of <script type="math/tex">\theta</script> are significant at the time of relativistic decoupling "in vacuum", sterile neutrinos might stay in the equilibrium longer and decouple being non-relativistic.</p>
 <p>Using the analysis above, we assume no significant thermal corrections for the mixing angles and, for given mass and temperature, find the decoupling regime:</p>
-<p>For $ \theta \approx 10^{-4} $
+<p>For <script type="math/tex"> \theta \approx 10^{-4} </script>
 <img src="images/decoupling_regimes_10^-4.png" >
-For $ \theta \approx 10^{-2} $
+For <script type="math/tex"> \theta \approx 10^{-2} </script>
 <img src="images/decoupling_regimes_10^-2.png" ></p>
-<p>The plotted regions correspond to non-equilibrium species in different regimes. In practice, as the temperature drops, when particle with given mass enters any of the regions - it decouples in the corresponding regime. For the sakes of certainty, the "intermediate" regime corresponds to the particle specie with $\frac15 T &lt; m &lt; 5 T$.</p>
-<p>Analysis of the decoupling regimes for the mass range of interest shows that for $\theta \lesssim 10^{-4}$ decoupling regime is rather relativistic, while for bigger values it is possible to get a fully-non-relativistic decoupling.</p>
+<p>The plotted regions correspond to non-equilibrium species in different regimes. In practice, as the temperature drops, when particle with given mass enters any of the regions - it decouples in the corresponding regime. For the sakes of certainty, the "intermediate" regime corresponds to the particle specie with <script type="math/tex">\frac15 T < m < 5 T</script>.</p>
+<p>Analysis of the decoupling regimes for the mass range of interest shows that for <script type="math/tex">\theta \lesssim 10^{-4}</script> decoupling regime is rather relativistic, while for bigger values it is possible to get a fully-non-relativistic decoupling.</p>
 <h3><a id="decoupling-and-the-qcd-transition" class="header-anchor" href="#decoupling-and-the-qcd-transition"> Decoupling and the QCD transition</a></h3>
-<p>Tuning of the parameters allows to shift the sterile neutrinos decoupling around the QCD transition temperature $~200 MeV$. The strong sector constituents of the plasma change enormously, requiring separate treatment of the quark-gluon and hadron phases and, possibly, the transition itself.</p>
+<p>Tuning of the parameters allows to shift the sterile neutrinos decoupling around the QCD transition temperature <script type="math/tex">~200 MeV</script>. The strong sector constituents of the plasma change enormously, requiring separate treatment of the quark-gluon and hadron phases and, possibly, the transition itself.</p>
 <h4><a id="decoupling-above-the-qcd-scale" class="header-anchor" href="#decoupling-above-the-qcd-scale"> Decoupling above the QCD scale</a></h4>
-<p>At the temperatures above $\Lambda_{QCD} \sim 200 MeV$, plasma is full of quarks and gluons in equilibrium. Sterile neutrinos are singlets on SM gauge groups, so the only important interactions to consider are the weak interactions of quarks with active neutrinos. These processes are splitted into neutral and charged channels and due to the conservation of the lepton number, each 2-to-2 scattering diagram contains only 2 quarks. One has to take into account the number of degrees of freedom of quarks - in addition to the spin projections, each quark can carry one of 3 colors. Color is conserved in weak interactions, so each interaction amplitude is simply multiplied by $N_c = 3$.</p>
+<p>At the temperatures above <script type="math/tex">\Lambda_{QCD} \sim 200 MeV</script>, plasma is full of quarks and gluons in equilibrium. Sterile neutrinos are singlets on SM gauge groups, so the only important interactions to consider are the weak interactions of quarks with active neutrinos. These processes are splitted into neutral and charged channels and due to the conservation of the lepton number, each 2-to-2 scattering diagram contains only 2 quarks. One has to take into account the number of degrees of freedom of quarks - in addition to the spin projections, each quark can carry one of 3 colors. Color is conserved in weak interactions, so each interaction amplitude is simply multiplied by <script type="math/tex">N_c = 3</script>.</p>
 <p>As the first approximation, one can consider free quarks. The hadrons do not exist in the quark-gluon plasma, so their interactions with the sterile neutrinos are not taken into account.</p>
-<p>\begin{align}
-    N + \overline{\nu}_\alpha &amp;\to u_i + \overline{u}_i \\ N + \overline{\nu}_\alpha &amp;\to d_i + \overline{d}_i \\ N + l^+_\alpha &amp;\to u_i + \overline{d}_i
-\end{align}</p>
-<p>where $u_i$ and $d_i$ denote the up or down component of the $i$-th quark family.</p>
+<p>
+<script type="math/tex; mode=display">\begin{align}
+    N + \overline{\nu}\_\alpha &\to u\_i + \overline{u}_i \\\ N + \overline{\nu}\_\alpha &\to d\_i + \overline{d}_i \\\ N + l^+\_\alpha &\to u\_i + \overline{d}_i
+\end{align}</script>
+</p>
+<p>where <script type="math/tex">u\_i</script> and <script type="math/tex">d\_i</script> denote the up or down component of the <script type="math/tex">i</script>-th quark family.</p>
 <h5><a id="neutral-channel-reaction" class="header-anchor" href="#neutral-channel-reaction"> Neutral channel reaction</a></h5>
-<p>\begin{align}
-    N + \overline{\nu} &amp;\to q + \overline{q}
-\end{align}</p>
-<p>\begin{align}
+<p>
+<script type="math/tex; mode=display">\begin{align}
+    N + \overline{\nu} &\to q + \overline{q}
+\end{align}</script>
+</p>
+<p>
+<script type="math/tex; mode=display">\begin{align}
     \require{cancel}
     \imath \mathcal{M} = \left(\overline{\nu} \gamma^\mu \frac{-\imath g'}{2} P_L \frac{\imath M_D}{\cancel{N}} N \right)
-        \frac{-\imath g_{\mu \nu}}{M_Z^2} (-\imath g') \left(\overline{q}_- \gamma^\nu (v_q - a_q \gamma_5) q_+ \right)
-\end{align}</p>
-<p>where the momenta of particles denoted by the particle symbols: $\nu, N, q_\pm$</p>
-<p>\begin{align}
+        \frac{-\imath g_{\mu \nu}}{M_Z^2} (-\imath g') \left(\overline{q}\_- \gamma^\nu (v_q - a_q \gamma_5) q_+ \right)
+\end{align}</script>
+</p>
+<p>where the momenta of particles denoted by the particle symbols: <script type="math/tex">\nu, N, q_\pm</script>
+</p>
+<p>
+<script type="math/tex; mode=display">\begin{align}
     \require{cancel}
-    |\overline{\mathcal{M}}|^2 &amp;= \left( \frac{g'}{M_Z} \right)^4 \frac{|\theta|^2}{2 m_N^2}
+    |\overline{\mathcal{M}}|^2 &= \left( \frac{g'}{M_Z} \right)^4 \frac{|\theta|^2}{2 m_N^2}
         Tr\left[ \cancel{N} (\cancel{N} \pm m_N) \cancel{N} P_R \gamma_\nu \cancel{\nu} \gamma^\mu P_L \right]
         Tr\left[ (\cancel{q_-} - m_q) \gamma_\mu (v_q -a_q \gamma_5)( \cancel{q_+} + m_q) (v_u + a_u \gamma_5) \gamma^\nu \right]
-    \\ &amp;= 8 \left( \frac{g'}{M_Z} \right)^4 |\theta|^2 \left(
+    \\\\ &= 8 \left( \frac{g'}{M_Z} \right)^4 |\theta|^2 \left(
         (a_q - v_q)^2 (N \cdot q_+) (\nu \cdot q_-)
         + (a_q + v_q)^2 (N \cdot q_-) (\nu \cdot q_+)
         - m_q^2 (a_q^2 - v_q^2) (N \cdot \nu)
     \right)
-\end{align}</p>
+\end{align}</script>
+</p>
 <p>For the upper quarks:</p>
-<p>\begin{align}
-    |\overline{\mathcal{M_u}}(N \overline{\nu} \to q \overline{q})|^2 &amp;=
+<p>
+<script type="math/tex; mode=display">\begin{align}
+    |\overline{\mathcal{M_u}}(N \overline{\nu} \to q \overline{q})|^2 &=
         \frac29 \left( \frac{g'}{M_Z} \right)^4 |\theta|^2 \left(
         16 \sin^2{\theta_W} (N \cdot q_+) (\nu \cdot q_-)
         +(3-4 \sin^2{\theta_W})^2 (N \cdot q_-)(\nu \cdot q_+)
         -4 m_q^2 \sin^2{\theta_W} (-3+4 \sin^2{\theta_W}) (N \cdot \nu)
     \right)
-\end{align}</p>
+\end{align}</script>
+</p>
 <p>For the lower quarks:</p>
-<p>\begin{align}
-    |\overline{\mathcal{M_d}}(N \overline{\nu} \to q \overline{q})|^2 &amp;=
+<p>
+<script type="math/tex; mode=display">\begin{align}
+    |\overline{\mathcal{M_d}}(N \overline{\nu} \to q \overline{q})|^2 &=
         \frac29 \left( \frac{g'}{M_Z} \right)^4 |\theta|^2 \left(
         4 \sin^2{\theta_W} (N \cdot q_+) (\nu \cdot q_-)
         +(3-2 \sin^2{\theta_W})^2 (N \cdot q_-)(\nu \cdot q_+)
         -2 m_q^2 \sin^2{\theta_W} (-3+2 \sin^2{\theta_W}) (N \cdot \nu)
     \right)
-\end{align}</p>
-<p>The charge-conjugated channels expressions can be obtained by simply swapping $q_\pm \to q_\mp$, so the total interaction amplitudes are:</p>
-<p>\begin{align}
+\end{align}</script>
+</p>
+<p>The charge-conjugated channels expressions can be obtained by simply swapping <script type="math/tex">q_\pm \to q_\mp</script>, so the total interaction amplitudes are:</p>
+<p>
+<script type="math/tex; mode=display">\begin{align}
     |\overline{\mathcal{M}}|^2 =
         |\overline{\mathcal{M}}(N \overline{\nu} \to q \overline{q})|^2
         + |\overline{\mathcal{M}}(N \nu \to \overline{q} q)|^2
-\end{align}</p>
-<p>$$
+\end{align}</script>
+</p>
+<p>
+<script type="math/tex; mode=display">
     |\overline{\mathcal{M_u}}|^2 = \frac29 \left( \frac{g'}{M_Z} \right)^4 |\theta|^2 \left(
         ((3-4 \sin^2{\theta_W})^2 + 16 \sin^2{\theta_W}) ((N \cdot q_+) (\nu \cdot q_-)+  (N \cdot q_-)(\nu \cdot q_+))
         + 8 m_q^2 \sin^2{\theta_W} (3-4 \sin^2{\theta_W}) (N \cdot \nu)
     \right)
-$$</p>
-<p>$$
+</script>
+</p>
+<p>
+<script type="math/tex; mode=display">
     |\overline{\mathcal{M_d}}|^2 = \frac29 \left( \frac{g'}{M_Z} \right)^4 |\theta|^2 \left(
         ((3-2 \sin^2{\theta_W})^2 + 4 \sin^2{\theta_W}) ((N \cdot q_+) (\nu \cdot q_-)+  (N \cdot q_-)(\nu \cdot q_+))
         + 4 m_q^2 \sin^2{\theta_W} (3-2 \sin^2{\theta_W}) (N \cdot \nu)
     \right)
-$$</p>
+</script>
+</p>
 <h5><a id="charged-channel-reaction" class="header-anchor" href="#charged-channel-reaction"> Charged channel reaction</a></h5>
-<p>\begin{align}
-    N + l^+ &amp;\to u + \overline{d}
-\end{align}</p>
-<p>\begin{align}
+<p>
+<script type="math/tex; mode=display">\begin{align}
+    N + l^+ &\to u + \overline{d}
+\end{align}</script>
+</p>
+<p>
+<script type="math/tex; mode=display">\begin{align}
     \require{cancel}
     \imath \mathcal{M} = \left(\overline{l} \gamma^\mu \frac{-\imath g}{2\sqrt{2}} P_L \frac{\imath M_D}{\cancel{N}} N \right)
         \frac{-\imath g_{\mu \nu}}{M_W^2} \frac{\imath g}{\sqrt{2}} \left(\overline{u} \gamma^\nu P_L  d \right)
-\end{align}</p>
-<p>where the momenta of particles denoted by the particle symbols: $l, N, q_\pm$</p>
-<p>\begin{align}
+\end{align}</script>
+</p>
+<p>where the momenta of particles denoted by the particle symbols: <script type="math/tex">l, N, q_\pm</script>
+</p>
+<p>
+<script type="math/tex; mode=display">\begin{align}
     \require{cancel}
-    |\overline{\mathcal{M}}(N l^+ \to u \overline{d})|^2 &amp;= \left( \frac{g}{M_W} \right)^4 \frac{|\theta|^2}{32 m_N^2}
+    |\overline{\mathcal{M}}(N l^+ \to u \overline{d})|^2 &= \left( \frac{g}{M_W} \right)^4 \frac{|\theta|^2}{32 m_N^2}
         Tr\left[ \cancel{N} (\cancel{N} \pm m_N) \cancel{N} P_R \gamma_\nu (\cancel{l}+m_l) \gamma^\mu P_L \right]
         Tr\left[ (\cancel{u} - m_u) \gamma_\mu P_L ( \cancel{d} + m_d) P_R \gamma^\nu \right]
-    \\ &amp;= \frac12 \left( \frac{g}{M_W} \right)^4 |\theta|^2 \left((d \cdot l) (N \cdot u) \right)
-\end{align}</p>
+    \\\\ &= \frac12 \left( \frac{g}{M_W} \right)^4 |\theta|^2 \left((d \cdot l) (N \cdot u) \right)
+\end{align}</script>
+</p>
 <p>Together with the charge-conjugated channel this gives:</p>
-<p>\begin{align}
+<p>
+<script type="math/tex; mode=display">\begin{align}
     \require{cancel}
-    |\overline{\mathcal{M}}|^2 &amp;= \frac12 \left( \frac{g}{M_W} \right)^4 |\theta|^2 \left(
+    |\overline{\mathcal{M}}|^2 &= \frac12 \left( \frac{g}{M_W} \right)^4 |\theta|^2 \left(
         (d \cdot l) (N \cdot u) + (u \cdot l) (N \cdot d)
     \right)
-\end{align}</p>
+\end{align}</script>
+</p>
         </div>
         <div class='code'>
           

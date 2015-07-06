@@ -6,7 +6,7 @@
   <link rel="stylesheet" href="../pyccoon.css">
   <script type="text/x-mathjax-config">
   MathJax.Hub.Config({
-    tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+    tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']], processEscapes: true}
   });
   </script>
   <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
@@ -32,7 +32,7 @@
     </div>
     <div class="generation-time">
         Generated at
-        <code>2015-06-07 02:04</code>
+        <code>2015-07-06 18:48</code>
         by a diligent
         <a target="_blank" href="http://ckald.github.io/pyccoon/" title="Pyccoon: side-to-side documentation generator">
             <img id="pyccoon-icon" src="../pyccoon_icon.svg" alt="Pyccoon: side-to-side documentation generator" />pyccoon</a>
@@ -107,7 +107,7 @@
     <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s">&#39;MeV/T&#39;</span><span class="p">)</span>
     <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s">u&#39;aT&#39;</span><span class="p">)</span>
     <span class="n">plt</span><span class="o">.</span><span class="n">xscale</span><span class="p">(</span><span class="s">&#39;log&#39;</span><span class="p">)</span>
-    <span class="n">plt</span><span class="o">.</span><span class="n">xlim</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">MeV</span><span class="o">/</span><span class="n">universe</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">T_final</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">xlim</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">MeV</span><span class="o">/</span><span class="n">universe</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
     <span class="n">plt</span><span class="o">.</span><span class="n">xticks</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">])</span>
     <span class="n">plt</span><span class="o">.</span><span class="n">axes</span><span class="p">()</span><span class="o">.</span><span class="n">get_xaxis</span><span class="p">()</span><span class="o">.</span><span class="n">set_major_formatter</span><span class="p">(</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">ticker</span><span class="o">.</span><span class="n">ScalarFormatter</span><span class="p">())</span>
     <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">UNITS</span><span class="o">.</span><span class="n">MeV</span> <span class="o">/</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">universe</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s">&#39;T&#39;</span><span class="p">]),</span>
@@ -154,7 +154,7 @@
     <span class="k">for</span> <span class="n">neutrino</span> <span class="ow">in</span> <span class="n">particles</span><span class="p">:</span>
         <span class="n">f</span> <span class="o">=</span> <span class="n">neutrino</span><span class="o">.</span><span class="n">_distribution</span>
         <span class="n">feq</span> <span class="o">=</span> <span class="n">neutrino</span><span class="o">.</span><span class="n">equilibrium_distribution</span><span class="p">()</span>
-        <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">GRID</span><span class="o">.</span><span class="n">TEMPLATE</span><span class="o">/</span><span class="n">UNITS</span><span class="o">.</span><span class="n">MeV</span><span class="p">,</span> <span class="n">f</span><span class="o">/</span><span class="n">feq</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="n">neutrino</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">neutrino</span><span class="o">.</span><span class="n">grid</span><span class="o">.</span><span class="n">TEMPLATE</span><span class="o">/</span><span class="n">UNITS</span><span class="o">.</span><span class="n">MeV</span><span class="p">,</span> <span class="n">f</span><span class="o">/</span><span class="n">feq</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="n">neutrino</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
 
         <span class="n">numpy</span><span class="o">.</span><span class="n">savetxt</span><span class="p">(</span><span class="n">distributions_file</span><span class="p">,</span> <span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">feq</span><span class="p">,</span> <span class="n">f</span><span class="o">/</span><span class="n">feq</span><span class="p">),</span> <span class="n">header</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">neutrino</span><span class="p">),</span>
                       <span class="n">footer</span><span class="o">=</span><span class="s">&#39;-&#39;</span><span class="o">*</span><span class="mi">80</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s">&quot;</span><span class="si">%1.5e</span><span class="s">&quot;</span><span class="p">)</span>

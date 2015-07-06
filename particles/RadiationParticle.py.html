@@ -6,7 +6,7 @@
   <link rel="stylesheet" href="../pyccoon.css">
   <script type="text/x-mathjax-config">
   MathJax.Hub.Config({
-    tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+    tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']], processEscapes: true}
   });
   </script>
   <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
@@ -25,13 +25,13 @@
           <a class="source source-2" href="#density"> Density</a>
           <a class="source source-2" href="#energy-density"> Energy density</a>
           <a class="source source-2" href="#pressure"> Pressure</a>
-          <a class="source source-1" href="#master-equation-terms"> Master equation terms</a>
+          <a class="source source-2" href="#master-equation-terms"> Master equation terms</a>
       </div>
     </div>
     </div>
     <div class="generation-time">
         Generated at
-        <code>2015-06-07 02:03</code>
+        <code>2015-07-06 18:48</code>
         by a diligent
         <a target="_blank" href="http://ckald.github.io/pyccoon/" title="Pyccoon: side-to-side documentation generator">
             <img id="pyccoon-icon" src="../pyccoon_icon.svg" alt="Pyccoon: side-to-side documentation generator" />pyccoon</a>
@@ -75,9 +75,11 @@
             <a class='octothorpe' href='#section-1'>#</a>
           </div>
           <h2><a id="density" class="header-anchor" href="#density"> Density</a></h2>
-<p>\begin{equation}
+<p>
+<script type="math/tex; mode=display">\begin{equation}
        n = \frac{g}{\pi^2} (aT)^3 \zeta(3)
-   \end{equation}</p>
+   \end{equation}</script>
+</p>
         </div>
         <div class='code'>
           <div class="highlight"><pre><span class="k">def</span> <span class="nf">density</span><span class="p">(</span><span class="n">particle</span><span class="p">):</span>
@@ -97,7 +99,7 @@
           <div class='octowrap'>
             <a class='octothorpe' href='#section-2'>#</a>
           </div>
-          <p>Multiplied by $\frac34$ for fermions</p>
+          <p>Multiplied by <script type="math/tex">\frac34</script> for fermions</p>
         </div>
         <div class='code'>
           <div class="highlight"><pre>        <span class="n">density</span> <span class="o">*=</span> <span class="mf">3.</span><span class="o">/</span><span class="mf">4.</span></pre></div>
@@ -128,9 +130,11 @@
             <a class='octothorpe' href='#section-4'>#</a>
           </div>
           <h2><a id="energy-density" class="header-anchor" href="#energy-density"> Energy density</a></h2>
-<p>\begin{equation}
+<p>
+<script type="math/tex; mode=display">\begin{equation}
        \rho = \frac{\pi^2}{30} g T^4
-   \end{equation}</p>
+   \end{equation}</script>
+</p>
         </div>
         <div class='code'>
           <div class="highlight"><pre><span class="k">def</span> <span class="nf">energy_density</span><span class="p">(</span><span class="n">particle</span><span class="p">):</span>
@@ -150,7 +154,7 @@
           <div class='octowrap'>
             <a class='octothorpe' href='#section-5'>#</a>
           </div>
-          <p>Multiplied by $\frac78$ for fermions</p>
+          <p>Multiplied by <script type="math/tex">\frac78</script> for fermions</p>
         </div>
         <div class='code'>
           <div class="highlight"><pre>        <span class="n">density</span> <span class="o">*=</span> <span class="mf">7.</span><span class="o">/</span><span class="mf">8.</span></pre></div>
@@ -181,9 +185,11 @@
             <a class='octothorpe' href='#section-7'>#</a>
           </div>
           <h2><a id="pressure" class="header-anchor" href="#pressure"> Pressure</a></h2>
-<p>\begin{equation}
+<p>
+<script type="math/tex; mode=display">\begin{equation}
        P = \frac{\rho}{3}
-   \end{equation}</p>
+   \end{equation}</script>
+</p>
         </div>
         <div class='code'>
           <div class="highlight"><pre><span class="k">def</span> <span class="nf">pressure</span><span class="p">(</span><span class="n">particle</span><span class="p">):</span>
@@ -200,7 +206,7 @@
           <div class='octowrap'>
             <a class='octothorpe' href='#section-8'>#</a>
           </div>
-          <h1><a id="master-equation-terms" class="header-anchor" href="#master-equation-terms"> Master equation terms</a></h1>
+          <h2><a id="master-equation-terms" class="header-anchor" href="#master-equation-terms"> Master equation terms</a></h2>
         </div>
         <div class='code'>
           
@@ -215,7 +221,9 @@
           <div class='octowrap'>
             <a class='octothorpe' href='#section-9'>#</a>
           </div>
-          <p>\begin{equation}0\end{equation} </p>
+          <p>
+<script type="math/tex; mode=display">\begin{equation}0\end{equation}</script>
+</p>
         </div>
         <div class='code'>
           <div class="highlight"><pre><span class="k">def</span> <span class="nf">numerator</span><span class="p">(</span><span class="n">particle</span><span class="p">):</span>
@@ -232,9 +240,11 @@
           <div class='octowrap'>
             <a class='octothorpe' href='#section-10'>#</a>
           </div>
-          <p>\begin{equation}
+          <p>
+<script type="math/tex; mode=display">\begin{equation}
        \frac{2 \pi^2}{15} g (a T)^3
-   \end{equation}</p>
+   \end{equation}</script>
+</p>
         </div>
         <div class='code'>
           <div class="highlight"><pre><span class="k">def</span> <span class="nf">denominator</span><span class="p">(</span><span class="n">particle</span><span class="p">):</span>

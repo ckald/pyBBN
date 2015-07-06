@@ -6,7 +6,7 @@
   <link rel="stylesheet" href="../../pyccoon.css">
   <script type="text/x-mathjax-config">
   MathJax.Hub.Config({
-    tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+    tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']], processEscapes: true}
   });
   </script>
   <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
@@ -20,7 +20,7 @@
     <a class="btn" class="source source-1" href="#top">Back to top</a>
     <div class="generation-time">
         Generated at
-        <code>2015-06-07 02:04</code>
+        <code>2015-07-06 18:48</code>
         by a diligent
         <a target="_blank" href="http://ckald.github.io/pyccoon/" title="Pyccoon: side-to-side documentation generator">
             <img id="pyccoon-icon" src="../../pyccoon_icon.svg" alt="Pyccoon: side-to-side documentation generator" />pyccoon</a>
@@ -47,7 +47,6 @@
         <div class='code'>
           <div class="highlight"><pre><span class="kn">import</span> <span class="nn">numpy</span>
 
-<span class="kn">from</span> <span class="nn">common</span> <span class="kn">import</span> <span class="n">GRID</span>
 <span class="kn">from</span> <span class="nn">particles</span> <span class="kn">import</span> <span class="n">Particle</span>
 <span class="kn">from</span> <span class="nn">library.SM</span> <span class="kn">import</span> <span class="n">particles</span> <span class="k">as</span> <span class="n">SMP</span>
 
@@ -72,10 +71,11 @@
     <span class="n">photon</span> <span class="o">=</span> <span class="n">Particle</span><span class="p">(</span><span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">,</span> <span class="o">**</span><span class="n">SMP</span><span class="o">.</span><span class="n">photon</span><span class="p">)</span>
     <span class="n">neutrino</span> <span class="o">=</span> <span class="n">Particle</span><span class="p">(</span><span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">,</span> <span class="o">**</span><span class="n">SMP</span><span class="o">.</span><span class="n">leptons</span><span class="o">.</span><span class="n">neutrino_e</span><span class="p">)</span>
 
-    <span class="k">print</span> <span class="n">neutrino</span><span class="o">.</span><span class="n">_distribution</span> <span class="o">-</span> <span class="n">numpy</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="n">neutrino</span><span class="o">.</span><span class="n">distribution</span><span class="p">)(</span><span class="n">GRID</span><span class="o">.</span><span class="n">TEMPLATE</span><span class="p">)</span>
+    <span class="k">print</span> <span class="n">neutrino</span><span class="o">.</span><span class="n">_distribution</span> <span class="o">-</span> <span class="n">numpy</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="n">neutrino</span><span class="o">.</span><span class="n">distribution</span><span class="p">)(</span><span class="n">neutrino</span><span class="o">.</span><span class="n">grid</span><span class="o">.</span><span class="n">TEMPLATE</span><span class="p">)</span>
 
-    <span class="k">assert</span> <span class="nb">all</span><span class="p">(</span><span class="n">photon</span><span class="o">.</span><span class="n">_distribution</span> <span class="o">==</span> <span class="n">numpy</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="n">photon</span><span class="o">.</span><span class="n">distribution</span><span class="p">)(</span><span class="n">GRID</span><span class="o">.</span><span class="n">TEMPLATE</span><span class="p">))</span>
-    <span class="k">assert</span> <span class="nb">all</span><span class="p">(</span><span class="n">neutrino</span><span class="o">.</span><span class="n">_distribution</span> <span class="o">==</span> <span class="n">numpy</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="n">neutrino</span><span class="o">.</span><span class="n">distribution</span><span class="p">)(</span><span class="n">GRID</span><span class="o">.</span><span class="n">TEMPLATE</span><span class="p">))</span></pre></div>
+    <span class="k">assert</span> <span class="nb">all</span><span class="p">(</span><span class="n">photon</span><span class="o">.</span><span class="n">_distribution</span> <span class="o">==</span> <span class="n">numpy</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="n">photon</span><span class="o">.</span><span class="n">distribution</span><span class="p">)(</span><span class="n">photon</span><span class="o">.</span><span class="n">grid</span><span class="o">.</span><span class="n">TEMPLATE</span><span class="p">))</span>
+    <span class="k">assert</span> <span class="nb">all</span><span class="p">(</span><span class="n">neutrino</span><span class="o">.</span><span class="n">_distribution</span> <span class="o">==</span>
+               <span class="n">numpy</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="n">neutrino</span><span class="o">.</span><span class="n">distribution</span><span class="p">)(</span><span class="n">neutrino</span><span class="o">.</span><span class="n">grid</span><span class="o">.</span><span class="n">TEMPLATE</span><span class="p">))</span></pre></div>
         </div>
         <div class='clearall'></div>
     </section>
@@ -95,8 +95,8 @@
 
     <span class="n">neutrino</span> <span class="o">=</span> <span class="n">Particle</span><span class="p">(</span><span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">,</span> <span class="o">**</span><span class="n">SMP</span><span class="o">.</span><span class="n">leptons</span><span class="o">.</span><span class="n">neutrino_e</span><span class="p">)</span>
 
-    <span class="n">detailed_grid</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">GRID</span><span class="o">.</span><span class="n">MIN_MOMENTUM</span><span class="p">,</span> <span class="n">GRID</span><span class="o">.</span><span class="n">MAX_MOMENTUM</span><span class="o">*</span><span class="mi">2</span><span class="p">,</span>
-                                   <span class="n">num</span><span class="o">=</span><span class="n">GRID</span><span class="o">.</span><span class="n">MOMENTUM_SAMPLES</span><span class="o">*</span><span class="mi">10</span><span class="p">,</span> <span class="n">endpoint</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">detailed_grid</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">neutrino</span><span class="o">.</span><span class="n">grid</span><span class="o">.</span><span class="n">MIN_MOMENTUM</span><span class="p">,</span> <span class="n">neutrino</span><span class="o">.</span><span class="n">grid</span><span class="o">.</span><span class="n">MAX_MOMENTUM</span><span class="o">*</span><span class="mi">2</span><span class="p">,</span>
+                                   <span class="n">num</span><span class="o">=</span><span class="n">neutrino</span><span class="o">.</span><span class="n">grid</span><span class="o">.</span><span class="n">MOMENTUM_SAMPLES</span><span class="o">*</span><span class="mi">10</span><span class="p">,</span> <span class="n">endpoint</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
 
     <span class="k">print</span> <span class="n">numpy</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span>
         <span class="n">neutrino</span><span class="o">.</span><span class="n">equilibrium_distribution_function</span><span class="p">(</span><span class="n">detailed_grid</span> <span class="o">/</span> <span class="n">neutrino</span><span class="o">.</span><span class="n">aT</span><span class="p">)</span>

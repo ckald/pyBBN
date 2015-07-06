@@ -6,7 +6,7 @@
   <link rel="stylesheet" href="../pyccoon.css">
   <script type="text/x-mathjax-config">
   MathJax.Hub.Config({
-    tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+    tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']], processEscapes: true}
   });
   </script>
   <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
@@ -31,7 +31,7 @@
     </div>
     <div class="generation-time">
         Generated at
-        <code>2015-06-07 02:03</code>
+        <code>2015-07-06 18:48</code>
         by a diligent
         <a target="_blank" href="http://ckald.github.io/pyccoon/" title="Pyccoon: side-to-side documentation generator">
             <img id="pyccoon-icon" src="../pyccoon_icon.svg" alt="Pyccoon: side-to-side documentation generator" />pyccoon</a>
@@ -55,11 +55,13 @@
           </div>
           <h2><a id="the-models-considered" class="header-anchor" href="#the-models-considered"> The models considered</a></h2>
 <p>We are interested in constraining the arbitrary sterile neutrino model, which is defined by the See-Saw Lagrangian:</p>
-<p>\begin{equation}
-     \mathcal{L} = \mathcal{L}_{SM}+ i \bar N_I \partial_\mu \gamma^\mu N_I -
+<p>
+<script type="math/tex; mode=display">\begin{equation}
+     \mathcal{L} = \mathcal{L}\_{SM}+ i \bar N_I \partial_\mu \gamma^\mu N_I -
           \left(F_{\alpha I} \,\bar L_\alpha N_I \tilde \phi
         - \frac{M_I}{2} \; \bar {N_I^c} N_I + h.c.\right)
-\end{equation}</p>
+\end{equation}</script>
+</p>
 <h3><a id="number-of-sterile-neutrinos" class="header-anchor" href="#number-of-sterile-neutrinos"> Number of sterile neutrinos</a></h3>
 <p>We are free to consider an arbitrary number of sterile neutrinos species, but the most interest comprise the case of 1 light sterile neutrino with negligible in the context of the BBN coupling constant and 2 heavy degenerate in mass sterile neutrinos. The first specie won't affect the observables, but heavier particles with higher interaction rates might survive until the BBN.</p>
 <p>Degeneracy in mass also allows to treat 2 Majorana fermions as a single Dirac particle - effectively substituting the doubling of the reactions due to charge conjugation with the notion of the antiparticle.</p>
@@ -68,33 +70,39 @@
 <p>There are 3 mixing angles corresponding to each sterile neutrino specie (Dirac or Majorana). The lifetime of the particle depends on them in a non-trivial way, but for any given set of mixing angles it is possible to derive the mass range in which this particular realization of the sterile neutrino will survive until the BBN.</p>
 <p>Particular values for the coupling constants can be determined from neutrino oscillations experiments, so it is useful to use similar parametrization.</p>
 <p>It is convenient to define the sterile neutrino mixing angles as running with mass:</p>
-<p>$$
+<p>
+<script type="math/tex; mode=display">
     \theta_{M_N} = \theta_{M'} \sqrt{\frac{M'}{M_N}}
-$$</p>
+</script>
+</p>
 <p>And normalized by some parameter on which resulting neutrino masses do not depend:</p>
-<p>$$
+<p>
+<script type="math/tex; mode=display">
     \theta_{M_N} \propto |z|
-$$</p>
-<p>Particular choice of $|z|$, $M'$ and $\theta_M'$s ratios correspond to specific active neutrinos masses.</p>
+</script>
+</p>
+<p>Particular choice of <script type="math/tex">|z|</script>, <script type="math/tex">M'</script> and <script type="math/tex">\theta_M'</script>s ratios correspond to specific active neutrinos masses.</p>
 <p>Typical decay width and lifetime in such parametrization look like:</p>
-<p>$$
-    \theta_e = 1.14 \cdot 10^{-4} \frac{|z|}{\sqrt{M_N}} \\ \theta_\mu = 6.16 \cdot 10^{-4} \frac{|z|}{\sqrt{M_N}} \\ \theta_\tau = 5.65 \cdot 10^{-4} \frac{|z|}{\sqrt{M_N}}
-$$</p>
+<p>
+<script type="math/tex; mode=display">
+    \theta_e = 1.14 \cdot 10^{-4} \frac{|z|}{\sqrt{M_N}} \\\ \theta_\mu = 6.16 \cdot 10^{-4} \frac{|z|}{\sqrt{M_N}} \\\ \theta_\tau = 5.65 \cdot 10^{-4} \frac{|z|}{\sqrt{M_N}}
+</script>
+</p>
 <p><center>
 <img src="images/sterile_neutrino_decay_width.png" width=350 /><img src="images/sterile_neutrino_lifetime.png" width=350 />
 </center></p>
 <p>By allowing the variation of normalization of mixing angles, one can determine the models affecting BBN predictions:</p>
 <p><center><img src="images/lifetime_contour_plot.png"/></center></p>
-<p>Meaning that all the sterile neutrinos models below the $0.01$ contour will survive at the times of BBN and might affect the observables.</p>
+<p>Meaning that all the sterile neutrinos models below the <script type="math/tex">0.01</script> contour will survive at the times of BBN and might affect the observables.</p>
 <p>Of course, this is just a single projection of the multidimensional parameter space, but it is a useful one to compare with oscillation experiments.</p>
 <h3><a id="mixing-angle-temperature-dependence" class="header-anchor" href="#mixing-angle-temperature-dependence"> Mixing angle temperature dependence</a></h3>
-<p>A simple example of influence of the medium on sterile neutrino mixing (as well as active neutrinos oscillations) is the Miheev-Smirnov-Wolfenstein (MSW) effect. It is discussed in the theory of solar neutrinos oscillations and captures the influence of the solar $e^-$-$e^+$ plasma on the propagation of neutrinos.</p>
-<p>However, the MSW correction is proportional to electron-positron density difference and becomes prominent only in highly asymmetric medium like the Sun. An approach of the quantum field theory at finite temperatures allows to obtain more general result for the temperature dependence of the $\theta$:</p>
+<p>A simple example of influence of the medium on sterile neutrino mixing (as well as active neutrinos oscillations) is the Miheev-Smirnov-Wolfenstein (MSW) effect. It is discussed in the theory of solar neutrinos oscillations and captures the influence of the solar <script type="math/tex">e^-</script>-<script type="math/tex">e^+</script> plasma on the propagation of neutrinos.</p>
+<p>However, the MSW correction is proportional to electron-positron density difference and becomes prominent only in highly asymmetric medium like the Sun. An approach of the quantum field theory at finite temperatures allows to obtain more general result for the temperature dependence of the <script type="math/tex">\theta</script>:</p>
 <p><center><img src="images/0901.0011.png" /></center></p>
-<p>We assume no significant lepton asymmetry, so the main contribution comes from the $b$ function.</p>
+<p>We assume no significant lepton asymmetry, so the main contribution comes from the <script type="math/tex">b</script> function.</p>
 <p><img src="images/temperature_dependance_2D.png" /><img src="images/temperature_dependance_3D.png" /></p>
-<p>From these plots we can that temperature corrections become significant only at temperatures of the order of couple $GeV$s, so as long as sterile neutrinos decouple at later times, we can assume the mixing angles equal to the vacuum ones.</p>
-<p><span class=todo><strong>TODO</strong>: looks like this effect can be derived simply by calculating a single correction of the neutrino propagator (in the flavor basis there are no corrections sterile neutrinos) through the $W-e$ loop. $W$-boson propagator leading term gives MSW-like correction and a term, suppressed by $m_e / m_N$. The subleading term will hopefully give the desired $b$-function. The only thermal QFT information used is the electron thermal propagator.</span></p>
+<p>From these plots we can that temperature corrections become significant only at temperatures of the order of couple <script type="math/tex">GeV</script>s, so as long as sterile neutrinos decouple at later times, we can assume the mixing angles equal to the vacuum ones.</p>
+<p><span class=todo><strong>TODO</strong>: looks like this effect can be derived simply by calculating a single correction of the neutrino propagator (in the flavor basis there are no corrections sterile neutrinos) through the <script type="math/tex">W-e</script> loop. <script type="math/tex">W</script>-boson propagator leading term gives MSW-like correction and a term, suppressed by <script type="math/tex">m_e / m_N</script>. The subleading term will hopefully give the desired <script type="math/tex">b</script>-function. The only thermal QFT information used is the electron thermal propagator.</span></p>
         </div>
         <div class='code'>
           

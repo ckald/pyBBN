@@ -6,7 +6,7 @@
   <link rel="stylesheet" href="../pyccoon.css">
   <script type="text/x-mathjax-config">
   MathJax.Hub.Config({
-    tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+    tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']], processEscapes: true}
   });
   </script>
   <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
@@ -23,12 +23,15 @@
     <div id="jump_wrapper">
       <div id="jump_page">
           <a class="source source-1" href="#project-outline"> Project outline</a>
+          <a class="source source-1" href="#status"> Status</a>
+          <a class="source source-1" href="#probable-causes-of-the-errors:"> Probable causes of the errors:</a>
+          <a class="source source-1" href="#plan"> Plan</a>
       </div>
     </div>
     </div>
     <div class="generation-time">
         Generated at
-        <code>2015-06-07 02:03</code>
+        <code>2015-07-06 18:48</code>
         by a diligent
         <a target="_blank" href="http://ckald.github.io/pyccoon/" title="Pyccoon: side-to-side documentation generator">
             <img id="pyccoon-icon" src="../pyccoon_icon.svg" alt="Pyccoon: side-to-side documentation generator" />pyccoon</a>
@@ -59,6 +62,128 @@
 <li><a href="nucleosynthesis_setup.md.html">Neutrinos, neutrons decoupling and nucleosynthesis setup</a></li>
 <li><a href="nucleosynthesis.md.html">Nucleosynthesis</a></li>
 </ul>
+<h1><a id="status" class="header-anchor" href="#status"> Status</a></h1>
+<p>Currently the code does not model the whole range of the parameter space accurately. In the beginning
+of June the situation was the following:</p>
+<p><img src="images/reproduced_results.png" /></p>
+<p>Since then, many changes were made to improve those results and ensure that the code is reliable
+in the region of higher masses:</p>
+<ul>
+<li>Added effective number of neutrinos and sterile neutrino density monitors to be sure that
+    particles decay properly (before numerical effects caused them to remain at some constant
+    density and eventually dominate the energy density of the system)</li>
+<li>Three-particle integral was checked to produce correct exponential decay for sterile
+    neutrinos</li>
+<li>Resting particles (with zero momentum) were included to the system as they are crucial for the
+    non-relativistic distributions and bigger masses</li>
+<li>Gaussian-Legendre quadrature was replaced by Lobatto quadrature which evaluation points include
+    both ends of the integration region (important as well for non-relativistic distributions)</li>
+<li>Particle species were allowed to have different integration grids to be able to save computation
+    time and tune the precision for different particles</li>
+<li>Another grid type was implemented to account for three-particles interactions kinematics. Turns
+    out that the thermal width of the collision integral peak only grows with time and, as it's
+    position is known at any point, it is possible to construct a grid that will always have a
+    given number of points at the peak's position (up to entropy non-conservation effect that can
+    change the width of the peak by a factor of ~2)</li>
+<li>Additionally, to fully capture the effects of sterile neutrinos decay on active neutrinos, the
+    last momentum sampling point of their distribution should be at the position of the peak at the
+    last moment when sterile neutrinos are still in significant abundance. For simplicity, this
+    moment is taken to be <script type="math/tex">100 * \tau_N</script>
+</li>
+</ul>
+<h1><a id="probable-causes-of-the-errors:" class="header-anchor" href="#probable-causes-of-the-errors:"> Probable causes of the errors:</a></h1>
+<ul>
+<li>
+<p>Not sufficient control of precision of final elements abundances. Most of the control on the
+    computation happens at the Python code, while KAWANO is responsible for the final result.
+    This code has a number of principal differences from the older C++ version -- most notably,
+    logarithmic time integration grid. This grid allows to do much less integration steps, but the
+    step size at the given temperature now depends on the starting temperature of computation.</p>
+<p>For large masses of sterile neutrinos, the typical decoupling temperature increases, so the step
+size of the data used by KAWANO effectively increased.</p>
+</li>
+<li>
+<p>Error in the KAWANO code. Original KAWANO code infers the baryon-to-photon ratio during the run.
+    To account for non-equilibrium effect, a number of sampled input parameters were introduced to
+    the initial conditions of KAWANO. However, baryon-to-photon ratio was still calculated on the
+    still. This resulted in a random final value of baryon-to-photon ratio. To fix it at the
+    observed level a few other runs with parameters finetuning were required.</p>
+<p>To fix this problem, I modified the KAWANO code to be aware that baryon-to-photon ratio
+depends on the temperature curve given in the data. Now baryon-to-photon ratio always ends up
+being equal to <code>6e-10</code> -- this makes the computation more consistent overall.</p>
+<p>However, I've noticed a slight difference in the speed of convergence to the final value by
+the old version of modified KAWANO code and my version. Here's an example of my version's output</p>
+<div class="codehilite"><pre>    Temp        eta
+-----------------------
+ 1.000E+02   1.650E-09
+ 4.645E+01   1.649E-09
+ 1.940E+01   1.640E-09
+ 8.486E+00   1.596E-09
+ 4.516E+00   1.476E-09
+ 2.676E+00   1.245E-09
+ 1.705E+00   9.535E-10
+ 1.213E+00   7.540E-10
+ 9.787E-01   6.711E-10
+ 8.456E-01   6.363E-10
+ 6.750E-01   6.098E-10
+ 3.230E-01   6.000E-10
+ 1.380E-01   6.000E-10
+ 7.846E-02   6.000E-10
+ 4.266E-02   6.000E-10
+ 1.781E-02   6.000E-10
+ 9.952E-03   6.000E-10
+</pre></div>
+
+
+<p>For the older version <code>eta</code> converges a bit slower, but no systematic comparison was performed.</p>
+</li>
+<li>
+<p>It is possible that my account of pions is completely wrong. I consider pions to be very
+    short-lived or electrically charged, so their production during decays of sterile neutrinos
+    does not influence on the equilibrium distribution. I do not compute the collision integral
+    for them, so all entropy of pions go directly into photons, increasing their temperature.</p>
+<p>This approach seems to be reasonable, but still can be considered questionable without
+additional investigation into these matters.</p>
+</li>
+</ul>
+<h1><a id="plan" class="header-anchor" href="#plan"> Plan</a></h1>
+<p>To finish my master thesis in time and graduate, I need to fix those problems by the end of July.
+I am going to write the thesis while looking into the problems mentioned above.</p>
+<ul>
+<li>
+<p>Week 1:</p>
+<ol>
+<li>Determine the step size required by KAWANO code to produce stable results</li>
+<li>Determine the accuracy of the most significant tests depending on grid spacing and time
+    step size</li>
+<li>Split all test runs into 2 temperature ranges with different time step sizes (I already
+    made sure that this split does not introduce discontinuities in system parameters)</li>
+<li>Run all tests to determine the current status</li>
+</ol>
+</li>
+<li>
+<p>Week 2:</p>
+<ol>
+<li>Take a look at KAWANO code again and test my modifications</li>
+<li>Run tests again</li>
+</ol>
+</li>
+<li>
+<p>Week 3:</p>
+<ol>
+<li>Finish the thesis with whatever results I have</li>
+<li>Get feedback on the text and send it to reviewers</li>
+</ol>
+</li>
+<li>
+<p>Week 4:</p>
+<ol>
+<li>Graduate</li>
+</ol>
+</li>
+</ul>
+<p>If I will have some time, I will consider the pion problem too. After graduation I am free to change
+the direction of this research in any direction.</p>
         </div>
         <div class='code'>
           

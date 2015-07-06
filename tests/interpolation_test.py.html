@@ -6,7 +6,7 @@
   <link rel="stylesheet" href="../pyccoon.css">
   <script type="text/x-mathjax-config">
   MathJax.Hub.Config({
-    tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+    tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']], processEscapes: true}
   });
   </script>
   <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
@@ -18,9 +18,25 @@
         <a class="btn" href="../index.html">pyBBN v0.9.0</a>
     </span>
     <a class="btn" class="source source-1" href="#top">Back to top</a>
+    <div id="jump_to" class="btn">
+    Contents
+    <div id="jump_wrapper">
+      <div id="jump_page">
+          <a class="source source-1" href="#print-[neutrino.distribution(p)---neutrino._distribution_interpolation(p)"> print [neutrino.distribution(p) - neutrino._distribution_interpolation(p)</a>
+          <a class="source source-1" href="#for-p-in-numpy.linspace(neutrino.grid.min_momentum,-neutrino.grid.max_momentum,">        for p in numpy.linspace(neutrino.grid.MIN_MOMENTUM, neutrino.grid.MAX_MOMENTUM,</a>
+          <a class="source source-1" href="#num=200,-endpoint=true)]">                                num=200, endpoint=True)]</a>
+          <a class="source source-1" href="#val-=-check(p=[p0,-p1,-p2,-p3])"> val = check(p=[p0, p1, p2, p3])</a>
+          <a class="source source-1" href="#f0-=-neutrino.distribution(p0)"> f0 = neutrino.distribution(p0)</a>
+          <a class="source source-1" href="#f1-=-neutrino.distribution(p1)"> f1 = neutrino.distribution(p1)</a>
+          <a class="source source-1" href="#f2-=-neutrino.distribution(p2)"> f2 = neutrino.distribution(p2)</a>
+          <a class="source source-1" href="#f3-=-neutrino.distribution(p3)"> f3 = neutrino.distribution(p3)</a>
+          <a class="source source-1" href="#val-=-f2-*-f3-*-(1---f0)-*-(1---f1)---f0-*-f1-*-(1---f2)-*-(1---f3)"> val = f2 * f3 * (1 - f0) * (1 - f1) - f0 * f1 * (1 - f2) * (1 - f3)</a>
+      </div>
+    </div>
+    </div>
     <div class="generation-time">
         Generated at
-        <code>2015-06-07 02:03</code>
+        <code>2015-07-06 18:48</code>
         by a diligent
         <a target="_blank" href="http://ckald.github.io/pyccoon/" title="Pyccoon: side-to-side documentation generator">
             <img id="pyccoon-icon" src="../pyccoon_icon.svg" alt="Pyccoon: side-to-side documentation generator" />pyccoon</a>
@@ -50,11 +66,10 @@
 <span class="kn">from</span> <span class="nn">interactions.four_particle</span> <span class="kn">import</span> <span class="n">FourParticleM</span><span class="p">,</span> <span class="n">FourParticleIntegral</span>
 <span class="kn">from</span> <span class="nn">particles</span> <span class="kn">import</span> <span class="n">Particle</span>
 <span class="kn">from</span> <span class="nn">evolution</span> <span class="kn">import</span> <span class="n">Universe</span>
-<span class="kn">from</span> <span class="nn">common</span> <span class="kn">import</span> <span class="n">CONST</span><span class="p">,</span> <span class="n">UNITS</span><span class="p">,</span> <span class="n">Params</span><span class="p">,</span> <span class="n">GRID</span>
+<span class="kn">from</span> <span class="nn">common</span> <span class="kn">import</span> <span class="n">CONST</span><span class="p">,</span> <span class="n">UNITS</span><span class="p">,</span> <span class="n">Params</span>
 
 
-<span class="n">params</span> <span class="o">=</span> <span class="n">Params</span><span class="p">(</span><span class="n">T_initial</span><span class="o">=</span><span class="mi">2</span> <span class="o">*</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">MeV</span><span class="p">,</span>
-                <span class="n">T_final</span><span class="o">=</span><span class="mf">0.075</span> <span class="o">*</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">MeV</span><span class="p">,</span>
+<span class="n">params</span> <span class="o">=</span> <span class="n">Params</span><span class="p">(</span><span class="n">T</span><span class="o">=</span><span class="mi">2</span> <span class="o">*</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">MeV</span><span class="p">,</span>
                 <span class="n">dx</span><span class="o">=</span><span class="mf">1e-1</span> <span class="o">*</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">MeV</span><span class="p">)</span>
 
 <span class="n">photon</span> <span class="o">=</span> <span class="n">Particle</span><span class="p">(</span><span class="o">**</span><span class="n">SMP</span><span class="o">.</span><span class="n">photon</span><span class="p">)</span>
@@ -88,7 +103,7 @@
           <div class='octowrap'>
             <a class='octothorpe' href='#section-1'>#</a>
           </div>
-          <p>neutrino._distribution += addition(GRID.TEMPLATE)</p>
+          <p>neutrino._distribution += addition(neutrino.grid.TEMPLATE)</p>
         </div>
         <div class='code'>
           
@@ -119,15 +134,15 @@
           <div class='octowrap'>
             <a class='octothorpe' href='#section-3'>#</a>
           </div>
-          <p>print [neutrino.distribution(p) - neutrino._distribution_interpolation(p)
-       for p in numpy.linspace(GRID.MIN_MOMENTUM, GRID.MAX_MOMENTUM,
-                               num=200, endpoint=True)]</p>
+          <h1><a id="print-[neutrino.distribution(p)---neutrino._distribution_interpolation(p)" class="header-anchor" href="#print-[neutrino.distribution(p)---neutrino._distribution_interpolation(p)"> print [neutrino.distribution(p) - neutrino._distribution_interpolation(p)</a></h1>
+<h1><a id="for-p-in-numpy.linspace(neutrino.grid.min_momentum,-neutrino.grid.max_momentum," class="header-anchor" href="#for-p-in-numpy.linspace(neutrino.grid.min_momentum,-neutrino.grid.max_momentum,">        for p in numpy.linspace(neutrino.grid.MIN_MOMENTUM, neutrino.grid.MAX_MOMENTUM,</a></h1>
+<h1><a id="num=200,-endpoint=true)]" class="header-anchor" href="#num=200,-endpoint=true)]">                                num=200, endpoint=True)]</a></h1>
         </div>
         <div class='code'>
           <div class="highlight"><pre><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
 
-<span class="n">x</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">GRID</span><span class="o">.</span><span class="n">MIN_MOMENTUM</span><span class="p">,</span> <span class="n">GRID</span><span class="o">.</span><span class="n">MAX_MOMENTUM</span><span class="o">*</span><span class="mi">2</span><span class="p">,</span>
-                   <span class="n">num</span><span class="o">=</span><span class="n">GRID</span><span class="o">.</span><span class="n">MOMENTUM_SAMPLES</span><span class="o">*</span><span class="mi">10</span><span class="p">,</span> <span class="n">endpoint</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">neutrino</span><span class="o">.</span><span class="n">grid</span><span class="o">.</span><span class="n">MIN_MOMENTUM</span><span class="p">,</span> <span class="n">neutrino</span><span class="o">.</span><span class="n">grid</span><span class="o">.</span><span class="n">MAX_MOMENTUM</span><span class="o">*</span><span class="mi">2</span><span class="p">,</span>
+                   <span class="n">num</span><span class="o">=</span><span class="n">neutrino</span><span class="o">.</span><span class="n">grid</span><span class="o">.</span><span class="n">MOMENTUM_SAMPLES</span><span class="o">*</span><span class="mi">10</span><span class="p">,</span> <span class="n">endpoint</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
 <span class="n">y</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="n">neutrino</span><span class="o">.</span><span class="n">distribution</span><span class="p">)(</span><span class="n">x</span><span class="p">)</span>
 <span class="n">z</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="n">neutrino</span><span class="o">.</span><span class="n">equilibrium_distribution_function</span><span class="p">)(</span><span class="n">x</span> <span class="o">/</span> <span class="n">universe</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">aT</span><span class="p">)</span>
 <span class="n">w</span> <span class="o">=</span> <span class="n">z</span> <span class="o">+</span> <span class="n">addition</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
@@ -147,18 +162,19 @@
             <a class='octothorpe' href='#section-4'>#</a>
           </div>
           <p>res = []
-for p0 in GRID.TEMPLATE:
-    for p1 in GRID.TEMPLATE:
-        for p2 in GRID.TEMPLATE:
+for p0 in neutrino.grid.TEMPLATE:
+    for p1 in neutrino.grid.TEMPLATE:
+        for p2 in neutrino.grid.TEMPLATE:
             p3 = p0 + p1 - p2
-            if p3 &gt;= 0 and p3 &lt;= GRID.MAX_MOMENTUM:
-val = check(p=[p0, p1, p2, p3])
-f0 = neutrino.distribution(p0)
-f1 = neutrino.distribution(p1)
-f2 = neutrino.distribution(p2)
-f3 = neutrino.distribution(p3)
-val = f2 * f3 * (1 - f0) * (1 - f1) - f0 * f1 * (1 - f2) * (1 - f3)
-                res.append(val)</p>
+            if p3 &gt;= 0 and p3 &lt;= neutrino.grid.MAX_MOMENTUM:</p>
+<h1><a id="val-=-check(p=[p0,-p1,-p2,-p3])" class="header-anchor" href="#val-=-check(p=[p0,-p1,-p2,-p3])"> val = check(p=[p0, p1, p2, p3])</a></h1>
+<h1><a id="f0-=-neutrino.distribution(p0)" class="header-anchor" href="#f0-=-neutrino.distribution(p0)"> f0 = neutrino.distribution(p0)</a></h1>
+<h1><a id="f1-=-neutrino.distribution(p1)" class="header-anchor" href="#f1-=-neutrino.distribution(p1)"> f1 = neutrino.distribution(p1)</a></h1>
+<h1><a id="f2-=-neutrino.distribution(p2)" class="header-anchor" href="#f2-=-neutrino.distribution(p2)"> f2 = neutrino.distribution(p2)</a></h1>
+<h1><a id="f3-=-neutrino.distribution(p3)" class="header-anchor" href="#f3-=-neutrino.distribution(p3)"> f3 = neutrino.distribution(p3)</a></h1>
+<h1><a id="val-=-f2-*-f3-*-(1---f0)-*-(1---f1)---f0-*-f1-*-(1---f2)-*-(1---f3)" class="header-anchor" href="#val-=-f2-*-f3-*-(1---f0)-*-(1---f1)---f0-*-f1-*-(1---f2)-*-(1---f3)"> val = f2 * f3 * (1 - f0) * (1 - f1) - f0 * f1 * (1 - f2) * (1 - f3)</a></h1>
+<div class="codehilite"><pre>            res.append(val)
+</pre></div>
         </div>
         <div class='code'>
           <div class="highlight"><pre><span class="kn">from</span> <span class="nn">interactions.ds</span> <span class="kn">import</span> <span class="n">D1</span><span class="p">,</span> <span class="n">D2</span><span class="p">,</span> <span class="n">D3</span>

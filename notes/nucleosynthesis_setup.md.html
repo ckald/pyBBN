@@ -6,7 +6,7 @@
   <link rel="stylesheet" href="../pyccoon.css">
   <script type="text/x-mathjax-config">
   MathJax.Hub.Config({
-    tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+    tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']], processEscapes: true}
   });
   </script>
   <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
@@ -28,7 +28,7 @@
     </div>
     <div class="generation-time">
         Generated at
-        <code>2015-06-07 02:03</code>
+        <code>2015-07-06 18:48</code>
         by a diligent
         <a target="_blank" href="http://ckald.github.io/pyccoon/" title="Pyccoon: side-to-side documentation generator">
             <img id="pyccoon-icon" src="../pyccoon_icon.svg" alt="Pyccoon: side-to-side documentation generator" />pyccoon</a>
@@ -51,33 +51,45 @@
             <a class='octothorpe' href='#section-0'>#</a>
           </div>
           <h2><a id="neutrinos,-neutrons-decoupling-and-bbn-setup" class="header-anchor" href="#neutrinos,-neutrons-decoupling-and-bbn-setup"> Neutrinos, neutrons decoupling and BBN setup</a></h2>
-<p>Decoupling of the neutrinos and neutrons follows the similar pattern as the decoupling of the sterile neutrinos. Estimated decoupling temperature for both species is around $1.5 MeV$. However, it is important to discriminate them by more careful analysis that includes precise accounting for scattering cross-sections and regimes of the particles involved in reactions.</p>
+<p>Decoupling of the neutrinos and neutrons follows the similar pattern as the decoupling of the sterile neutrinos. Estimated decoupling temperature for both species is around <script type="math/tex">1.5 MeV</script>. However, it is important to discriminate them by more careful analysis that includes precise accounting for scattering cross-sections and regimes of the particles involved in reactions.</p>
 <p>The most important reactions for neutrinos are</p>
-<p>\begin{align}
-    \nu + \nu &amp;\to \nu + \nu \\ \nu + e^- &amp;\to \nu + e^-
-\end{align}</p>
+<p>
+<script type="math/tex; mode=display">\begin{align}
+    \nu + \nu &\to \nu + \nu \\\ \nu + e^- &\to \nu + e^-
+\end{align}</script>
+</p>
 <p>(and crossing processes). Neutrons are governed by only 2 reactions:</p>
-<p>\begin{align}
-    p + e &amp;\leftrightarrow n + \nu_e \\ n &amp;\to p + e + \overline{\nu}_e
-\end{align}</p>
+<p>
+<script type="math/tex; mode=display">\begin{align}
+    p + e &\leftrightarrow n + \nu_e \\\ n &\to p + e + \overline{\nu}_e
+\end{align}</script>
+</p>
 <p>The estimated temperature is relatively close to the electron mass, so the assumption of the all-relativistic particles in the plasma becomes approximate and the more precise treatment is required.</p>
-<p><span class=todo><strong>TODO</strong>: Derive neutron decoupling temperature using not only the $\Gamma \sim H$ trick, but also the typical energy transfer timescale of the reactions.</span></p>
+<p><span class=todo><strong>TODO</strong>: Derive neutron decoupling temperature using not only the <script type="math/tex">\Gamma \sim H</script> trick, but also the typical energy transfer timescale of the reactions.</span></p>
 <p>After neutrinos decoupled, additionally to the contributions from the non-instantaneous decoupling, they gain corrections from the sterile neutrinos decay. One of the most important parts of the project is to calculate this correction spectrum. It depends both on the sterile neutrinos spectrum and decay channels.</p>
-<p>Accordingly, corrections to the active neutrino spectrum influence the equilibrium of the neutrons reactions. For the scattering channel, additional active neutrinos lead to the shift in the balance to the production of $p$ and $e$, while in the decay channel they can increase the lifetime of the neutron:</p>
-<p>\begin{align}
-   \mathcal{F}\left[p+e\to n + \nu\right] &amp;= f_p f_e (1-f_n)(1-f_\nu) - f_n f_\nu (1- f_p)(1-f_e) =
-   \\ &amp;= f_p f_e(1-f_n) - f_\nu \left[f_n(1-f_p-f_e) + f_p f_e \right]
-\end{align}</p>
-<p>\begin{align}
-    \mathcal{F}\left[n \to p+e+\overline{\nu}\right] &amp;= f_n (1- f_p)(1-f_e)(1 - f_\nu) - f_p f_e f_\nu (1-f_n) =
-    \\ &amp;= f_n (1-f_p)(1-f_e) - f_\nu \left[ f_n(1 - f_p - f_e) +f_p f_e \right]
-\end{align}</p>
-<p>$$ f_\nu \to f_\nu + \delta f_\nu $$</p>
+<p>Accordingly, corrections to the active neutrino spectrum influence the equilibrium of the neutrons reactions. For the scattering channel, additional active neutrinos lead to the shift in the balance to the production of <script type="math/tex">p</script> and <script type="math/tex">e</script>, while in the decay channel they can increase the lifetime of the neutron:</p>
+<p>
+<script type="math/tex; mode=display">\begin{align}
+   \mathcal{F}\left[p+e\to n + \nu\right] &= f_p f_e (1-f_n)(1-f_\nu) - f_n f_\nu (1- f_p)(1-f_e) =
+   \\\\ &= f_p f_e(1-f_n) - f_\nu \left[f_n(1-f_p-f_e) + f_p f_e \right]
+\end{align}</script>
+</p>
+<p>
+<script type="math/tex; mode=display">\begin{align}
+    \mathcal{F}\left[n \to p+e+\overline{\nu}\right] &= f_n (1- f_p)(1-f_e)(1 - f_\nu) - f_p f_e f_\nu (1-f_n) =
+    \\\\ &= f_n (1-f_p)(1-f_e) - f_\nu \left[ f_n(1 - f_p - f_e) +f_p f_e \right]
+\end{align}</script>
+</p>
+<p>
+<script type="math/tex; mode=display"> f_\nu \to f_\nu + \delta f_\nu </script>
+</p>
 <p>Other distributions are taken to be equilibrium, so the functional vanishes for them:</p>
-<p>\begin{align}
-    \mathcal{F}\left[p+e\to n + \nu\right] = \mathcal{F}\left[n \to p+e+\overline{\nu}\right] &amp;= - \delta f_\nu \left[f_n(1-f_p-f_e) + f_p f_e \right]
-\end{align}</p>
-<p>The expression in the brackets is extremely close to $1$ when we consider non-relativistic protons and neutrons. So the Boltzmann integral is roughly proportional to the number of non-equiliubrium active neutrinos.</p>
+<p>
+<script type="math/tex; mode=display">\begin{align}
+    \mathcal{F}\left[p+e\to n + \nu\right] = \mathcal{F}\left[n \to p+e+\overline{\nu}\right] &= - \delta f_\nu \left[f_n(1-f_p-f_e) + f_p f_e \right]
+\end{align}</script>
+</p>
+<p>The expression in the brackets is extremely close to <script type="math/tex">1</script> when we consider non-relativistic protons and neutrons. So the Boltzmann integral is roughly proportional to the number of non-equiliubrium active neutrinos.</p>
 <p>Physically, this effect contains 2 parts: firstly, more active neutrinos mean more interactions; secondly, active neutrinos phase space density repulses inverse reactions as they are fermions. One can imagine a situation when due to the densely packed neutrino phase space, neutrons are not allowed to decay.</p>
         </div>
         <div class='code'>

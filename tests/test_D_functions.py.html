@@ -6,7 +6,7 @@
   <link rel="stylesheet" href="../pyccoon.css">
   <script type="text/x-mathjax-config">
   MathJax.Hub.Config({
-    tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+    tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']], processEscapes: true}
   });
   </script>
   <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
@@ -20,7 +20,7 @@
     <a class="btn" class="source source-1" href="#top">Back to top</a>
     <div class="generation-time">
         Generated at
-        <code>2015-06-07 02:04</code>
+        <code>2015-07-06 18:48</code>
         by a diligent
         <a target="_blank" href="http://ckald.github.io/pyccoon/" title="Pyccoon: side-to-side documentation generator">
             <img id="pyccoon-icon" src="../pyccoon_icon.svg" alt="Pyccoon: side-to-side documentation generator" />pyccoon</a>
@@ -67,7 +67,7 @@
           
         </div>
         <div class='code'>
-          <div class="highlight"><pre><span class="k">def</span> <span class="nf">grid_iterator</span><span class="p">(</span><span class="n">dimension</span><span class="o">=</span><span class="mi">4</span><span class="p">):</span>
+          <div class="highlight"><pre><span class="k">def</span> <span class="nf">grid_iterator</span><span class="p">(</span><span class="n">dimension</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">grid</span><span class="o">=</span><span class="n">GRID</span><span class="p">):</span>
     <span class="n">value</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">dimension</span><span class="p">)</span>
 
     <span class="n">dim</span> <span class="o">=</span> <span class="n">dimension</span> <span class="o">-</span> <span class="mi">1</span>
@@ -87,14 +87,14 @@
         </div>
         <div class='code'>
           <div class="highlight"><pre>        <span class="n">value</span><span class="p">[</span><span class="n">dim</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
-        <span class="k">if</span> <span class="n">value</span><span class="p">[</span><span class="n">dim</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">GRID</span><span class="o">.</span><span class="n">MOMENTUM_SAMPLES</span><span class="p">:</span>
-            <span class="k">while</span> <span class="n">dim</span> <span class="o">&gt;=</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">value</span><span class="p">[</span><span class="n">dim</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">GRID</span><span class="o">.</span><span class="n">MOMENTUM_SAMPLES</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">value</span><span class="p">[</span><span class="n">dim</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">grid</span><span class="o">.</span><span class="n">MOMENTUM_SAMPLES</span><span class="p">:</span>
+            <span class="k">while</span> <span class="n">dim</span> <span class="o">&gt;=</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">value</span><span class="p">[</span><span class="n">dim</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">grid</span><span class="o">.</span><span class="n">MOMENTUM_SAMPLES</span><span class="p">:</span>
                 <span class="n">value</span><span class="p">[</span><span class="n">dim</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
                 <span class="n">value</span><span class="p">[</span><span class="n">dim</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
                 <span class="n">dim</span> <span class="o">-=</span> <span class="mi">1</span>
             <span class="k">if</span> <span class="n">dim</span> <span class="o">&gt;</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
                 <span class="n">dim</span> <span class="o">=</span> <span class="n">dimension</span> <span class="o">-</span> <span class="mi">1</span>
-        <span class="k">yield</span> <span class="n">value</span><span class="p">,</span> <span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">i</span><span class="p">:</span> <span class="n">GRID</span><span class="o">.</span><span class="n">TEMPLATE</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">value</span><span class="p">)</span></pre></div>
+        <span class="k">yield</span> <span class="n">value</span><span class="p">,</span> <span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">i</span><span class="p">:</span> <span class="n">grid</span><span class="o">.</span><span class="n">TEMPLATE</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">value</span><span class="p">)</span></pre></div>
         </div>
         <div class='clearall'></div>
     </section>

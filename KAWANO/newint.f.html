@@ -1,0 +1,881 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>pyBBN v0.9.0: KAWANO/newint.f</title>
+  <link rel="stylesheet" href="../pyccoon.css">
+  <script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']], processEscapes: true}
+  });
+  </script>
+  <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</head>
+<body>
+<div id='container' >
+  <div id="footer">
+    <span id="project-name">
+        <a class="btn" href="../index.html">pyBBN v0.9.0</a>
+    </span>
+    <a class="btn" class="source source-1" href="#top">Back to top</a>
+    <div class="generation-time">
+        Generated at
+        <code>2015-07-06 18:48</code>
+        by a diligent
+        <a target="_blank" href="http://ckald.github.io/pyccoon/" title="Pyccoon: side-to-side documentation generator">
+            <img id="pyccoon-icon" src="../pyccoon_icon.svg" alt="Pyccoon: side-to-side documentation generator" />pyccoon</a>
+    </div>
+  </div>
+  <a id="top"></a>
+  <div class='section'>
+    <div class='docs nav'>
+      <nav id="breadcrumbs">/ <a href="newint.f.html/../../index.html">.</a> / <a href="newint.f.html/../index.html">KAWANO</a> / newint.f</nav>
+      <ul id="children"></ul>
+    </div>
+  </div>
+  <div id="everything" class='clearall'>
+    <div id="background"></div>
+    <div class='section'>
+    <a id="section-0" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-0'>#</a>
+          </div>
+          
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>      <span class="k">SUBROUTINE </span><span class="n">check</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+    </div>
+    <div class='section'>
+    <a id="section-1" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-1'>#</a>
+          </div>
+          <p>C-------REMARKS.</p>
+        </div>
+        <div class='code'>
+          
+        </div>
+        <div class='clearall'></div>
+    </section>
+    </div>
+    <div class='section'>
+    <a id="section-2" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-2'>#</a>
+          </div>
+          <p>This is an interface subroutine,</p>
+        </div>
+        <div class='code'>
+          
+        </div>
+        <div class='clearall'></div>
+    </section>
+    </div>
+    <div class='section'>
+    <a id="section-3" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-3'>#</a>
+          </div>
+          <p>a flexible module which allows user to manipulate physical quantities</p>
+        </div>
+        <div class='code'>
+          
+        </div>
+        <div class='clearall'></div>
+    </section>
+    </div>
+    <div class='section'>
+    <a id="section-4" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-4'>#</a>
+          </div>
+          <p>of interest at certain key points during the computer run.</p>
+        </div>
+        <div class='code'>
+          
+        </div>
+        <div class='clearall'></div>
+    </section>
+    </div>
+    <div class='section'>
+    <a id="section-5" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-5'>#</a>
+          </div>
+          <p>Included within this subroutine is a roster of all global variables</p>
+        </div>
+        <div class='code'>
+          
+        </div>
+        <div class='clearall'></div>
+    </section>
+    </div>
+    <div class='section'>
+    <a id="section-6" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-6'>#</a>
+          </div>
+          <p>and their respective COMMON areas.</p>
+        </div>
+        <div class='code'>
+          
+        </div>
+        <div class='clearall'></div>
+    </section>
+    </div>
+    <div class='section'>
+    <a id="section-7" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-7'>#</a>
+          </div>
+          <p>Current instructions accumulate abundances of deuterium, helium-3,</p>
+        </div>
+        <div class='code'>
+          
+        </div>
+        <div class='clearall'></div>
+    </section>
+    </div>
+    <div class='section'>
+    <a id="section-8" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-8'>#</a>
+          </div>
+          <p>helium-4, and lithium-7 for eventual plotting, taking into account</p>
+        </div>
+        <div class='code'>
+          
+        </div>
+        <div class='clearall'></div>
+    </section>
+    </div>
+    <div class='section'>
+    <a id="section-9" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-9'>#</a>
+          </div>
+          <p>the contribution of beryllium-7 to lithium-7 and tritium to helium-3.</p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>      <span class="k">USE </span><span class="n">commons</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+    </div>
+    <div class='section'>
+    <a id="section-10" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-10'>#</a>
+          </div>
+          <p>C-------COMMON AREAS.</p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>      <span class="k">COMMON</span> <span class="o">/</span><span class="n">recpr0</span><span class="o">/</span> <span class="n">reacpr</span>                       <span class="c">!Reaction parameter values.</span>
+      <span class="k">COMMON</span> <span class="o">/</span><span class="n">recpr</span><span class="o">/</span>  <span class="n">iform</span><span class="p">,</span><span class="n">ii</span><span class="p">,</span><span class="n">jj</span><span class="p">,</span><span class="n">kk</span><span class="p">,</span><span class="n">ll</span><span class="p">,</span><span class="n">rev</span><span class="p">,</span><span class="n">q9</span>     <span class="c">!Reaction parameter names.</span>
+      <span class="k">COMMON</span> <span class="o">/</span><span class="n">rates</span><span class="o">/</span>  <span class="n">f</span><span class="p">,</span><span class="n">r</span>                            <span class="c">!Reaction rates.</span>
+      <span class="k">COMMON</span> <span class="o">/</span><span class="n">evolp1</span><span class="o">/</span> <span class="n">t9</span><span class="p">,</span><span class="n">hv</span><span class="p">,</span><span class="n">phie</span><span class="p">,</span><span class="n">y</span>                   <span class="c">!Evolution parameters.</span>
+      <span class="k">COMMON</span> <span class="o">/</span><span class="n">evolp2</span><span class="o">/</span> <span class="n">dt9</span><span class="p">,</span><span class="n">dhv</span><span class="p">,</span><span class="n">dphie</span><span class="p">,</span><span class="n">dydt</span>             <span class="c">!Evolution parameters.</span>
+      <span class="k">COMMON</span> <span class="o">/</span><span class="n">evolp3</span><span class="o">/</span> <span class="n">t90</span><span class="p">,</span><span class="n">hv0</span><span class="p">,</span><span class="n">phie0</span><span class="p">,</span><span class="n">y0</span>               <span class="c">!Evolution parameters.</span>
+      <span class="k">COMMON</span> <span class="o">/</span><span class="n">compr0</span><span class="o">/</span> <span class="n">cy0</span><span class="p">,</span><span class="n">ct0</span><span class="p">,</span><span class="n">t9i0</span><span class="p">,</span><span class="n">t9f0</span><span class="p">,</span><span class="n">ytmin0</span><span class="p">,</span><span class="n">inc0</span>  <span class="c">!Default comp parameters.</span>
+      <span class="k">COMMON</span> <span class="o">/</span><span class="n">compr</span><span class="o">/</span>  <span class="n">cy</span><span class="p">,</span><span class="n">ct</span><span class="p">,</span><span class="n">t9i</span><span class="p">,</span><span class="n">t9f</span><span class="p">,</span><span class="n">ytmin</span><span class="p">,</span><span class="n">inc</span>        <span class="c">!Computation parameters.</span>
+      <span class="k">COMMON</span> <span class="o">/</span><span class="n">modpr0</span><span class="o">/</span> <span class="n">c0</span><span class="p">,</span><span class="n">cosmo0</span><span class="p">,</span><span class="n">xi0</span>                <span class="c">!Default model parameters.</span>
+      <span class="k">COMMON</span> <span class="o">/</span><span class="n">modpr</span><span class="o">/</span>  <span class="n">g</span><span class="p">,</span><span class="n">tau</span><span class="p">,</span><span class="n">xnu</span><span class="p">,</span><span class="n">c</span><span class="p">,</span><span class="n">cosmo</span><span class="p">,</span><span class="n">xi</span>           <span class="c">!Model parameters.</span>
+      <span class="k">COMMON</span> <span class="o">/</span><span class="n">varpr0</span><span class="o">/</span> <span class="n">dt0</span><span class="p">,</span><span class="n">eta0</span>                     <span class="c">!Default variationl params.</span>
+      <span class="k">COMMON</span> <span class="o">/</span><span class="n">varpr</span><span class="o">/</span>  <span class="n">dt1</span><span class="p">,</span><span class="n">eta1</span>                       <span class="c">!Variational parameters.</span>
+      <span class="k">COMMON</span> <span class="o">/</span><span class="nb">time</span><span class="o">/</span>   <span class="n">t</span><span class="p">,</span><span class="n">dt</span><span class="p">,</span><span class="n">dlt9dt</span>                    <span class="c">!Time variables.</span>
+      <span class="k">COMMON</span> <span class="o">/</span><span class="n">xtherm</span><span class="o">/</span>  <span class="n">thm</span><span class="p">,</span><span class="n">hubcst</span>                     <span class="c">!Dynamic variables.</span>
+      <span class="k">COMMON</span> <span class="o">/</span><span class="n">endens</span><span class="o">/</span> <span class="n">rhone0</span><span class="p">,</span><span class="n">rhob0</span><span class="p">,</span><span class="n">rhob</span><span class="p">,</span><span class="n">rnb</span>          <span class="c">!Energy densities.</span>
+      <span class="k">COMMON</span> <span class="o">/</span><span class="n">lncoef</span><span class="o">/</span> <span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">yx</span>                         <span class="c">!Linear eqn coefficients.</span>
+      <span class="k">COMMON</span> <span class="o">/</span><span class="n">nucdat</span><span class="o">/</span> <span class="n">am</span><span class="p">,</span><span class="n">zm</span><span class="p">,</span><span class="n">dm</span>                       <span class="c">!Nuclide data.</span>
+      <span class="k">COMMON</span> <span class="o">/</span><span class="n">xbessel</span><span class="o">/</span> <span class="n">bl1</span><span class="p">,</span><span class="n">bl2</span><span class="p">,</span><span class="n">bl3</span><span class="p">,</span><span class="n">bl4</span><span class="p">,</span><span class="n">bl5</span><span class="p">,</span>           <span class="c">!Eval function bl(z).</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+    </div>
+    <div class='section'>
+    <a id="section-11" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-11'>#</a>
+          </div>
+          
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>     <span class="err">|</span>                <span class="n">bm1</span><span class="p">,</span><span class="n">bm2</span><span class="p">,</span><span class="n">bm3</span><span class="p">,</span><span class="n">bm4</span><span class="p">,</span><span class="n">bm5</span><span class="p">,</span>           <span class="c">!Eval function bm(z).</span>
+     <span class="err">|</span>                <span class="n">bn1</span><span class="p">,</span><span class="n">bn2</span><span class="p">,</span><span class="n">bn3</span><span class="p">,</span><span class="n">bn4</span><span class="p">,</span><span class="n">bn5</span>            <span class="c">!Eval function bn(z).</span>
+      <span class="k">COMMON</span> <span class="o">/</span><span class="n">kays</span><span class="o">/</span>   <span class="n">bk0</span><span class="p">,</span><span class="n">bk1</span><span class="p">,</span><span class="n">bk2</span><span class="p">,</span><span class="n">bk3</span><span class="p">,</span><span class="n">bk4</span>            <span class="c">!Coefficients K.</span>
+      <span class="k">COMMON</span> <span class="o">/</span><span class="n">flags</span><span class="o">/</span>  <span class="nb">ltime</span><span class="p">,</span><span class="k">is</span><span class="p">,</span><span class="n">ip</span><span class="p">,</span><span class="n">it</span><span class="p">,</span><span class="n">mbad</span>            <span class="c">!Flags,counters.</span>
+      <span class="k">COMMON</span> <span class="o">/</span><span class="n">check1</span><span class="o">/</span>  <span class="nb">itime</span>                          <span class="c">!Computation location.</span>
+      <span class="k">COMMON</span> <span class="o">/</span><span class="n">outdat</span><span class="o">/</span> <span class="n">xout</span><span class="p">,</span><span class="n">thmout</span><span class="p">,</span><span class="n">t9out</span><span class="p">,</span><span class="n">tout</span><span class="p">,</span><span class="n">dtout</span><span class="p">,</span>  <span class="c">!Output data.</span>
+     <span class="err">|</span>                <span class="n">etaout</span><span class="p">,</span><span class="n">hubout</span>
+      <span class="k">COMMON</span> <span class="o">/</span><span class="n">nupar</span><span class="o">/</span>  <span class="n">t9mev</span><span class="p">,</span><span class="n">tnmev</span><span class="p">,</span><span class="n">tnu</span><span class="p">,</span><span class="n">cnorm</span><span class="p">,</span><span class="n">nu</span><span class="p">,</span><span class="n">rhonu</span> <span class="c">!Neutrino parameters.</span>
+      <span class="k">COMMON</span> <span class="o">/</span><span class="n">runopt</span><span class="o">/</span> <span class="n">irun</span><span class="p">,</span><span class="n">isize</span><span class="p">,</span><span class="n">jsize</span>               <span class="c">!Run options.</span>
+      <span class="k">COMMON</span> <span class="o">/</span><span class="n">outopt</span><span class="o">/</span> <span class="n">nout</span><span class="p">,</span><span class="n">outfile</span>                   <span class="c">!Output option.</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+    </div>
+    <div class='section'>
+    <a id="section-12" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-12'>#</a>
+          </div>
+          <p>C=================DECLARATION DIVISION=====================</p>
+        </div>
+        <div class='code'>
+          
+        </div>
+        <div class='clearall'></div>
+    </section>
+    </div>
+    <div class='section'>
+    <a id="section-13" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-13'>#</a>
+          </div>
+          <p>C-------REACTION PARAMETER VALUES.</p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>      <span class="kt">DOUBLE PRECISION    </span><span class="n">reacpr</span><span class="p">(</span><span class="n">nrec</span><span class="p">,</span><span class="mi">8</span><span class="p">)</span>       <span class="c">!Reaction parameters.</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+    </div>
+    <div class='section'>
+    <a id="section-14" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-14'>#</a>
+          </div>
+          <p>C-------REACTION PARAMETER NAMES.</p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>      <span class="kt">INTEGER </span><span class="n">iform</span><span class="p">(</span><span class="n">nrec</span><span class="p">)</span>          <span class="c">!Reaction type code (1-11).</span>
+      <span class="kt">INTEGER </span><span class="n">ii</span><span class="p">(</span><span class="n">nrec</span><span class="p">)</span>             <span class="c">!Incoming nuclide type (1-26).</span>
+      <span class="kt">INTEGER </span><span class="n">jj</span><span class="p">(</span><span class="n">nrec</span><span class="p">)</span>             <span class="c">!Incoming light nuclide type (1-6).</span>
+      <span class="kt">INTEGER </span><span class="n">kk</span><span class="p">(</span><span class="n">nrec</span><span class="p">)</span>             <span class="c">!Outgoing light nuclide type (1-6).</span>
+      <span class="kt">INTEGER </span><span class="n">ll</span><span class="p">(</span><span class="n">nrec</span><span class="p">)</span>             <span class="c">!Outgoing nuclide type (1-26).</span>
+      <span class="kt">DOUBLE PRECISION    </span><span class="n">rev</span><span class="p">(</span><span class="n">nrec</span><span class="p">)</span>            <span class="c">!Reverse reaction coefficient.</span>
+      <span class="kt">DOUBLE PRECISION    </span><span class="n">q9</span><span class="p">(</span><span class="n">nrec</span><span class="p">)</span>             <span class="c">!Energy released in reaction (in 10**9 K).</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+    </div>
+    <div class='section'>
+    <a id="section-15" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-15'>#</a>
+          </div>
+          <p>C-------REACTION RATES.</p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>      <span class="kt">DOUBLE PRECISION    </span><span class="n">f</span><span class="p">(</span><span class="n">nrec</span><span class="p">)</span>              <span class="c">!Forward reaction rate coefficients.</span>
+      <span class="kt">DOUBLE PRECISION    </span><span class="n">r</span><span class="p">(</span><span class="n">nrec</span><span class="p">)</span>              <span class="c">!Reverse reaction rate coefficients.</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+    </div>
+    <div class='section'>
+    <a id="section-16" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-16'>#</a>
+          </div>
+          <p>C-------EVOLUTION PARAMETERS.</p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>      <span class="kt">DOUBLE PRECISION    </span><span class="n">t9</span>                   <span class="c">!Temperature of photons (units of 10**9 K).</span>
+      <span class="kt">DOUBLE PRECISION    </span><span class="n">hv</span>                   <span class="c">!Defined by hv = M(atomic)n(baryon)/t9**3.</span>
+      <span class="kt">DOUBLE PRECISION    </span><span class="n">phie</span>                 <span class="c">!Chemical potential of electron.</span>
+      <span class="kt">DOUBLE PRECISION    </span><span class="n">y</span><span class="p">(</span><span class="n">nnuc</span><span class="p">)</span>              <span class="c">!Relative number abundances.</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+    </div>
+    <div class='section'>
+    <a id="section-17" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-17'>#</a>
+          </div>
+          <p>C-------EVOLUTION PARAMETERS (DERIVATIVES).</p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>      <span class="kt">DOUBLE PRECISION    </span><span class="n">dt9</span>                  <span class="c">!Change in temperature.</span>
+      <span class="kt">DOUBLE PRECISION    </span><span class="n">dhv</span>                  <span class="c">!Change in hv.</span>
+      <span class="kt">DOUBLE PRECISION    </span><span class="n">dphie</span>                <span class="c">!Change in chemical potential.</span>
+      <span class="kt">DOUBLE PRECISION    </span><span class="n">dydt</span><span class="p">(</span><span class="n">nnuc</span><span class="p">)</span>           <span class="c">!Change in relative number abundances.</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+    </div>
+    <div class='section'>
+    <a id="section-18" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-18'>#</a>
+          </div>
+          <p>C-------EVOLUTION PARAMETERS (ORIGINAL VALUES).</p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>      <span class="kt">DOUBLE PRECISION    </span><span class="n">y0</span><span class="p">(</span><span class="n">nnuc</span><span class="p">)</span>             <span class="c">!Rel # abundances at end of 1st R-K loop.</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+    </div>
+    <div class='section'>
+    <a id="section-19" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-19'>#</a>
+          </div>
+          <p>C-------DEFAULT COMPUTATION PARAMETERS.</p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>      <span class="kt">DOUBLE PRECISION    </span><span class="n">cy0</span>                  <span class="c">!Default cy.</span>
+      <span class="kt">DOUBLE PRECISION    </span><span class="n">ct0</span>                  <span class="c">!Default ct.</span>
+      <span class="kt">DOUBLE PRECISION    </span><span class="n">t9i0</span>                 <span class="c">!Default t9i.</span>
+      <span class="kt">DOUBLE PRECISION    </span><span class="n">t9f0</span>                 <span class="c">!Default t9f.</span>
+      <span class="kt">DOUBLE PRECISION    </span><span class="n">ytmin0</span>               <span class="c">!Default ytmin.</span>
+      <span class="kt">INTEGER </span><span class="n">inc0</span>                 <span class="c">!Default accumulation increment.</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+    </div>
+    <div class='section'>
+    <a id="section-20" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-20'>#</a>
+          </div>
+          <p>C-------COMPUTATION PARAMETERS.</p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>      <span class="kt">DOUBLE PRECISION    </span><span class="n">cy</span>                   <span class="c">!Time step limiting constant on abundances.</span>
+      <span class="kt">DOUBLE PRECISION    </span><span class="n">ct</span>                  <span class="c">!Time step limiting constant on temperature.</span>
+      <span class="kt">DOUBLE PRECISION    </span><span class="n">t9i</span>                  <span class="c">!Initial temperature (in 10**9 K).</span>
+      <span class="kt">DOUBLE PRECISION    </span><span class="n">t9f</span>                  <span class="c">!Final temperature (in 10**9 K).</span>
+      <span class="kt">DOUBLE PRECISION    </span><span class="n">ytmin</span>                <span class="c">!Smallest abundances allowed.</span>
+      <span class="kt">INTEGER </span><span class="n">inc</span>                  <span class="c">!Accumulation increment.</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+    </div>
+    <div class='section'>
+    <a id="section-21" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-21'>#</a>
+          </div>
+          <p>C-------DEFAULT MODEL PARAMETERS.</p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>      <span class="kt">DOUBLE PRECISION    </span><span class="n">c0</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>                <span class="c">!Default c.</span>
+      <span class="kt">DOUBLE PRECISION    </span><span class="n">cosmo0</span>               <span class="c">!Default cosmological constant.</span>
+      <span class="kt">DOUBLE PRECISION    </span><span class="n">xi0</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>               <span class="c">!Default neutrino degeneracy parameters.</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+    </div>
+    <div class='section'>
+    <a id="section-22" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-22'>#</a>
+          </div>
+          <p>C-------EARLY UNIVERSE MODEL PARAMETERS.</p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>      <span class="kt">DOUBLE PRECISION    </span><span class="n">g</span>                    <span class="c">!Gravitational constant.</span>
+      <span class="kt">DOUBLE PRECISION    </span><span class="n">tau</span>                  <span class="c">!Neutron lifetime (sec).</span>
+      <span class="kt">DOUBLE PRECISION    </span><span class="n">xnu</span>                  <span class="c">!Number of neutrino species.</span>
+      <span class="kt">DOUBLE PRECISION    </span><span class="n">c</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>               <span class="c">!c(1) is variation of gravitational constant.</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+    </div>
+    <div class='section'>
+    <a id="section-23" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-23'>#</a>
+          </div>
+          
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>     <span class="err">|</span>                             <span class="c">!c(2) is neutron half-life (min).</span>
+     <span class="err">|</span>                             <span class="c">!c(3) is number of neutrino species.</span>
+      <span class="kt">DOUBLE PRECISION    </span><span class="n">cosmo</span>                <span class="c">!Cosmological constant.</span>
+      <span class="kt">DOUBLE PRECISION    </span><span class="n">xi</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>                <span class="c">!Neutrino degeneracy parameters.</span>
+     <span class="err">|</span>                             <span class="c">!xi(1) is e neutrino degeneracy parameter.</span>
+     <span class="err">|</span>                             <span class="c">!xi(2) is m neutrino degeneracy parameter.</span>
+     <span class="err">|</span>                             <span class="c">!xi(3) is t neutrino degeneracy parameter.</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+    </div>
+    <div class='section'>
+    <a id="section-24" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-24'>#</a>
+          </div>
+          <p>C-------DEFAULT VARIATIONAL PARAMETERS.</p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>      <span class="kt">DOUBLE PRECISION    </span><span class="n">dt0</span>                  <span class="c">!Default initial time step.</span>
+      <span class="kt">DOUBLE PRECISION    </span><span class="n">eta0</span>                 <span class="c">!Default baryon-to-photon ratio.</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+    </div>
+    <div class='section'>
+    <a id="section-25" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-25'>#</a>
+          </div>
+          <p>C-------VARIATIONAL PARAMETERS.</p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>      <span class="kt">DOUBLE PRECISION    </span><span class="n">dt1</span>                  <span class="c">!Initial time step.</span>
+      <span class="kt">DOUBLE PRECISION    </span><span class="n">eta1</span>                 <span class="c">!Baryon-to-photon ratio.</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+    </div>
+    <div class='section'>
+    <a id="section-26" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-26'>#</a>
+          </div>
+          <p>C-------TIME VARIABLES.</p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>      <span class="kt">DOUBLE PRECISION    </span><span class="n">t</span>                    <span class="c">!Time.</span>
+      <span class="kt">DOUBLE PRECISION    </span><span class="n">dt</span>                   <span class="c">!Time step.</span>
+      <span class="kt">DOUBLE PRECISION    </span><span class="n">dlt9dt</span>               <span class="c">!(1/t9)*d(t9)/d(t).</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+    </div>
+    <div class='section'>
+    <a id="section-27" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-27'>#</a>
+          </div>
+          <p>C-------DYNAMIC VARIABLES.</p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>      <span class="kt">DOUBLE PRECISION    </span><span class="n">thm</span><span class="p">(</span><span class="mi">14</span><span class="p">)</span>              <span class="c">!Thermodynamic variables (energy densities).</span>
+      <span class="kt">DOUBLE PRECISION    </span><span class="n">hubcst</span>               <span class="c">!Expansion rate of the universe.</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+    </div>
+    <div class='section'>
+    <a id="section-28" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-28'>#</a>
+          </div>
+          <p>C-------ENERGY DENSITIES.</p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>      <span class="kt">DOUBLE PRECISION    </span><span class="n">rhone0</span>               <span class="c">!Initial electron neutrino energy density.</span>
+      <span class="kt">DOUBLE PRECISION    </span><span class="n">rhob0</span>                <span class="c">!Initial baryon energy density.</span>
+      <span class="kt">DOUBLE PRECISION    </span><span class="n">rhob</span>                 <span class="c">!Baryon energy density.</span>
+      <span class="kt">DOUBLE PRECISION    </span><span class="n">rnb</span>                <span class="c">!Baryon energy density (ratio to init value).</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+    </div>
+    <div class='section'>
+    <a id="section-29" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-29'>#</a>
+          </div>
+          <p>C-------MATRIX COEFFICIENTS FOR LINEAR EQUATION.</p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>      <span class="kt">DOUBLE PRECISION </span><span class="n">a</span><span class="p">(</span><span class="n">nnuc</span><span class="p">,</span><span class="n">nnuc</span><span class="p">)</span><span class="c">!Relates y(t+dt) to y(t).</span>
+      <span class="kt">DOUBLE PRECISION    </span><span class="n">b</span><span class="p">(</span><span class="n">nnuc</span><span class="p">)</span>              <span class="c">!Contains y0 in inverse order.</span>
+      <span class="kt">DOUBLE PRECISION    </span><span class="n">yx</span><span class="p">(</span><span class="n">nnuc</span><span class="p">)</span>             <span class="c">!yy in reverse order.</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+    </div>
+    <div class='section'>
+    <a id="section-30" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-30'>#</a>
+          </div>
+          <p>C-------NUCLIDE DATA.</p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>      <span class="kt">DOUBLE PRECISION    </span><span class="n">am</span><span class="p">(</span><span class="n">nnuc</span><span class="p">)</span>             <span class="c">!Atomic number of nuclide.</span>
+      <span class="kt">DOUBLE PRECISION    </span><span class="n">zm</span><span class="p">(</span><span class="n">nnuc</span><span class="p">)</span>             <span class="c">!Charge of nuclide.</span>
+      <span class="kt">DOUBLE PRECISION    </span><span class="n">dm</span><span class="p">(</span><span class="n">nnuc</span><span class="p">)</span>             <span class="c">!Mass excess of nuclide.</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+    </div>
+    <div class='section'>
+    <a id="section-31" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-31'>#</a>
+          </div>
+          <p>C-------EVALUATION OF FUNCTIONS bl,bm,bn.</p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>      <span class="kt">DOUBLE PRECISION    </span><span class="n">bl1</span><span class="p">,</span><span class="n">bl2</span><span class="p">,</span><span class="n">bl3</span><span class="p">,</span><span class="n">bl4</span><span class="p">,</span><span class="n">bl5</span>  <span class="c">!Evaluation of function bl(z).</span>
+      <span class="kt">DOUBLE PRECISION    </span><span class="n">bm1</span><span class="p">,</span><span class="n">bm2</span><span class="p">,</span><span class="n">bm3</span><span class="p">,</span><span class="n">bm4</span><span class="p">,</span><span class="n">bm5</span>  <span class="c">!Evaluation of function bm(z).</span>
+      <span class="kt">DOUBLE PRECISION    </span><span class="n">bn1</span><span class="p">,</span><span class="n">bn2</span><span class="p">,</span><span class="n">bn3</span><span class="p">,</span><span class="n">bn4</span><span class="p">,</span><span class="n">bn5</span>  <span class="c">!Evaluation of function bn(z).</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+    </div>
+    <div class='section'>
+    <a id="section-32" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-32'>#</a>
+          </div>
+          <p>C-------EVALUATION OF MODIFIED BESSEL FUNCTIONS.</p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>      <span class="kt">DOUBLE PRECISION    </span><span class="n">bk0</span><span class="p">,</span><span class="n">bk1</span><span class="p">,</span><span class="n">bk2</span><span class="p">,</span><span class="n">bk3</span><span class="p">,</span><span class="n">bk4</span>  <span class="c">!Values k0(r),k1(r),k2(r),k3(r),k4(r).</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+    </div>
+    <div class='section'>
+    <a id="section-33" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-33'>#</a>
+          </div>
+          <p>C-------FLAGS AND COUNTERS.</p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>      <span class="kt">INTEGER </span><span class="nb">ltime</span>                <span class="c">!Indicates if output buffer printed.</span>
+      <span class="kt">INTEGER </span><span class="k">is</span>                   <span class="c">!# total iterations for particular model.</span>
+      <span class="kt">INTEGER </span><span class="n">ip</span>                   <span class="c">!# iterations after outputing a line.</span>
+      <span class="kt">INTEGER </span><span class="n">it</span>                   <span class="c">!# times accumulated in output buffer.</span>
+      <span class="kt">INTEGER </span><span class="n">mbad</span>                 <span class="c">!Indicates if gaussian elimination failed.</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+    </div>
+    <div class='section'>
+    <a id="section-34" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-34'>#</a>
+          </div>
+          <p>C-------COMPUTATION LOCATION.</p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>      <span class="kt">INTEGER </span><span class="nb">itime</span>                <span class="c">!Time check.</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+    </div>
+    <div class='section'>
+    <a id="section-35" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-35'>#</a>
+          </div>
+          <p>C-------OUTPUT ARRAYS.</p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>      <span class="kt">DOUBLE PRECISION    </span><span class="n">xout</span><span class="p">(</span><span class="n">itmax</span><span class="p">,</span><span class="n">nnuc</span><span class="p">)</span>     <span class="c">!Nuclide mass fractions.</span>
+      <span class="kt">DOUBLE PRECISION    </span><span class="n">thmout</span><span class="p">(</span><span class="n">itmax</span><span class="p">,</span><span class="mi">6</span><span class="p">)</span>      <span class="c">!Thermodynamic variables.</span>
+      <span class="kt">DOUBLE PRECISION    </span><span class="n">t9out</span><span class="p">(</span><span class="n">itmax</span><span class="p">)</span>         <span class="c">!Temperature (in units of 10**9 K).</span>
+      <span class="kt">DOUBLE PRECISION    </span><span class="n">tout</span><span class="p">(</span><span class="n">itmax</span><span class="p">)</span>          <span class="c">!Time.</span>
+      <span class="kt">DOUBLE PRECISION    </span><span class="n">dtout</span><span class="p">(</span><span class="n">itmax</span><span class="p">)</span>         <span class="c">!Time step.</span>
+      <span class="kt">DOUBLE PRECISION    </span><span class="n">etaout</span><span class="p">(</span><span class="n">itmax</span><span class="p">)</span>        <span class="c">!Baryon to photon ratio.</span>
+      <span class="kt">DOUBLE PRECISION    </span><span class="n">hubout</span><span class="p">(</span><span class="n">itmax</span><span class="p">)</span>        <span class="c">!Expansion rate.</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+    </div>
+    <div class='section'>
+    <a id="section-36" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-36'>#</a>
+          </div>
+          <p>C-------NEUTRINO PARAMETERS.</p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>      <span class="kt">DOUBLE PRECISION    </span><span class="n">t9mev</span>                <span class="c">!Temperature (in units of MeV).</span>
+      <span class="kt">DOUBLE PRECISION    </span><span class="n">tnmev</span>                <span class="c">!Neutrino temperature (in units of MeV).</span>
+      <span class="kt">DOUBLE PRECISION    </span><span class="n">tnu</span>                  <span class="c">!Neutrino temperature.</span>
+      <span class="kt">DOUBLE PRECISION    </span><span class="n">cnorm</span>                <span class="c">!Normalizing constant.</span>
+      <span class="kt">DOUBLE PRECISION    </span><span class="n">rhonu</span>                <span class="c">!Neutrino energy density.</span>
+      <span class="kt">INTEGER </span><span class="n">nu</span>                   <span class="c">!Type of neutrino.</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+    </div>
+    <div class='section'>
+    <a id="section-37" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-37'>#</a>
+          </div>
+          <p>C-------RUN OPTION.</p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>      <span class="kt">INTEGER </span><span class="n">irun</span>                 <span class="c">!Run network size.</span>
+      <span class="kt">INTEGER </span><span class="n">isize</span>                <span class="c">!Number of nuclides in computation.</span>
+      <span class="kt">INTEGER </span><span class="n">jsize</span>                <span class="c">!Number of reactions in computation.</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+    </div>
+    <div class='section'>
+    <a id="section-38" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-38'>#</a>
+          </div>
+          <p>C-------OUTPUT FILE STATUS.</p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>      <span class="kt">INTEGER </span><span class="n">nout</span>                 <span class="c">!Number of output requests.</span>
+      <span class="kt">LOGICAL </span><span class="n">outfile</span>              <span class="c">!Indicates if output file used.</span>
+      <span class="kt">INTEGER </span><span class="n">outunit</span>
+      <span class="kt">DOUBLE PRECISION    </span><span class="n">shout</span><span class="p">(</span><span class="n">itmax</span><span class="p">,</span><span class="n">nnuc</span><span class="p">)</span>     <span class="c">!Nuclide mass fractions.</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+    </div>
+    <div class='section'>
+    <a id="section-39" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-39'>#</a>
+          </div>
+          <p>C==================PROCEDURE DIVISION======================</p>
+        </div>
+        <div class='code'>
+          
+        </div>
+        <div class='clearall'></div>
+    </section>
+    </div>
+    <div class='section'>
+    <a id="section-40" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-40'>#</a>
+          </div>
+          <p>C10-----OPEN FILE---------------------------------------</p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>      <span class="k">IF</span> <span class="p">(</span><span class="nb">itime</span><span class="p">.</span><span class="n">eq</span><span class="p">.</span><span class="mi">1</span><span class="p">)</span> <span class="k">THEN</span>         <span class="c">!Beginning of program.</span>
+        <span class="k">OPEN</span> <span class="p">(</span><span class="n">unit</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="k">file</span><span class="o">=</span><span class="s1">&#39;nucint.dat&#39;</span><span class="p">,</span>  <span class="n">status</span><span class="o">=</span><span class="s1">&#39;unknown&#39;</span><span class="p">)</span>
+      <span class="k">END IF</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+    </div>
+    <div class='section'>
+    <a id="section-41" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-41'>#</a>
+          </div>
+          <p>C20-----PRINTINTO FILE------------------------------------</p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>      <span class="k">IF</span> <span class="p">(</span><span class="nb">itime</span><span class="p">.</span><span class="n">eq</span><span class="p">.</span><span class="mi">8</span> <span class="p">.</span><span class="nb">or</span><span class="p">.</span> <span class="nb">itime</span><span class="p">.</span><span class="n">eq</span><span class="p">.</span><span class="mi">10</span><span class="p">)</span> <span class="k">THEN</span>         <span class="c">!Right after a run.</span>
+
+        <span class="k">IF</span> <span class="p">(</span><span class="n">outfile</span><span class="p">)</span> <span class="k">THEN</span>
+<span class="k">          </span><span class="n">outunit</span> <span class="o">=</span> <span class="mi">2</span>
+        <span class="k">ELSE</span>
+<span class="k">          </span><span class="n">outunit</span> <span class="o">=</span> <span class="mi">3</span>
+        <span class="k">END IF</span>
+
+<span class="k">        </span><span class="n">shout</span> <span class="o">=</span> <span class="n">xout</span>
+        <span class="n">shout</span><span class="p">(</span><span class="n">it</span><span class="p">,</span><span class="mi">8</span><span class="p">)</span> <span class="o">=</span> <span class="n">shout</span><span class="p">(</span><span class="n">it</span><span class="p">,</span><span class="mi">8</span><span class="p">)</span> <span class="o">+</span> <span class="n">shout</span><span class="p">(</span><span class="n">it</span><span class="p">,</span><span class="mi">9</span><span class="p">)</span>  <span class="c">!Add beryllium to lithium.</span>
+        <span class="n">shout</span><span class="p">(</span><span class="n">it</span><span class="p">,</span><span class="mi">5</span><span class="p">)</span> <span class="o">=</span> <span class="n">shout</span><span class="p">(</span><span class="n">it</span><span class="p">,</span><span class="mi">5</span><span class="p">)</span> <span class="o">+</span> <span class="n">shout</span><span class="p">(</span><span class="n">it</span><span class="p">,</span><span class="mi">4</span><span class="p">)</span>  <span class="c">!Add tritium to helium-3.</span>
+        <span class="n">shout</span><span class="p">(</span><span class="n">it</span><span class="p">,</span><span class="mi">6</span><span class="p">)</span> <span class="o">=</span> <span class="n">shout</span><span class="p">(</span><span class="n">it</span><span class="p">,</span><span class="mi">6</span><span class="p">)</span><span class="o">-</span><span class="mf">0.0003</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+    </div>
+    <div class='section'>
+    <a id="section-42" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-42'>#</a>
+          </div>
+          
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>     <span class="err">|</span>            <span class="c">!Radiative, coulomb, finite-temperature corrections (Ref 1).</span>
+        <span class="k">write</span><span class="p">(</span><span class="n">outunit</span><span class="p">,</span><span class="mi">199</span><span class="p">)</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;eta&quot;</span><span class="p">,</span> <span class="s2">&quot;D&quot;</span><span class="p">,</span> <span class="s2">&quot;He3&quot;</span><span class="p">,</span> <span class="s2">&quot;He4&quot;</span><span class="p">,</span> <span class="s2">&quot;Li7&quot;</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+    </div>
+    <div class='section'>
+    <a id="section-43" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-43'>#</a>
+          </div>
+          
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre> <span class="mi">199</span>    <span class="k">FORMAT</span><span class="p">(</span><span class="mi">6</span><span class="p">(</span><span class="n">A13</span><span class="p">,</span> <span class="s1">&#39; &#39;</span><span class="p">))</span>
+        <span class="k">write</span><span class="p">(</span><span class="n">outunit</span><span class="p">,</span><span class="mi">200</span><span class="p">)</span> <span class="s2">&quot;Observables:&quot;</span><span class="p">,</span> <span class="n">etaout</span><span class="p">(</span><span class="n">it</span><span class="p">),</span><span class="n">shout</span><span class="p">(</span><span class="n">it</span><span class="p">,</span><span class="mi">3</span><span class="p">),</span>
+     <span class="err">|</span>                <span class="n">shout</span><span class="p">(</span><span class="n">it</span><span class="p">,</span><span class="mi">5</span><span class="p">),</span><span class="n">shout</span><span class="p">(</span><span class="n">it</span><span class="p">,</span><span class="mi">6</span><span class="p">),</span><span class="n">shout</span><span class="p">(</span><span class="n">it</span><span class="p">,</span><span class="mi">8</span><span class="p">)</span>
+     <span class="err">|</span>                             <span class="c">!Output eta, H2, He3, He4, and Li7.</span>
+ <span class="mi">200</span>    <span class="k">FORMAT</span> <span class="p">(</span><span class="n">A13</span><span class="p">,</span> <span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="mi">5</span><span class="p">(</span><span class="n">e13</span><span class="p">.</span><span class="mi">5</span><span class="p">,</span><span class="s1">&#39; &#39;</span><span class="p">))</span>
+      <span class="k">END IF</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+    </div>
+    <div class='section'>
+    <a id="section-44" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-44'>#</a>
+          </div>
+          <p>C30-----close FILE--------------------------------------</p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>      <span class="k">IF</span> <span class="p">(</span><span class="nb">itime</span><span class="p">.</span><span class="n">eq</span><span class="p">.</span><span class="mi">10</span><span class="p">)</span> <span class="k">THEN</span>        <span class="c">!End of program.</span>
+        <span class="k">IF</span> <span class="p">(</span><span class="n">outfile</span><span class="p">)</span> <span class="k">THEN</span>
+<span class="k">          CLOSE</span> <span class="p">(</span><span class="n">unit</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">status</span><span class="o">=</span><span class="s1">&#39;delete&#39;</span><span class="p">)</span>
+        <span class="k">ELSE</span>
+<span class="k">          CLOSE</span> <span class="p">(</span><span class="n">unit</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">status</span><span class="o">=</span><span class="s1">&#39;keep&#39;</span><span class="p">)</span>
+        <span class="k">END IF</span>
+<span class="k">      END IF</span>
+<span class="k">      RETURN</span></pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+    </div>
+    <div class='section'>
+    <a id="section-45" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-45'>#</a>
+          </div>
+          <p>C-------REFERENCES--------------------------------------</p>
+        </div>
+        <div class='code'>
+          
+        </div>
+        <div class='clearall'></div>
+    </section>
+    </div>
+    <div class='section'>
+    <a id="section-46" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-46'>#</a>
+          </div>
+          <p>1) D.A. Dicus, E.W. Kolb, A.M. Gleeson, E.C.G. Sudarshan, V.L. Teplitz,</p>
+        </div>
+        <div class='code'>
+          
+        </div>
+        <div class='clearall'></div>
+    </section>
+    </div>
+    <div class='section'>
+    <a id="section-47" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-47'>#</a>
+          </div>
+          <p>M.S. Turner, Phys. Rev. D., 26,2694 (1982).</p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre>      <span class="k">END</span>
+
+</pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+    </div>
+  </div>
+</body>
