@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta http-equiv="content-type" content="text/html;charset=utf-8">
-  <title>pyBBN v0.9.0: tests/photon_electron_universe/index.html</title>
+  <title>pyBBN v0.9.0: tests/photon_electron_universe/__main__.py</title>
   <link rel="stylesheet" href="../../pyccoon.css">
   <script type="text/x-mathjax-config">
   MathJax.Hub.Config({
@@ -12,15 +12,23 @@
   <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 </head>
 <body>
-<div id='container' class="documentation">
+<div id='container' >
   <div id="footer">
     <span id="project-name">
         <a class="btn" href="../../index.html">pyBBN v0.9.0</a>
     </span>
     <a class="btn" class="source source-1" href="#top">Back to top</a>
+    <div id="jump_to" class="btn">
+    Contents
+    <div id="jump_wrapper">
+      <div id="jump_page">
+          <a class="source source-2" href="#photon-electron-universe-test"> Photon-electron universe test</a>
+      </div>
+    </div>
+    </div>
     <div class="generation-time">
         Generated at
-        <code>2015-07-06 17:26</code>
+        <code>2015-07-07 17:13</code>
         by a diligent
         <a target="_blank" href="http://ckald.github.io/pyccoon/" title="Pyccoon: side-to-side documentation generator">
             <img id="pyccoon-icon" src="../../pyccoon_icon.svg" alt="Pyccoon: side-to-side documentation generator" />pyccoon</a>
@@ -29,11 +37,77 @@
   <a id="top"></a>
   <div class='section'>
     <div class='docs nav'>
-      <nav id="breadcrumbs">/ <a href="index.html/../../../index.html">.</a> / <a href="index.html/../../index.html">tests</a> / <a href="index.html/../index.html">photon_electron_universe</a> / index.html</nav>
-      <ul id="children"><li><a href="__main__.py.html">__main__.py</a></li><li><a href="log.txt">log.txt</a></li><li><a href="plots.png">plots.png</a></li></ul>
+      <nav id="breadcrumbs">/ <a href="index.html/../../../index.html">.</a> / <a href="index.html/../../index.html">tests</a> / <a href="index.html/../index.html">photon_electron_universe</a> / __main__.py</nav>
+      <ul id="children"></ul>
     </div>
   </div>
   <div id="everything" class='clearall'>
     <div id="background"></div>
+    <div class='section'>
+    <a id="section-0" class="section-anchor"></a>
+    <section>
+        <div class='docs'>
+          <div class='octowrap'>
+            <a class='octothorpe' href='#section-0'>#</a>
+          </div>
+          <h2><a id="photon-electron-universe-test" class="header-anchor" href="#photon-electron-universe-test"> Photon-electron universe test</a></h2>
+<p><img src="plots.svg" width=100% /></p>
+<p>This test checks that in the photon-electron universe:</p>
+<ul>
+<li>
+<script type="math/tex">a \propto t^{1/2}</script>
+</li>
+<li>
+<script type="math/tex">a * T</script> is not conserved by a factor around <code>1.401</code></li>
+</ul>
+<p><a href="log.txt">Log file</a></p>
+        </div>
+        <div class='code'>
+          <div class="highlight"><pre><span class="kn">import</span> <span class="nn">numpy</span>
+
+<span class="kn">from</span> <span class="nn">particles</span> <span class="kn">import</span> <span class="n">Particle</span>
+<span class="kn">from</span> <span class="nn">evolution</span> <span class="kn">import</span> <span class="n">Universe</span>
+<span class="kn">from</span> <span class="nn">library.SM</span> <span class="kn">import</span> <span class="n">particles</span> <span class="k">as</span> <span class="n">SMP</span>
+<span class="kn">from</span> <span class="nn">common</span> <span class="kn">import</span> <span class="n">Params</span><span class="p">,</span> <span class="n">UNITS</span>
+
+
+<span class="n">params</span> <span class="o">=</span> <span class="n">Params</span><span class="p">(</span><span class="n">T</span><span class="o">=</span><span class="mi">100</span> <span class="o">*</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">MeV</span><span class="p">,</span>
+                <span class="n">dx</span><span class="o">=</span><span class="mf">1e-1</span> <span class="o">*</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">MeV</span><span class="p">)</span>
+
+<span class="n">universe</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">,</span> <span class="n">logfile</span><span class="o">=</span><span class="s">&quot;tests/photon_electron_universe/log.txt&quot;</span><span class="p">)</span>
+
+<span class="n">photon</span> <span class="o">=</span> <span class="n">Particle</span><span class="p">(</span><span class="o">**</span><span class="n">SMP</span><span class="o">.</span><span class="n">photon</span><span class="p">)</span>
+<span class="n">electron</span> <span class="o">=</span> <span class="n">Particle</span><span class="p">(</span><span class="o">**</span><span class="n">SMP</span><span class="o">.</span><span class="n">leptons</span><span class="o">.</span><span class="n">electron</span><span class="p">)</span>
+
+<span class="n">universe</span><span class="o">.</span><span class="n">add_particles</span><span class="p">([</span><span class="n">photon</span><span class="p">,</span> <span class="n">electron</span><span class="p">])</span>
+<span class="n">universe</span><span class="o">.</span><span class="n">evolve</span><span class="p">()</span>
+
+<span class="n">initial_aT</span> <span class="o">=</span> <span class="n">universe</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s">&#39;aT&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+<span class="k">print</span> <span class="s">&quot;a * T is not conserved: {}&quot;</span>\
+    <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">any</span><span class="p">([</span><span class="n">initial_aT</span> <span class="o">!=</span> <span class="n">value</span> <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">universe</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s">&#39;aT&#39;</span><span class="p">]]))</span>
+<span class="n">initial_a</span> <span class="o">=</span> <span class="n">universe</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s">&#39;a&#39;</span><span class="p">][</span><span class="nb">len</span><span class="p">(</span><span class="n">universe</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s">&#39;a&#39;</span><span class="p">])</span><span class="o">/</span><span class="mi">2</span><span class="p">]</span>
+<span class="n">initial_t</span> <span class="o">=</span> <span class="n">universe</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s">&#39;t&#39;</span><span class="p">][</span><span class="nb">len</span><span class="p">(</span><span class="n">universe</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s">&#39;a&#39;</span><span class="p">])</span><span class="o">/</span><span class="mi">2</span><span class="p">]</span> <span class="o">/</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">s</span>
+<span class="n">last_a</span> <span class="o">=</span> <span class="n">universe</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s">&#39;a&#39;</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+<span class="n">last_t</span> <span class="o">=</span> <span class="n">universe</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s">&#39;t&#39;</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">s</span>
+
+<span class="k">print</span> <span class="s">&quot;&quot;&quot;</span>
+<span class="s">    a scaling discrepancy is: {:.2f}%&quot;&quot;&quot;</span>\
+    <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="mi">100</span> <span class="o">*</span> <span class="p">(</span><span class="n">last_a</span> <span class="o">/</span> <span class="n">initial_a</span> <span class="o">-</span> <span class="n">numpy</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">last_t</span> <span class="o">/</span> <span class="n">initial_t</span><span class="p">))</span>
+            <span class="o">/</span> <span class="n">numpy</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">last_t</span> <span class="o">/</span> <span class="n">initial_t</span><span class="p">))</span>
+
+<span class="k">print</span> <span class="s">&quot;&quot;&quot;</span>
+<span class="s">    Cosmic photon background temperature is {:.3f} times bigger than cosmic neutrinos temperature.</span>
+<span class="s">    Relative error is {:.3f} %&quot;&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">universe</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">aT</span> <span class="o">/</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">MeV</span><span class="p">,</span>
+                                         <span class="p">(</span><span class="n">universe</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">aT</span> <span class="o">/</span> <span class="n">UNITS</span><span class="o">.</span><span class="n">MeV</span> <span class="o">-</span> <span class="mf">1.401</span><span class="p">)</span> <span class="o">/</span> <span class="mf">1.401</span> <span class="o">*</span> <span class="mi">100</span><span class="p">)</span>
+
+<span class="n">universe</span><span class="o">.</span><span class="n">graphics</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">__file__</span><span class="p">)</span>
+
+<span class="nb">raw_input</span><span class="p">(</span><span class="s">&quot;...&quot;</span><span class="p">)</span>
+
+</pre></div>
+        </div>
+        <div class='clearall'></div>
+    </section>
+    </div>
   </div>
 </body>
