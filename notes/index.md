@@ -106,12 +106,13 @@ I am going to write the thesis while looking into the problems mentioned above.
      1. Run all tests to determine the current status
 
   * Week 2:
-     1. Take a look at KAWANO code again and test my modifications
+     1. Check the matrix elements, widths and branching ratios in papers
      1. Run tests again
 
   * Week 3:
      1. Finish the thesis with whatever results I have
      1. Get feedback on the text and send it to reviewers
+     1. Take a look at KAWANO code again and test my modifications
 
   * Week 4:
     1. Graduate
