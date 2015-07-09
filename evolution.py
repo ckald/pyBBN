@@ -102,13 +102,13 @@ class Universe(object):
                 print "Keyboard interrupt!"
                 break
 
-        if self.PARALLELIZE:
-            parallelization.pool.close()
-            parallelization.pool.terminate()
-            parallelization.pool.join()
-
         self.log()
         if export:
+            if self.PARALLELIZE:
+                parallelization.pool.close()
+                parallelization.pool.terminate()
+                parallelization.pool.join()
+
             self.export()
 
         return self.data
