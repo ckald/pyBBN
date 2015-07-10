@@ -272,7 +272,7 @@ class Universe(object):
         """ Save current Universe parameters into the data arrays or output files """
         self.save_params()
 
-        if self.kawano:
+        if self.kawano and self.params.T <= self.kawano.T_kawano:
 
             #     t[s]         x    Tg[10^9K]   dTg/dt[10^9K/s] rho_tot[g cm^-3]     H[s^-1]
             # n nue->p e  p e->n nue  n->p e nue  p e nue->n  n e->p nue  p nue->n e
@@ -288,6 +288,7 @@ class Universe(object):
                 self.kawano.heading[4]: self.params.rho / UNITS.MeV**4 * CONST.MeV4_to_g_cm_3,
                 self.kawano.heading[5]: self.params.H * UNITS.s
             }
+
             row.update({self.kawano.heading[i]: rate / UNITS.MeV**5
                         for i, rate in enumerate(rates, 6)})
 
