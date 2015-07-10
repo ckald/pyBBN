@@ -5,14 +5,16 @@
 
 This file contains constants and utilities shared by all other modules in the project.
 """
-import sys
 import numpy
 import numericalunits as nu
 
 
 class UNITS(object):
 
-    __slots__ = ('use_numericalunits', 'eV', 'keV', 'MeV', 'GeV', 'TeV', 's', 'kg', 'm', 'N')
+    __slots__ = ('use_numericalunits',
+                 'eV', 'keV', 'MeV', 'GeV', 'TeV',
+                 's', 'kg', 'm', 'N',
+                 'K9', 'g_cm3')
 
     """ ## Units
         As we use natural units in the project, all units from `numericalunits` except energy units\
@@ -32,13 +34,16 @@ class UNITS(object):
         UNITS.m = 1e15 / 0.197 / UNITS.GeV
         UNITS.N = 1e-5 / 8.19 * UNITS.GeV**2
 
+        # Temperature: $10^9 K$
+        UNITS.K9 = UNITS.MeV / 11.6045
+        UNITS.g_cm3 = UNITS.MeV**4 / 2.32011575e5
+
 UNITS.reset_units()
 
 
 class CONST(object):
 
-    __slots__ = ('G', 'M_p', 'G_F', 'sin_theta_w_2', 'g_R', 'g_L', 'f_pi',
-                 'MeV_to_s_1', 'MeV_to_10_9K', 'MeV4_to_g_cm_3', 'rate_normalization')
+    __slots__ = ('G', 'M_p', 'G_F', 'sin_theta_w_2', 'g_R', 'g_L', 'f_pi', 'rate_normalization')
 
     """ ### Physical constants """
 
@@ -56,10 +61,6 @@ class CONST(object):
     g_L = sin_theta_w_2 + 0.5
     # Pion decay constant
     f_pi = 130. * UNITS.MeV
-
-    MeV_to_s_1 = 1.51926758e21
-    MeV_to_10_9K = 11.6045
-    MeV4_to_g_cm_3 = 2.32011575e5
 
     rate_normalization = 17.54459
 
