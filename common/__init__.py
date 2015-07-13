@@ -29,7 +29,7 @@ class UNITS(object):
         UNITS.MeV = UNITS.keV * 1e3
         UNITS.GeV = UNITS.MeV * 1e3
         UNITS.TeV = UNITS.GeV * 1e3
-        UNITS.s = 1. / 6.58 * 1e25 / UNITS.GeV
+        UNITS.s = 1. / 6.58 * 1e22 / UNITS.MeV
         UNITS.kg = 1e27 / 1.8 * UNITS.GeV
         UNITS.m = 1e15 / 0.197 / UNITS.GeV
         UNITS.N = 1e-5 / 8.19 * UNITS.GeV**2
