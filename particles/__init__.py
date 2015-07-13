@@ -106,7 +106,8 @@ class Particle(PicklableObject):
         self.eta = 1. if self.statistics == STATISTICS.FERMION else -1.
 
         self.set_grid(self.grid)
-        self.calculate_collision_integral = numpy.vectorize(self.calculate_collision_integral)
+        self.calculate_collision_integral = numpy.vectorize(self.calculate_collision_integral,
+                                                            otypes=numpy.float)
 
         self.collision_integrals = []
         self.data = {
