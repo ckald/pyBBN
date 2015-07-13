@@ -179,24 +179,14 @@ class Universe(object):
             if self.PARALLELIZE:
                 # parallelization.init_pool()
                 # Send the tasks
-                parallelization.orders = [
-                    (particle, 'calculate_collision_integral', particle.grid.TEMPLATE)
-                    for particle in particles
-                ]
-                # maps = [
-                #     (particle,
-                #      parallelization.poolmap(particle, 'calculate_collision_integral',
-                #                              particle.grid.TEMPLATE))
-                #     for particle in particles
-                # ]
-                # Collect results
-                results = parallelization.map_orders()
-
-                for order_id, result in results:
-                    particle, _, _ = parallelization.orders[order_id]
+                for particle in particles:
                     with utils.benchmark(lambda: "I(" + particle.symbol + ") = "
                                          + repr(particle.collision_integral)):
-                        particle.collision_integral = numpy.array(result)
+                        parallelization.orders = [
+                            (particle, 'calculate_collision_integral', particle.grid.TEMPLATE)
+                        ]
+                        results = parallelization.map_orders()
+                        particle.collision_integral = numpy.array(results[0][1])
             else:
                 for particle in particles:
                     with utils.benchmark(lambda: "I(" + particle.symbol + ") = "
