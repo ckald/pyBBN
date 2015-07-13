@@ -24,11 +24,13 @@ def close_pool():
     pool.join()
 
 
+def map_order(i):
+    particle, method, arg = orders[i]
+    return getattr(particle, method)(arg)
+
+
 def map_orders():
-    results = []
-    for i, (particle, method, arg) in enumerate(orders):
-        results.append((i, parmap(lambda x: getattr(particle, method)(x), arg)))
-    return results
+    return parmap(map_order, range(len(orders)))
 
 
 def poolmap(cls, func_name, arguments):

@@ -183,10 +183,11 @@ class Universe(object):
                     with utils.benchmark(lambda: "I(" + particle.symbol + ") = "
                                          + repr(particle.collision_integral)):
                         parallelization.orders = [
-                            (particle, 'calculate_collision_integral', particle.grid.TEMPLATE)
+                            (particle, 'calculate_collision_integral', arg)
+                            for arg in particle.grid.TEMPLATE
                         ]
                         results = parallelization.map_orders()
-                        particle.collision_integral = numpy.array(results[0][1])
+                        particle.collision_integral = numpy.array(results)
             else:
                 for particle in particles:
                     with utils.benchmark(lambda: "I(" + particle.symbol + ") = "
