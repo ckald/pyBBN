@@ -8,7 +8,6 @@ regimes
 from __future__ import division
 
 import numpy
-from collections import defaultdict
 
 from common import GRID, UNITS
 from common.integrators import adams_moulton_solver
@@ -106,8 +105,6 @@ class Particle(PicklableObject):
         self.eta = 1. if self.statistics == STATISTICS.FERMION else -1.
 
         self.set_grid(self.grid)
-        self.calculate_collision_integral = numpy.vectorize(self.calculate_collision_integral,
-                                                            otypes=[numpy.float])
 
         self.collision_integrals = []
         self.data = {
@@ -180,7 +177,8 @@ class Particle(PicklableObject):
         self.data['distribution'].append(self._distribution)
 
     def integrate_collisions(self):
-        return numpy.vectorize(self.calculate_collision_integral)(self.grid.TEMPLATE)
+        return numpy.vectorize(self.calculate_collision_integral,
+                               otypes=[numpy.float_])(self.grid.TEMPLATE)
 
     @trace_unhandled_exceptions
     def calculate_collision_integral(self, p0):

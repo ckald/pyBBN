@@ -7,7 +7,7 @@ import pandas
 import time
 from datetime import timedelta
 
-from common import UNITS, Params, CONST, integrators, parallelization, utils
+from common import UNITS, Params, integrators, parallelization, utils
 
 import kawano
 
@@ -104,9 +104,6 @@ class Universe(object):
 
         self.log()
         if export:
-            # if self.PARALLELIZE:
-            #     parallelization.close_pool()
-
             self.export()
 
         return self.data
@@ -177,8 +174,6 @@ class Universe(object):
 
         with utils.printoptions(precision=2):
             if self.PARALLELIZE:
-                # parallelization.init_pool()
-                # Send the tasks
                 for particle in particles:
                     with utils.benchmark(lambda: "I(" + particle.symbol + ") = "
                                          + repr(particle.collision_integral)):
