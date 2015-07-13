@@ -107,7 +107,7 @@ class Particle(PicklableObject):
 
         self.set_grid(self.grid)
         self.calculate_collision_integral = numpy.vectorize(self.calculate_collision_integral,
-                                                            otypes=numpy.float)
+                                                            otypes=[numpy.float])
 
         self.collision_integrals = []
         self.data = {
