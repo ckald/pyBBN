@@ -20,7 +20,8 @@ def step_monitor(universe):
             universe.deuterium_generation_parameters = deepcopy(universe.params)
 
     if (hasattr(universe, 'neutron_decoupling_parameters')
-            and hasattr(universe, 'deuterium_generation_parameters')):
+            and hasattr(universe, 'deuterium_generation_parameters')
+            and not hasattr(universe, 'BBN_estimates')):
 
         print '_' * 80
         print 'BBN estimates'
@@ -28,7 +29,7 @@ def step_monitor(universe):
         nparams = universe.neutron_decoupling_parameters
         dparams = universe.deuterium_generation_parameters
 
-        neutron_decay_time = nparams.t - dparams.t
+        neutron_decay_time = dparams.t - nparams.t
         neutron_lifetime = 885.7 * UNITS.s
 
         import math
@@ -38,6 +39,12 @@ def step_monitor(universe):
         )
 
         helium_fraction = 2 * neutron_to_proton / (1 + neutron_to_proton)
+
+        universe.BBN_estimates = (
+            neutron_decay_time,
+            neutron_to_proton,
+            helium_fraction
+        )
 
         print "Neutron decoupling: T = {:e} MeV, t = {:e} s, N_eff = {:e}".format(
             nparams.T / UNITS.MeV, nparams.t / UNITS.s, nparams.N_eff
