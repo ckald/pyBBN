@@ -200,7 +200,7 @@ class HeuristicGrid(object):
 
     __slots__ = ('MIN_MOMENTUM', 'MAX_MOMENTUM', 'BOUNDS', 'MOMENTUM_SAMPLES', 'TEMPLATE')
 
-    def __init__(self, M, tau, aT=1*UNITS.MeV, b=100, c=5):
+    def __init__(self, M, tau, aT=1*UNITS.MeV, b=20, c=5):
         H = 0.5 / UNITS.s  # such that at T=1 <=> t=1
         a_max = numpy.sqrt(2 * H * b * tau)
         T_max = aT / a_max
