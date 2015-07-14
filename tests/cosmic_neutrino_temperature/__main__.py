@@ -1,5 +1,5 @@
 """
-## C$\nu$B temperature test
+## CnuB temperature test
 
 <img src="plots.svg" width=100% />
 
@@ -20,6 +20,7 @@ import os
 from particles import Particle
 from evolution import Universe
 from common import Params, UNITS
+from semianalytic import step_monitor
 from library.SM import particles as SMP
 
 
@@ -56,6 +57,7 @@ Particles += [
 universe = Universe(params=params, folder=folder)
 universe.add_particles(Particles)
 universe.init_kawano(electron=electron, neutrino=neutrino_e)
+universe.step_monitor = step_monitor
 
 T_final = 1 * UNITS.MeV
 universe.evolve(T_final, export=False)
