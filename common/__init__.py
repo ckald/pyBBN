@@ -61,6 +61,8 @@ class CONST(object):
     g_L = sin_theta_w_2 + 0.5
     # Pion decay constant
     f_pi = 130. * UNITS.MeV
+    # Baryon-to-photon ratio
+    eta = 6.1e-10
 
     rate_normalization = 17.54459
 
