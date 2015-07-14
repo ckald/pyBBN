@@ -17,7 +17,7 @@ def step_monitor(universe):
 
     if not hasattr(universe, 'deuterium_generation_parameters') and universe.params.T <= T_BBN:
             print "Deuterium generation"
-            universe.deuterium_generation_parameters = deepcopy(universe.paramsx)
+            universe.deuterium_generation_parameters = deepcopy(universe.params)
 
     if (hasattr(universe, 'neutron_decoupling_parameters')
             and hasattr(universe, 'deuterium_generation_parameters')):
