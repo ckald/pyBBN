@@ -28,6 +28,7 @@ parser = argparse.ArgumentParser(description='Run simulation for given mass and 
 parser.add_argument('--mass', required=True)
 parser.add_argument('--theta', required=True)
 parser.add_argument('--tau', required=True)
+parser.add_argument('--Tdec', default=100)
 parser.add_argument('--comment', default='')
 args = parser.parse_args()
 
@@ -42,7 +43,7 @@ folder = utils.ensure_dir(
 )
 
 
-T_initial = 100. * UNITS.MeV
+T_initial = float(args.Tdec) * UNITS.MeV
 T_kawano = 12 * UNITS.MeV
 T_interactions_freeze_out = 0.05 * UNITS.MeV
 T_BBN = 0.065 * UNITS.MeV
