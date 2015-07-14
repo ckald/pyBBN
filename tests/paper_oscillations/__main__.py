@@ -102,9 +102,9 @@ def step_monitor(universe):
 
     if not hasattr(universe, 'neutron_decoupling_parameters') and len(universe.kawano_data):
         datarow = universe.kawano_data.tail(1)
-        rates = datarow[-6:]
+        rates = datarow.values[0][-6:]
         neutron_equilibration = (sum(rates[0::2]) / sum(rates[1::2]))
-        if neutron_equilibration > 10:
+        if neutron_equilibration > 10 or neutron_equilibration < 0.1:
             universe.neutron_decoupling_parameters = deepcopy(universe.params)
             print "Neutron decoupled at T = {:e} MeV".format(universe.params.T / UNITS.MeV)
 
