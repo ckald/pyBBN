@@ -2,15 +2,13 @@ from itertools import izip
 from multiprocessing import Pool, Pipe, Process
 
 
-def target(args, **kw):
-    obj, method_name = args[0], args[1]
-    args = args[2:]
-    result = getattr(obj, method_name)(*args, **kw)
-    return result
-
 worker_count = 50  # multiprocessing.cpu_count() / 2
-pool = None
 orders = []
+
+
+# ## Pool-oriented parallelization
+
+pool = None
 
 
 def init_pool():
@@ -24,13 +22,11 @@ def close_pool():
     pool.join()
 
 
-def map_order(i):
-    particle, method, arg = orders[i]
-    return getattr(particle, method)(arg)
-
-
-def map_orders():
-    return parmap(map_order, range(len(orders)))
+def target(args, **kw):
+    obj, method_name = args[0], args[1]
+    args = args[2:]
+    result = getattr(obj, method_name)(*args, **kw)
+    return result
 
 
 def poolmap(cls, func_name, arguments):
@@ -39,6 +35,17 @@ def poolmap(cls, func_name, arguments):
 
     result = pool.map_async(func, arguments)
     return result
+
+
+# ## Worker-oriented parallelization
+
+def map_order(i):
+    particle, method, arg = orders[i]
+    return getattr(particle, method)(arg)
+
+
+def map_orders():
+    return parmap(map_order, range(len(orders)))
 
 
 def spawn(f):

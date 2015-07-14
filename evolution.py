@@ -55,6 +55,8 @@ class Universe(object):
 
         # Controls parallelization of the collision integrals calculations
         self.PARALLELIZE = utils.getboolenv("PARALLELIZE", True)
+        if self.PARALLELIZE:
+            parallelization.init_pool()
 
         self.fraction = 0
 
@@ -175,14 +177,15 @@ class Universe(object):
         with utils.printoptions(precision=2):
             if self.PARALLELIZE:
                 for particle in particles:
-                    with utils.benchmark(lambda: "I(" + particle.symbol + ") = "
-                                         + repr(particle.collision_integral)):
-                        parallelization.orders = [
-                            (particle, 'calculate_collision_integral', arg)
-                            for arg in particle.grid.TEMPLATE
-                        ]
-                        results = parallelization.map_orders()
-                        particle.collision_integral = numpy.array(results)
+                    parallelization.orders = [
+                        (particle,
+                         parallelization.poolmap(particle, 'calculate_collision_integral',
+                                                 particle.grid.TEMPLATE))
+                    ]
+                    for particle, result in parallelization.orders:
+                        with utils.benchmark(lambda: "I(" + particle.symbol + ") = "
+                                             + repr(particle.collision_integral)):
+                            particle.collision_integral = numpy.array(result.get(1000))
             else:
                 for particle in particles:
                     with utils.benchmark(lambda: "I(" + particle.symbol + ") = "

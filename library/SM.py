@@ -267,10 +267,10 @@ class interactions(object):
 
             \begin{align}
                 |\mathcal{M}|^2 = 32 G_F^2 \left(
-                \\\\ 4 \, g_L^2 \, (p_0 \cdot p_3) (p_1 \cdot p_2) +
-                \\\\ +4 \, g_R^2 \, (p_0 \cdot p_2) (p_1 \cdot p_3) +
-                \\\\ +4 \, g_L g_R \, m_2 m_3 (p_0 \cdot p_1)
-                \\\\ \right)
+                \\ 4 \, g_L^2 \, (p_0 \cdot p_3) (p_1 \cdot p_2) +
+                \\ +4 \, g_R^2 \, (p_0 \cdot p_2) (p_1 \cdot p_3) +
+                \\ +4 \, g_L g_R \, m_2 m_3 (p_0 \cdot p_1)
+                \\ \right)
             \end{align}
 
             Depending of the neutrino generations involved, $g_L$ can either be equal to \
