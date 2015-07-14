@@ -29,6 +29,8 @@ class Universe(object):
 
     oscillations = None
 
+    step_monitor = None
+
     data = pandas.DataFrame(columns=('aT', 'T', 'a', 'x', 't', 'rho', 'fraction'))
 
     def __init__(self, folder='logs', plotting=True, params=None, grid=None):
@@ -142,6 +144,8 @@ class Universe(object):
         self.params.x += self.params.dx
 
         self.params.update(self.total_energy_density())
+        if self.step_monitor:
+            self.step_monitor(self)
 
     def add_particles(self, particles):
         for particle in particles:
