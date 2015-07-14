@@ -100,7 +100,7 @@ universe.init_oscillations(SMP.leptons.oscillations_map(), (neutrino_e, neutrino
 def step_monitor(universe):
     from copy import deepcopy
 
-    if not hasattr(universe, 'neutron_decoupling_parameters'):
+    if not hasattr(universe, 'neutron_decoupling_parameters') and len(universe.kawano_data):
         datarow = universe.kawano_data.tail(1)
         rates = datarow[-6:]
         neutron_equilibration = (sum(rates[0::2]) / sum(rates[1::2]))
@@ -108,8 +108,7 @@ def step_monitor(universe):
             universe.neutron_decoupling_parameters = deepcopy(universe.params)
             print "Neutron decoupled at T = {:e} MeV".format(universe.params.T / UNITS.MeV)
 
-    if not hasattr(universe, 'deuterium_generation_parameters'):
-        if universe.params.T <= T_BBN:
+    if not hasattr(universe, 'deuterium_generation_parameters') and universe.params.T <= T_BBN:
             print "Deuterium generation"
             universe.deuterium_generation_parameters = deepcopy(universe.paramsx)
 
