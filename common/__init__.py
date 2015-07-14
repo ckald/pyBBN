@@ -139,7 +139,7 @@ class Params(object):
                 \Delta t = \frac{1}{H} (\frac{a_i}{a_{i-1}} - 1)
             \end{equation}
         """
-        dt = (self.a / old_a - 1) / self.H
+        dt = (1 - old_a / self.a) / self.H
         self.t += dt
 
     @property

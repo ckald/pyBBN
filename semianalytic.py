@@ -29,7 +29,7 @@ def step_monitor(universe):
         nparams = universe.neutron_decoupling_parameters
         dparams = universe.deuterium_generation_parameters
 
-        neutron_decay_time = dparams.t - nparams.t
+        neutron_decay_time = (dparams.t - nparams.t)
         neutron_lifetime = 885.7 * UNITS.s
 
         import math
