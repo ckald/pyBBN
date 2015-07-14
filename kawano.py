@@ -14,7 +14,7 @@ from common.integrators import integrate_1D
 from library import SM
 
 
-T_kawano = 10 * UNITS.MeV
+T_kawano = 12 * UNITS.MeV
 
 q = (SM.particles.hadrons.neutron['mass'] - SM.particles.hadrons.proton['mass'])
 # q = 1.2933 * UNITS.MeV
