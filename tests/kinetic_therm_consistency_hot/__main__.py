@@ -57,7 +57,14 @@ for neutrino in neutrinos:
 universe.interactions += \
     SMI.neutrino_interactions(leptons=[electron, muon, tau], neutrinos=neutrinos)
 
-universe.graphics.monitor(particles=neutrinos, plasma_distribution=True)
+
+if universe.graphics:
+    from plotting import RadiationParticleMonitor
+    universe.graphics.monitor([
+        (neutrino_e, RadiationParticleMonitor),
+        (neutrino_mu, RadiationParticleMonitor),
+        (neutrino_tau, RadiationParticleMonitor)
+    ])
 
 
 universe.evolve(T_final)
