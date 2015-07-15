@@ -44,8 +44,8 @@ folder = utils.ensure_dir(
 )
 
 
-T_initial = float(args.Tdec) * UNITS.MeV
 T_kawano = 12 * UNITS.MeV
+T_initial = max(float(args.Tdec) * UNITS.MeV, T_kawano)
 T_interactions_freeze_out = 0.05 * UNITS.MeV
 T_final = 0.0008 * UNITS.MeV
 params = Params(T=T_initial,
@@ -63,7 +63,7 @@ sterile = Particle(**NuP.dirac_sterile_neutrino(mass))
 
 grid = HeuristicGrid(mass, lifetime)
 
-sterile.decoupling_temperature = T_initial
+sterile.decoupling_temperature = args.T_dec
 for neutrino in [neutrino_e, neutrino_mu, neutrino_tau]:
     neutrino.decoupling_temperature = 5 * UNITS.MeV
     neutrino.set_grid(grid)
