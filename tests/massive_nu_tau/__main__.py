@@ -32,7 +32,7 @@ T_final = 0.015 * UNITS.MeV
 params = Params(T=T_initial,
                 dy=0.05)
 
-universe = Universe(params=params, logfile=os.path.join(folder, 'log.txt'))
+universe = Universe(params=params, folder=folder)
 
 photon = Particle(**SMP.photon)
 electron = Particle(**SMP.leptons.electron)

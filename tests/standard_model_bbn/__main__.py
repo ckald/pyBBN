@@ -36,7 +36,7 @@ photon = Particle(**SMP.photon)
 electron = Particle(**SMP.leptons.electron)
 neutrino_e = Particle(**SMP.leptons.neutrino_e)
 neutrino_mu = Particle(**SMP.leptons.neutrino_mu)
-neutrino_tau = Particle(**SMP.leptons.neutrino_tau)
+neutrino_mu.dof = 4
 
 neutron = Particle(**SMP.hadrons.neutron)
 proton = Particle(**SMP.hadrons.proton)
@@ -46,26 +46,21 @@ universe.add_particles([
     electron,
     neutrino_e,
     neutrino_mu,
-    neutrino_tau,
 
     neutron,
     proton
 ])
 
 universe.interactions += (
-    # [SMI.baryons_interaction(neutron=neutron, proton=proton,
-    #                          electron=electron, neutrino=neutrino_e)]
-    # +
     SMI.neutrino_interactions(leptons=[electron],
-                              neutrinos=[neutrino_e, neutrino_mu, neutrino_tau])
+                              neutrinos=[neutrino_e, neutrino_mu])
 )
 
 universe.init_kawano(electron=electron, neutrino=neutrino_e)
 
 universe.graphics.monitor([
     (neutrino_e, RadiationParticleMonitor),
-    (neutrino_mu, RadiationParticleMonitor),
-    (neutrino_tau, RadiationParticleMonitor)
+    (neutrino_mu, RadiationParticleMonitor)
 ])
 
 
@@ -84,4 +79,4 @@ universe.evolve(T_final)
 """
 
 from tests.plots import articles_comparison_plots
-articles_comparison_plots(universe, [neutrino_e, neutrino_mu, neutrino_tau])
+articles_comparison_plots(universe, [neutrino_e, neutrino_mu])
