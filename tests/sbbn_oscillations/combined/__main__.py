@@ -53,7 +53,9 @@ universe.add_particles([
     proton
 ])
 
-universe.init_oscillations(SMP.leptons.oscillations_map(), (neutrino_e, neutrino_mu_tau))
+# angles=(0.5905, 0.805404, 0.152346)
+universe.init_oscillations(SMP.leptons.oscillations_map(angles=(0.5905, 0.805404, 0)),
+                           (neutrino_e, neutrino_mu_tau))
 
 universe.interactions += (
     SMI.neutrino_interactions(leptons=[electron],
