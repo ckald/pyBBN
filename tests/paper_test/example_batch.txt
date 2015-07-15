@@ -84,16 +84,15 @@ python tests/pionic --mass 450 --tau 0.01 --theta 0.000110565
 
 
 # Batch with decoupling temperature detection
-python tests/paper_oscillations --mass 20. --tau 0.496257 --theta 0.111792 --Tdec 1.0843
-python tests/paper_oscillations --mass 20. --tau 1.01231 --theta 0.0782721 --Tdec 2.21185
-python tests/paper_oscillations --mass 20. --tau 2.02922 --theta 0.055284 --Tdec 4.43374
-python tests/paper_oscillations --mass 50. --tau 0.0901193 --theta 0.0265091 --Tdec 3.08532
-python tests/paper_oscillations --mass 50. --tau 0.16007 --theta 0.0198906 --Tdec 5.48014
-python tests/paper_oscillations --mass 80. --tau 0.0608292 --theta 0.00996268 --Tdec 8.53289
-python tests/paper_oscillations --mass 80. --tau 0.101705 --theta 0.0077048 --Tdec 14.2668
-python tests/paper_oscillations --mass 100. --tau 0.0507371 --theta 0.00624422 --Tdec 13.9018
-python tests/paper_oscillations --mass 100. --tau 0.100179 --theta 0.00444378 --Tdec 27.4488
-python tests/paper_oscillations --mass 120. --tau 0.0507371 --theta 0.00395797 --Tdec 24.0282
-python tests/paper_oscillations --mass 120. --tau 0.0848312 --theta 0.00306096 --Tdec 40.1745
-python tests/paper_oscillations --mass 120. --tau 0.1 --theta 0.00281926 --Tdec 47.3582
-python tests/paper_oscillations --mass 120. --tau 0.12 --theta 0.00257362 --Tdec 56.8299
+python tests/paper_oscillations --mass 20. --tau 0.44945 --theta 0.117469 --Tdec 0.982025
+python tests/paper_oscillations --mass 20. --tau 1.50822 --theta 0.0641256 --Tdec 3.29538
+python tests/paper_oscillations --mass 40. --tau 0.117643 --theta 0.0405379 --Tdec 2.06152
+python tests/paper_oscillations --mass 40. --tau 0.250714 --theta 0.0277686 --Tdec 4.39339
+python tests/paper_oscillations --mass 60. --tau 0.0670581 --theta 0.01948 --Tdec 3.96778
+python tests/paper_oscillations --mass 60. --tau 0.155819 --theta 0.0127792 --Tdec 9.21971
+python tests/paper_oscillations --mass 80. --tau 0.0517349 --theta 0.0108029 --Tdec 7.25717
+python tests/paper_oscillations --mass 80. --tau 0.125525 --theta 0.00693533 --Tdec 17.6082
+python tests/paper_oscillations --mass 100. --tau 0.0495457 --theta 0.00631885 --Tdec 13.5754
+python tests/paper_oscillations --mass 100. --tau 0.105589 --theta 0.00432844 --Tdec 28.9311
+python tests/paper_oscillations --mass 120. --tau 0.048486 --theta 0.00404881 --Tdec 22.9621
+python tests/paper_oscillations --mass 120. --tau 0.0947709 --theta 0.002896 --Tdec 44.8818
