@@ -45,7 +45,7 @@ folder = utils.ensure_dir(
 )
 
 
-T_kawano = 12 * UNITS.MeV
+T_kawano = 10 * UNITS.MeV
 T_initial = max(T_dec, T_kawano)
 T_interactions_freeze_out = 0.05 * UNITS.MeV
 T_final = 0.0008 * UNITS.MeV

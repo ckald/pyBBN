@@ -26,6 +26,7 @@ from common import UNITS, Params
 
 folder = os.path.split(__file__)[0]
 
+T_interaction_freezeout = 0.05 * UNITS.MeV
 T_final = 0.0008 * UNITS.MeV
 params = Params(T=10. * UNITS.MeV,
                 dy=0.025)
@@ -64,6 +65,9 @@ universe.graphics.monitor([
 ])
 
 
+universe.evolve(T_interaction_freezeout, export=False)
+universe.interactions = tuple()
+universe.params.dy = 0.125
 universe.evolve(T_final)
 
 

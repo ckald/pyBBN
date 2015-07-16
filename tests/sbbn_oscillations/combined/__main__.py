@@ -26,7 +26,7 @@ from common import UNITS, Params
 
 folder = os.path.split(__file__)[0]
 
-T_kawano = 12 * UNITS.MeV
+T_kawano = 10 * UNITS.MeV
 T_simple = 0.05 * UNITS.MeV
 T_final = 0.0008 * UNITS.MeV
 params = Params(T=T_kawano,
