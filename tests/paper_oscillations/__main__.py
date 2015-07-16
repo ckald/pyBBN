@@ -110,9 +110,9 @@ if universe.graphics:
     ])
 
 universe.evolve(T_kawano, export=False)
-universe.params.dy = 0.025
+universe.params.dy = 0.003125
 universe.evolve(T_interactions_freeze_out, export=False)
-universe.params.dy = 0.0125
+universe.params.dy = 0.003125
 universe.interactions = tuple()
 universe.evolve(T_final)
 
