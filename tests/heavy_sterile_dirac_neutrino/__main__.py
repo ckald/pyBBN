@@ -100,6 +100,7 @@ if universe.graphics:
 
 universe.evolve(T_interaction_freezeout, export=False)
 universe.interactions = tuple()
+universe.params.dy = 0.0125
 universe.evolve(T_final)
 
 
@@ -121,7 +122,8 @@ if universe.graphics:
     import os
     import csv
     from itertools import izip
-    density_data, energy_data = universe.graphics.particles[4].data
+    density_data = universe.graphics.particles[4][1].data[0]
+    energy_data = universe.graphics.particles[4][1].data[1]
 
     with open(os.path.join(universe.folder, 'normalized_density_plot.dat'), 'w') as f:
         writer = csv.writer(f, delimiter='\t')
@@ -133,7 +135,7 @@ if universe.graphics:
         for x, y in izip(*energy_data):
             writer.write([x, y])
 
-    regime_data = universe.graphics.particles[3].data[0]
+    regime_data = universe.graphics.particles[3][1].data[0]
 
     with open(os.path.join(universe.folder, 'sterile_regime_plot.dat'), 'w') as f:
         writer = csv.writer(f, delimiter='\t')
