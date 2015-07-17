@@ -25,10 +25,10 @@ from common import UNITS, Params
 
 
 parser = argparse.ArgumentParser(description='Run simulation for given mass and mixing angle')
-parser.add_argument('--mass', default=33.9)
-parser.add_argument('--theta', default=0.0486)
-parser.add_argument('--tau', default=0.3)
-parser.add_argument('--Tdec', default=5)
+parser.add_argument('--mass', default='33.9')
+parser.add_argument('--theta', default='0.0486')
+parser.add_argument('--tau', default='0.3')
+parser.add_argument('--Tdec', default='5')
 parser.add_argument('--comment', default='')
 args = parser.parse_args()
 
