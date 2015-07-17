@@ -310,7 +310,7 @@ class AbundanceMonitor(ParticleMonitor):
 
 class DensityAndEnergyMonitor(ParticleMonitor):
     def __init__(self, particle, plots):
-        self.particle, self.plots = particle.plots
+        self.particle, self.plots = particle, plots
 
         self.plots[0].set_title(particle.name)
         self.plots[0].set_xlabel("T, MeV")
