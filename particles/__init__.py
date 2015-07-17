@@ -109,7 +109,9 @@ class Particle(PicklableObject):
         self.collision_integrals = []
         self.data = {
             'distribution': [self._distribution],
-            'collision_integral': []
+            'collision_integral': [],
+            'density': [],
+            'energy_density': []
         }
 
         if self.params:
@@ -159,6 +161,9 @@ class Particle(PicklableObject):
         if self.in_equilibrium != oldeq and not self.in_equilibrium:
             # Particle decouples, have to init the distribution function array for kinetics
             self.init_distribution()
+
+        self.data['density'].append(self.density())
+        self.data['energy_density'].append(self.energy_density())
 
         if force_print or self.regime != oldregime or self.in_equilibrium != oldeq:
             print self

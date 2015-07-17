@@ -4,7 +4,7 @@ import numpy
 import matplotlib
 
 from plotting import plt
-from common import UNITS, GRID
+from common import UNITS
 
 
 def articles_comparison_plots(universe, particles):

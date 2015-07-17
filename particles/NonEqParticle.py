@@ -3,7 +3,7 @@
 """
 from __future__ import division
 import numpy
-from common import GRID, linear_interpolation
+from common import linear_interpolation
 from common.integrators import lambda_integrate
 
 

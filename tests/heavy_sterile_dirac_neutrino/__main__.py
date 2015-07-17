@@ -15,10 +15,8 @@ http://arxiv.org/pdf/hep-ph/0002223v2.pdf
 
 import os
 import numpy
-import matplotlib
 from collections import defaultdict
 
-from plotting import plt, RadiationParticleMonitor, MassiveParticleMonitor, EquilibrationMonitor
 from particles import Particle
 from library.SM import particles as SMP, interactions as SMI
 from library.NuMSM import particles as NuP, interactions as NuI
@@ -75,70 +73,44 @@ universe.interactions += (
 
 universe.init_kawano(electron=electron, neutrino=neutrino_e)
 
-universe.graphics.monitor([
-    (neutrino_e, RadiationParticleMonitor),
-    (neutrino_mu, RadiationParticleMonitor),
-    (neutrino_tau, RadiationParticleMonitor),
-    (sterile, MassiveParticleMonitor),
-    (sterile, EquilibrationMonitor)
-])
+if universe.graphics:
+    from plotting import RadiationParticleMonitor, DensityAndEnergyMonitor
+    universe.graphics.monitor([
+        (neutrino_e, RadiationParticleMonitor),
+        (neutrino_mu, RadiationParticleMonitor),
+        (neutrino_tau, RadiationParticleMonitor),
+        (sterile, DensityAndEnergyMonitor)
+    ])
 
 universe.evolve(T_final)
 
 
-""" ## Plots for comparison with articles"""
-
-plt.ion()
-
 """
+### Plots for comparison with articles
+
 ### JCAP10(2012)014, Figure 9
 <img src="figure_9.svg" width=100% />
-"""
 
-plt.figure(9)
-plt.title('Figure 9')
-plt.xlabel('MeV/T')
-plt.ylabel(u'aT')
-plt.xscale('log')
-plt.xlim(0.5, UNITS.MeV/universe.params.T)
-plt.xticks([1, 2, 3, 5, 10, 20])
-plt.axes().get_xaxis().set_major_formatter(matplotlib.ticker.ScalarFormatter())
-plt.plot(UNITS.MeV / numpy.array(universe.data['T']), numpy.array(universe.data['aT']) / UNITS.MeV)
-plt.show()
-plt.savefig(os.path.join(folder, 'figure_9.svg'))
-
-"""
 ### JCAP10(2012)014, Figure 10
 <img src="figure_10.svg" width=100% />
 <img src="figure_10_full.svg" width=100% />
 """
 
-plt.figure(10)
-plt.title('Figure 10')
-plt.xlabel('Conformal momentum y = pa')
-plt.ylabel('f/f_eq')
-plt.xlim(0, 20)
+if universe.graphics:
+    from tests.plots import articles_comparison_plots
+    articles_comparison_plots(universe, [neutrino_e, neutrino_mu, neutrino_tau, sterile])
 
-# Distribution functions arrays
-distributions_file = open(os.path.join(folder, 'distributions.txt'), "w")
+    import os
+    import csv
+    from itertools import izip
+    density_data, energy_data = universe.graphics.particles[3].data
 
-for neutrino in [neutrino_e, neutrino_mu, neutrino_tau, sterile]:
-    f = neutrino._distribution
-    feq = neutrino.equilibrium_distribution()
-    plt.plot(neutrino.grid.TEMPLATE/UNITS.MeV, f/feq, label=neutrino.name)
+    with open(os.path.join(universe.folder, 'normalized_density_plot.dat'), 'w') as f:
+        writer = csv.writer(f, delimiter='\t')
+        for x, y in izip(*density_data):
+            writer.write([x, y])
 
-    numpy.savetxt(distributions_file, (f, feq, f/feq), header=str(neutrino),
-                  footer='-'*80, fmt="%1.5e")
-
-plt.legend()
-plt.draw()
-plt.show()
-plt.savefig(os.path.join(folder, 'figure_10_full.svg'))
-
-plt.xlim(0, 10)
-plt.ylim(0.99, 1.06)
-plt.draw()
-plt.show()
-plt.savefig(os.path.join(folder, 'figure_10.svg'))
-
-distributions_file.close()
+    with open(os.path.join(universe.folder, 'normalized_energy_density_plot.dat'), 'w') as f:
+        writer = csv.writer(f, delimiter='\t')
+        for x, y in izip(*energy_data):
+            writer.write([x, y])

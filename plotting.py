@@ -119,11 +119,34 @@ class Plotting(object):
 
 
 class ParticleMonitor(object):
+    data = None
+
     def __init__(self, particle, plots):
         raise NotImplementedError()
 
     def plot(self, data):
         raise NotImplementedError()
+
+    def scatter(self, plot, x, y, *args, **kwargs):
+        if not self.data:
+            self.data = {}
+        if plot not in self.data:
+            self.data[plot] = [[], []]
+
+        self.plots[plot].scatter(x, y, *args, **kwargs)
+        self.data[plot][0].append(x)
+        self.data[plot][1].append(y)
+
+    def plot_function(self, plot, t, grid, foo, *args, **kwargs):
+        if not self.data:
+            self.data = {}
+        if plot not in self.data:
+            self.data[plot] = [[], [], []]
+
+        self.plots[plot].plot(grid, foo, *args, **kwargs)
+        self.data[plot][0].append(t)
+        self.data[plot][1].append(grid)
+        self.data[plot][2].append(foo)
 
 
 class RadiationParticleMonitor(ParticleMonitor):
@@ -162,10 +185,10 @@ class RadiationParticleMonitor(ParticleMonitor):
             ratio = numpy.ones(self.particle.grid.TEMPLATE.shape)
             rhoeq = 1.
 
-        self.plots[0].scatter(T / UNITS.MeV, rhoeq, s=1)
+        self.scatter(0, T / UNITS.MeV, rhoeq, s=1)
 
         age_lines(self.plots[1].get_axes().lines)
-        self.plots[1].plot(self.particle.grid.TEMPLATE / UNITS.MeV, ratio)
+        self.plot_function(1, T, self.particle.grid.TEMPLATE / UNITS.MeV, ratio)
 
 
 class EquilibriumRadiationParticleMonitor(RadiationParticleMonitor):
@@ -222,8 +245,9 @@ class MassiveParticleMonitor(ParticleMonitor):
 
         from particles.NonEqParticle import energy_density, density
 
-        self.plots[0].scatter(T / UNITS.MeV, energy_density(self.particle)
-                              / (self.particle.mass * density(self.particle)), s=1)
+        self.scatter(0, T / UNITS.MeV,
+                     energy_density(self.particle) / (self.particle.mass * density(self.particle)),
+                     s=1)
 
         age_lines(self.plots[1].get_axes().lines)
 
@@ -231,7 +255,7 @@ class MassiveParticleMonitor(ParticleMonitor):
 
         f = self.particle._distribution
         feq = self.particle.equilibrium_distribution()
-        self.plots[1].plot(self.particle.grid.TEMPLATE / UNITS.MeV, yy*(f-feq))
+        self.plot_function(1, T, self.particle.grid.TEMPLATE / UNITS.MeV, yy*(f-feq))
 
 
 class EquilibrationMonitor(ParticleMonitor):
@@ -252,9 +276,8 @@ class EquilibrationMonitor(ParticleMonitor):
 
         from particles.NonEqParticle import numerator
 
-        self.plots[0].scatter(a, numpy.max(numpy.fabs(self.particle.collision_integral))
-                              * UNITS.MeV, s=1)
-        self.plots[1].scatter(a, numerator(self.particle) * UNITS.MeV, s=1)
+        self.scatter(0, a, numpy.max(numpy.fabs(self.particle.collision_integral)) * UNITS.MeV, s=1)
+        self.scatter(1, a, numerator(self.particle) * UNITS.MeV, s=1)
 
 
 class AbundanceMonitor(ParticleMonitor):
@@ -279,10 +302,35 @@ class AbundanceMonitor(ParticleMonitor):
 
         total_rho = data['rho'].iloc[-1]
         rho = self.particle.energy_density()
-        self.plots[0].scatter(T / UNITS.MeV, rho / total_rho, s=1)
+        self.scatter(0, T / UNITS.MeV, rho / total_rho, s=1)
 
         density = self.particle.density() * self.particle.params.a**3 / UNITS.MeV**3
-        self.plots[1].scatter(T / UNITS.MeV, density, s=1)
+        self.scatter(1, T / UNITS.MeV, density, s=1)
+
+
+class DensityAndEnergyMonitor(ParticleMonitor):
+    def __init__(self, particle, plots):
+        self.particle, self.plots = particle.plots
+
+        self.plots[0].set_title(particle.name)
+        self.plots[0].set_xlabel("T, MeV")
+        self.plots[0].invert_xaxis()
+        self.plots[0].set_xscale("log")
+        self.plots[0].set_ylabel("rho a^4")
+
+        self.plots[1].set_xlabel("T, MeV")
+        self.plots[1].invert_xaxis()
+        self.plots[1].set_xscale("log")
+        self.plots[1].set_ylabel("n a^3")
+
+    def plot(self, data):
+        T = data['T'].iloc[-1]
+
+        rho = self.particle.energy_density() * self.particle.params.a**4 / UNITS.MeV**4
+        self.scatter(0, T / UNITS.MeV, rho, s=1)
+
+        density = self.particle.density() * self.particle.params.a**3 / UNITS.MeV**3
+        self.scatter(1, T / UNITS.MeV, density, s=1)
 
 
 def age_lines(lines):
