@@ -73,6 +73,9 @@ if universe.graphics:
     ])
 
 
+universe.evolve(T_interaction_freezeout, export=False)
+universe.interactions = tuple()
+universe.params.dy = 0.0125
 universe.evolve(T_final)
 
 """
