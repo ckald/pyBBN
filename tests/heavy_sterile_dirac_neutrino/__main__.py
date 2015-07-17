@@ -46,7 +46,7 @@ T_final = 0.0008 * UNITS.MeV
 params = Params(T=T_initial,
                 dy=0.05)
 
-universe = Universe(params=params, folder=os.path.join(folder, args.lifetime))
+universe = Universe(params=params, folder=os.path.join(folder, args.tau))
 
 photon = Particle(**SMP.photon)
 electron = Particle(**SMP.leptons.electron)
