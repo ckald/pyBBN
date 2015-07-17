@@ -16,8 +16,7 @@ This test checks that in the universe filled with photons, electrons and neutrin
 """
 
 import os
-import numpy
-import matplotlib
+import argparse
 
 from plotting import plt, RadiationParticleMonitor, MassiveParticleMonitor
 from particles import Particle
@@ -25,7 +24,16 @@ from library.SM import particles as SMP, interactions as SMI
 from evolution import Universe
 from common import UNITS, Params, GRID
 
-folder = os.path.split(__file__)[0]
+
+parser = argparse.ArgumentParser(description='Run simulation for given mass and mixing angle')
+parser.add_argument('--mass', default='20')
+parser.add_argument('--comment', default='')
+args = parser.parse_args()
+
+mass = float(args.mass) * UNITS.MeV
+
+
+folder = os.path.join(os.path.split(__file__)[0], 'mass={}'.join(args.mass))
 
 T_initial = 20. * UNITS.MeV
 T_final = 0.015 * UNITS.MeV
@@ -39,7 +47,7 @@ electron = Particle(**SMP.leptons.electron)
 neutrino_e = Particle(**SMP.leptons.neutrino_e)
 neutrino_mu = Particle(**SMP.leptons.neutrino_mu)
 neutrino_tau = Particle(**SMP.leptons.neutrino_tau)
-neutrino_tau.mass = 20 * UNITS.MeV
+neutrino_tau.mass = mass
 
 neutrino_e.decoupling_temperature = T_initial
 neutrino_mu.decoupling_temperature = T_initial
@@ -69,58 +77,70 @@ universe.evolve(T_final)
 universe.graphics.save(__file__)
 
 
-""" ## Plots for comparison with articles """
-
-plt.ion()
-
 """
-### 1202.2841, Figure 13
-<img src="figure_13.svg" width=100% /> """
+### Plots for comparison with articles
 
-plt.figure(13)
-plt.title('Figure 13')
-plt.xlabel('MeV/T')
-plt.ylabel(u'aT')
-plt.xscale('log')
-plt.xlim(0.5, UNITS.MeV/params.T)
-plt.xticks([0.1, 0.2, 0.5, 1, 2, 5, 10, 20])
-plt.axes().get_xaxis().set_major_formatter(matplotlib.ticker.ScalarFormatter())
-plt.plot(UNITS.MeV / numpy.array(universe.data['T']), numpy.array(universe.data['aT']) / UNITS.MeV)
-plt.show()
-plt.savefig(os.path.join(folder, 'figure_13.svg'))
+### JCAP10(2012)014, Figure 9
+<img src="figure_9.svg" width=100% />
 
+### JCAP10(2012)014, Figure 10
+<img src="figure_10.svg" width=100% />
+<img src="figure_10_full.svg" width=100% />
 """
-### 1202.2841, Figure 14
-<img src="figure_14.svg" width=100% /> """
 
-plt.figure(14)
-plt.title('Figure 14')
-plt.xlabel('Conformal momentum y = pa')
-plt.ylabel('y^2 (f-f_eq), MeV^2')
-plt.xlim(0, 10)
+if universe.graphics:
+    import numpy
+    import matplotlib
+    from tests.plots import articles_comparison_plots
+    articles_comparison_plots(universe, [neutrino_e, neutrino_mu, neutrino_tau])
 
-yy = GRID.TEMPLATE * GRID.TEMPLATE / UNITS.MeV**2
+    """ ## Plots for comparison with articles """
 
-distributions_file = open(os.path.join(folder, 'distributions.txt'), "w")
+    plt.ion()
 
-for neutrino in (neutrino_e, neutrino_mu, neutrino_tau):
-    f = neutrino._distribution
-    feq = neutrino.equilibrium_distribution()
-    plt.plot(GRID.TEMPLATE/UNITS.MeV, yy*(f-feq), label=neutrino.flavour)
+    """
+    ### 1202.2841, Figure 13
+    <img src="figure_13.svg" width=100% /> """
 
-    numpy.savetxt(distributions_file, (f, feq, f/feq), header=str(neutrino),
-                  footer='-'*80, fmt="%1.5e")
+    plt.figure(13)
+    plt.title('Figure 13')
+    plt.xlabel('MeV/T')
+    plt.ylabel(u'aT')
+    plt.xscale('log')
+    plt.xlim(0.5, UNITS.MeV/params.T)
+    plt.xticks([0.1, 0.2, 0.5, 1, 2, 5, 10, 20])
+    plt.axes().get_xaxis().set_major_formatter(matplotlib.ticker.ScalarFormatter())
+    plt.plot(UNITS.MeV / numpy.array(universe.data['T']),
+             numpy.array(universe.data['aT']) / UNITS.MeV)
+    plt.show()
+    plt.savefig(os.path.join(folder, 'figure_13.svg'))
 
-plt.legend()
-plt.draw()
-plt.show()
-plt.savefig(os.path.join(folder, 'figure_14.svg'))
+    """
+    ### 1202.2841, Figure 14
+    <img src="figure_14.svg" width=100% /> """
 
-# Distribution functions arrays
-distributions_file.close()
+    plt.figure(14)
+    plt.title('Figure 14')
+    plt.xlabel('Conformal momentum y = pa')
+    plt.ylabel('y^2 (f-f_eq), MeV^2')
+    plt.xlim(0, 10)
 
-# Just to be sure everything is okay
-import ipdb
-ipdb.set_trace()
+    yy = GRID.TEMPLATE * GRID.TEMPLATE / UNITS.MeV**2
 
-raw_input("...")
+    distributions_file = open(os.path.join(folder, 'distributions.txt'), "w")
+
+    for neutrino in (neutrino_e, neutrino_mu, neutrino_tau):
+        f = neutrino._distribution
+        feq = neutrino.equilibrium_distribution()
+        plt.plot(GRID.TEMPLATE/UNITS.MeV, yy*(f-feq), label=neutrino.flavour)
+
+        numpy.savetxt(distributions_file, (f, feq, f/feq), header=str(neutrino),
+                      footer='-'*80, fmt="%1.5e")
+
+    plt.legend()
+    plt.draw()
+    plt.show()
+    plt.savefig(os.path.join(folder, 'figure_14.svg'))
+
+    # Distribution functions arrays
+    distributions_file.close()
