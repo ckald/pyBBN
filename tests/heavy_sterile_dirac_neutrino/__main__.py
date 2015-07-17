@@ -40,11 +40,11 @@ T_dec = float(args.Tdec) * UNITS.MeV
 
 folder = os.path.split(__file__)[0]
 
-T_initial = max(100. * UNITS.MeV, T_dec)
+T_initial = max(50. * UNITS.MeV, T_dec)
 T_interaction_freezeout = 0.05 * UNITS.MeV
 T_final = 0.0008 * UNITS.MeV
 params = Params(T=T_initial,
-                dy=0.025)
+                dy=0.05)
 
 universe = Universe(params=params, folder=folder)
 
