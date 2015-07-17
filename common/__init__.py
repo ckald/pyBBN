@@ -29,7 +29,7 @@ class UNITS(object):
         UNITS.MeV = UNITS.keV * 1e3
         UNITS.GeV = UNITS.MeV * 1e3
         UNITS.TeV = UNITS.GeV * 1e3
-        UNITS.s = 1. / 6.58 * 1e22 / UNITS.MeV
+        UNITS.s = 1e22 / 6.58 / UNITS.MeV
         UNITS.kg = 1e27 / 1.8 * UNITS.GeV
         UNITS.m = 1e15 / 0.197 / UNITS.GeV
         UNITS.N = 1e-5 / 8.19 * UNITS.GeV**2
@@ -50,7 +50,7 @@ class CONST(object):
     # Gravitational constant
     G = 6.67 * 1e-11 * (UNITS.N / UNITS.kg**2 * UNITS.m**2)
     # Planck mass
-    M_p = 1.2209 * 1e19 * UNITS.GeV
+    M_p = 1.2209 * 1e22 * UNITS.MeV
     # Fermi constant
     G_F = 1.166 * 1e-5 / UNITS.GeV**2
     # Hubble constant
@@ -115,7 +115,7 @@ class Params(object):
             \end{equation}
         """
         self.rho = rho
-        self.H = numpy.sqrt(8./3.*numpy.pi * rho) / CONST.M_p
+        self.H = numpy.sqrt(8./3. * numpy.pi * rho) / CONST.M_p
 
         self.N_eff = (
             (rho - (numpy.pi**2 / 15 * self.T**4))
@@ -140,8 +140,8 @@ class Params(object):
             \end{equation}
         """
         # dt = (self.a / old_a - 1) / self.H
-        # dt = (1 - old_a / self.a) / self.H
-        dt = self.dx / self.x / self.H
+        dt = (1 - old_a / self.a) / self.H
+        # dt = self.dx / self.x / self.H
         self.t += dt
 
     @property

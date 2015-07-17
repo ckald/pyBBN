@@ -4,7 +4,7 @@
 
 $$ M = 33.9 MeV $$
 
-$$ \theta_\tau \approx 7.6 10^{-3} \sim \tau_N \approx 0.3 sec $$
+$$ \theta_\tau \approx 4.86 10^{-2} \sim \tau_N \approx 0.3 sec $$
 
 http://arxiv.org/pdf/hep-ph/0002223v2.pdf
 
@@ -14,7 +14,6 @@ http://arxiv.org/pdf/hep-ph/0002223v2.pdf
 """
 
 import os
-import numpy
 from collections import defaultdict
 
 from particles import Particle
@@ -39,7 +38,7 @@ muon = Particle(**SMP.leptons.muon)
 neutrino_e = Particle(**SMP.leptons.neutrino_e)
 neutrino_mu = Particle(**SMP.leptons.neutrino_mu)
 neutrino_tau = Particle(**SMP.leptons.neutrino_tau)
-sterile = Particle(**NuP.sterile_neutrino(33.9 * UNITS.MeV))
+sterile = Particle(**NuP.dirac_sterile_neutrino(33.9 * UNITS.MeV))
 
 sterile.decoupling_temperature = T_initial
 neutrino_e.decoupling_temperature = 10 * UNITS.MeV
@@ -57,7 +56,7 @@ universe.add_particles([
 ])
 
 thetas = defaultdict(float, {
-    'tau': numpy.sqrt(1e-3),
+    'tau': 4.86e-2,
 })
 
 universe.interactions += (
