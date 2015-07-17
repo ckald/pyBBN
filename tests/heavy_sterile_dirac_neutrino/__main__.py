@@ -14,6 +14,7 @@ http://arxiv.org/pdf/hep-ph/0002223v2.pdf
 """
 
 import os
+import argparse
 from collections import defaultdict
 
 from particles import Particle
@@ -23,12 +24,27 @@ from evolution import Universe
 from common import UNITS, Params
 
 
+parser = argparse.ArgumentParser(description='Run simulation for given mass and mixing angle')
+parser.add_argument('--mass', default=33.9)
+parser.add_argument('--theta', default=0.0486)
+parser.add_argument('--tau', default=0.3)
+parser.add_argument('--Tdec', default=5)
+parser.add_argument('--comment', default='')
+args = parser.parse_args()
+
+mass = float(args.mass) * UNITS.MeV
+theta = float(args.theta)
+lifetime = float(args.tau) * UNITS.s
+T_dec = float(args.Tdec) * UNITS.MeV
+
+
 folder = os.path.split(__file__)[0]
 
-T_initial = 100. * UNITS.MeV
+T_initial = max(100. * UNITS.MeV, T_dec)
+T_interaction_freezeout = 0.05 * UNITS.MeV
 T_final = 0.0008 * UNITS.MeV
 params = Params(T=T_initial,
-                dy=0.05)
+                dy=0.025)
 
 universe = Universe(params=params, folder=folder)
 
@@ -38,12 +54,12 @@ muon = Particle(**SMP.leptons.muon)
 neutrino_e = Particle(**SMP.leptons.neutrino_e)
 neutrino_mu = Particle(**SMP.leptons.neutrino_mu)
 neutrino_tau = Particle(**SMP.leptons.neutrino_tau)
-sterile = Particle(**NuP.dirac_sterile_neutrino(33.9 * UNITS.MeV))
+sterile = Particle(**NuP.dirac_sterile_neutrino(mass))
 
 sterile.decoupling_temperature = T_initial
-neutrino_e.decoupling_temperature = 10 * UNITS.MeV
-neutrino_mu.decoupling_temperature = 10 * UNITS.MeV
-neutrino_tau.decoupling_temperature = 10 * UNITS.MeV
+neutrino_e.decoupling_temperature = 5 * UNITS.MeV
+neutrino_mu.decoupling_temperature = 5 * UNITS.MeV
+neutrino_tau.decoupling_temperature = 5 * UNITS.MeV
 
 universe.add_particles([
     photon,
@@ -56,7 +72,7 @@ universe.add_particles([
 ])
 
 thetas = defaultdict(float, {
-    'tau': 4.86e-2,
+    'tau': theta,
 })
 
 universe.interactions += (
@@ -73,14 +89,17 @@ universe.interactions += (
 universe.init_kawano(electron=electron, neutrino=neutrino_e)
 
 if universe.graphics:
-    from plotting import RadiationParticleMonitor, DensityAndEnergyMonitor
+    from plotting import RadiationParticleMonitor, MassiveParticleMonitor, DensityAndEnergyMonitor
     universe.graphics.monitor([
         (neutrino_e, RadiationParticleMonitor),
         (neutrino_mu, RadiationParticleMonitor),
         (neutrino_tau, RadiationParticleMonitor),
+        (sterile, MassiveParticleMonitor),
         (sterile, DensityAndEnergyMonitor)
     ])
 
+universe.evolve(T_interaction_freezeout, export=False)
+universe.interactions = tuple()
 universe.evolve(T_final)
 
 
@@ -102,7 +121,7 @@ if universe.graphics:
     import os
     import csv
     from itertools import izip
-    density_data, energy_data = universe.graphics.particles[3].data
+    density_data, energy_data = universe.graphics.particles[4].data
 
     with open(os.path.join(universe.folder, 'normalized_density_plot.dat'), 'w') as f:
         writer = csv.writer(f, delimiter='\t')
@@ -112,4 +131,11 @@ if universe.graphics:
     with open(os.path.join(universe.folder, 'normalized_energy_density_plot.dat'), 'w') as f:
         writer = csv.writer(f, delimiter='\t')
         for x, y in izip(*energy_data):
+            writer.write([x, y])
+
+    regime_data = universe.graphics.particles[3].data[0]
+
+    with open(os.path.join(universe.folder, 'sterile_regime_plot.dat'), 'w') as f:
+        writer = csv.writer(f, delimiter='\t')
+        for x, y in izip(*regime_data):
             writer.write([x, y])
