@@ -299,7 +299,7 @@ class Universe(object):
 
     def init_log(self, folder=''):
         self.folder = folder
-        self.logfile = os.path.join(self.folder, 'log.txt')
+        self.logfile = utils.ensure_path(os.path.join(self.folder, 'log.txt'))
         sys.stdout = utils.Logger(self.logfile)
 
     def log(self):
