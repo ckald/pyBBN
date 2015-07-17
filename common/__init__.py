@@ -17,7 +17,7 @@ class UNITS(object):
                  'K9', 'g_cm3')
 
     """ ## Units
-        As we use natural units in the project, all units from `numericalunits` except energy units\
+        As we use natural units in the project, all units from `numericalunits` except energy units
         are useless. Here some useful units are defined in terms of `GeV`s. """
 
     use_numericalunits = False
@@ -127,11 +127,11 @@ class Params(object):
         self.a = self.x / self.m
         self.T = self.aT / self.a
 
-        """ Time step size is inferred from the approximation of the scale factor `a` \
+        """ Time step size is inferred from the approximation of the scale factor `a`
             derivative and a definition of the Hubble parameter `H`:
 
             \begin{equation}
-                H = \frac{\dot{a}}{a} = \frac{1}{a_{i-1}} \frac{a_i - a_{i-1}}{\Delta t} \
+                H = \frac{\dot{a}}{a} = \frac{1}{a_{i-1}} \frac{a_i - a_{i-1}}{\Delta t}
                   = \frac{1}{\Delta t}(\frac{a_i}{a_{i-1}} -1)
             \end{equation}
 
@@ -153,16 +153,13 @@ class LogSpacedGrid(object):
 
     """ ### Distribution functions grid
 
-        TODO: try an irregular grid based on the Gauss-Legendre quadrature roots to minimize \
-              the interpolation for the massless particles.
-
-        To capture non-equilibrium effects in the Early Universe, we work with particle species \
-        distribution functions $f(\vec{p}, \vec{r}, t)$. Assuming that the Universe is homogeneous\
-        and isotropic, we can forget dependency on the position and the momentum direction: \
+        To capture non-equilibrium effects in the Early Universe, we work with particle species
+        distribution functions $f(\vec{p}, \vec{r}, t)$. Assuming that the Universe is homogeneous
+        and isotropic, we can forget dependency on the position and the momentum direction:
         $f(p, t)$.
 
-        Resulting functions are sampled across a wide range of momenta. However, momentum range\
-        cannot include both 0 momenta and very large momenta (either leads to numerical overflows\
+        Resulting functions are sampled across a wide range of momenta. However, momentum range
+        cannot include both 0 momenta and very large momenta (either leads to numerical overflows
         and errors).
         """
 
