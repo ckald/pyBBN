@@ -128,16 +128,16 @@ if universe.graphics:
     with open(os.path.join(universe.folder, 'normalized_density_plot.dat'), 'w') as f:
         writer = csv.writer(f, delimiter='\t')
         for x, y in izip(*density_data):
-            writer.write([x, y])
+            writer.writerow([x, y])
 
     with open(os.path.join(universe.folder, 'normalized_energy_density_plot.dat'), 'w') as f:
         writer = csv.writer(f, delimiter='\t')
         for x, y in izip(*energy_data):
-            writer.write([x, y])
+            writer.writerow([x, y])
 
     regime_data = universe.graphics.particles[3][1].data[0]
 
     with open(os.path.join(universe.folder, 'sterile_regime_plot.dat'), 'w') as f:
         writer = csv.writer(f, delimiter='\t')
         for x, y in izip(*regime_data):
-            writer.write([x, y])
+            writer.writerow([x, y])
