@@ -33,7 +33,7 @@ args = parser.parse_args()
 mass = float(args.mass) * UNITS.MeV
 
 
-folder = os.path.join(os.path.split(__file__)[0], 'mass={}'.join(args.mass))
+folder = os.path.join(os.path.split(__file__)[0], 'mass={}'.format(args.mass))
 
 T_initial = 20. * UNITS.MeV
 T_final = 0.015 * UNITS.MeV
