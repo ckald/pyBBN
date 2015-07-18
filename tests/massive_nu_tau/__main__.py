@@ -67,7 +67,6 @@ universe.interactions += \
 
 universe.graphics.monitor([
     (neutrino_e, RadiationParticleMonitor),
-    (neutrino_e, MassiveParticleMonitor),
     (neutrino_mu, RadiationParticleMonitor),
     (neutrino_tau, MassiveParticleMonitor)
 ])
