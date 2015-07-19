@@ -144,3 +144,9 @@ if universe.graphics:
 
     # Distribution functions arrays
     distributions_file.close()
+
+
+from tests.plots import spectrum_distortion, energy_density_deviation, cosmic_neutrino_temperature
+cosmic_neutrino_temperature(universe)
+spectrum_distortion(universe, neutrino_e)
+energy_density_deviation(universe, neutrino_e)
