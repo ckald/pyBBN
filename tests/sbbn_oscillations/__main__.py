@@ -54,7 +54,11 @@ universe.add_particles([
     proton
 ])
 
-universe.init_oscillations(SMP.leptons.oscillations_map(), (neutrino_e, neutrino_mu, neutrino_tau))
+"""
+$\theta_{13}$ is taken to be 0
+"""
+universe.init_oscillations(SMP.leptons.oscillations_map((0.5905, 0.805404, 0)),
+                           (neutrino_e, neutrino_mu, neutrino_tau))
 
 universe.interactions += (
     # [SMI.baryons_interaction(neutron=neutron, proton=proton,
