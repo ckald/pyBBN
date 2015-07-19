@@ -38,6 +38,7 @@ electron = Particle(**SMP.leptons.electron)
 neutrino_e = Particle(**SMP.leptons.neutrino_e)
 neutrino_mu = Particle(**SMP.leptons.neutrino_mu)
 neutrino_tau = Particle(**SMP.leptons.neutrino_tau)
+neutrinos = [neutrino_e, neutrino_mu, neutrino_tau]
 
 neutron = Particle(**SMP.hadrons.neutron)
 proton = Particle(**SMP.hadrons.proton)
@@ -60,7 +61,7 @@ universe.interactions += (
     #                          electron=electron, neutrino=neutrino_e)]
     # +
     SMI.neutrino_interactions(leptons=[electron],
-                              neutrinos=[neutrino_e, neutrino_mu, neutrino_tau])
+                              neutrinos=neutrinos)
 )
 
 universe.init_kawano(electron=electron, neutrino=neutrino_e)
@@ -89,5 +90,10 @@ universe.evolve(T_final)
 <img src="figure_10_full.svg" width=100% />
 """
 
-from tests.plots import articles_comparison_plots
-articles_comparison_plots(universe, [neutrino_e, neutrino_mu, neutrino_tau])
+if universe.graphics:
+    from tests.plots import articles_comparison_plots
+    articles_comparison_plots(universe, neutrinos)
+
+from tests.plots import spectrum
+for neutrino in neutrinos:
+    spectrum(universe, neutrino)
