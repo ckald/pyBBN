@@ -86,3 +86,7 @@ universe.evolve(T_final)
 if universe.graphics:
     from tests.plots import articles_comparison_plots
     articles_comparison_plots(universe, [neutrino_e, neutrino_mu])
+
+from tests.plots import spectrum
+spectrum(universe, neutrino_e)
+spectrum(universe, neutrino_mu)

@@ -1,4 +1,6 @@
 import os
+import csv
+from itertools import izip
 
 import numpy
 import matplotlib
@@ -76,3 +78,20 @@ def articles_comparison_plots(universe, particles):
     plt.savefig(os.path.join(universe.folder, 'figure_10.svg'))
 
     distributions_file.close()
+
+
+def cosmic_neutrino_temperature(universe):
+    data = universe.data
+    with open(os.path.join(universe.folder, 'sm_temp.dat'), 'w') as f:
+        writer = csv.writer(f, delimiter='\t')
+        writer.writerow(['# x, MeV', 'aT, MeV'])
+        for i, row in data.iterrows():
+            writer.writerow([row['x'] / UNITS.MeV, row['aT'] / UNITS.MeV])
+
+
+def spectrum(universe, particle):
+    with open(universe.folder, 'spectrum_{}.dat'.format(particle.name), 'w') as f:
+        writer = csv.writer(f, delimiter='\t')
+        writer.writerow(['# y, MeV', 'f'])
+        for y, f in izip(particle.grid.TEMPLATE, particle._distribution):
+            writer.writerow([y / UNITS.MeV, f])
