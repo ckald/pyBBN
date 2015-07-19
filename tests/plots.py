@@ -90,7 +90,7 @@ def cosmic_neutrino_temperature(universe):
 
 
 def spectrum(universe, particle):
-    with open(universe.folder, 'spectrum_{}.dat'.format(particle.name), 'w') as f:
+    with open(os.path.join(universe.folder, 'spectrum_{}.dat'.format(particle.name)), 'w') as f:
         writer = csv.writer(f, delimiter='\t')
         writer.writerow(['# y, MeV', 'f'])
         for y, f in izip(particle.grid.TEMPLATE, particle._distribution):
