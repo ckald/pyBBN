@@ -27,7 +27,7 @@ from library.SM import particles as SMP
 folder = os.path.split(__file__)[0]
 
 params = Params(T=10 * UNITS.MeV,
-                dy=0.05)
+                dy=0.025)
 T_final = 0.0008 * UNITS.MeV
 
 
@@ -59,11 +59,14 @@ universe.add_particles(Particles)
 universe.init_kawano(electron=electron, neutrino=neutrino_e)
 universe.step_monitor = step_monitor
 
-T_final = 1 * UNITS.MeV
+T_final = 3 * UNITS.MeV
 universe.evolve(T_final, export=False)
 T_final = 0.0008 * UNITS.MeV
-params.dy = 0.025
+params.dy = 0.003125
 universe.evolve(T_final)
+
+from tests.plots import cosmic_neutrino_temperature
+cosmic_neutrino_temperature(universe)
 
 print """
     Cosmic photon background temperature is {:.3f} times bigger than cosmic neutrinos temperature.
