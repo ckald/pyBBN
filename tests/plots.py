@@ -104,7 +104,7 @@ def spectrum_distortion(universe, particle):
         for y, f in izip(particle.grid.TEMPLATE, particle._distribution):
             writer.writerow([
                 y / UNITS.MeV,
-                y**2 * (f - particle.equilibrium_distribution(y, aT=universe.params.aT))
+                y**2 * (f - particle.equilibrium_distribution(y))
                 / UNITS.MeV**2
             ])
 
