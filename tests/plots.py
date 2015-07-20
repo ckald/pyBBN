@@ -118,5 +118,5 @@ def energy_density_deviation(universe, particle):
                               particle.data['energy_density']):
             writer.writerow([
                 a,
-                rho / (7 * particle.dof * numpy.pi**2 / 240 * T**4) - 1
+                rho / (7 * particle.dof * numpy.pi**2 / 240 * (particle.aT / a)**4) - 1
             ])
