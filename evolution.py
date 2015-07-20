@@ -93,6 +93,7 @@ class Universe(object):
             print interaction
 
         if self.params.rho is None:
+            self.update_particles()
             self.params.update(self.total_energy_density())
         self.save_params()
 
