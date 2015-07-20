@@ -114,8 +114,9 @@ def energy_density_deviation(universe, particle):
               'energy_deviation_{}.dat'.format(particle.name)), 'w') as f:
         writer = csv.writer(f, delimiter='\t')
         writer.writerow(['# a', 'rho/rho_eq - 1'])
-        for a, rho in izip(universe.data['a'], particle.data['energy_density']):
+        for a, T, rho in izip(universe.data['a'], universe.data['T'],
+                              particle.data['energy_density']):
             writer.writerow([
                 a,
-                rho / (7 * particle.dof * numpy.pi**2 / 240 * (universe.params.T)**4) - 1
+                rho / (7 * particle.dof * numpy.pi**2 / 240 * T**4) - 1
             ])
