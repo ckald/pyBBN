@@ -75,8 +75,6 @@ if universe.graphics:
 
 universe.evolve(T_final)
 
-universe.graphics.save(__file__)
-
 
 """
 ### Plots for comparison with articles
