@@ -38,7 +38,7 @@ folder = os.path.join(os.path.split(__file__)[0], 'mass={}'.format(args.mass))
 T_initial = 20. * UNITS.MeV
 T_final = 0.015 * UNITS.MeV
 params = Params(T=T_initial,
-                dy=0.1)
+                dy=0.2)
 
 universe = Universe(params=params, folder=folder)
 
