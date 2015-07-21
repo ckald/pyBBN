@@ -7,10 +7,10 @@ equilibrated plasma but they do decay.
 Main decays channels for sterile neutrinos with masses $m_N < m_K$ range are:
 
 \begin{align}
-    N &\to \nu_\alpha + \nu_\beta + \overline{\nu_\beta} \\\\
-    N &\to \nu_\alpha + l^+\_\beta + l^-\_\beta \\\\
-    N &\to \nu_\alpha + l^+\_\alpha + l^-\_{\beta \neq \alpha} \\\\
-    N &\to \pi^0 + \nu_\alpha \\\\
+    N &\to \nu_\alpha + \nu_\beta + \overline{\nu_\beta} \\
+    N &\to \nu_\alpha + l^+_\beta + l^-_\beta \\
+    N &\to \nu_\alpha + l^+_\alpha + l^-_{\beta \neq \alpha} \\
+    N &\to \pi^0 + \nu_\alpha \\
     N &\to \pi^+ + l^-_\alpha
 \end{align}
 
@@ -23,7 +23,7 @@ Then the kinetic equation on the sterile neutrino reads:
 
 \begin{align}
     \frac{d f_N}{d t} &= - (3 H + \tilde{\Gamma}_N(p)) f_N
-    \\\\ \tilde{\Gamma}_N(p) &= \frac{\Gamma_N}\gamma = \sqrt{1-v^2} \Gamma_N =
+    \\ \tilde{\Gamma}_N(p) &= \frac{\Gamma_N}\gamma = \sqrt{1-v^2} \Gamma_N =
         \sqrt{1-\left(\frac{p}{E}\right)^2} \Gamma_N = \frac{m}{E} \Gamma_N
 \end{align}
 
@@ -55,10 +55,10 @@ non-relativistic sterile neutrinos:
 
 \begin{align}
     &\dot{\rho} + 3 H ( \rho + p ) = 0
-    \\\\ \rho_\gamma &= \frac{2 \pi^2}{30} T^4
+    \\ \rho_\gamma &= \frac{2 \pi^2}{30} T^4
         & p_\gamma &= \frac13 \rho_\gamma
         & \dot{\rho_\gamma} &= 4 \rho_\gamma \frac{\dot{T}}{T}
-    \\\\ \rho_N &= m n_N
+    \\ \rho_N &= m n_N
         & p_N &= 0
 \end{align}
 
@@ -68,7 +68,7 @@ non-relativistic sterile neutrinos:
 
 \begin{align}
     4 \rho_\gamma \frac{\dot{T}}{T} - (3 H + \Gamma_N) m n_N + 3 H (\frac43 \rho_\gamma + m n_N) &= 0
-    \\\\ 4 \rho_\gamma \frac{\dot{T}}{T} - \Gamma_N m n_N + 4 H \rho_\gamma &= 0
+    \\ 4 \rho_\gamma \frac{\dot{T}}{T} - \Gamma_N m n_N + 4 H \rho_\gamma &= 0
 \end{align}
 
 \begin{equation}
