@@ -54,7 +54,7 @@ def run(data_folder, input="s4.dat", output="kawano_output.dat"):
         # ...
         "", "", "", ""
     ]))
-    with open(os.path.join(data_folder, "kawano_output.dat"), "r") as kawano_output:
+    with open(os.path.join(data_folder, output), "r") as kawano_output:
         return kawano_output.read()
 
 

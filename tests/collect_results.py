@@ -8,6 +8,7 @@ if __name__ == '__main__':
     parser.add_argument('--test', required=True)
     parser.add_argument('--modified', default=None)
     parser.add_argument('--regexp', default=r'.+')
+    parser.add_argument('--file', default='kawano_output.dat')
     args = parser.parse_args()
 
     regex = re.compile(args.regexp)
@@ -21,7 +22,7 @@ if __name__ == '__main__':
     for dirpath, dirnames, files in os.walk(args.test):
         for folder in dirnames:
             if regex.search(folder):
-                datafile = os.path.join(dirpath, folder, 'kawano_output.dat')
+                datafile = os.path.join(dirpath, folder, args.file)
                 data = None
                 try:
                     with open(datafile) as f:
