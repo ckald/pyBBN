@@ -66,7 +66,7 @@ grid = HeuristicGrid(mass, lifetime)
 
 sterile.decoupling_temperature = T_dec
 for neutrino in [neutrino_e, neutrino_mu, neutrino_tau]:
-    neutrino.decoupling_temperature = 5 * UNITS.MeV
+    neutrino.decoupling_temperature = 10 * UNITS.MeV
     neutrino.set_grid(grid)
 
 universe.add_particles([
