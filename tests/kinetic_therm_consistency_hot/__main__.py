@@ -28,7 +28,7 @@ folder = os.path.split(__file__)[0]
 T_initial = 1000. * UNITS.MeV
 T_final = 100 * UNITS.MeV
 params = Params(T=T_initial,
-                dy=0.025)
+                dy=0.1)
 
 universe = Universe(params=params, folder=folder)
 
@@ -59,11 +59,11 @@ universe.interactions += \
 
 
 if universe.graphics:
-    from plotting import RadiationParticleMonitor
+    from plotting import EquilibriumRadiationParticleMonitor
     universe.graphics.monitor([
-        (neutrino_e, RadiationParticleMonitor),
-        (neutrino_mu, RadiationParticleMonitor),
-        (neutrino_tau, RadiationParticleMonitor)
+        (neutrino_e, EquilibriumRadiationParticleMonitor),
+        (neutrino_mu, EquilibriumRadiationParticleMonitor),
+        (neutrino_tau, EquilibriumRadiationParticleMonitor)
     ])
 
 
