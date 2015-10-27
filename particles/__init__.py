@@ -22,23 +22,23 @@ class STATISTICS(object):
 
     @staticmethod
     @numpy.vectorize
-    def Fermi(e):
+    def Fermi(e, mu=0):
         """ Fermi-Dirac:
             \begin{equation}
                 \frac{1}{e^E + 1}
             \end{equation}
         """
-        return 1. / (numpy.exp(e) + 1.)
+        return 1. / (numpy.exp(e-mu) + 1.)
 
     @staticmethod
     @numpy.vectorize
-    def Bose(e):
+    def Bose(e, mu=0):
         """ Bose-Einstein:
             \begin{equation}
                 \frac{1}{e^E - 1}
             \end{equation}
         """
-        return 1. / (numpy.exp(e) - 1.)
+        return 1. / (numpy.exp(e-mu) - 1.)
 
     BOSON = Bose
     FERMION = Fermi
