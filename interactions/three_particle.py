@@ -55,7 +55,7 @@ class ThreeParticleIntegral(BoltzmannIntegral):
             return self.rest_integral(fau)
 
         if bounds is None:
-            bounds = (self.particle.grid.MIN_MOMENTUM, self.particle.grid.MAX_MOMENTUM)
+            bounds = (self.grids[0].MIN_MOMENTUM, self.grids[0].MAX_MOMENTUM)
 
         def prepared_integrand(p1):
             return self.integrand(p0, p1, fau)
