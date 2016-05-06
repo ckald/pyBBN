@@ -96,6 +96,7 @@ class FourParticleIntegral(BoltzmannIntegral):
                  lambda p1: min(p0 + p1, self.grids[1].MAX_MOMENTUM)),
             )
 
+        @numpy.vectorize
         def prepared_integrand(p1, p2):
             return self.integrand(p0, p1, p2, fau)
 
@@ -158,8 +159,6 @@ class FourParticleIntegral(BoltzmannIntegral):
         q1, q2 = (p[0], p[1]) if p[0] > p[1] else (p[1], p[0])
         q3, q4 = (p[2], p[3]) if p[2] > p[3] else (p[3], p[2])
 
-        is_in = (E[3] >= m[3]
-                 and q1 <= q2 + q3 + q4
-                 and q3 <= q1 + q2 + q4)
+        is_in = (E[3] >= m[3] and q1 <= q2 + q3 + q4 and q3 <= q1 + q2 + q4)
 
         return is_in

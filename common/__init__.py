@@ -177,7 +177,7 @@ class LogSpacedGrid(object):
         calculate any _vectorized_ function over the grid. For example,
 
         ```python
-        numpy.vectorize(particle.conformal_energy)(GRID.TEMPLATE)
+            particle.conformal_energy(GRID.TEMPLATE)
         ```
 
         yields an array of particle conformal energy mapped over the `GRID`

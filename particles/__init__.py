@@ -336,7 +336,7 @@ class Particle(PicklableObject):
             aT = self.aT
         if y is None:
             return self.equilibrium_distribution_function(
-                numpy.vectorize(self.conformal_energy)(self.grid.TEMPLATE) / aT
+                self.conformal_energy(self.grid.TEMPLATE) / aT
             )
         else:
             return self.equilibrium_distribution_function(self.conformal_energy(y) / aT)
