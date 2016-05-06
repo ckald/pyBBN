@@ -167,7 +167,7 @@ class RadiationParticleMonitor(ParticleMonitor):
         T = self.particle.params.T
         aT = self.particle.aT
 
-        rhoeq = self.particle.energy_density() / (
+        rhoeq = self.particle.energy_density / (
             self.particle.dof * numpy.pi**2 / 30. * (aT / self.particle.params.a)**4
             * (7./8. if self.particle.statistics == STATISTICS.FERMION else 1.)
         )
@@ -195,7 +195,7 @@ class EquilibriumRadiationParticleMonitor(RadiationParticleMonitor):
         T = data['T'].iloc[-1]
         aT = data['aT'].iloc[-1]
 
-        rhoeq = self.particle.energy_density() / (
+        rhoeq = self.particle.energy_density / (
             self.particle.dof * numpy.pi**2 / 30 * T**4
             * (7./8. if self.particle.statistics == STATISTICS.FERMION else 1.)
         )
@@ -206,7 +206,7 @@ class EquilibriumRadiationParticleMonitor(RadiationParticleMonitor):
 
 class EffectiveTemperatureRadiationPartileMonitor(RadiationParticleMonitor):
     def comparison_distributions(self, data):
-        rho = self.particle.energy_density()
+        rho = self.particle.energy_density
         const = (
             self.particle.dof * numpy.pi**2 / 30.
             * (7./8. if self.particle.statistics == STATISTICS.FERMION else 1.)
@@ -300,10 +300,10 @@ class AbundanceMonitor(ParticleMonitor):
         T = data['T'].iloc[-1]
 
         total_rho = data['rho'].iloc[-1]
-        rho = self.particle.energy_density()
+        rho = self.particle.energy_density
         self.scatter(0, T / UNITS.MeV, rho / total_rho, s=1)
 
-        density = self.particle.density() * self.particle.params.a**3 / UNITS.MeV**3
+        density = self.particle.density * self.particle.params.a**3 / UNITS.MeV**3
         self.scatter(1, T / UNITS.MeV, density, s=1)
 
 
@@ -325,10 +325,10 @@ class DensityAndEnergyMonitor(ParticleMonitor):
     def plot(self, data):
         T = data['T'].iloc[-1]
 
-        rho = self.particle.energy_density() * self.particle.params.a**4 / UNITS.MeV**4
+        rho = self.particle.energy_density * self.particle.params.a**4 / UNITS.MeV**4
         self.scatter(0, T / UNITS.MeV, rho, s=1)
 
-        density = self.particle.density() * self.particle.params.a**3 / UNITS.MeV**3
+        density = self.particle.density * self.particle.params.a**3 / UNITS.MeV**3
         self.scatter(1, T / UNITS.MeV, density, s=1)
 
 

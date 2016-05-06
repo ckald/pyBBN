@@ -86,8 +86,7 @@ def statistics_consistency_test(params):
 
     photon = Particle(params=params, **SMP.photon)
     neutrino = Particle(params=params, **SMP.leptons.neutrino_e)
-
-    assert 7./8. - neutrino.energy_density() / photon.energy_density() < eps
+    assert 7. / 8. - neutrino.energy_density / photon.energy_density < eps
 
 
 def decoupling_test():
@@ -121,21 +120,21 @@ def homeostasis_test(params):
 
     neutrino = Particle(params=params, **SMP.leptons.neutrino_e)
 
-    energy_density = neutrino.energy_density()
-    density = neutrino.density()
-    pressure = neutrino.pressure()
-    numerator = neutrino.numerator()
-    denominator = neutrino.denominator()
+    energy_density = neutrino.energy_density
+    density = neutrino.density
+    pressure = neutrino.pressure
+    numerator = neutrino.numerator
+    denominator = neutrino.denominator
 
     params.T /= 2
     params.aT *= 7
     params.a += 4
 
-    assert neutrino.energy_density() == energy_density \
-        and neutrino.density() == density \
-        and neutrino.pressure() == pressure \
-        and neutrino.numerator() == numerator \
-        and neutrino.denominator() == denominator, "Particle state should be persistent"
+    assert neutrino.energy_density == energy_density \
+        and neutrino.density == density \
+        and neutrino.pressure == pressure \
+        and neutrino.numerator == numerator \
+        and neutrino.denominator == denominator, "Particle state should be persistent"
 
 
 @with_setup_args(setup)
@@ -148,8 +147,8 @@ def smooth_decoupling_test(params):
     pressure = REGIMES.RADIATION.pressure(neutrino)
     numerator = REGIMES.RADIATION.numerator(neutrino)
     denominator = REGIMES.RADIATION.denominator(neutrino)
-    assert neutrino.energy_density() - energy_density < eps \
-        and neutrino.density() - density < eps \
-        and neutrino.pressure() - pressure < eps \
-        and neutrino.numerator() - numerator < eps \
-        and neutrino.denominator() - denominator < eps
+    assert neutrino.energy_density() - energy_density < eps
+    assert neutrino.density() - density < eps
+    assert neutrino.pressure() - pressure < eps
+    assert neutrino.numerator() - numerator < eps
+    assert neutrino.denominator() - denominator < eps
