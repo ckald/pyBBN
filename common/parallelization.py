@@ -1,8 +1,9 @@
 from itertools import izip
-from multiprocessing import Pool, Pipe, Process
+from multiprocessing import Pool, Pipe, Process, cpu_count
 
 
-worker_count = 50  # multiprocessing.cpu_count() / 2
+worker_count = cpu_count()
+# worker_count = 8  # 50  # multiprocessing.cpu_count() / 2
 orders = []
 
 
