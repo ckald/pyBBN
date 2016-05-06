@@ -100,11 +100,31 @@ def gaussian_test():
 
 
 def double_gaussian_test():
-    func = lambda x, y: special.jn(x, y)
+    def func(x, y):
+        return special.jn(x, y)
     adaptive_result, error = integrate.dblquad(func, 0, 10, lambda x: 1, lambda y: 3)
     own_result = integrators.double_gaussian(func, 0, 10, lambda x: 1, lambda y: 3)
 
     print adaptive_result, error
     print own_result
 
+    assert adaptive_result - own_result < error, "Own integrator is inaccurate"
+
+
+def neutron_lifetime_test():
+    from kawano import q as Q, m_e
+    q = Q / m_e
+
+    def func(e):
+        return e * (e - q)**2 * numpy.sqrt(e**2 - 1)
+
+    adaptive_result, error = integrate.quad(func, 1, q)
+    fixed_result, _ = integrate.fixed_quad(func, 1, q, n=integrators.GAUSS_LEGENDRE_ORDER)
+    own_result = integrators.gaussian(func, 1, q)
+
+    print adaptive_result, error
+    print fixed_result
+    print own_result
+
+    assert adaptive_result - fixed_result < error, "Gauss-Legendre quadrature order is insufficient"
     assert adaptive_result - own_result < error, "Own integrator is inaccurate"

@@ -124,9 +124,9 @@ def integrate_2D(integrand, bounds):
 
 
 GAUSS_LEGENDRE_ORDER = 30
-# points, weights = polynomial.legendre.leggauss(GAUSS_LEGENDRE_ORDER)
-alpha, beta = orthopoly.rec_jacobi(GAUSS_LEGENDRE_ORDER, 0, 0)
-points, weights = orthopoly.lobatto(alpha, beta, -1, 1)
+points, weights = numpy.polynomial.legendre.leggauss(GAUSS_LEGENDRE_ORDER)
+# alpha, beta = orthopoly.rec_jacobi(GAUSS_LEGENDRE_ORDER, 0, 0)
+# points, weights = orthopoly.lobatto(alpha, beta, -1, 1)
 grid = numpy.meshgrid(points, points)
 
 
