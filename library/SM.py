@@ -22,8 +22,18 @@ class WeakM(FourParticleM):
     def __init__(self, *args, **kwargs):
         super(WeakM, self).__init__(*args, **kwargs)
 
-        self.K1 *= 32 * CONST.G_F**2
-        self.K2 *= 32 * CONST.G_F**2
+        self.const = 32 * CONST.G_F**2
+        self.K1 *= self.const
+        self.K2 *= self.const
+
+    def __str__(self):
+        """ String-like representation of the matrix element """
+        ret = ""
+        if self.K1:
+            ret += "K1=32 G_F^2 {: .2e} ".format(self.K1 / self.const)
+        if self.K2:
+            ret += "K2=32 G_F^2 {: .2e} ".format(self.K2 / self.const)
+        return ret + "{}".format(self.order)
 
 
 class particles(object):
