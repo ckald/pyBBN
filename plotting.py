@@ -6,9 +6,8 @@ import itertools
 import numpy
 import matplotlib.pyplot as plt
 
-from common import UNITS, GRID
+from common import UNITS, GRID, statistics as STATISTICS
 from common.utils import ring_deque, getboolenv
-from particles import STATISTICS
 
 
 class Plotting(object):

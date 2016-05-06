@@ -219,8 +219,8 @@ class Universe(object):
         denominator = 0
 
         for particle in self.particles:
-            numerator += particle.numerator()
-            denominator += particle.denominator()
+            numerator += particle.numerator
+            denominator += particle.denominator
 
         return numerator, denominator
 
@@ -321,4 +321,4 @@ class Universe(object):
                 self.graphics.plot(self.data)
 
     def total_energy_density(self):
-        return sum(particle.energy_density() for particle in self.particles)
+        return sum(particle.energy_density for particle in self.particles)

@@ -16,7 +16,7 @@ def density(particle):
             n = \frac{g}{\pi^2} (aT)^3 \zeta(3)
         \end{equation}
     """
-    from particles import STATISTICS
+    from common import statistics as STATISTICS
 
     density = particle.T**3 * particle.dof / numpy.pi**2 * 1.2
     if particle.statistics == STATISTICS.FERMION:
@@ -32,7 +32,7 @@ def energy_density(particle):
             \rho = \frac{\pi^2}{30} g T^4
         \end{equation}
     """
-    from particles import STATISTICS
+    from common import statistics as STATISTICS
 
     density = particle.dof * numpy.pi**2 / 30. * particle.T**4
     if particle.statistics == STATISTICS.FERMION:

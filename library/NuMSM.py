@@ -7,8 +7,7 @@ from __future__ import division
 
 import itertools
 
-from common import UNITS, CONST
-from particles import STATISTICS
+from common import UNITS, CONST, statistics as STATISTICS
 from interactions import Interaction
 from interactions.three_particle import ThreeParticleM, ThreeParticleIntegral
 from interactions.four_particle import FourParticleIntegral

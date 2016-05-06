@@ -9,39 +9,12 @@ from __future__ import division
 
 import numpy
 
-from common import GRID, UNITS
+from common import GRID, UNITS, statistics as STATISTICS
 from common.integrators import adams_moulton_solver
 from common.utils import PicklableObject, trace_unhandled_exceptions
 
 from particles import DustParticle, RadiationParticle, IntermediateParticle, NonEqParticle
 from KAWANO.interpolation import dist_interp_values as distribution_interpolation
-
-
-class STATISTICS(object):
-    """ ## Particle species statistics """
-
-    @staticmethod
-    @numpy.vectorize
-    def Fermi(e, mu=0):
-        """ Fermi-Dirac:
-            \begin{equation}
-                \frac{1}{e^E + 1}
-            \end{equation}
-        """
-        return 1. / (numpy.exp(e-mu) + 1.)
-
-    @staticmethod
-    @numpy.vectorize
-    def Bose(e, mu=0):
-        """ Bose-Einstein:
-            \begin{equation}
-                \frac{1}{e^E - 1}
-            \end{equation}
-        """
-        return 1. / (numpy.exp(e-mu) - 1.)
-
-    BOSON = Bose
-    FERMION = Fermi
 
 
 class REGIMES(dict):
