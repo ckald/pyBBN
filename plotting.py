@@ -12,23 +12,24 @@ from common import UNITS, GRID, statistics as STATISTICS
 from common.utils import ring_deque, getboolenv
 
 
-def monitor_datafile(datafile, timer=1):
-    last_datalen = 0
+def monitor_datafile(datafolder, timer=1):
 
-    def plot_backlog():
-        global last_datalen
-        data = pandas.read_pickle(datafile)
-        i = 1
+    datafile = os.path.join(datafolder, 'evolution.pickle')
+
+    def plot_backlog(data, last_datalen):
+        i = last_datalen + 1
         while i < len(data):
             plotting.plot(data[:i], redraw=False)
             i += 1
-        print "Reached the end of the file, expecting input"
+
         last_datalen = len(data)
         plotting.redraw()
+        return last_datalen
 
     plt.ion()
     plotting = Plotting()
-    plot_backlog()
+    data = pandas.read_pickle(datafile)
+    last_datalen = plot_backlog(data, 0)
 
     last_mtime = os.stat(datafile).st_mtime
     while True:
@@ -38,18 +39,12 @@ def monitor_datafile(datafile, timer=1):
                 data = pandas.read_pickle(datafile)
                 if len(data) < last_datalen:
                     print "Datafile is shorter than before, clearing the output"
-                    last_datalen = len(data)
                     plt.close('all')
                     plotting = Plotting()
-                    plot_backlog()
-                else:
-                    i = last_datalen + 1
-                    while i < len(data):
-                        plotting.plot(data[last_datalen:i], redraw=False)
-                        i += 1
-                    last_datalen = len(data)
-                    print "Plotting done at", mtime
-                    plotting.redraw()
+                    last_datalen = 0
+
+                last_datalen = plot_backlog(data, last_datalen)
+                print "Plotting done at", mtime
 
             except Exception as e:
                 print e
@@ -434,7 +429,7 @@ def plot_points(points, name):
 if __name__ == '__main__':
 
     import argparse
-    parser = argparse.ArgumentParser(description='Monitor data file and plot')
-    parser.add_argument('--file', required=True)
+    parser = argparse.ArgumentParser(description='Monitor data files and plot')
+    parser.add_argument('--folder', required=True)
     args = parser.parse_args()
-    monitor_datafile(args.file)
+    monitor_datafile(args.folder)
