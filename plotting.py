@@ -1,13 +1,60 @@
 # -*- coding: utf-8 -*-
 
 import os
+import time
 import itertools
 
 import numpy
+import pandas
 import matplotlib.pyplot as plt
 
 from common import UNITS, GRID, statistics as STATISTICS
 from common.utils import ring_deque, getboolenv
+
+
+def monitor_datafile(datafile, timer=1):
+    last_datalen = 0
+
+    def plot_backlog():
+        global last_datalen
+        data = pandas.read_pickle(datafile)
+        i = 1
+        while i < len(data):
+            plotting.plot(data[:i], redraw=False)
+            i += 1
+        print "Reached the end of the file, expecting input"
+        last_datalen = len(data)
+        plotting.redraw()
+
+    plt.ion()
+    plotting = Plotting()
+    plot_backlog()
+
+    last_mtime = os.stat(datafile).st_mtime
+    while True:
+        mtime = os.stat(datafile).st_mtime
+        if mtime > last_mtime:
+            try:
+                data = pandas.read_pickle(datafile)
+                if len(data) < last_datalen:
+                    print "Datafile is shorter than before, clearing the output"
+                    last_datalen = len(data)
+                    plt.close('all')
+                    plotting = Plotting()
+                    plot_backlog()
+                else:
+                    i = last_datalen + 1
+                    while i < len(data):
+                        plotting.plot(data[last_datalen:i], redraw=False)
+                        i += 1
+                    last_datalen = len(data)
+                    print "Plotting done at", mtime
+                    plotting.redraw()
+
+            except Exception as e:
+                print e
+            last_mtime = mtime
+        time.sleep(timer)
 
 
 class Plotting(object):
@@ -53,13 +100,18 @@ class Plotting(object):
 
         self.lines = []
         self.plots_data = []
-        self.times = ring_deque([], 1000)
+        self.times = ring_deque([], 1e6)
         for plot in self.plots:
             self.lines.append(plot.plot([], [], 'b-')[0])
-            self.plots_data.append(ring_deque([], 1000))
+            self.plots_data.append(ring_deque([], 1e6))
 
         if self.show_plots:
             self.params_figure.show()
+
+    def redraw(self):
+        self.params_figure.canvas.draw()
+        if self.particles:
+            self.particles_figure.canvas.draw()
 
     def save(self, filename):
         """ Save cosmological and monitored particles plots to the file in the same folder as \
@@ -85,10 +137,13 @@ class Plotting(object):
         if self.show_plots:
             self.particles_figure.show()
 
-    def plot(self, data):
+    def plot(self, data, redraw=True):
         """ Plot cosmological parameters and monitored particles distribution functions """
 
         last_t = data['t'].iloc[-1] / UNITS.s
+        if last_t == 0:
+            return
+
         self.times.append(last_t)
 
         for i, plot in enumerate(self.plots):
@@ -108,13 +163,12 @@ class Plotting(object):
 
             self.lines[i].set_data(self.times, self.plots_data[i])
 
-        self.params_figure.canvas.draw()
-
         if self.particles:
             for i, (_, monitor) in enumerate(self.particles):
                 monitor.plot(data)
 
-            self.particles_figure.canvas.draw()
+        if redraw:
+            self.redraw()
 
 
 class ParticleMonitor(object):
@@ -192,8 +246,10 @@ class RadiationParticleMonitor(ParticleMonitor):
 
 class EquilibriumRadiationParticleMonitor(RadiationParticleMonitor):
     def comparison_distributions(self, data):
-        T = data['T'].iloc[-1]
-        aT = data['aT'].iloc[-1]
+        T = self.particle.params.T
+        aT = self.particle.params.aT
+        # T = data['T'].iloc[-1]
+        # aT = data['aT'].iloc[-1]
 
         rhoeq = self.particle.energy_density / (
             self.particle.dof * numpy.pi**2 / 30 * T**4
@@ -374,3 +430,11 @@ def plot_points(points, name):
     plt.title(name)
     plt.scatter(*zip(*points))
     plt.show()
+
+if __name__ == '__main__':
+
+    import argparse
+    parser = argparse.ArgumentParser(description='Monitor data file and plot')
+    parser.add_argument('--file', required=True)
+    args = parser.parse_args()
+    monitor_datafile(args.file)

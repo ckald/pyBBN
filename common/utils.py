@@ -131,6 +131,6 @@ def trace_unhandled_exceptions(func):
         try:
             return func(*args, **kwargs)
         except:
-            print 'Exception in '+func.__name__
+            print 'Exception in ' + func.__name__
             traceback.print_exc()
     return wrapped_func

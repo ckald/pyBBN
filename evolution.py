@@ -48,10 +48,10 @@ class Universe(object):
 
         self.params = Params() if not params else params
 
-        self.graphics = None
-        if utils.getboolenv("PLOT", plotting):
-            from plotting import Plotting
-            self.graphics = Plotting()
+        # self.graphics = None
+        # if utils.getboolenv("PLOT", plotting):
+        #     from plotting import Plotting
+        #     self.graphics = Plotting()
 
         self.init_log(folder=folder)
 
@@ -103,6 +103,7 @@ class Universe(object):
                 self.make_step()
                 self.save()
                 self.step += 1
+                self.data.to_pickle(os.path.join(self.folder, "evolution.pickle"))
             except KeyboardInterrupt:
                 print "Keyboard interrupt!"
                 break
@@ -117,12 +118,12 @@ class Universe(object):
         for particle in self.particles:
             print particle
 
-        if self.graphics:
-            self.graphics.save(self.logfile)
+        # if self.graphics:
+        #     self.graphics.save(self.logfile)
 
         if self.kawano:
-            if self.graphics:
-                self.kawano.plot(self.kawano_data, save=self.kawano_log.name)
+            # if self.graphics:
+            #     self.kawano.plot(self.kawano_data, save=self.kawano_log.name)
 
             self.kawano_log.close()
             print kawano.run(self.folder)
@@ -317,8 +318,8 @@ class Universe(object):
                            a=self.params.a,
                            dx=self.params.dx / UNITS.MeV))
 
-            if self.graphics:
-                self.graphics.plot(self.data)
+            # if self.graphics:
+            #     self.graphics.plot(self.data)
 
     def total_energy_density(self):
         return sum(particle.energy_density for particle in self.particles)
