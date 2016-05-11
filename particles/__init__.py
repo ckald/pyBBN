@@ -271,7 +271,6 @@ class DistributionParticle(AbstractParticle):
                                           h=self.params.dy, order=order)
 
         total_integral = (prediction - self.distribution(p0)) / self.params.dy
-
         return total_integral
 
     def distribution(self, p):
@@ -302,7 +301,7 @@ class DistributionParticle(AbstractParticle):
             self._distribution
         )
 
-        index = numpy.searchsorted(self.grid.TEMPLATE, p)
+        '''index = numpy.searchsorted(self.grid.TEMPLATE, p)
 
         if index >= self.grid.MOMENTUM_SAMPLES - 1:
             return self._distribution[-1]
@@ -335,7 +334,7 @@ class DistributionParticle(AbstractParticle):
 
         g = ((E_p - E_low) * g_high + (E_high - E_p) * g_low) / (E_high - E_low)
 
-        return 1. / (numpy.exp(g) + self.eta)
+        return 1. / (numpy.exp(g) + self.eta)'''
 
     def equilibrium_distribution(self, y=None, aT=None):
 
