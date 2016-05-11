@@ -21,8 +21,8 @@ def radiation_regime_test(params):
     assert photon.regime == REGIMES.RADIATION, "Photon is a relativistic particle"
     assert photon.mass == 0, "Photon is massless"
     assert photon.eta == -1, "Photon is a boson, it's eta must be equal to -1"
-    assert photon.numerator() == 0, "Photon does not contribute to the numerator"
-    assert photon.denominator() != 0, "Photon does contribute to the denominator"
+    assert photon.numerator == 0, "Photon does not contribute to the numerator"
+    assert photon.denominator != 0, "Photon does contribute to the denominator"
 
 
 @with_setup_args(setup)
@@ -35,8 +35,8 @@ def intermediate_regime_test(params):
         "Electron is not strictly relativistic at {} MeV".format(params.T/UNITS.MeV)
     assert electron.mass != 0, "Electron is massive"
     assert electron.eta == 1, "Electron is a fermion, it's eta must be equal to 1"
-    assert electron.numerator() != 0, "Massive particles contribute to the numerator"
-    assert electron.denominator() != 0, "Massive particles contribute to the denominator"
+    assert electron.numerator != 0, "Massive particles contribute to the numerator"
+    assert electron.denominator != 0, "Massive particles contribute to the denominator"
 
 
 @with_setup_args(setup)
@@ -49,8 +49,8 @@ def dust_regime_test(params):
         "Proton non-relativistic at {} MeV".format(params.T/UNITS.MeV)
     assert proton.mass != 0, "Proton is massive"
     assert proton.eta == 1, "Proton is a fermion, it's eta must be equal to 1"
-    assert proton.numerator() != 0, "Massive particles contribute to the numerator"
-    assert proton.denominator() != 0, "Massive particles contribute to the denominator"
+    assert proton.numerator != 0, "Massive particles contribute to the numerator"
+    assert proton.denominator != 0, "Massive particles contribute to the denominator"
 
 
 @with_setup_args(setup)
@@ -86,6 +86,7 @@ def statistics_consistency_test(params):
 
     photon = Particle(params=params, **SMP.photon)
     neutrino = Particle(params=params, **SMP.leptons.neutrino_e)
+    neutrino.update()
     assert 7. / 8. - neutrino.energy_density / photon.energy_density < eps
 
 
@@ -141,14 +142,15 @@ def homeostasis_test(params):
 def smooth_decoupling_test(params):
 
     neutrino = Particle(params=params, **SMP.leptons.neutrino_e)
+    neutrino.update()
 
     energy_density = REGIMES.RADIATION.energy_density(neutrino)
     density = REGIMES.RADIATION.density(neutrino)
     pressure = REGIMES.RADIATION.pressure(neutrino)
     numerator = REGIMES.RADIATION.numerator(neutrino)
     denominator = REGIMES.RADIATION.denominator(neutrino)
-    assert neutrino.energy_density() - energy_density < eps
-    assert neutrino.density() - density < eps
-    assert neutrino.pressure() - pressure < eps
-    assert neutrino.numerator() - numerator < eps
-    assert neutrino.denominator() - denominator < eps
+    assert neutrino.energy_density - energy_density < eps
+    assert neutrino.density - density < eps
+    assert neutrino.pressure - pressure < eps
+    assert neutrino.numerator - numerator < eps
+    assert neutrino.denominator - denominator < eps
