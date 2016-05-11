@@ -43,9 +43,14 @@ def pressure(particle):
             { \sqrt{y^2 + \frac{M_N^2 x^2}{m^2}} }
         \end{equation}
     """
+    if particle.mass == 0:
+        return numpy.vectorize(lambda p: (
+            particle.distribution(p) * p**3
+            * particle.dof / 6. / numpy.pi**2 / particle.params.a**4
+        ), otypes=[numpy.float_])
+
     return numpy.vectorize(lambda p: (
-        particle.distribution(p) * p ** 4
-        / particle.conformal_energy(p)
+        particle.distribution(p) * p**4 / particle.conformal_energy(p)
         * particle.dof / 6. / numpy.pi**2 / particle.params.a**4
     ), otypes=[numpy.float_])
 
