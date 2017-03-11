@@ -6,3 +6,4 @@ logs/*.txt
 *.o
 *.so
 .coverage
+.cache
