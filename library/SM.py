@@ -9,7 +9,7 @@ import itertools
 from math import sin, cos
 
 from common import UNITS, CONST, statistics as STATISTICS
-from interactions import Interaction
+from interactions import CrossGeneratingInteraction
 from interactions.four_particle import FourParticleM, FourParticleIntegral
 
 
@@ -259,13 +259,13 @@ class interactions(object):
             \end{equation}
         """
 
-        return Interaction(
+        return CrossGeneratingInteraction(
             name="Neutrino species scattering",
             particles=((neutrino_a, neutrino_b), (neutrino_a, neutrino_b)),
             antiparticles=((False, False), (False, False)),
             decoupling_temperature=0 * UNITS.MeV,
             Ms=(WeakM(K1=1., order=(0, 1, 2, 3)),),
-            integral=FourParticleIntegral
+            integral_type=FourParticleIntegral
         )
 
     @staticmethod
@@ -285,7 +285,7 @@ class interactions(object):
             Depending of the neutrino generations involved, $g_L$ can either be equal to \
             $g_R + \frac12$ (for $\nu_e$) or $g_R - \frac12$ (for others).
         """
-        return Interaction(
+        return CrossGeneratingInteraction(
             name="Neutrino pair annihilation into lepton pair",
             particles=((neutrino, neutrino), (lepton, lepton)),
             antiparticles=((False, True), (False, True)),
@@ -295,7 +295,7 @@ class interactions(object):
                 WeakM(K1=4 * CONST.g_R**2, order=(0, 2, 1, 3)),
                 WeakM(K2=4 * g_L * CONST.g_R, order=(2, 3, 0, 1)),
             ),
-            integral=FourParticleIntegral
+            integral_type=FourParticleIntegral
         )
 
     @classmethod
@@ -319,11 +319,11 @@ class interactions(object):
     @classmethod
     def baryons_interaction(cls, neutron=None, proton=None, neutrino=None, electron=None):
 
-        return Interaction(
+        return CrossGeneratingInteraction(
             name="Baryons interaction",
             particles=((neutron,), (proton, electron, neutrino)),
             antiparticles=((False,), (False, False, True)),
             decoupling_temperature=0 * UNITS.MeV,
             Ms=(WeakM(K1=2. * particles.quarks.CKM[(1, 1)]**2, order=(0, 1, 2, 3)),),
-            integral=FourParticleIntegral
+            integral_type=FourParticleIntegral
         )

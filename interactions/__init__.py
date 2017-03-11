@@ -25,13 +25,42 @@ class Interaction(PicklableObject):
 
     """
     ## Interaction
+    Class that holds collision integrals explicitly defined for a set of particles
+    """
+
+    name = "Particle interaction"
+
+    integral_type = None  # Collision integral class
+    integrals = None
+
+    def __init__(self, name=None, integrals=None):
+        self.name = name
+        self.integrals = IntegralDeduplicator(self.integrals).integrals
+
+    def __str__(self):
+        """ String-like representation of the interaction and all its integral """
+        return self.name + "\n\t" + "\n\t".join([str(integral) for integral in self.integrals])
+
+    def initialize(self):
+        """ Proxy method """
+
+        for integral in self.integrals:
+            integral.initialize()
+
+
+class CrossGeneratingInteraction(Interaction):
+
+    """
+    ## Cross-generating Interaction
     Helper class that takes care of creating all necessary `Integral`s for the actual interaction.
+
+    WARNING: Not suitable for Majorana particles
     """
 
     # Human-friendly interaction identifier
-    name = "Particle interaction"
+    name = "Cross-generating particle interaction"
 
-    integrals = None
+    integral_type = None  # Collision integral class
     particles = None  # All particles involved
 
     # Temperature when the typical interaction time exceeds the Hubble expansion time
@@ -40,7 +69,9 @@ class Interaction(PicklableObject):
     # Matrix elements of the interaction
     Ms = None
 
-    def __init__(self, **kwargs):
+    def __init__(self, name=None,
+                 particles=None, antiparticles=None, Ms=None,
+                 integral_type=None, decoupling_temperature=0):
         """ Create an `Integral` object for all particle species involved in the interaction.
 
             Precise expressions for all integrals can be derived by permuting all particle-related\
@@ -53,8 +84,12 @@ class Interaction(PicklableObject):
             Additionally, one has to generate the integrals for all the crossing processes by\
 
         """
-        for key in kwargs:
-            setattr(self, key, kwargs[key])
+        self.name = name
+        self.particles = particles
+        self.antiparticles = antiparticles
+        self.Ms = Ms
+        self.integral_type = integral_type
+        self.decoupling_temperature = decoupling_temperature
 
         self.integrals = []
 
@@ -68,11 +103,7 @@ class Interaction(PicklableObject):
 
             self.init_integrals(reaction, item)
 
-        self.integrals = IntegralSet(self.integrals).integrals
-
-    def __str__(self):
-        """ String-like representation of the interaction and all its integral """
-        return self.name + "\n\t" + "\n\t".join([str(integral) for integral in self.integrals])
+        self.integrals = IntegralDeduplicator(self.integrals).integrals
 
     @classmethod
     def cross_particle(cls, item):
@@ -115,6 +146,10 @@ class Interaction(PicklableObject):
         #     self.permutations(tuple(reversed(self.particles)), tuple(reversed(self.antiparticles)))
         # )
 
+        if any(specie.majorana for specie in itertools.chain.from_iterable(self.particles)):
+            raise NotImplementedError("CrossGeneratingInteraction is not suitable"
+                                      " for Majorana particles")
+
         # if any(specie.majorana for specie in itertools.chain.from_iterable(self.particles)):
         #     print "There is Majorana in da house!"
         #     conjugated_antiparticles = (
@@ -133,7 +168,7 @@ class Interaction(PicklableObject):
 
                 # Cross particles according to their position relative to the reaction arrow
                 reaction = tuple(
-                    Interaction.cross_particle(item)
+                    self.cross_particle(item)
                     if (item.side > 0 and j <= i) or (item.side < 0 and j > i)
                     else item
                     for j, item in enumerate(perm)
@@ -175,21 +210,15 @@ class Interaction(PicklableObject):
                 M.apply_order(tuple(map[val] for val in M.order), reaction)
 
         # Add interaction integrals by putting each incoming particle as the first one
-        self.integrals.append(self.integral(
+        self.integrals.append(self.integral_type(
             particle=particle,
             reaction=reaction,
             decoupling_temperature=self.decoupling_temperature,
             Ms=particle_Ms,
         ))
 
-    def initialize(self):
-        """ Proxy method """
 
-        for integral in self.integrals:
-            integral.initialize()
-
-
-class IntegralSet(PicklableObject):
+class IntegralDeduplicator(PicklableObject):
 
     integrals = None
 
