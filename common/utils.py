@@ -51,6 +51,21 @@ class Logger(object):
         return getattr(self.terminal, attr)
 
 
+class throttler(object):
+    def __init__(self, rate):
+        self.clock = time.time()
+        self.rate = rate
+
+    def shouldi(self):
+        curr_time = time.time()
+
+        if curr_time - self.clock > self.rate:
+            self.clock = curr_time
+            return True
+
+        return False
+
+
 class ring_deque(deque):
     """ Circular deque implementation """
 
@@ -134,3 +149,49 @@ def trace_unhandled_exceptions(func):
             print 'Exception in ' + func.__name__
             traceback.print_exc()
     return wrapped_func
+
+
+class DynamicRecArray(object):
+    def __init__(self, columns, dtypes=None):
+        if dtypes is None:
+            dtypes = [float] * len(columns)
+
+        self.columns = columns
+        self.dtypes = dtypes
+        self.structure = list(zip(columns, dtypes))
+
+        self.length = 0
+        self.size = 10
+        self._data = numpy.empty(self.size, dtype=self.structure)
+
+    def __len__(self):
+        return self.length
+
+    def __getattr__(self, column):
+        if column in self.columns:
+            return self._data[column][:self.length]
+        else:
+            raise KeyError
+
+    def append(self, rec):
+        if isinstance(rec, dict):
+            rec = tuple(rec[column] for column in self.columns)
+
+        if self.length == self.size:
+            self.size = int(1.5*self.size)
+            self._data = numpy.resize(self._data, self.size)
+        self._data[self.length] = rec
+        self.length += 1
+
+    def extend(self, recs):
+        for rec in recs:
+            self.append(rec)
+
+    @property
+    def data(self):
+        return self._data[:self.length]
+
+
+
+def create_record(columns):
+    return numpy.array([[]], dtype=[(column, float) for column in columns])

@@ -3,8 +3,8 @@
 import os
 import sys
 import numpy
-import pandas
 import time
+import cPickle
 from datetime import timedelta
 
 from common import UNITS, Params, integrators, parallelization, utils
@@ -19,6 +19,7 @@ class Universe(object):
 
     # System state is rendered to the log file each `log_freq` steps
     log_freq = 1
+    throttler = None
     clock_start = None
 
     particles = None
@@ -31,13 +32,10 @@ class Universe(object):
 
     step_monitor = None
 
-    data = pandas.DataFrame(columns=('aT', 'T', 'a', 'x', 't', 'rho', 'fraction'))
+    data = utils.DynamicRecArray(('aT', 'T', 'a', 'x', 't', 'rho', 'N_eff', 'fraction'))
 
-    def __init__(self, folder='logs', plotting=True, params=None, grid=None):
+    def __init__(self, folder='logs', params=None, max_log_rate=1):
         """
-        :param particles: Set of `particle.Particle` to model
-        :param interactions: Set of `interaction.Interaction` - quantum interactions \
-                             between particle species
         :param folder: Log file path (current `datetime` by default)
         """
 
@@ -45,6 +43,7 @@ class Universe(object):
         self.interactions = []
 
         self.clock_start = time.time()
+        self.throttler = utils.throttler(max_log_rate)
 
         self.params = Params() if not params else params
 
@@ -69,7 +68,7 @@ class Universe(object):
         self.kawano_log = open(os.path.join(self.folder, datafile), 'w')
         self.kawano_log.write("\t".join(kawano.heading) + "\n")
         self.kawano = kawano
-        self.kawano_data = pandas.DataFrame(columns=self.kawano.heading)
+        self.kawano_data = utils.DynamicRecArray(self.kawano.heading)
 
     def init_oscillations(self, pattern, particles):
         self.oscillations = (pattern, particles)
@@ -103,7 +102,8 @@ class Universe(object):
                 self.make_step()
                 self.save()
                 self.step += 1
-                self.data.to_pickle(os.path.join(self.folder, "evolution.pickle"))
+                with open(os.path.join(self.folder, "evolution.pickle"), "w") as f:
+                    cPickle.dump(self.data.data, f)
             except KeyboardInterrupt:
                 print "Keyboard interrupt!"
                 break
@@ -128,18 +128,19 @@ class Universe(object):
             self.kawano_log.close()
             print kawano.run(self.folder)
 
-            self.kawano_data.to_pickle(os.path.join(self.folder, "kawano.pickle"))
+            with open(os.path.join(self.folder, "kawano.pickle"), "w") as f:
+                cPickle.dump(self.kawano_data.data, f)
 
         print "Data saved to file {}".format(self.logfile)
 
-        self.data.to_pickle(os.path.join(self.folder, "evolution.pickle"))
+        with open(os.path.join(self.folder, "evolution.pickle"), "w") as f:
+            cPickle.dump(self.data.data, f)
 
     def make_step(self):
         self.integrand(self.params.x, self.params.aT)
 
         order = min(self.step + 1, 5)
-        fs = self.data['fraction'].tail(order-1).values.tolist()
-        fs.append(self.fraction)
+        fs = list(self.data.fraction[-(order - 1):]) + [self.fraction]
 
         self.params.aT +=\
             integrators.adams_bashforth_correction(fs=fs, h=self.params.dy, order=order)
@@ -258,7 +259,7 @@ class Universe(object):
         return self.fraction
 
     def save_params(self):
-        self.data = self.data.append({
+        self.data.append({
             'aT': self.params.aT,
             'T': self.params.T,
             'a': self.params.a,
@@ -267,7 +268,7 @@ class Universe(object):
             'N_eff': self.params.N_eff,
             't': self.params.t,
             'fraction': self.fraction
-        }, ignore_index=True)
+        })
 
     def save(self):
         """ Save current Universe parameters into the data arrays or output files """
@@ -284,8 +285,8 @@ class Universe(object):
                 self.kawano.heading[0]: self.params.t / UNITS.s,
                 self.kawano.heading[1]: self.params.x / UNITS.MeV,
                 self.kawano.heading[2]: self.params.T / UNITS.K9,
-                self.kawano.heading[3]: (self.params.T - self.data['T'].iloc[-2])
-                / (self.params.t - self.data['t'].iloc[-2]) * UNITS.s / UNITS.K9,
+                self.kawano.heading[3]: (self.params.T - self.data.T[-2])
+                    / (self.params.t - self.data.t[-2]) * UNITS.s / UNITS.K9,
                 self.kawano.heading[4]: self.params.rho / UNITS.g_cm3,
                 self.kawano.heading[5]: self.params.H * UNITS.s
             }
@@ -293,10 +294,11 @@ class Universe(object):
             row.update({self.kawano.heading[i]: rate / UNITS.MeV**5
                         for i, rate in enumerate(rates, 6)})
 
-            self.kawano_data = self.kawano_data.append(row, ignore_index=True)
-            log_entry = "\t".join("{:e}".format(item) for item in self.kawano_data.iloc[-1])
+            self.kawano_data.append(row)
+            log_entry = "\t".join("{:e}".format(item) for item in self.kawano_data.data[-1])
 
-            print "KAWANO", log_entry
+            if self.step % self.log_freq == 0 and self.throttler.shouldi():
+                print "KAWANO", log_entry
             self.kawano_log.write(log_entry + "\n")
 
     def init_log(self, folder=''):
@@ -308,9 +310,9 @@ class Universe(object):
         """ Runtime log output """
 
         # Print parameters every now and then
-        if self.step % self.log_freq == 0:
-            print ('[{clock}] #{step}\tt = {t:e}\taT = {aT:e}\tT = {T:e}\ta = {a:e}\tdx = {dx:e}'
-                   .format(clock=str(timedelta(seconds=int(time.time() - self.clock_start))),
+        if self.step % self.log_freq == 0 and self.throttler.shouldi():
+            print ('[{clock}] #{step}\tt = {t:e}s\taT = {aT:e}MeV\tT = {T:e}MeV\ta = {a:e}\tdx = {dx:e}MeV'
+                   .format(clock=timedelta(seconds=int(time.time() - self.clock_start)),
                            step=self.step,
                            t=self.params.t / UNITS.s,
                            aT=self.params.aT / UNITS.MeV,

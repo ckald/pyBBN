@@ -134,6 +134,7 @@ class AbstractParticle(PicklableObject):
                 E = \sqrt{p^2 + M^2}
             \end{equation}
         """
+
         if self.mass > 0:
             return numpy.sqrt(p**2 + self.mass**2)
         else:
@@ -254,17 +255,9 @@ class DistributionParticle(AbstractParticle):
         order = min(len(self.data['collision_integral']) + 1, 5)
 
         index = numpy.searchsorted(self.grid.TEMPLATE, p0)
-        fs = [i[index] for i in self.data['collision_integral'][-order+1:]]
+        fs = [i[index] for i in self.data['collision_integral'][-order + 1:]]
 
         H = self.params.H
-
-        if p0 == 0:
-            A = sum(As)
-            B = sum(Bs)
-            feq = self.equilibrium_distribution(p0)
-            print "{} p0 = {:.3e} A = {:.3e} t = {:.3e} d = {:.3e}".format(
-                self.symbol, p0 / UNITS.MeV, A * UNITS.s, -1. / B / UNITS.s, -(A/B) / feq
-            )
 
         prediction = adams_moulton_solver(y=self.distribution(p0), fs=fs,
                                           A=sum(As) / H, B=sum(Bs) / H,

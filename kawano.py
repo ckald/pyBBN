@@ -3,7 +3,6 @@
 import os
 import itertools
 import numpy
-import pandas
 import argparse
 
 from subprocess import Popen, PIPE
@@ -163,6 +162,7 @@ heading = ("t[s]", "x",
 
 
 def import_data(filepath):
+    import pandas
     with open(filepath) as f:
         line = f.readline()
         try:
