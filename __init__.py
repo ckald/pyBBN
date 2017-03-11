@@ -5,7 +5,7 @@
 
  1. Download the project source or clone the repository https://github.com/ckald/pyBBN
 
-        git clone https://github.com/ckald/pyBBN.git
+        git clone --recursive https://github.com/ckald/pyBBN.git
 
 
 
