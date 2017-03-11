@@ -40,7 +40,3 @@ last_t = universe.data['t'].iloc[-1] / UNITS.s
 
 print "a scaling discrepancy is: {:.2f}%"\
     .format(100 * (last_a / initial_a / numpy.sqrt(last_t / initial_t) - 1))
-
-universe.graphics.save(__file__)
-
-raw_input("...")

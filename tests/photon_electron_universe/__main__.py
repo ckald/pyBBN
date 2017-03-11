@@ -49,7 +49,3 @@ print """
     Cosmic photon background temperature is {:.3f} times bigger than cosmic neutrinos temperature.
     Relative error is {:.3f} %""".format(universe.params.aT / UNITS.MeV,
                                          (universe.params.aT / UNITS.MeV - 1.401) / 1.401 * 100)
-
-universe.graphics.save(__file__)
-
-raw_input("...")

@@ -111,13 +111,6 @@ if sterile.mass > neutral_pion.mass:
 universe.init_kawano(electron=electron, neutrino=neutrino_e)
 universe.init_oscillations(SMP.leptons.oscillations_map(), (neutrino_e, neutrino_mu, neutrino_tau))
 
-if universe.graphics:
-    from plotting import (MassiveParticleMonitor, AbundanceMonitor)
-    universe.graphics.monitor([
-        (sterile, MassiveParticleMonitor),
-        (sterile, AbundanceMonitor)
-    ])
-
 universe.evolve(T_final)
 
 """
@@ -130,7 +123,3 @@ universe.evolve(T_final)
 <img src="figure_10.svg" width=100% />
 <img src="figure_10_full.svg" width=100% />
 """
-
-if universe.graphics:
-    from tests.plots import articles_comparison_plots
-    articles_comparison_plots(universe, [neutrino_e, neutrino_mu, neutrino_tau, sterile])

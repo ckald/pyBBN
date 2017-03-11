@@ -59,13 +59,6 @@ universe.interactions += (
 
 universe.init_kawano(electron=electron, neutrino=neutrino_e)
 
-if universe.graphics:
-    universe.graphics.monitor([
-        (neutrino_e, RadiationParticleMonitor),
-        (neutrino_mu, RadiationParticleMonitor)
-    ])
-
-
 universe.evolve(T_interaction_freezeout, export=False)
 universe.interactions = tuple()
 universe.params.dy = 0.00625
@@ -82,11 +75,3 @@ universe.evolve(T_final)
 <img src="figure_10.svg" width=100% />
 <img src="figure_10_full.svg" width=100% />
 """
-
-if universe.graphics:
-    from tests.plots import articles_comparison_plots
-    articles_comparison_plots(universe, [neutrino_e, neutrino_mu])
-
-from tests.plots import spectrum
-spectrum(universe, neutrino_e)
-spectrum(universe, neutrino_mu)

@@ -36,7 +36,7 @@ def three_particle_integral_test(params):
     pion_interactions = NuI.sterile_pion_neutral(theta=1e-3, sterile=sterile,
                                                  active=neutrino_e, pion=neutral_pion)
 
-    universe = Universe(params=params, plotting=False)
+    universe = Universe(params=params)
     universe.add_particles([photon, neutrino_e, sterile, neutral_pion])
     universe.interactions += pion_interactions
 

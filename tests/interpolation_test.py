@@ -20,7 +20,7 @@ neutrino_scattering = Interaction(
     integral=FourParticleIntegral
 )
 
-universe = Universe(params=params, plotting=False)
+universe = Universe(params=params)
 universe.PARALLELIZE = False
 universe.add_particles([photon, neutrino])
 universe.interactions += [neutrino_scattering]

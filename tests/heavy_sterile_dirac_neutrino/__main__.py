@@ -88,16 +88,6 @@ universe.interactions += (
 
 universe.init_kawano(electron=electron, neutrino=neutrino_e)
 
-if universe.graphics:
-    from plotting import RadiationParticleMonitor, MassiveParticleMonitor, DensityAndEnergyMonitor
-    universe.graphics.monitor([
-        (neutrino_e, RadiationParticleMonitor),
-        (neutrino_mu, RadiationParticleMonitor),
-        (neutrino_tau, RadiationParticleMonitor),
-        (sterile, MassiveParticleMonitor),
-        (sterile, DensityAndEnergyMonitor)
-    ])
-
 universe.evolve(T_interaction_freezeout, export=False)
 universe.interactions = tuple()
 universe.params.dy = 0.0125
@@ -114,30 +104,3 @@ universe.evolve(T_final)
 <img src="figure_10.svg" width=100% />
 <img src="figure_10_full.svg" width=100% />
 """
-
-if universe.graphics:
-    from tests.plots import articles_comparison_plots
-    articles_comparison_plots(universe, [neutrino_e, neutrino_mu, neutrino_tau, sterile])
-
-    import os
-    import csv
-    from itertools import izip
-    density_data = universe.graphics.particles[4][1].data[0]
-    energy_data = universe.graphics.particles[4][1].data[1]
-
-    with open(os.path.join(universe.folder, 'normalized_density_plot.dat'), 'w') as f:
-        writer = csv.writer(f, delimiter='\t')
-        for x, y in izip(*density_data):
-            writer.writerow([x, y])
-
-    with open(os.path.join(universe.folder, 'normalized_energy_density_plot.dat'), 'w') as f:
-        writer = csv.writer(f, delimiter='\t')
-        for x, y in izip(*energy_data):
-            writer.writerow([x, y])
-
-    regime_data = universe.graphics.particles[3][1].data[0]
-
-    with open(os.path.join(universe.folder, 'sterile_regime_plot.dat'), 'w') as f:
-        writer = csv.writer(f, delimiter='\t')
-        for x, y in izip(*regime_data):
-            writer.writerow([x, y])

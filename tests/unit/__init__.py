@@ -22,7 +22,7 @@ def non_equilibium_setup():
     neutrino_mu = Particle(**SMP.leptons.neutrino_mu)
     neutrino_self_scattering = SMI.neutrino_scattering(neutrino_e, neutrino_e)
 
-    universe = Universe(params=params, plotting=False)
+    universe = Universe(params=params)
     universe.add_particles([photon, neutrino_e, neutrino_mu])
     universe.interactions += [neutrino_self_scattering]
 

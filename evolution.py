@@ -47,11 +47,6 @@ class Universe(object):
 
         self.params = Params() if not params else params
 
-        # self.graphics = None
-        # if utils.getboolenv("PLOT", plotting):
-        #     from plotting import Plotting
-        #     self.graphics = Plotting()
-
         self.init_log(folder=folder)
 
         # Controls parallelization of the collision integrals calculations
@@ -118,12 +113,7 @@ class Universe(object):
         for particle in self.particles:
             print particle
 
-        # if self.graphics:
-        #     self.graphics.save(self.logfile)
-
         if self.kawano:
-            # if self.graphics:
-            #     self.kawano.plot(self.kawano_data, save=self.kawano_log.name)
 
             self.kawano_log.close()
             print kawano.run(self.folder)
@@ -319,9 +309,6 @@ class Universe(object):
                            T=self.params.T / UNITS.MeV,
                            a=self.params.a,
                            dx=self.params.dx / UNITS.MeV))
-
-            # if self.graphics:
-            #     self.graphics.plot(self.data)
 
     def total_energy_density(self):
         return sum(particle.energy_density for particle in self.particles)
