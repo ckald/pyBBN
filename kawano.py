@@ -169,7 +169,7 @@ def import_data(filepath):
             line = line.split()
             if int(line[0]):
                 f.readline()
-        except:
+        except Exception:
             pass
 
         data = pandas.DataFrame(
