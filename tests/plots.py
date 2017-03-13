@@ -81,11 +81,11 @@ def articles_comparison_plots(universe, particles):
 
 
 def cosmic_neutrino_temperature(universe):
-    data = universe.data
+    data = universe.data.data
     with open(os.path.join(universe.folder, 'sm_temp.dat'), 'w') as f:
         writer = csv.writer(f, delimiter='\t')
         writer.writerow(['# x, MeV', 'aT, MeV'])
-        for i, row in data.iterrows():
+        for i, row in enumerate(data):
             writer.writerow([row['x'] / UNITS.MeV, row['aT'] / UNITS.MeV])
 
 

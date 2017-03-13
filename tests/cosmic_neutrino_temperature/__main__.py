@@ -64,6 +64,10 @@ params.dy = 0.003125
 universe.evolve(T_final)
 
 
+from tests.plots import cosmic_neutrino_temperature
+cosmic_neutrino_temperature(universe)
+
+
 print """
     Cosmic photon background temperature is {:.3f} times bigger than cosmic neutrinos temperature.
     Relative error is {:.3f} %
