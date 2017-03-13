@@ -94,10 +94,11 @@ class BoltzmannIntegral(PicklableObject, DistributionFunctional):
         `Integral.reaction[0]` """
 
     _saveable_fields = [
-        'particle', 'reaction', 'decoupling_temperature', 'constant', 'Ms', 'grids',
+        'particle', 'reaction', 'sides', 'decoupling_temperature', 'constant', 'Ms', 'grids',
     ]
 
     reaction = None  # All particles involved
+    sides = None
 
     """ ### Crossed particles in the integral
 
@@ -140,7 +141,7 @@ class BoltzmannIntegral(PicklableObject, DistributionFunctional):
         if not self.Ms:
             self.Ms = []
 
-        self.integrand = numpy.vectorize(self.integrand, otypes=[numpy.float_])
+        self.sides = tuple([item.side for item in self.reaction])
 
     def __str__(self):
         """ String-like representation of the integral. Corresponds to the first particle """
@@ -162,31 +163,12 @@ class BoltzmannIntegral(PicklableObject, DistributionFunctional):
         """
         raise NotImplementedError()
 
-    def calculate_kinematics(self, p):
-        """ Helper procedure that caches conformal energies and masses of the reaction """
-        particle_count = len(self.reaction)
-        p = (p + [0.]*particle_count)[:particle_count]
-        E = []
-        m = []
-        for i, particle in enumerate(self.reaction):
-            E.append(particle.specie.conformal_energy(p[i]))
-            m.append(particle.specie.conformal_mass)
-
-        """ Parameters of one particle can be inferred from the energy conservation law
-            \begin{equation}E_3 = -s_3 \sum_{i \neq 3} s_i E_i \end{equation} """
-        E[particle_count-1] = self.reaction[particle_count-1].side \
-            * sum([-self.reaction[i].side * E[i] for i in range(particle_count-1)])
-        p[particle_count-1] = numpy.sqrt(numpy.abs(E[particle_count-1]**2 - m[particle_count-1]**2))
-        return p, E, m
-
     def rates(self):
-        def forward_integral(p):
-            return numpy.vectorize(lambda p0: p0**2 / (2 * numpy.pi)**3
-                                   * self.integrate(p0, self.F_A)[0])(p)
+        forward_integral = numpy.vectorize(lambda p0: p0**2 / (2 * numpy.pi)**3
+                                           * self.integrate(p0, self.F_A)[0])
 
-        def backward_integral(p):
-            return numpy.vectorize(lambda p0: p0**2 / (2 * numpy.pi)**3
-                                   * self.integrate(p0, self.F_B)[0])(p)
+        backward_integral = numpy.vectorize(lambda p0: p0**2 / (2 * numpy.pi)**3
+                                            * self.integrate(p0, self.F_B)[0])
 
         grid = self.particle.grid
 

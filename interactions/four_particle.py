@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 import numpy
+from array import array
 from common import integrators
 from interactions.boltzmann import BoltzmannIntegral
-from interactions.ds import D, Db
+from interactions.ds_compiled import integrand
 
 
 class FourParticleM(object):
@@ -96,9 +97,22 @@ class FourParticleIntegral(BoltzmannIntegral):
                  lambda p1: min(p0 + p1, self.grids[1].MAX_MOMENTUM)),
             )
 
-        @numpy.vectorize
+        ms = []
+        for i, particle in enumerate(self.reaction):
+            ms.append(particle.specie.conformal_mass)
+
+        cMs = [
+            {'order': array('i', M.order), 'K1': M.K1, 'K2': M.K2}
+            for M in self.Ms
+        ]
+        csides = array('i', self.sides)
+        cms = array('d', ms)
+
         def prepared_integrand(p1, p2):
-            return self.integrand(p0, p1, p2, fau)
+            return numpy.reshape(
+                integrand(p0, p1.ravel(), p2.ravel(), p1.size, cms, cMs, csides, fau),
+                p1.shape
+            )
 
         params = self.particle.params
         constant = (params.m / params.x)**5 / 64. / numpy.pi**3
@@ -108,57 +122,3 @@ class FourParticleIntegral(BoltzmannIntegral):
         )
 
         return constant * integral
-
-    def integrand(self, p0, p1, p2, fau=None):
-
-        """
-        Collision integral interior.
-        """
-
-        p = [p0, p1, p2, 0]
-        p, E, m = self.calculate_kinematics(p)
-
-        if not self.in_bounds(p, E, m):
-            return 0.
-
-        integrand = 1.
-
-        ds = 0.
-        if p[0] != 0:
-            for M in self.Ms:
-                ds += D(p=p, E=E, m=m, M=M, reaction=self.reaction)
-            ds = ds / p[0] / E[0]
-        else:
-            for M in self.Ms:
-                ds += Db(p=p, E=E, m=m, M=M, reaction=self.reaction)
-        integrand *= ds
-
-        # Avoid rounding errors and division by zero
-        for i in [1, 2, 3]:
-            if m[i] != 0:
-                integrand *= p[i] / E[i]
-
-        if integrand == 0:
-            return 0
-
-        integrand *= fau(p)
-
-        return integrand
-
-    """ ### Integration region bounds methods """
-
-    def in_bounds(self, p, E=None, m=None):
-        """ $D$-functions involved in the interactions imply a cut-off region for the collision\
-            integrand. In the general case of arbitrary particle masses, this is a set of \
-            irrational inequalities that can hardly be solved (at least, Wolfram Mathematica does\
-            not succeed in this). To avoid excessive computations, it is convenient to do an early\
-            `return 0` when the particles kinematics lay out of the cut-off region """
-        if not E or not m:
-            p, E, m = self.calculate_kinematics(p)
-
-        q1, q2 = (p[0], p[1]) if p[0] > p[1] else (p[1], p[0])
-        q3, q4 = (p[2], p[3]) if p[2] > p[3] else (p[3], p[2])
-
-        is_in = (E[3] >= m[3] and q1 <= q2 + q3 + q4 and q3 <= q1 + q2 + q4)
-
-        return is_in
