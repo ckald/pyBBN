@@ -47,10 +47,11 @@ class CONST(object):
 
     """ ### Physical constants """
 
-    # Gravitational constant
-    G = 6.67 * 1e-11 * (UNITS.N / UNITS.kg**2 * UNITS.m**2)
     # Planck mass
     M_p = 1.2209 * 1e22 * UNITS.MeV
+    # Gravitational constant
+    # G = 6.67 * 1e-11 * (UNITS.N / UNITS.kg**2 * UNITS.m**2)
+    G = 1 / M_p**2
     # Fermi constant
     G_F = 1.166 * 1e-5 / UNITS.GeV**2
     # Hubble constant
@@ -106,6 +107,10 @@ class Params(object):
         self.x = self.a * self.m
         self.y = numpy.log(self.a)
         self.aT = self.a * self.T
+
+    def init_time(self, rho):
+        self.t = numpy.sqrt(3/(32*numpy.pi*CONST.G*rho))
+        return self.t
 
     def update(self, rho):
         """ Hubble expansion parameter defined by a Friedmann equation:

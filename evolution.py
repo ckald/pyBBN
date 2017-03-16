@@ -67,7 +67,7 @@ class Universe(object):
     def init_oscillations(self, pattern, particles):
         self.oscillations = (pattern, particles)
 
-    def evolve(self, T_final, export=True):
+    def evolve(self, T_final, export=True, init_time=True):
         """
         ## Main computing routine
 
@@ -84,6 +84,10 @@ class Universe(object):
 
         for interaction in self.interactions:
             print interaction
+
+        # TODO: test if changing updating particles beforehand changes the computed time
+        if init_time:
+            self.params.init_time(self.total_energy_density())
 
         if self.params.rho is None:
             self.update_particles()
