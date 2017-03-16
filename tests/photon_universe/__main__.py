@@ -12,6 +12,7 @@ This test checks that in the photon universe:
 
 """
 
+import os
 import numpy
 
 from particles import Particle
@@ -20,11 +21,13 @@ from library.SM import particles as SMP
 from common import Params, UNITS
 
 
+folder = os.path.join(os.path.split(__file__)[0], 'output')
+
 T_final = 100 * UNITS.keV
 params = Params(T=100 * UNITS.MeV,
                 dy=0.05)
 
-universe = Universe(params=params, folder="tests/photon_universe")
+universe = Universe(params=params, folder=folder)
 
 photon = Particle(**SMP.photon)
 
