@@ -191,7 +191,5 @@ class DynamicRecArray(object):
     def data(self):
         return self._data[:self.length]
 
-
-
-def create_record(columns):
-    return numpy.array([[]], dtype=[(column, float) for column in columns])
+    def savetxt(self, f):
+        numpy.savetxt(f, self._data, delimiter='\t', header='\t'.join(self.columns))

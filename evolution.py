@@ -4,7 +4,6 @@ import os
 import sys
 import numpy
 import time
-import cPickle
 from datetime import timedelta
 
 from common import UNITS, Params, integrators, parallelization, utils
@@ -17,9 +16,9 @@ class Universe(object):
     """ ## Universe
         The master object that governs the calculation. """
 
-    # System state is rendered to the log file each `log_freq` steps
-    log_freq = 1
-    throttler = None
+    # System state is rendered to the evolution.txt file each `export_freq` steps
+    export_freq = 100
+    log_throttler = None
     clock_start = None
 
     particles = None
@@ -43,7 +42,7 @@ class Universe(object):
         self.interactions = []
 
         self.clock_start = time.time()
-        self.throttler = utils.throttler(max_log_rate)
+        self.log_throttler = utils.throttler(max_log_rate)
 
         self.params = Params() if not params else params
 
@@ -97,8 +96,9 @@ class Universe(object):
                 self.make_step()
                 self.save()
                 self.step += 1
-                with open(os.path.join(self.folder, "evolution.pickle"), "w") as f:
-                    cPickle.dump(self.data.data, f)
+                if self.step % self.export_freq == 0:
+                    with open(os.path.join(self.folder, "evolution.txt"), "w") as f:
+                        self.data.savetxt(f)
             except KeyboardInterrupt:
                 print "Keyboard interrupt!"
                 break
@@ -118,13 +118,13 @@ class Universe(object):
             self.kawano_log.close()
             print kawano.run(self.folder)
 
-            with open(os.path.join(self.folder, "kawano.pickle"), "w") as f:
-                cPickle.dump(self.kawano_data.data, f)
+            with open(os.path.join(self.folder, "kawano.txt"), "w") as f:
+                self.kawano_data.savetxt(f)
 
-        print "Data saved to file {}".format(self.logfile)
+        print "Execution log saved to file {}".format(self.logfile)
 
-        with open(os.path.join(self.folder, "evolution.pickle"), "w") as f:
-            cPickle.dump(self.data.data, f)
+        with open(os.path.join(self.folder, "evolution.txt"), "w") as f:
+            self.data.savetxt(f)
 
     def make_step(self):
         self.integrand(self.params.x, self.params.aT)
@@ -287,7 +287,7 @@ class Universe(object):
             self.kawano_data.append(row)
             log_entry = "\t".join("{:e}".format(item) for item in self.kawano_data.data[-1])
 
-            if self.step % self.log_freq == 0 and self.throttler.shouldi():
+            if self.log_throttler.shouldi():
                 print "KAWANO", log_entry
             self.kawano_log.write(log_entry + "\n")
 
@@ -300,7 +300,7 @@ class Universe(object):
         """ Runtime log output """
 
         # Print parameters every now and then
-        if self.step % self.log_freq == 0 and self.throttler.shouldi():
+        if self.log_throttler.shouldi():
             print ('[{clock}] #{step}\tt = {t:e}s\taT = {aT:e}MeV\tT = {T:e}MeV\ta = {a:e}\tdx = {dx:e}MeV'
                    .format(clock=timedelta(seconds=int(time.time() - self.clock_start)),
                            step=self.step,
