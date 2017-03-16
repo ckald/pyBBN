@@ -12,9 +12,9 @@ from distutils.extension import Extension
 from Cython.Distutils import build_ext
 import numpy
 
-sourcefiles = ['ds_compiled.pyx']
+sourcefiles = ['integral.pyx']
 
-extensions = [Extension("ds_compiled", sourcefiles,
+extensions = [Extension("integral", sourcefiles,
                         include_dirs=[numpy.get_include()],
                         language="c++",
                         libraries=["stdc++"]

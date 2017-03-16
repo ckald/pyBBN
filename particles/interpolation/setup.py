@@ -14,7 +14,8 @@ import numpy
 
 sourcefiles = ['interpolation.pyx']
 
-extensions = [Extension("interpolation", sourcefiles)]
+extensions = [Extension("interpolation", sourcefiles,
+                        include_dirs=[numpy.get_include()],)]
 
 setup(
     cmdclass={'build_ext': build_ext},

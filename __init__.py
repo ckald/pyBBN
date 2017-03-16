@@ -7,17 +7,25 @@
 
         git clone --recursive https://github.com/ckald/pyBBN.git
 
-
-
- 1. Install dependencies using OS package manager and [pip](https://pypi.python.org/pypi/pip)  \
+ 1. Install dependencies using favorite OS package manager and [pip](https://pypi.python.org/pypi/pip)  \
     (usually preinstalled on Linux and Mac OS X along with the standard CPython 2.7+ interpreter)
 
-     * Ubuntu: `sudo aptitude install libblas-dev liblapack-dev python-dev gfortran`
-     * Mac OS X: `brew install scipy`
+     * Ubuntu and aptitute: `sudo aptitude install libblas-dev liblapack-dev python-dev gfortran`
+     * Mac OS X and [Homebrew](https://brew.sh/): `brew install scipy`
 
 ```
     sudo pip install -r requirements.txt
 ```
+
+ 1. Compile modified KAWANO nucleosynthesis code and run unit tests
+
+        cd KAWANO/
+        make all
+
+ 1. Compile code extensions and run unit tests
+
+        make all
+
 
 ## Usage
 
