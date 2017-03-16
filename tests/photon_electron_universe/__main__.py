@@ -38,10 +38,10 @@ universe.evolve(T_final)
 initial_aT = universe.data['aT'][0]
 print "a * T is not conserved: {}"\
     .format(any([initial_aT != value for value in universe.data['aT']]))
-initial_a = universe.data['a'][len(universe.data['a'])/2]
-initial_t = universe.data['t'][len(universe.data['a'])/2] / UNITS.s
-last_a = universe.data['a'].iloc[-1]
-last_t = universe.data['t'].iloc[-1] / UNITS.s
+initial_a = universe.data['a'][len(universe.data)/2]
+initial_t = universe.data['t'][len(universe.data)/2] / UNITS.s
+last_a = universe.data['a'][-1]
+last_t = universe.data['t'][-1] / UNITS.s
 
 print """
     a scaling discrepancy is: {:.2f}%"""\

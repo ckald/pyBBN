@@ -173,6 +173,14 @@ class DynamicRecArray(object):
         else:
             raise KeyError
 
+    def __getitem__(self, index):
+        if index in self.columns:
+            return self._data[index][:self.length]
+        index = int(index)
+        if index < 0:
+            index = self.length+1-index
+        return self._data[:][index]
+
     def append(self, rec):
         if isinstance(rec, dict):
             rec = tuple(rec[column] for column in self.columns)
