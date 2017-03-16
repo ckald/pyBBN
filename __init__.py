@@ -3,11 +3,12 @@
 """
 ## Installation
 
- 1. Download the project source or clone the repository https://github.com/ckald/pyBBN
+ 1. Clone the repository https://github.com/ckald/pyBBN
 
         git clone --recursive https://github.com/ckald/pyBBN.git
 
- 1. Install dependencies using favorite OS package manager and [pip](https://pypi.python.org/pypi/pip)  \
+ 1. Install dependencies using favorite OS package manager and \
+    [pip](https://pypi.python.org/pypi/pip) \
     (usually preinstalled on Linux and Mac OS X along with the standard CPython 2.7+ interpreter)
 
      * Ubuntu and aptitute: `sudo aptitude install libblas-dev liblapack-dev python-dev gfortran`
