@@ -50,9 +50,9 @@ class Universe(object):
         self.init_log(folder=folder)
 
         # Controls parallelization of the collision integrals calculations
-        self.PARALLELIZE = utils.getboolenv("PARALLELIZE", True)
+        self.PARALLELIZE = int(utils.getenv("PARALLELIZE", 0))
         if self.PARALLELIZE:
-            parallelization.init_pool()
+            parallelization.init_pool(self.PARALLELIZE)
 
         self.fraction = 0
 

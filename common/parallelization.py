@@ -2,8 +2,7 @@ from itertools import izip
 from multiprocessing import Pool, Pipe, Process, cpu_count
 
 
-worker_count = cpu_count()
-# worker_count = 8  # 50  # multiprocessing.cpu_count() / 2
+worker_count = cpu_count() - 1
 orders = []
 
 
@@ -12,8 +11,12 @@ orders = []
 pool = None
 
 
-def init_pool():
+def init_pool(workers=None):
     global pool
+    global worker_count
+
+    if workers is not None:
+        worker_count = min(workers, worker_count)
     pool = Pool(processes=worker_count)
 
 
