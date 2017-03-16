@@ -23,7 +23,7 @@ from common import Params, UNITS
 from library.SM import particles as SMP
 
 
-folder = os.path.split(__file__)[0]
+folder = os.path.join(os.path.split(__file__)[0], 'output')
 
 params = Params(T=10 * UNITS.MeV,
                 dy=0.025)

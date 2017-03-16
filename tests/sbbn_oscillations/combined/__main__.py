@@ -17,14 +17,13 @@ This test checks that in the universe filled with photons, electrons and neutrin
 
 import os
 
-from plotting import RadiationParticleMonitor
 from particles import Particle
 from library.SM import particles as SMP, interactions as SMI
 from evolution import Universe
 from common import UNITS, Params
 
 
-folder = os.path.split(__file__)[0]
+folder = os.path.join(os.path.split(__file__)[0], 'output')
 
 T_kawano = 10 * UNITS.MeV
 T_simple = 0.05 * UNITS.MeV

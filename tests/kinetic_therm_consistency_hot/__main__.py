@@ -14,16 +14,14 @@ $\sim 1000 \div 100 MeV$
 """
 
 import os
-import numpy
-import matplotlib
 
-from plotting import plt
 from particles import Particle
 from library.SM import particles as SMP, interactions as SMI
 from evolution import Universe
-from common import UNITS, Params, GRID
+from common import UNITS, Params
 
-folder = os.path.split(__file__)[0]
+
+folder = os.path.join(os.path.split(__file__)[0], 'output')
 
 T_initial = 1000. * UNITS.MeV
 T_final = 100 * UNITS.MeV

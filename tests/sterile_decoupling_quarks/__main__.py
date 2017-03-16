@@ -13,19 +13,17 @@ This tests simulates the decoupling of sterile neutrinos in the quark-gluon plas
 """
 
 import os
-import numpy
-import matplotlib
 
 from collections import defaultdict
 
-from plotting import plt, RadiationParticleMonitor, MassiveParticleMonitor
 from particles import Particle
 from library.SM import particles as SMP  # , interactions as SMI
 from library.NuMSM import particles as NuP, interactions as NuI
 from evolution import Universe
-from common import UNITS, Params, GRID
+from common import UNITS, Params
 
-folder = os.path.split(__file__)[0]
+
+folder = os.path.join(os.path.split(__file__)[0], 'output')
 
 T_initial = 1.5 * UNITS.GeV
 T_final = 100 * UNITS.MeV

@@ -40,6 +40,7 @@ T_dec = float(args.Tdec) * UNITS.MeV
 
 folder = utils.ensure_dir(
     os.path.split(__file__)[0],
+    'output',
     "mass={:e}_tau={:e}_theta={:e}".format(mass / UNITS.MeV, lifetime / UNITS.s, theta)
     + args.comment
 )

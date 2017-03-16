@@ -34,6 +34,7 @@ mass = float(args.mass) * UNITS.MeV
 theta = float(args.theta)
 
 folder = utils.ensure_dir(os.path.split(__file__)[0],
+                          'output',
                           "mass={:e}_theta={:e}".format(mass / UNITS.MeV, theta)
                           + args.comment)
 

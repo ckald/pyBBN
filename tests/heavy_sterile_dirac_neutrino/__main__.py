@@ -38,7 +38,7 @@ lifetime = float(args.tau) * UNITS.s
 T_dec = float(args.Tdec) * UNITS.MeV
 
 
-folder = os.path.join(os.path.split(__file__)[0], args.tau)
+folder = os.path.join(os.path.split(__file__)[0], "output", args.tau)
 
 T_initial = max(50. * UNITS.MeV, T_dec)
 T_interaction_freezeout = 0.05 * UNITS.MeV

@@ -18,12 +18,11 @@ This test checks that in the universe filled with photons, electrons and neutrin
 import os
 import argparse
 
-from plotting import plt, RadiationParticleMonitor, MassiveParticleMonitor
 from particles import Particle
 from library.SM import particles as SMP, interactions as SMI
 from library.MassiveNuTau import particles as MNP, interactions as MNI
 from evolution import Universe
-from common import UNITS, Params, GRID
+from common import UNITS, Params
 
 
 parser = argparse.ArgumentParser(description='Run simulation for given mass and mixing angle')
@@ -34,7 +33,7 @@ args = parser.parse_args()
 mass = float(args.mass) * UNITS.MeV
 
 
-folder = os.path.join(os.path.split(__file__)[0], 'mass={}'.format(args.mass))
+folder = os.path.join(os.path.split(__file__)[0], 'output', 'mass={}'.format(args.mass))
 
 T_initial = 20. * UNITS.MeV
 T_final = 0.015 * UNITS.MeV

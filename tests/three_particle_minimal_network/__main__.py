@@ -24,19 +24,17 @@ and a single generation of active neutrinos να (possibly also treated as photo
 """
 
 import os
-import numpy
-import matplotlib
 
 from collections import defaultdict
 
-from plotting import plt, RadiationParticleMonitor, MassiveParticleMonitor
 from particles import Particle
 from library.SM import particles as SMP, interactions as SMI
 from library.NuMSM import particles as NuP, interactions as NuI
 from evolution import Universe
-from common import UNITS, Params, GRID
+from common import UNITS, Params
 
-folder = os.path.split(__file__)[0]
+
+folder = os.path.join(os.path.split(__file__)[0], 'output')
 
 T_initial = 200 * UNITS.MeV
 T_final = 50 * UNITS.MeV
