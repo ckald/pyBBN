@@ -2,7 +2,7 @@
 *.sublime-*
 docs/*
 build/*
-logs/*.txt
+output/*
 *.o
 *.so
 .coverage

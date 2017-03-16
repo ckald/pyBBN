@@ -34,7 +34,7 @@ class Universe(object):
 
     data = utils.DynamicRecArray(('aT', 'T', 'a', 'x', 't', 'rho', 'N_eff', 'fraction'))
 
-    def __init__(self, folder='logs', params=None, max_log_rate=1):
+    def __init__(self, folder='output', params=None, max_log_rate=1):
         """
         :param folder: Log file path (current `datetime` by default)
         """
