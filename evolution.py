@@ -42,7 +42,7 @@ class Universe(object):
         self.interactions = []
 
         self.clock_start = time.time()
-        self.log_throttler = utils.throttler(max_log_rate)
+        self.log_throttler = utils.Throttler(max_log_rate)
 
         self.params = Params() if not params else params
 
@@ -143,6 +143,8 @@ class Universe(object):
         self.params.update(self.total_energy_density())
         if self.step_monitor:
             self.step_monitor(self)
+
+        self.log_throttler.update()
 
     def add_particles(self, particles):
         for particle in particles:
@@ -293,7 +295,7 @@ class Universe(object):
             self.kawano_data.append(row)
             log_entry = "\t".join("{:e}".format(item) for item in self.kawano_data.data[-1])
 
-            if self.log_throttler.shouldi():
+            if self.log_throttler.output:
                 print "KAWANO", log_entry
             self.kawano_log.write(log_entry + "\n")
 
@@ -306,7 +308,7 @@ class Universe(object):
         """ Runtime log output """
 
         # Print parameters every now and then
-        if self.log_throttler.shouldi():
+        if self.log_throttler.output:
             print ('[{clock}] #{step}\tt = {t:e}s\taT = {aT:e}MeV\tT = {T:e}MeV\ta = {a:e}\tdx = {dx:e}MeV'
                    .format(clock=timedelta(seconds=int(time.time() - self.clock_start)),
                            step=self.step,

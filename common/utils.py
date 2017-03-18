@@ -51,19 +51,22 @@ class Logger(object):
         return getattr(self.terminal, attr)
 
 
-class throttler(object):
+class Throttler(object):
     def __init__(self, rate):
         self.clock = time.time()
         self.rate = rate
+        self.output = True
 
-    def shouldi(self):
+    def update(self):
         curr_time = time.time()
 
-        if curr_time - self.clock > self.rate:
-            self.clock = curr_time
-            return True
+        if curr_time - self.clock < self.rate:
+            self.output = False
+            return False
 
-        return False
+        self.clock = curr_time
+        self.output = True
+        return True
 
 
 class ring_deque(deque):
@@ -96,16 +99,19 @@ class ring_deque(deque):
 
 class benchmark(object):
     """ Simple benchmarking context manager """
-    def __init__(self, name):
+    def __init__(self, name, show=True):
         self.name = name
+        self.show = show
 
     def __enter__(self):
-        self.start = time.time()
+        if self.show:
+            self.start = time.time()
 
     def __exit__(self, ty, val, tb):
-        end = time.time()
-        print("{:s} : {:0.3f} seconds"
-              .format(self.name if not callable(self.name) else self.name(), end-self.start))
+        if self.show:
+            end = time.time()
+            print("{:s} : {:0.3f} seconds"
+                  .format(self.name if not callable(self.name) else self.name(), end-self.start))
         return False
 
 
