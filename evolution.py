@@ -184,13 +184,15 @@ class Universe(object):
                                                  particle.grid.TEMPLATE))
                     ]
                     for particle, result in parallelization.orders:
-                        with utils.benchmark(lambda: "I(" + particle.symbol + ") = "
-                                             + repr(particle.collision_integral)):
+                        with (utils.benchmark(lambda: "δf({}) = {}".format(particle.symbol,
+                              particle.collision_integral * self.params.dy),
+                              self.log_throttler.output)):
                             particle.collision_integral = numpy.array(result.get(1000))
             else:
                 for particle in particles:
-                    with utils.benchmark(lambda: "I(" + particle.symbol + ") = "
-                                         + repr(particle.collision_integral)):
+                    with (utils.benchmark(lambda: "δf({}) = {}".format(particle.symbol,
+                          particle.collision_integral * self.params.dy),
+                          self.log_throttler.output)):
                         particle.collision_integral = particle.integrate_collisions()
 
     def update_distributions(self):
