@@ -3,7 +3,7 @@ import numpy
 from array import array
 from common import integrators
 from interactions.boltzmann import BoltzmannIntegral
-from interactions.four_particle.integral import integrand
+from interactions.four_particle.integral import integrand_1, integrand_f
 
 
 class FourParticleM(object):
@@ -81,6 +81,9 @@ class FourParticleIntegral(BoltzmannIntegral):
         if self.grids is None:
             self.grids = tuple([self.reaction[1].specie.grid, self.reaction[2].specie.grid])
 
+        self.F_1 = integrand_1
+        self.F_f = integrand_f
+
     def initialize(self):
         """
         Initialize collision integral constants and save them to the first involved particle
@@ -94,23 +97,34 @@ class FourParticleIntegral(BoltzmannIntegral):
             bounds = (
                 self.grids[0].BOUNDS,
                 (lambda p1: self.grids[1].MIN_MOMENTUM,
-                 lambda p1: min(p0 + p1, self.grids[1].MAX_MOMENTUM)),
+                 lambda p1: numpy.min(p0 + p1, self.grids[1].MAX_MOMENTUM)),
             )
-
-        ms = []
-        for i, particle in enumerate(self.reaction):
-            ms.append(particle.specie.conformal_mass)
 
         cMs = [
             {'order': array('i', M.order), 'K1': M.K1, 'K2': M.K2}
             for M in self.Ms
         ]
-        csides = array('i', self.sides)
-        cms = array('d', ms)
+
+        creaction = [
+            {
+                'specie': {
+                    'm': particle.specie.conformal_mass,
+                    'grid': {
+                        'grid': particle.specie.grid.TEMPLATE,
+                        'distribution': particle.specie._distribution,
+                        'size': particle.specie.grid.MOMENTUM_SAMPLES
+                    },
+                    'eta': particle.specie.eta
+                },
+                'side': particle.side
+            }
+            for particle in self.reaction
+        ]
 
         def prepared_integrand(p1, p2):
             return numpy.reshape(
-                integrand(p0, p1.ravel(), p2.ravel(), p1.size, cms, cMs, csides, fau),
+                fau(p0, p1.ravel(), p2.ravel(), p1.size,
+                    creaction, cMs),
                 p1.shape
             )
 

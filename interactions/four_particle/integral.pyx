@@ -1,7 +1,7 @@
-#cython: wraparound=False
-#cython: boundscheck=False
-#cython: nonecheck=False
-#cython: cdivision=True
+# cython: wraparound=False
+# cython: boundscheck=False
+# cython: nonecheck=False
+# cython: cdivision=True
 
 
 import math
@@ -20,10 +20,136 @@ import array
 numpy.import_array()
 
 
+ctypedef double (*f_type)(vector[reaction_t], double[4])
+
 cdef struct M_t:
     int[4] order
     double K1
     double K2
+
+
+cdef struct grid_t:
+    double[:] grid
+    double[:] distribution
+    int size
+
+cdef struct particle_t:
+    int eta
+    double m
+    grid_t grid
+
+cdef struct reaction_t:
+    particle_t specie
+    int side
+
+
+
+""" ## $\mathcal{F}(f_\alpha)$ functional """
+
+""" ### Naive form
+
+    \begin{align}
+        \mathcal{F} &= (1 \pm f_1)(1 \pm f_2) f_3 f_4 - f_1 f_2 (1 \pm f_3) (1 \pm f_4)
+        \\\\ &= \mathcal{F}_B + \mathcal{F}_A
+    \end{align}
+"""
+
+cdef double F_A(vector[reaction_t] reaction, double[4] p, int skip_index) nogil:
+    """
+    Forward reaction distribution functional term
+
+    \begin{equation}
+        \mathcal{F}_A = - f_1 f_2 (1 \pm f_3) (1 \pm f_4)
+    \end{equation}
+
+    :param skip_index: Particle to skip in the expression
+    """
+    cdef:
+        int i
+        double temp
+
+    temp = -1.
+
+    for i in range(4):
+        if i != skip_index:
+            if reaction[i].side == -1:
+                temp *= distribution_interpolation(
+                    reaction[i].specie.grid.grid,
+                    reaction[i].specie.grid.size,
+                    reaction[i].specie.grid.distribution,
+                    p[i], reaction[i].specie.m, reaction[i].specie.eta
+                )
+            else:
+                temp *= 1. - reaction[i].specie.eta * distribution_interpolation(
+                    reaction[i].specie.grid.grid,
+                    reaction[i].specie.grid.size,
+                    reaction[i].specie.grid.distribution,
+                    p[i], reaction[i].specie.m, reaction[i].specie.eta
+                )
+
+    return temp
+
+cdef double F_B(vector[reaction_t] reaction, double[4] p, int skip_index) nogil:
+    """
+    Backward reaction distribution functional term
+
+    \begin{equation}
+        \mathcal{F}_B = f_3 f_4 (1 \pm f_1) (1 \pm f_2)
+    \end{equation}
+
+    :param skip_index: Particle to skip in the expression
+    """
+    cdef:
+        int i
+        double temp
+
+    temp = 1.
+
+    for i in range(4):
+        if i != skip_index:
+            if reaction[i].side == 1:
+                temp *= distribution_interpolation(
+                    reaction[i].specie.grid.grid,
+                    reaction[i].specie.grid.size,
+                    reaction[i].specie.grid.distribution,
+                    p[i], reaction[i].specie.m, reaction[i].specie.eta
+                )
+            else:
+                temp *= 1. - reaction[i].specie.eta * distribution_interpolation(
+                    reaction[i].specie.grid.grid,
+                    reaction[i].specie.grid.size,
+                    reaction[i].specie.grid.distribution,
+                    p[i], reaction[i].specie.m, reaction[i].specie.eta
+                )
+
+    return temp
+
+"""
+### Linearized in $\, f_1$ form
+
+\begin{equation}
+    \mathcal{F}(f) = f_3 f_4 (1 \pm f_1) (1 \pm f_2) - f_1 f_2 (1 \pm f_3) (1 \pm f_4)
+\end{equation}
+
+\begin{equation}
+    \mathcal{F}(f) = f_1 (\mp f_3 f_4 (1 \pm f_2) - f_2 (1 \pm f_3) (1 \pm f_4)) \
+    + f_3 f_4 (1 \pm f_2)
+\end{equation}
+
+\begin{equation}
+    \mathcal{F}(f) = \mathcal{F}_B^{(1)} + f_1 (\mathcal{F}_A^{(1)} \pm_1 \mathcal{F}_B^{(1)})
+\end{equation}
+
+$^{(i)}$ in $\mathcal{F}^{(i)}$ means that the distribution function $f_i$ was omitted in the\
+corresponding expression. $\pm_j$ represents the $\eta$ value of the particle $j$.
+"""
+cdef double F_f(vector[reaction_t] reaction, double[4] p) nogil:
+    """ Variable part of the distribution functional """
+    return F_A(reaction, p, 0) - reaction[0].specie.eta * F_B(reaction, p, 0)
+
+cdef double F_1(vector[reaction_t] reaction, double[4] p) nogil:
+    """ Constant part of the distribution functional """
+    return F_B(reaction, p, 0)
 
 
 
@@ -40,7 +166,7 @@ cpdef double conformal_energy(double y, double mass=0):
         return abs(y)
 
 
-cdef double in_bounds(double p[4], double E[4], double[:] m):
+cdef double in_bounds(double p[4], double E[4], double m[4]):
     """ $D$-functions involved in the interactions imply a cut-off region for the collision\
         integrand. In the general case of arbitrary particle masses, this is a set of \
         irrational inequalities that can hardly be solved (at least, Wolfram Mathematica does\
@@ -53,14 +179,25 @@ cdef double in_bounds(double p[4], double E[4], double[:] m):
     return (E[3] >= m[3] and q1 <= q2 + q3 + q4 and q3 <= q1 + q2 + q4)
 
 
-cpdef numpy.ndarray[double, ndim=1] integrand(
-    double p0,
-    vector[double] p1s,
-    vector[double] p2s,
-    int length,
-    double[:] m,
-    vector[M_t] Ms,
-    int[:] sides, fau
+cpdef numpy.ndarray[double, ndim=1] integrand_1(
+    double p0, vector[double] p1s, vector[double] p2s, int length,
+    vector[reaction_t] reaction, vector[M_t] Ms
+):
+    return integrand(p0, p1s, p2s, length,
+                     reaction, Ms, F_1)
+
+
+cpdef numpy.ndarray[double, ndim=1] integrand_f(
+    double p0, vector[double] p1s, vector[double] p2s, int length,
+    vector[reaction_t] reaction, vector[M_t] Ms
+):
+    return integrand(p0, p1s, p2s, length,
+                     reaction, Ms, F_f)
+
+
+cdef numpy.ndarray[double] integrand(
+    double p0, vector[double] p1s, vector[double] p2s, int length,
+    vector[reaction_t] reaction, vector[M_t] Ms, f_type fau
 ):
     """
     Collision integral interior.
@@ -73,19 +210,23 @@ cpdef numpy.ndarray[double, ndim=1] integrand(
     cdef:
         double p[4]
         double E[4]
+        double m[4]
+        int sides[4]
         double p1, p2
-        numpy.ndarray[double] integrands = numpy.zeros(length)
+        numpy.ndarray[double] integrands = numpy.zeros([length])
+
+    for i in range(4):
+        sides[i] = reaction[i].side
+        m[i] = reaction[i].specie.m
 
     for i in range(length):
-        integrands[i] = 0.
-
         p1 = p1s[i]
         p2 = p2s[i]
         p[:] = [p0, p1, p2, 0.]
-        E[3] = 0
+        E[3] = 0.
         for j in range(3):
             E[j] = conformal_energy(p[j], m[j])
-            E[3] += -sides[i] * E[i]
+            E[3] -= sides[j] * E[j]
 
         E[3] *= sides[3]
         p[3] = sqrt(abs(E[3]**2 - m[3]**2))
@@ -111,12 +252,12 @@ cpdef numpy.ndarray[double, ndim=1] integrand(
                 temp *= p[k] / E[k]
 
         if temp != 0:
-            integrands[i] = temp * fau(p)
+            integrands[i] = temp * fau(reaction, p)
 
-    return numpy.array(integrands)
+    return integrands
 
 
-cdef double D(double p[4], double E[4], double[:] m, double K1, double K2, int order[4], int[:] sides) nogil:
+cdef double D(double p[4], double E[4], double m[4], double K1, double K2, int order[4], int sides[4]) nogil:
     """ Dimensionality: energy """
 
     cdef int i, j, k, l, sksl, sisjsksl
@@ -250,7 +391,7 @@ cdef double D3(double k1, double k2, double k3, double k4) nogil:
     return result
 
 
-cdef double Db(double p[4], double E[4], double[:] m, double K1, double K2, int order[4], int[:] sides) nogil:
+cdef double Db(double p[4], double E[4], double m[4], double K1, double K2, int order[4], int sides[4]) nogil:
     """ Dimensionality: energy """
 
     cdef int i, j, k, l, sisj, sksl
@@ -294,3 +435,101 @@ cdef double Db2(double q2, double q3, double q4) nogil:
     if (q2 + q3 > q4) and (q2 + q4 > q3) and (q3 + q4 > q2):
         return 0.5 * (q3**2 + q4**2 - q2**2)
     return 0.
+
+# -------------------------------------------------------------------------
+
+
+cdef extern from "math.h" nogil:
+    double exp(double)
+    double log(double)
+    double sqrt(double)
+
+
+cdef int exponential_interpolation = True
+
+cdef double energy(double p, double m) nogil:
+    return sqrt(p**2 + m**2)
+
+
+cpdef double distribution_interpolation(double[:] grid, int grid_len,
+                                        double[:] distribution,
+                                        double p,
+                                        double m,
+                                        int eta=1) nogil:
+
+    cdef double p_low = -1, p_high = -1
+
+    cdef unsigned int i = 0, i_low, i_high
+
+    i = binary_search(grid, grid_len, p)
+
+    if grid[i] == p:
+        return distribution[i]
+
+    # Determine the closest grid points
+
+    i_low = i
+    p_low = grid[i_low]
+
+    i_high = i + 1
+    p_high = grid[i_high]
+
+    cdef double E_p, E_low, E_high, g_high, g_low, g
+
+    if exponential_interpolation:
+        """ === Exponential interpolation === """
+        E_p = energy(p, m)
+        E_low = energy(p_low, m)
+        E_high = energy(p_high, m)
+
+        """
+        \begin{equation}
+            g = \frac{ (E_p - E_{low}) g_{high} + (E_{high} - E_p) g_{low} }\
+            { (E_{high} - E_{low}) }
+        \end{equation}
+        """
+
+        g_high = distribution[i_high]
+        g_low = distribution[i_low]
+
+        if g_high > 0:
+            g_high = (1. / g_high - 1.)
+            if g_high > 0:
+                g_high = log(g_high)
+
+        if g_low > 0:
+            g_low = (1. / g_low - 1.)
+            if g_low > 0:
+                g_low = log(g_low)
+
+        g = ((E_p - E_low) * g_high + (E_high - E_p) * g_low) / (E_high - E_low)
+
+        return 1. / (exp(g) + eta)
+
+    else:
+        """ === Linear interpolation === """
+        return (
+            distribution[i_low] * (p_high - p) + distribution[i_high] * (p - p_low)
+        ) / (p_high - p_low)
+
+
+cdef int binary_search(double[:] grid, int size, double x) nogil:
+    cdef int head = 0, tail = size - 1
+    cdef int middle = (tail + head) / 2
+
+    while grid[middle] != x and tail - head > 1:
+        if grid[middle] >= x:
+            head = middle
+        else:
+            tail = middle
+
+        middle = (tail + head) / 2
+
+    if grid[middle] == x:
+        return middle
+    if grid[head] == x:
+        return head
+    if grid[tail] == x:
+        return tail
+
+
