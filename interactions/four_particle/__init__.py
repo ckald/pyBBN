@@ -97,7 +97,7 @@ class FourParticleIntegral(BoltzmannIntegral):
             bounds = (
                 self.grids[0].BOUNDS,
                 (lambda p1: self.grids[1].MIN_MOMENTUM,
-                 lambda p1: numpy.min(p0 + p1, self.grids[1].MAX_MOMENTUM)),
+                 lambda p1: numpy.minimum(p0 + p1, self.grids[1].MAX_MOMENTUM)),
             )
 
         cMs = [
