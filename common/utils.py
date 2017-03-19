@@ -157,18 +157,58 @@ def trace_unhandled_exceptions(func):
     return wrapped_func
 
 
+class Dynamic2DArray(object):
+    def __init__(self, header):
+        self.header = header
+
+        self.length = 0
+        self.size = 10
+        self._data = numpy.zeros((self.size, len(self.header)))
+
+    def __len__(self):
+        return self.length
+
+    def __getitem__(self, index):
+        if index < 0:
+            index = self.length+1-index
+        return self._data[index]
+
+    def append(self, row):
+        if self.length == self.size:
+            self.size = int(1.5*self.size)
+            self._data = numpy.resize(self._data, (self.size, len(self.header)))
+        self._data[self.length][:] = row
+        self.length += 1
+
+    def extend(self, rows):
+        for row in rows:
+            self.append(row)
+
+    @property
+    def data(self):
+        return self._data[:self.length]
+
+    def savetxt(self, f):
+        numpy.savetxt(f, self._data, delimiter='\t',
+                      header='\t'.join(['{:e}'.format(h) for h in self.header]))
+
+
 class DynamicRecArray(object):
     def __init__(self, columns, dtypes=None):
         if dtypes is None:
             dtypes = [float] * len(columns)
 
-        self.columns = columns
+        self.columns = [column[0] for column in columns]
+
         self.dtypes = dtypes
-        self.structure = list(zip(columns, dtypes))
+        self.structure = list(zip(self.columns, self.dtypes))
+
+        self.unit_names = [column[1] for column in columns]
+        self.units = numpy.array([column[2] for column in columns])
 
         self.length = 0
         self.size = 10
-        self._data = numpy.empty(self.size, dtype=self.structure)
+        self._data = numpy.zeros(self.size, dtype=self.structure)
 
     def __len__(self):
         return self.length
@@ -205,5 +245,28 @@ class DynamicRecArray(object):
     def data(self):
         return self._data[:self.length]
 
+    def row_repr(self, index, names=False):
+        row = self.data[index]
+        if names:
+            heading = [
+                '{} = {:.2e}'.format(name, row[name] / unit) + (unit_name if unit_name else '')
+                for name, unit_name, unit in zip(self.columns, self.unit_names, self.units)
+            ]
+        else:
+            heading = [
+                '{:e}'.format(row[name] / unit)
+                for name, unit_name, unit in zip(self.columns, self.unit_names, self.units)
+            ]
+        return '\t'.join(heading)
+
     def savetxt(self, f):
-        numpy.savetxt(f, self._data, delimiter='\t', header='\t'.join(self.columns))
+        heading = [
+            name + (', ' + unit if unit else '')
+            for name, unit in zip(self.columns, self.unit_names)
+        ]
+
+        numpy.savetxt(
+            f,
+            self._data.view((numpy.float_, len(self._data.dtype))) / self.units[None, :],
+            delimiter='\t', header='\t'.join(heading)
+        )

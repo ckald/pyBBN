@@ -11,7 +11,7 @@ import numpy
 
 from common import GRID, UNITS, statistics as STATISTICS
 from common.integrators import adams_moulton_solver
-from common.utils import PicklableObject, trace_unhandled_exceptions
+from common.utils import PicklableObject, trace_unhandled_exceptions, Dynamic2DArray, DynamicRecArray
 
 from particles import DustParticle, RadiationParticle, IntermediateParticle, NonEqParticle
 # from KAWANO.interpolation import dist_interp_values as distribution_interpolation
@@ -65,11 +65,14 @@ class AbstractParticle(PicklableObject):
 
         self.collision_integrals = []
         self.data = {
-            'distribution': [self._distribution],
-            'collision_integral': [],
-            'density': [],
-            'energy_density': []
+            'distribution': Dynamic2DArray(self.grid.TEMPLATE),
+            'collision_integral': Dynamic2DArray(self.grid.TEMPLATE),
+            'params': DynamicRecArray([
+                ['density', 'MeV^3', UNITS.MeV**3],
+                ['energy_density', 'MeV^4', UNITS.MeV**4]
+            ])
         }
+        # self.data['distribution'].append(self._distribution)
 
         if self.params:
             self.set_params(self.params)
@@ -216,8 +219,10 @@ class DistributionParticle(AbstractParticle):
 
         self.populate_methods()
 
-        self.data['density'].append(self.density)
-        self.data['energy_density'].append(self.energy_density)
+        self.data['params'].append({
+            'density': self.density,
+            'energy_density': self.energy_density
+        })
 
         if force_print or self.regime != oldregime or self.in_equilibrium != oldeq:
             print self
@@ -256,7 +261,7 @@ class DistributionParticle(AbstractParticle):
         order = min(len(self.data['collision_integral']) + 1, 5)
 
         index = numpy.searchsorted(self.grid.TEMPLATE, p0)
-        fs = [i[index] for i in self.data['collision_integral'][-order + 1:]]
+        fs = list(self.data['collision_integral'][-order + 1:, index])
 
         H = self.params.H
 

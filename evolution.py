@@ -32,7 +32,16 @@ class Universe(object):
 
     step_monitor = None
 
-    data = utils.DynamicRecArray(('aT', 'T', 'a', 'x', 't', 'rho', 'N_eff', 'fraction'))
+    data = utils.DynamicRecArray([
+        ['aT', 'MeV', UNITS.MeV],
+        ['T', 'MeV', UNITS.MeV],
+        ['a', None, 1],
+        ['x', 'MeV', UNITS.MeV],
+        ['t', 's', UNITS.s],
+        ['rho', 'MeV^4', UNITS.MeV**4],
+        ['N_eff', None, 1],
+        ['fraction', None, 1],
+    ])
 
     def __init__(self, folder=None, params=None, max_log_rate=1):
         """
@@ -147,6 +156,7 @@ class Universe(object):
         self.params.x += self.params.dx
 
         self.params.update(self.total_energy_density())
+
         if self.step_monitor:
             self.step_monitor(self)
 
@@ -192,14 +202,16 @@ class Universe(object):
                                                  particle.grid.TEMPLATE))
                     ]
                     for particle, result in parallelization.orders:
-                        with (utils.benchmark(lambda: "δf({}) = {}".format(particle.symbol,
-                              particle.collision_integral * self.params.dy),
+                        with (utils.benchmark(lambda: "δf/f ({}) = {}".format(particle.symbol,
+                              particle.collision_integral * self.params.dy
+                              / particle._distribution),
                               self.log_throttler.output)):
                             particle.collision_integral = numpy.array(result.get(1000))
             else:
                 for particle in particles:
-                    with (utils.benchmark(lambda: "δf({}) = {}".format(particle.symbol,
-                          particle.collision_integral * self.params.dy),
+                    with (utils.benchmark(lambda: "δf/f ({}) = {}".format(particle.symbol,
+                          particle.collision_integral * self.params.dy
+                          / particle._distribution),
                           self.log_throttler.output)):
                         particle.collision_integral = particle.integrate_collisions()
 
@@ -286,27 +298,25 @@ class Universe(object):
             rates = self.kawano.baryonic_rates(self.params.a)
 
             row = {
-                self.kawano.heading[0]: self.params.t / UNITS.s,
-                self.kawano.heading[1]: self.params.x / UNITS.MeV,
-                self.kawano.heading[2]: self.params.T / UNITS.K9,
-                self.kawano.heading[3]: (self.params.T - self.data.T[-2])
-                    / (self.params.t - self.data.t[-2]) * UNITS.s / UNITS.K9,
-                self.kawano.heading[4]: self.params.rho / UNITS.g_cm3,
-                self.kawano.heading[5]: self.params.H * UNITS.s
+                self.kawano_data.columns[0]: self.params.t,
+                self.kawano_data.columns[1]: self.params.x,
+                self.kawano_data.columns[2]: self.params.T,
+                self.kawano_data.columns[3]: (self.params.T - self.data.T[-2])
+                / (self.params.t - self.data.t[-2]),
+                self.kawano_data.columns[4]: self.params.rho,
+                self.kawano_data.columns[5]: self.params.H
             }
 
-            row.update({self.kawano.heading[i]: rate / UNITS.MeV**5
+            row.update({self.kawano_data.columns[i]: rate
                         for i, rate in enumerate(rates, 6)})
 
             self.kawano_data.append(row)
-            log_entry = "\t".join("{:e}".format(item) for item in self.kawano_data.data[-1])
 
             if self.log_throttler.output:
-                print "KAWANO", log_entry
-            self.kawano_log.write(log_entry + "\n")
+                print "KAWANO", self.kawano_data.row_repr(-1, names=True)
+            self.kawano_log.write(self.kawano_data.row_repr(-1) + "\n")
 
     def init_log(self, folder=''):
-        self.folder = folder
         self.logfile = utils.ensure_path(os.path.join(self.folder, 'log.txt'))
         sys.stdout = utils.Logger(self.logfile)
 
@@ -315,14 +325,12 @@ class Universe(object):
 
         # Print parameters every now and then
         if self.log_throttler.output:
-            print ('[{clock}] #{step}\tt = {t:e}s\taT = {aT:e}MeV\tT = {T:e}MeV\ta = {a:e}\tdx = {dx:e}MeV'
+            print ('[{clock}] #{step}\tt = {t:e}s\taT = {aT:e}MeV\tT = {T:e}MeV'
                    .format(clock=timedelta(seconds=int(time.time() - self.clock_start)),
                            step=self.step,
                            t=self.params.t / UNITS.s,
                            aT=self.params.aT / UNITS.MeV,
-                           T=self.params.T / UNITS.MeV,
-                           a=self.params.a,
-                           dx=self.params.dx / UNITS.MeV))
+                           T=self.params.T / UNITS.MeV))
 
     def total_energy_density(self):
         return sum(particle.energy_density for particle in self.particles)

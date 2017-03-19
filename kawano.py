@@ -153,12 +153,20 @@ Plotting = namedtuple('Plotting', 'figure plots')
 parameters_plots = None
 rates_plots = None
 
-heading = ("t[s]", "x",
-           "Tg[10^9K]", "dTg/dt[10^9K/s]",
-           "rho_tot[g cm^-3]", "H[s^-1]",
-           "n nue->p e", "p e->n nue",
-           "n->p e nue", "p e nue->n",
-           "n e->p nue", "p nue->n e")
+heading = [
+    ["t", 's', UNITS.s],
+    ["x", 'MeV', UNITS.MeV],
+    ["Tg", '10^9K', UNITS.K9],
+    ["dTg/dt", '10^9K/s', UNITS.K9/UNITS.s],
+    ["rho_tot", 'g/cm^3', UNITS.g_cm3],
+    ["H", '1/s', 1/UNITS.s],
+    ["n nue->p e", 'MeV^5', 1/UNITS.MeV**5],
+    ["p e->n nue", 'MeV^5', 1/UNITS.MeV**5],
+    ["n->p e nue", 'MeV^5', 1/UNITS.MeV**5],
+    ["p e nue->n", 'MeV^5', 1/UNITS.MeV**5],
+    ["n e->p nue", 'MeV^5', 1/UNITS.MeV**5],
+    ["p nue->n e", 'MeV^5', 1/UNITS.MeV**5]
+]
 
 
 def import_data(filepath):
