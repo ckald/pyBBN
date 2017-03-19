@@ -124,7 +124,7 @@ class Params(object):
 
         self.N_eff = (
             (rho - (numpy.pi**2 / 15. * self.T**4))
-            / (7./8. * numpy.pi**2 / 15. * (self.T / 1.4)**4)
+            / (7./8. * numpy.pi**2 / 15. * (self.T / 1.401)**4)
         )
 
         old_a = self.a
