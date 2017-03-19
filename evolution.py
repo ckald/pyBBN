@@ -4,6 +4,7 @@ import os
 import sys
 import numpy
 import time
+import shutil
 from datetime import timedelta
 
 from common import UNITS, Params, integrators, parallelization, utils
@@ -33,7 +34,7 @@ class Universe(object):
 
     data = utils.DynamicRecArray(('aT', 'T', 'a', 'x', 't', 'rho', 'N_eff', 'fraction'))
 
-    def __init__(self, folder='output', params=None, max_log_rate=1):
+    def __init__(self, folder=None, params=None, max_log_rate=1):
         """
         :param folder: Log file path (current `datetime` by default)
         """
@@ -46,7 +47,10 @@ class Universe(object):
 
         self.params = Params() if not params else params
 
-        self.init_log(folder=folder)
+        self.folder = folder
+        if self.folder:
+            shutil.rmtree(folder)
+            self.init_log(folder=folder)
 
         # Controls parallelization of the collision integrals calculations
         self.PARALLELIZE = int(utils.getenv("PARALLELIZE", 0))
@@ -59,8 +63,9 @@ class Universe(object):
 
     def init_kawano(self, datafile='s4.dat', **kwargs):
         kawano.init_kawano(**kwargs)
-        self.kawano_log = open(os.path.join(self.folder, datafile), 'w')
-        self.kawano_log.write("\t".join(kawano.heading) + "\n")
+        if self.folder:
+            self.kawano_log = open(os.path.join(self.folder, datafile), 'w')
+            self.kawano_log.write("\t".join([col[0] for col in kawano.heading]) + "\n")
         self.kawano = kawano
         self.kawano_data = utils.DynamicRecArray(self.kawano.heading)
 
@@ -100,7 +105,7 @@ class Universe(object):
                 self.make_step()
                 self.save()
                 self.step += 1
-                if self.step % self.export_freq == 0:
+                if self.folder and self.step % self.export_freq == 0:
                     with open(os.path.join(self.folder, "evolution.txt"), "w") as f:
                         self.data.savetxt(f)
             except KeyboardInterrupt:
@@ -117,18 +122,19 @@ class Universe(object):
         for particle in self.particles:
             print particle
 
-        if self.kawano:
+        if self.folder:
+            if self.kawano:
 
-            self.kawano_log.close()
-            print kawano.run(self.folder)
+                self.kawano_log.close()
+                print kawano.run(self.folder)
 
-            with open(os.path.join(self.folder, "kawano.txt"), "w") as f:
-                self.kawano_data.savetxt(f)
+                with open(os.path.join(self.folder, "kawano.txt"), "w") as f:
+                    self.kawano_data.savetxt(f)
 
-        print "Execution log saved to file {}".format(self.logfile)
+            print "Execution log saved to file {}".format(self.logfile)
 
-        with open(os.path.join(self.folder, "evolution.txt"), "w") as f:
-            self.data.savetxt(f)
+            with open(os.path.join(self.folder, "evolution.txt"), "w") as f:
+                self.data.savetxt(f)
 
     def make_step(self):
         self.integrand(self.params.x, self.params.aT)
