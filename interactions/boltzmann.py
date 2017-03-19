@@ -123,32 +123,3 @@ class BoltzmannIntegral(PicklableObject):
             points.append((p1, self.upper_bound(p0, p1),))
 
         return points
-
-    def lower_bound(self, p0, p1):
-        """ Find the first `self.particle.grid` point in the integration region """
-
-        index = 0
-        while (index < self.particle.grid.MOMENTUM_SAMPLES
-               and not self.in_bounds([p0, p1, self.particle.grid.TEMPLATE[index]])):
-            index += 1
-
-        if index == self.particle.grid.MOMENTUM_SAMPLES:
-            return self.particle.grid.MIN_MOMENTUM
-
-        return self.particle.grid.TEMPLATE[index]
-
-    def upper_bound(self, p0, p1):
-        """ Find the last `self.particle.grid` point in the integration region """
-
-        index = int(
-            (min(p0 + p1, self.particle.grid.MAX_MOMENTUM) - self.particle.grid.MIN_MOMENTUM)
-            / self.particle.grid.MOMENTUM_STEP
-        )
-
-        while index >= 0 and not self.in_bounds([p0, p1, self.particle.grid.TEMPLATE[index]]):
-            index -= 1
-
-        if index == -1:
-            return self.particle.grid.MIN_MOMENTUM
-
-        return self.particle.grid.TEMPLATE[index]
