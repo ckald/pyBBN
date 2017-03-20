@@ -7,7 +7,7 @@ from common import CONST, UNITS, Params
 
 
 params = Params(T=2 * UNITS.MeV,
-                dx=1e-1 * UNITS.MeV)
+                dy=0.025)
 
 photon = Particle(**SMP.photon)
 neutrino = Particle(**SMP.leptons.neutrino_e)
@@ -27,9 +27,9 @@ universe.interactions += [neutrino_scattering]
 
 
 import numpy
-addition = numpy.vectorize(lambda x: 0.1 * numpy.exp(-(x/UNITS.MeV-5)**2),
+addition = numpy.vectorize(lambda x: 0.1 * numpy.exp(-(x/UNITS.MeV-3)**2),
                            otypes=[numpy.float_])
-# neutrino._distribution += addition(neutrino.grid.TEMPLATE)
+neutrino._distribution += addition(neutrino.grid.TEMPLATE)
 
 # def check(p=[]):
 #     return neutrino_scattering.F_B(in_p=p[:2], out_p=p[2:]) * (1 - neutrino.distribution(p[0])) \
@@ -43,14 +43,24 @@ addition = numpy.vectorize(lambda x: 0.1 * numpy.exp(-(x/UNITS.MeV-5)**2),
 import matplotlib.pyplot as plt
 
 x = numpy.linspace(neutrino.grid.MIN_MOMENTUM, neutrino.grid.MAX_MOMENTUM*2,
-                   num=neutrino.grid.MOMENTUM_SAMPLES*10, endpoint=True)
+                   num=neutrino.grid.MOMENTUM_SAMPLES*100, endpoint=True)[1:]
 y = numpy.vectorize(neutrino.distribution)(x)
-z = numpy.vectorize(neutrino.equilibrium_distribution_function)(x / universe.params.aT)
+z = neutrino.equilibrium_distribution(x)
 w = z + addition(x)
-plt.plot(x, y)
-plt.plot(x, z)
-plt.plot(x, w)
+
+plt.ioff()
+plt.plot(x / UNITS.MeV, y, label="interpolated distribution", alpha=0.5)
+plt.plot(x / UNITS.MeV, z, label="equilibrium distribution", alpha=0.5, linestyle='--')
+plt.plot(x / UNITS.MeV, w, label="analytic", alpha=0.5, linestyle=':')
+plt.plot(neutrino.grid.TEMPLATE / UNITS.MeV, neutrino._distribution, label="points", alpha=1, linewidth=0, linestyle=None, marker='x')
+plt.plot(neutrino.grid.TEMPLATE / UNITS.MeV, numpy.vectorize(neutrino.distribution)(neutrino.grid.TEMPLATE), label="interpolated points", alpha=0.5, linewidth=1)
+
+plt.xscale('log')
+# plt.yscale('log')
+plt.legend()
+
 plt.show()
+plt.draw()
 
 # res = []
 # for p0 in neutrino.grid.TEMPLATE:
@@ -66,11 +76,11 @@ plt.show()
 #                 # val = f2 * f3 * (1 - f0) * (1 - f1) - f0 * f1 * (1 - f2) * (1 - f3)
 #                 res.append(val)
 
-from interactions.ds import D1, D2, D3
-from plotting import plot_integrand
+# from interactions.ds import D1, D2, D3
+# from plotting import plot_integrand
 
-plot_integrand(lambda (p1, p2): D1(p1, p2, 1, 1), 'D1', 0)
-plot_integrand(lambda (p1, p2): D2(p1, p2, 1, 1), 'D2', 0)
-plot_integrand(lambda (p1, p2): D3(p1, p2, 1, 1), 'D3', 0)
+# plot_integrand(lambda (p1, p2): D1(p1, p2, 1, 1), 'D1', 0)
+# plot_integrand(lambda (p1, p2): D2(p1, p2, 1, 1), 'D2', 0)
+# plot_integrand(lambda (p1, p2): D3(p1, p2, 1, 1), 'D3', 0)
 
-raw_input("...")
+# raw_input("...")
