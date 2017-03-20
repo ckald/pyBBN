@@ -1,11 +1,12 @@
-from . import eps, non_equilibium_setup, with_setup_args
+import numpy
+
+from . import non_equilibium_setup, with_setup_args
 
 
 @with_setup_args(non_equilibium_setup)
 def free_non_equilibrium_test(params, universe):
-
     params.update(universe.total_energy_density())
-
+    eps = 1e-14
     photon, neutrino_e, neutrino_mu = universe.particles
 
     photon_distribution = photon._distribution
@@ -17,7 +18,7 @@ def free_non_equilibrium_test(params, universe):
     universe.calculate_collisions()
 
     assert all(photon.collision_integral == 0), "Equilibrium particle integral is non-zero"
-    assert all(neutrino_e.collision_integral * params.dx < eps), "Integral do not cancel"
+    assert all(numpy.abs(neutrino_e.collision_integral * params.dx) < eps), "Integral do not cancel"
     assert all(neutrino_mu.collision_integral == 0), "Free particle integral is non-zero"
 
     universe.update_distributions()
