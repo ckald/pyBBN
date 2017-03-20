@@ -12,6 +12,7 @@ from libc.stdlib cimport malloc, free
 
 cdef extern from "math.h" nogil:
     double sqrt(double)
+    double fabs(double)
 
 from libcpp.vector cimport vector
 from cpython cimport array
@@ -54,7 +55,7 @@ cdef struct reaction_t:
     \end{align}
 """
 
-cdef double F_A(vector[reaction_t] reaction, double[4] p, int skip_index) nogil:
+cdef double F_A(vector[reaction_t] reaction, double[4] f, int skip_index=-1) nogil:
     """
     Forward reaction distribution functional term
 
@@ -73,23 +74,13 @@ cdef double F_A(vector[reaction_t] reaction, double[4] p, int skip_index) nogil:
     for i in range(4):
         if i != skip_index:
             if reaction[i].side == -1:
-                temp *= distribution_interpolation(
-                    reaction[i].specie.grid.grid,
-                    reaction[i].specie.grid.size,
-                    reaction[i].specie.grid.distribution,
-                    p[i], reaction[i].specie.m, reaction[i].specie.eta
-                )
+                temp *= f[i]
             else:
-                temp *= 1. - reaction[i].specie.eta * distribution_interpolation(
-                    reaction[i].specie.grid.grid,
-                    reaction[i].specie.grid.size,
-                    reaction[i].specie.grid.distribution,
-                    p[i], reaction[i].specie.m, reaction[i].specie.eta
-                )
+                temp *= 1. - reaction[i].specie.eta * f[i]
 
     return temp
 
-cdef double F_B(vector[reaction_t] reaction, double[4] p, int skip_index) nogil:
+cdef double F_B(vector[reaction_t] reaction, double[4] f, int skip_index=-1) nogil:
     """
     Backward reaction distribution functional term
 
@@ -108,19 +99,9 @@ cdef double F_B(vector[reaction_t] reaction, double[4] p, int skip_index) nogil:
     for i in range(4):
         if i != skip_index:
             if reaction[i].side == 1:
-                temp *= distribution_interpolation(
-                    reaction[i].specie.grid.grid,
-                    reaction[i].specie.grid.size,
-                    reaction[i].specie.grid.distribution,
-                    p[i], reaction[i].specie.m, reaction[i].specie.eta
-                )
+                temp *= f[i]
             else:
-                temp *= 1. - reaction[i].specie.eta * distribution_interpolation(
-                    reaction[i].specie.grid.grid,
-                    reaction[i].specie.grid.size,
-                    reaction[i].specie.grid.distribution,
-                    p[i], reaction[i].specie.m, reaction[i].specie.eta
-                )
+                temp *= 1. - reaction[i].specie.eta * f[i]
 
     return temp
 
@@ -143,17 +124,17 @@ cdef double F_B(vector[reaction_t] reaction, double[4] p, int skip_index) nogil:
 $^{(i)}$ in $\mathcal{F}^{(i)}$ means that the distribution function $f_i$ was omitted in the\
 corresponding expression. $\pm_j$ represents the $\eta$ value of the particle $j$.
 """
-cdef double F_f(vector[reaction_t] reaction, double[4] p) nogil:
+cdef double F_f(vector[reaction_t] reaction, double[4] f) nogil:
     """ Variable part of the distribution functional """
-    return F_A(reaction, p, 0) - reaction[0].specie.eta * F_B(reaction, p, 0)
+    return F_A(reaction, f, 0) - reaction[0].specie.eta * F_B(reaction, f, 0)
 
-cdef double F_1(vector[reaction_t] reaction, double[4] p) nogil:
+cdef double F_1(vector[reaction_t] reaction, double[4] f) nogil:
     """ Constant part of the distribution functional """
-    return F_B(reaction, p, 0)
+    return F_B(reaction, f, 0)
 
 
 
-cpdef double conformal_energy(double y, double mass=0):
+cpdef double conformal_energy(double y, double mass=0) nogil:
     """ Conformal energy of the particle in comoving coordinates with evolving mass term
 
         \begin{equation}
@@ -163,10 +144,10 @@ cpdef double conformal_energy(double y, double mass=0):
     if mass > 0:
         return sqrt(y**2 + mass**2)
     else:
-        return abs(y)
+        return fabs(y)
 
 
-cdef double in_bounds(double p[4], double E[4], double m[4]):
+cdef double in_bounds(double p[4], double E[4], double m[4]) nogil:
     """ $D$-functions involved in the interactions imply a cut-off region for the collision\
         integrand. In the general case of arbitrary particle masses, this is a set of \
         irrational inequalities that can hardly be solved (at least, Wolfram Mathematica does\
@@ -179,25 +160,9 @@ cdef double in_bounds(double p[4], double E[4], double m[4]):
     return (E[3] >= m[3] and q1 <= q2 + q3 + q4 and q3 <= q1 + q2 + q4)
 
 
-cpdef numpy.ndarray[double, ndim=1] integrand_1(
+cpdef integrand(
     double p0, vector[double] p1s, vector[double] p2s, int length,
     vector[reaction_t] reaction, vector[M_t] Ms
-):
-    return integrand(p0, p1s, p2s, length,
-                     reaction, Ms, F_1)
-
-
-cpdef numpy.ndarray[double, ndim=1] integrand_f(
-    double p0, vector[double] p1s, vector[double] p2s, int length,
-    vector[reaction_t] reaction, vector[M_t] Ms
-):
-    return integrand(p0, p1s, p2s, length,
-                     reaction, Ms, F_f)
-
-
-cdef numpy.ndarray[double] integrand(
-    double p0, vector[double] p1s, vector[double] p2s, int length,
-    vector[reaction_t] reaction, vector[M_t] Ms, f_type fau
 ):
     """
     Collision integral interior.
@@ -207,13 +172,16 @@ cdef numpy.ndarray[double] integrand(
         double ds, temp
         int i, j, k
 
-    cdef:
         double p[4]
         double E[4]
         double m[4]
         int sides[4]
+
+        double[4] f
+
         double p1, p2
-        numpy.ndarray[double] integrands = numpy.zeros([length])
+        numpy.ndarray[double] integrands_1 = numpy.zeros([length])
+        numpy.ndarray[double] integrands_f = numpy.zeros([length])
 
     for i in range(4):
         sides[i] = reaction[i].side
@@ -226,35 +194,52 @@ cdef numpy.ndarray[double] integrand(
         E[3] = 0.
         for j in range(3):
             E[j] = conformal_energy(p[j], m[j])
-            E[3] -= sides[j] * E[j]
+            E[3] += sides[j] * E[j]
 
-        E[3] *= sides[3]
-        p[3] = sqrt(abs(E[3]**2 - m[3]**2))
+        E[3] *= -sides[3]
+
+        if E[3] < m[3]:
+            continue
+        p[3] = sqrt(E[3]**2 - m[3]**2)
 
         if not in_bounds(p, E, m):
             continue
 
         temp = 1.
 
+        # Avoid rounding errors and division by zero
+        for k in range(1, 2):
+            if m[k] != 0.:
+                temp *= p[k] / E[k]
+
+        if temp == 0.:
+            continue
+
         ds = 0.
-        if p[0] != 0:
+        if p[0] != 0.:
             for M in Ms:
                 ds += D(p=p, E=E, m=m, K1=M.K1, K2=M.K2, order=M.order, sides=sides)
-            ds = ds / p[0] / E[0]
+            ds /= p[0] * E[0]
         else:
             for M in Ms:
                 ds += Db(p=p, E=E, m=m, K1=M.K1, K2=M.K2, order=M.order, sides=sides)
         temp *= ds
 
-        # Avoid rounding errors and division by zero
-        for k in range(3, 1):
-            if m[k] != 0:
-                temp *= p[k] / E[k]
+        if temp == 0.:
+            continue
 
-        if temp != 0:
-            integrands[i] = temp * fau(reaction, p)
+        for i in range(4):
+            f[i] = distribution_interpolation(
+                reaction[i].specie.grid.grid,
+                reaction[i].specie.grid.size,
+                reaction[i].specie.grid.distribution,
+                p[i], reaction[i].specie.m, reaction[i].specie.eta
+            )
 
-    return integrands
+        integrands_1[i] = temp * F_1(reaction, f)
+        integrands_f[i] = temp * F_f(reaction, f)
+
+    return integrands_1, integrands_f
 
 
 cdef double D(double p[4], double E[4], double m[4], double K1, double K2, int order[4], int sides[4]) nogil:

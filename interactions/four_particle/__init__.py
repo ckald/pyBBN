@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 import numpy
 from array import array
-from common import integrators
+from common.integrators import paired as paired_integrators
 from interactions.boltzmann import BoltzmannIntegral
-from interactions.four_particle.integral import integrand_1, integrand_f
+from interactions.four_particle.integral import integrand
 
 
 class FourParticleM(object):
@@ -81,9 +81,6 @@ class FourParticleIntegral(BoltzmannIntegral):
         if self.grids is None:
             self.grids = tuple([self.reaction[1].specie.grid, self.reaction[2].specie.grid])
 
-        self.F_1 = integrand_1
-        self.F_f = integrand_f
-
     def initialize(self):
         """
         Initialize collision integral constants and save them to the first involved particle
@@ -92,7 +89,7 @@ class FourParticleIntegral(BoltzmannIntegral):
         if params.T > self.decoupling_temperature and not self.particle.in_equilibrium:
             self.particle.collision_integrals.append(self)
 
-    def integrate(self, p0, fau=None, bounds=None):
+    def integrate(self, p0, bounds=None):
         if bounds is None:
             bounds = (
                 self.grids[0].BOUNDS,
@@ -122,17 +119,15 @@ class FourParticleIntegral(BoltzmannIntegral):
         ]
 
         def prepared_integrand(p1, p2):
-            return numpy.reshape(
-                fau(p0, p1.ravel(), p2.ravel(), p1.size,
-                    creaction, cMs),
-                p1.shape
-            )
+            integrand_1, integrand_f = integrand(p0, p1.ravel(), p2.ravel(), p1.size, creaction, cMs)
+            return numpy.reshape(integrand_1, p1.shape), numpy.reshape(integrand_f, p1.shape)
 
         params = self.particle.params
+
         constant = (params.m / params.x)**5 / 64. / numpy.pi**3
-        integral, error = integrators.integrate_2D(
+        integral_1, integral_f = paired_integrators.integrate_2D(
             prepared_integrand,
             bounds=bounds
         )
 
-        return constant * integral
+        return constant * integral_1, constant * integral_f

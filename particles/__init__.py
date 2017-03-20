@@ -255,8 +255,9 @@ class DistributionParticle(AbstractParticle):
         Bs = []
 
         for integral in self.collision_integrals:
-            As.append(integral.integrate(p0, integral.F_1))
-            Bs.append(integral.integrate(p0, integral.F_f))
+            A, B = integral.integrate(p0)
+            As.append(A)
+            Bs.append(B)
 
         order = min(len(self.data['collision_integral']) + 1, 5)
         index = numpy.searchsorted(self.grid.TEMPLATE, p0)
@@ -269,6 +270,11 @@ class DistributionParticle(AbstractParticle):
         prediction = adams_moulton_solver(y=self.distribution(p0), fs=fs,
                                           A=sum(As) / H, B=sum(Bs) / H,
                                           h=self.params.dy, order=order)
+        # Simplest numeric scheme for test purposes:
+        # from common.integrators import implicit_euler
+        # prediction = implicit_euler(y=self.distribution(p0), t=None,
+        #                             A=sum(As) / H, B=sum(Bs) / H,
+        #                             h=self.params.dy)
 
         total_integral = (prediction - self.distribution(p0)) / self.params.dy
         return total_integral
