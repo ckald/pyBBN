@@ -148,8 +148,8 @@ def remap_interval(f, x, y, bounds):
     add_x = (b + a) / 2.
     norm_x = sub_x * x + add_x
 
-    h_x = numpy.vectorize(h)(norm_x)
-    g_x = numpy.vectorize(g)(norm_x)
+    h_x = h(norm_x)
+    g_x = g(norm_x)
     sub_y = (h_x - g_x) / 2.
     add_y = (h_x + g_x) / 2.
     norm_y = sub_y * y + add_y

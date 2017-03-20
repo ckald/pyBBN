@@ -109,7 +109,7 @@ class Params(object):
         self.aT = self.a * self.T
 
     def init_time(self, rho):
-        self.t = numpy.sqrt(3/(32*numpy.pi*CONST.G*rho))
+        self.t = numpy.sqrt(3. / (32. * numpy.pi * CONST.G * rho))
         return self.t
 
     def update(self, rho):
@@ -123,8 +123,8 @@ class Params(object):
         self.H = numpy.sqrt(8./3. * numpy.pi * rho) / CONST.M_p
 
         self.N_eff = (
-            (rho - (numpy.pi**2 / 15 * self.T**4))
-            / (7./8. * numpy.pi**2 / 15 * (self.T / 1.4)**4)
+            (rho - (numpy.pi**2 / 15. * self.T**4))
+            / (7./8. * numpy.pi**2 / 15. * (self.T / 1.401)**4)
         )
 
         old_a = self.a
@@ -154,24 +154,25 @@ class Params(object):
         return self.x * (numpy.exp(self.dy) - 1.)
 
 
-class LogSpacedGrid(object):
+"""
+### Distribution functions grid
 
-    """ ### Distribution functions grid
+To capture non-equilibrium effects in the Early Universe, we work with particle species
+distribution functions $f(\vec{p}, \vec{r}, t)$. Assuming that the Universe is homogeneous
+and isotropic, we can forget dependency on the position and the momentum direction:
+$f(p, t)$.
 
-        To capture non-equilibrium effects in the Early Universe, we work with particle species
-        distribution functions $f(\vec{p}, \vec{r}, t)$. Assuming that the Universe is homogeneous
-        and isotropic, we can forget dependency on the position and the momentum direction:
-        $f(p, t)$.
+Resulting functions are sampled across a wide range of momenta. However, momentum range
+cannot include both 0 momenta and very large momenta (either leads to numerical overflows
+and errors).
+"""
 
-        Resulting functions are sampled across a wide range of momenta. However, momentum range
-        cannot include both 0 momenta and very large momenta (either leads to numerical overflows
-        and errors).
-        """
+
+class LinearSpacedGrid(object):
 
     __slots__ = ('MIN_MOMENTUM', 'MAX_MOMENTUM', 'BOUNDS', 'MOMENTUM_SAMPLES', 'TEMPLATE')
 
     def __init__(self, MOMENTUM_SAMPLES=50, MAX_MOMENTUM=20 * UNITS.MeV):
-        # self.MIN_MOMENTUM = 1. * UNITS.eV
         self.MIN_MOMENTUM = 0
         self.MAX_MOMENTUM = self.MIN_MOMENTUM + MAX_MOMENTUM
         self.BOUNDS = (self.MIN_MOMENTUM, self.MAX_MOMENTUM)
@@ -187,6 +188,20 @@ class LogSpacedGrid(object):
 
         yields an array of particle conformal energy mapped over the `GRID`
         """
+        self.TEMPLATE = numpy.linspace(self.MIN_MOMENTUM, self.MAX_MOMENTUM,
+                                       num=self.MOMENTUM_SAMPLES, endpoint=True)
+
+
+class LogSpacedGrid(object):
+
+    __slots__ = ('MIN_MOMENTUM', 'MAX_MOMENTUM', 'BOUNDS', 'MOMENTUM_SAMPLES', 'TEMPLATE')
+
+    def __init__(self, MOMENTUM_SAMPLES=50, MAX_MOMENTUM=20 * UNITS.MeV):
+        self.MIN_MOMENTUM = 0
+        self.MAX_MOMENTUM = self.MIN_MOMENTUM + MAX_MOMENTUM
+        self.BOUNDS = (self.MIN_MOMENTUM, self.MAX_MOMENTUM)
+        self.MOMENTUM_SAMPLES = MOMENTUM_SAMPLES
+
         self.TEMPLATE = self.generate_template()
 
     def generate_template(self):
@@ -197,9 +212,6 @@ class LogSpacedGrid(object):
             * (base ** numpy.arange(0, self.MOMENTUM_SAMPLES, 1) - 1.)
             / (base ** (self.MOMENTUM_SAMPLES - 1.) - 1.)
         )
-
-        # self.TEMPLATE = numpy.linspace(self.MIN_MOMENTUM, self.MAX_MOMENTUM,
-        #                                num=self.MOMENTUM_SAMPLES, endpoint=True)
 
 
 class HeuristicGrid(object):

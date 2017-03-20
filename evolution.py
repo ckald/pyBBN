@@ -4,6 +4,7 @@ import os
 import sys
 import numpy
 import time
+import shutil
 from datetime import timedelta
 
 from common import UNITS, Params, integrators, parallelization, utils
@@ -31,9 +32,18 @@ class Universe(object):
 
     step_monitor = None
 
-    data = utils.DynamicRecArray(('aT', 'T', 'a', 'x', 't', 'rho', 'N_eff', 'fraction'))
+    data = utils.DynamicRecArray([
+        ['aT', 'MeV', UNITS.MeV],
+        ['T', 'MeV', UNITS.MeV],
+        ['a', None, 1],
+        ['x', 'MeV', UNITS.MeV],
+        ['t', 's', UNITS.s],
+        ['rho', 'MeV^4', UNITS.MeV**4],
+        ['N_eff', None, 1],
+        ['fraction', None, 1],
+    ])
 
-    def __init__(self, folder='output', params=None, max_log_rate=1):
+    def __init__(self, folder=None, params=None, max_log_rate=2):
         """
         :param folder: Log file path (current `datetime` by default)
         """
@@ -42,11 +52,14 @@ class Universe(object):
         self.interactions = []
 
         self.clock_start = time.time()
-        self.log_throttler = utils.throttler(max_log_rate)
+        self.log_throttler = utils.Throttler(max_log_rate)
 
         self.params = Params() if not params else params
 
-        self.init_log(folder=folder)
+        self.folder = folder
+        if self.folder:
+            shutil.rmtree(folder)
+            self.init_log(folder=folder)
 
         # Controls parallelization of the collision integrals calculations
         self.PARALLELIZE = int(utils.getenv("PARALLELIZE", 0))
@@ -59,8 +72,9 @@ class Universe(object):
 
     def init_kawano(self, datafile='s4.dat', **kwargs):
         kawano.init_kawano(**kwargs)
-        self.kawano_log = open(os.path.join(self.folder, datafile), 'w')
-        self.kawano_log.write("\t".join(kawano.heading) + "\n")
+        if self.folder:
+            self.kawano_log = open(os.path.join(self.folder, datafile), 'w')
+            self.kawano_log.write("\t".join([col[0] for col in kawano.heading]) + "\n")
         self.kawano = kawano
         self.kawano_data = utils.DynamicRecArray(self.kawano.heading)
 
@@ -100,7 +114,7 @@ class Universe(object):
                 self.make_step()
                 self.save()
                 self.step += 1
-                if self.step % self.export_freq == 0:
+                if self.folder and self.step % self.export_freq == 0:
                     with open(os.path.join(self.folder, "evolution.txt"), "w") as f:
                         self.data.savetxt(f)
             except KeyboardInterrupt:
@@ -117,32 +131,38 @@ class Universe(object):
         for particle in self.particles:
             print particle
 
-        if self.kawano:
+        if self.folder:
+            if self.kawano:
 
-            self.kawano_log.close()
-            print kawano.run(self.folder)
+                self.kawano_log.close()
+                print kawano.run(self.folder)
 
-            with open(os.path.join(self.folder, "kawano.txt"), "w") as f:
-                self.kawano_data.savetxt(f)
+                with open(os.path.join(self.folder, "kawano.txt"), "w") as f:
+                    self.kawano_data.savetxt(f)
 
-        print "Execution log saved to file {}".format(self.logfile)
+            print "Execution log saved to file {}".format(self.logfile)
 
-        with open(os.path.join(self.folder, "evolution.txt"), "w") as f:
-            self.data.savetxt(f)
+            with open(os.path.join(self.folder, "evolution.txt"), "w") as f:
+                self.data.savetxt(f)
 
     def make_step(self):
         self.integrand(self.params.x, self.params.aT)
 
-        order = min(self.step + 1, 5)
-        fs = list(self.data.fraction[-(order - 1):]) + [self.fraction]
+        order = min(len(self.data) + 1, 5)
+        fs = [self.fraction]
+        if order > 1:
+            fs = list(self.data.fraction[-(order-1):]) + fs
 
         self.params.aT +=\
             integrators.adams_bashforth_correction(fs=fs, h=self.params.dy, order=order)
         self.params.x += self.params.dx
 
         self.params.update(self.total_energy_density())
+
         if self.step_monitor:
             self.step_monitor(self)
+
+        self.log_throttler.update()
 
     def add_particles(self, particles):
         for particle in particles:
@@ -175,7 +195,7 @@ class Universe(object):
 
         particles = [particle for particle in self.particles if particle.collision_integrals]
 
-        with utils.printoptions(precision=2):
+        with utils.printoptions(precision=2, linewidth=100):
             if self.PARALLELIZE:
                 for particle in particles:
                     parallelization.orders = [
@@ -184,13 +204,17 @@ class Universe(object):
                                                  particle.grid.TEMPLATE))
                     ]
                     for particle, result in parallelization.orders:
-                        with utils.benchmark(lambda: "I(" + particle.symbol + ") = "
-                                             + repr(particle.collision_integral)):
+                        with (utils.benchmark(lambda: "δf/f ({}) = {}".format(particle.symbol,
+                              particle.collision_integral * self.params.dy
+                              / particle._distribution),
+                              self.log_throttler.output)):
                             particle.collision_integral = numpy.array(result.get(1000))
             else:
                 for particle in particles:
-                    with utils.benchmark(lambda: "I(" + particle.symbol + ") = "
-                                         + repr(particle.collision_integral)):
+                    with (utils.benchmark(lambda: "δf/f ({}) = {}".format(particle.symbol,
+                          particle.collision_integral * self.params.dy
+                          / particle._distribution),
+                          self.log_throttler.output)):
                         particle.collision_integral = particle.integrate_collisions()
 
     def update_distributions(self):
@@ -276,27 +300,25 @@ class Universe(object):
             rates = self.kawano.baryonic_rates(self.params.a)
 
             row = {
-                self.kawano.heading[0]: self.params.t / UNITS.s,
-                self.kawano.heading[1]: self.params.x / UNITS.MeV,
-                self.kawano.heading[2]: self.params.T / UNITS.K9,
-                self.kawano.heading[3]: (self.params.T - self.data.T[-2])
-                    / (self.params.t - self.data.t[-2]) * UNITS.s / UNITS.K9,
-                self.kawano.heading[4]: self.params.rho / UNITS.g_cm3,
-                self.kawano.heading[5]: self.params.H * UNITS.s
+                self.kawano_data.columns[0]: self.params.t,
+                self.kawano_data.columns[1]: self.params.x,
+                self.kawano_data.columns[2]: self.params.T,
+                self.kawano_data.columns[3]: (self.params.T - self.data.T[-2])
+                / (self.params.t - self.data.t[-2]),
+                self.kawano_data.columns[4]: self.params.rho,
+                self.kawano_data.columns[5]: self.params.H
             }
 
-            row.update({self.kawano.heading[i]: rate / UNITS.MeV**5
+            row.update({self.kawano_data.columns[i]: rate
                         for i, rate in enumerate(rates, 6)})
 
             self.kawano_data.append(row)
-            log_entry = "\t".join("{:e}".format(item) for item in self.kawano_data.data[-1])
 
-            if self.log_throttler.shouldi():
-                print "KAWANO", log_entry
-            self.kawano_log.write(log_entry + "\n")
+            if self.log_throttler.output:
+                print "KAWANO", self.kawano_data.row_repr(-1, names=True)
+            self.kawano_log.write(self.kawano_data.row_repr(-1) + "\n")
 
     def init_log(self, folder=''):
-        self.folder = folder
         self.logfile = utils.ensure_path(os.path.join(self.folder, 'log.txt'))
         sys.stdout = utils.Logger(self.logfile)
 
@@ -304,15 +326,15 @@ class Universe(object):
         """ Runtime log output """
 
         # Print parameters every now and then
-        if self.log_throttler.shouldi():
-            print ('[{clock}] #{step}\tt = {t:e}s\taT = {aT:e}MeV\tT = {T:e}MeV\ta = {a:e}\tdx = {dx:e}MeV'
+        if self.log_throttler.output:
+            print ('[{clock}] #{step}\tt = {t:e}s\taT = {aT:e}MeV\tT = {T:e}MeV'
+                   '\tδaT/aT = {daT:e}'
                    .format(clock=timedelta(seconds=int(time.time() - self.clock_start)),
                            step=self.step,
                            t=self.params.t / UNITS.s,
                            aT=self.params.aT / UNITS.MeV,
                            T=self.params.T / UNITS.MeV,
-                           a=self.params.a,
-                           dx=self.params.dx / UNITS.MeV))
+                           daT=self.fraction * self.params.dy / self.params.aT))
 
     def total_energy_density(self):
         return sum(particle.energy_density for particle in self.particles)

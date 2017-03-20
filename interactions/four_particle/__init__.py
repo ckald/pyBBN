@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import numpy
 from array import array
-from common import integrators
+from common.integrators import paired as paired_integrators
 from interactions.boltzmann import BoltzmannIntegral
 from interactions.four_particle.integral import integrand
 
@@ -89,36 +89,45 @@ class FourParticleIntegral(BoltzmannIntegral):
         if params.T > self.decoupling_temperature and not self.particle.in_equilibrium:
             self.particle.collision_integrals.append(self)
 
-    def integrate(self, p0, fau=None, bounds=None):
+    def integrate(self, p0, bounds=None):
         if bounds is None:
             bounds = (
                 self.grids[0].BOUNDS,
                 (lambda p1: self.grids[1].MIN_MOMENTUM,
-                 lambda p1: min(p0 + p1, self.grids[1].MAX_MOMENTUM)),
+                 lambda p1: numpy.minimum(p0 + p1, self.grids[1].MAX_MOMENTUM)),
             )
-
-        ms = []
-        for i, particle in enumerate(self.reaction):
-            ms.append(particle.specie.conformal_mass)
 
         cMs = [
             {'order': array('i', M.order), 'K1': M.K1, 'K2': M.K2}
             for M in self.Ms
         ]
-        csides = array('i', self.sides)
-        cms = array('d', ms)
+
+        creaction = [
+            {
+                'specie': {
+                    'm': particle.specie.conformal_mass,
+                    'grid': {
+                        'grid': particle.specie.grid.TEMPLATE,
+                        'distribution': particle.specie._distribution,
+                        'size': particle.specie.grid.MOMENTUM_SAMPLES
+                    },
+                    'eta': particle.specie.eta
+                },
+                'side': particle.side
+            }
+            for particle in self.reaction
+        ]
 
         def prepared_integrand(p1, p2):
-            return numpy.reshape(
-                integrand(p0, p1.ravel(), p2.ravel(), p1.size, cms, cMs, csides, fau),
-                p1.shape
-            )
+            integrand_1, integrand_f = integrand(p0, p1.ravel(), p2.ravel(), p1.size, creaction, cMs)
+            return numpy.reshape(integrand_1, p1.shape), numpy.reshape(integrand_f, p1.shape)
 
         params = self.particle.params
+
         constant = (params.m / params.x)**5 / 64. / numpy.pi**3
-        integral, error = integrators.integrate_2D(
+        integral_1, integral_f = paired_integrators.integrate_2D(
             prepared_integrand,
             bounds=bounds
         )
 
-        return constant * integral
+        return constant * integral_1, constant * integral_f
