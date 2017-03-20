@@ -148,8 +148,10 @@ class Universe(object):
     def make_step(self):
         self.integrand(self.params.x, self.params.aT)
 
-        order = min(self.step + 1, 5)
-        fs = list(self.data.fraction[-(order - 1):]) + [self.fraction]
+        order = min(len(self.data) + 1, 5)
+        fs = [self.fraction]
+        if order > 1:
+            fs = list(self.data.fraction[-(order-1):]) + fs
 
         self.params.aT +=\
             integrators.adams_bashforth_correction(fs=fs, h=self.params.dy, order=order)

@@ -259,9 +259,10 @@ class DistributionParticle(AbstractParticle):
             Bs.append(integral.integrate(p0, integral.F_f))
 
         order = min(len(self.data['collision_integral']) + 1, 5)
-
         index = numpy.searchsorted(self.grid.TEMPLATE, p0)
-        fs = list(self.data['collision_integral'][-order + 1:, index])
+        fs = []
+        if order > 1:
+            fs = list(self.data['collision_integral'][-order+1:, index])
 
         H = self.params.H
 

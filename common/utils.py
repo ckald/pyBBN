@@ -189,7 +189,7 @@ class Dynamic2DArray(object):
         return self._data[:self.length]
 
     def savetxt(self, f):
-        numpy.savetxt(f, self._data, delimiter='\t',
+        numpy.savetxt(f, self.data, delimiter='\t',
                       header='\t'.join(['{:e}'.format(h) for h in self.header]))
 
 
@@ -267,6 +267,6 @@ class DynamicRecArray(object):
 
         numpy.savetxt(
             f,
-            self._data.view((numpy.float_, len(self._data.dtype))) / self.units[None, :],
+            self.data.view((numpy.float_, len(self._data.dtype))) / self.units[None, :],
             delimiter='\t', header='\t'.join(heading)
         )
