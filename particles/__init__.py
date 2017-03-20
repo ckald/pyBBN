@@ -15,7 +15,8 @@ from common.utils import PicklableObject, trace_unhandled_exceptions, Dynamic2DA
 
 from particles import DustParticle, RadiationParticle, IntermediateParticle, NonEqParticle
 # from KAWANO.interpolation import dist_interp_values as distribution_interpolation
-from particles.interpolation.interpolation import distribution_interpolation
+# from particles.interpolation.interpolation import distribution_interpolation
+from interactions.four_particle.integral import distribution_interpolation
 
 
 class REGIMES(dict):
@@ -233,12 +234,14 @@ class DistributionParticle(AbstractParticle):
             return
 
         self._distribution += self.collision_integral * self.params.dy
+        assert all(self._distribution >= 0)
         self._distribution = numpy.maximum(self._distribution, 0)
 
         # Clear collision integrands for the next computation step
         self.collision_integrals = []
         self.data['collision_integral'].append(self.collision_integral)
         self.data['distribution'].append(self._distribution)
+        self.collision_integral *= 0.
 
     def integrate_collisions(self):
         return numpy.vectorize(self.calculate_collision_integral,
