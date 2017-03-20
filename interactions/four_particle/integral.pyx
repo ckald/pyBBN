@@ -260,26 +260,27 @@ cdef numpy.ndarray[double] integrand(
 cdef double D(double p[4], double E[4], double m[4], double K1, double K2, int order[4], int sides[4]) nogil:
     """ Dimensionality: energy """
 
-    cdef int i, j, k, l, sksl, sisjsksl
+    cdef int i, j, k, l, sisj, sksl, sisjsksl
     i, j, k, l = order[0], order[1], order[2], order[3]
+    sisj = sides[i] * sides[j]
     sksl = sides[k] * sides[l]
     sisjsksl = sides[i] * sides[j] * sides[k] * sides[l]
 
     cdef double result = 0.
 
-    if K1 != 0:
+    if K1 != 0.:
         result += K1 * (E[0]*E[1]*E[2]*E[3] * D1(p[0], p[1], p[2], p[3]) + sisjsksl * D3(p[0], p[1], p[2], p[3]))
 
         result += K1 * (E[i]*E[j] * sksl * D2(p[i], p[j], p[k], p[l])
-                          + E[k]*E[l] * sksl * D2(p[k], p[l], p[i], p[j]))
+                        + E[k]*E[l] * sisj * D2(p[k], p[l], p[i], p[j]))
 
-    if K2 != 0:
+    if K2 != 0.:
         result += K2 * m[i]*m[j] * (E[k]*E[l] * D1(p[0], p[1], p[2], p[3]) + sksl * D2(p[i], p[j], p[k], p[l]))
 
     return result
 
 
-cdef double D1(double k1, double k2, double k3, double k4) nogil:
+cpdef double D1(double k1, double k2, double k3, double k4) nogil:
     """ Dimensionality: energy
 
         \begin{align}
@@ -304,7 +305,7 @@ cdef double D1(double k1, double k2, double k3, double k4) nogil:
     return result
 
 
-cdef double D2(double k1, double k2, double k3, double k4) nogil:
+cpdef double D2(double k1, double k2, double k3, double k4) nogil:
     """ Dimensionality: energy**3
 
         \begin{align}
@@ -343,7 +344,7 @@ cdef double D2(double k1, double k2, double k3, double k4) nogil:
     return result
 
 
-cdef double D3(double k1, double k2, double k3, double k4) nogil:
+cpdef double D3(double k1, double k2, double k3, double k4) nogil:
     """ Dimensionality: energy**5
 
         \begin{align}
@@ -402,22 +403,22 @@ cdef double Db(double p[4], double E[4], double m[4], double K1, double K2, int 
     cdef double result, subresult
     result = 0.
 
-    if K1 != 0:
+    if K1 != 0.:
         subresult = E[1]*E[2]*E[3] * Db1(p[1], p[2], p[3])
 
-        if i * j == 0:
+        if i * j == 0.:
             subresult += sisj * E[i+j] * Db2(p[i+j], p[k], p[l])
-        elif k * l == 0:
+        elif k * l == 0.:
             subresult += sksl * E[k+l] * Db2(p[i], p[j], p[k+l])
 
         result += K1 * subresult
 
-    if K2 != 0:
-        subresult = 0
+    if K2 != 0.:
+        subresult = 0.
 
-        if i * j == 0:
+        if i * j == 0.:
             subresult += m[i+j] * (E[k] * E[l] * Db1(p[1], p[2], p[3]) + sksl * Db2(p[i+j], p[k], p[l]))
-        elif k * l == 0:
+        elif k * l == 0.:
             subresult += m[i] * m[j] * m[k+l] * Db1(p[1], p[2], p[3])
 
         result += K2 * subresult
@@ -428,7 +429,7 @@ cdef double Db(double p[4], double E[4], double m[4], double K1, double K2, int 
 cdef double Db1(double q2, double q3, double q4) nogil:
     if (q2 + q3 > q4) and (q2 + q4 > q3) and (q3 + q4 > q2):
         return 1.
-    return 0
+    return 0.
 
 
 cdef double Db2(double q2, double q3, double q4) nogil:
