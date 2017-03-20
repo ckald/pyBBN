@@ -28,7 +28,7 @@ folder = os.path.join(os.path.split(__file__)[0], 'output')
 T_interaction_freezeout = 0.05 * UNITS.MeV
 T_final = 0.0008 * UNITS.MeV
 params = Params(T=10. * UNITS.MeV,
-                dy=0.025)
+                dy=0.003125)
 
 universe = Universe(params=params, folder=folder)
 
@@ -38,17 +38,11 @@ neutrino_e = Particle(**SMP.leptons.neutrino_e)
 neutrino_mu = Particle(**SMP.leptons.neutrino_mu)
 neutrino_mu.dof = 4
 
-neutron = Particle(**SMP.hadrons.neutron)
-proton = Particle(**SMP.hadrons.proton)
-
 universe.add_particles([
     photon,
     electron,
     neutrino_e,
-    neutrino_mu,
-
-    neutron,
-    proton
+    neutrino_mu
 ])
 
 universe.interactions += (
@@ -58,9 +52,24 @@ universe.interactions += (
 
 universe.init_kawano(electron=electron, neutrino=neutrino_e)
 
+
+def step_monitor(universe):
+    # Output the distribution function distortion to file every 10 steps
+    if universe.step % 10 == 0:
+        for particle in [neutrino_e, neutrino_mu]:
+            with open(os.path.join(folder, particle.name + ".distribution.txt"), 'a') as f:
+                f.write('\t'.join([
+                    '{:e}'.format(x)
+                    for x in
+                    (particle._distribution
+                     / particle.equilibrium_distribution(aT=particle.aT))
+                ]) + '\n')
+
+
+universe.step_monitor = step_monitor
+
 universe.evolve(T_interaction_freezeout, export=False)
 universe.interactions = tuple()
-# universe.params.dy = 0.00625
 universe.evolve(T_final)
 
 
