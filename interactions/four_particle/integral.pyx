@@ -513,23 +513,22 @@ cpdef double distribution_interpolation(double[:] grid, int grid_len,
         ) / (p_high - p_low)
 
 
-cdef int binary_search(double[:] grid, int size, double x) nogil:
+cpdef int binary_search(double[:] grid, int size, double x) nogil:
     cdef int head = 0, tail = size - 1
-    cdef int middle = (tail + head) / 2
+    cdef int middle
 
-    while grid[middle] != x and tail - head > 1:
-        if grid[middle] >= x:
-            head = middle
-        else:
-            tail = middle
-
+    while tail - head > 1:
         middle = (tail + head) / 2
+        if grid[middle] == x:
+            return middle
+        elif grid[middle] > x:
+            tail = middle
+        else:
+            head = middle
 
-    if grid[middle] == x:
-        return middle
-    if grid[head] == x:
-        return head
     if grid[tail] == x:
         return tail
+
+    return head
 
 
