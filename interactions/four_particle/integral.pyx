@@ -455,14 +455,13 @@ cpdef double distribution_interpolation(double[:] grid, int grid_len,
                                         double[:] distribution,
                                         double p,
                                         double m,
-                                        int eta=1) nogil:
+                                        int eta) nogil:
 
     cdef double p_low = -1, p_high = -1
 
     cdef unsigned int i = 0, i_low, i_high
 
     i = binary_search(grid, grid_len, p)
-
     if grid[i] == p:
         return distribution[i]
 
@@ -493,12 +492,12 @@ cpdef double distribution_interpolation(double[:] grid, int grid_len,
         g_low = distribution[i_low]
 
         if g_high > 0:
-            g_high = (1. / g_high - 1.)
+            g_high = (1. / g_high - eta)
             if g_high > 0:
                 g_high = log(g_high)
 
         if g_low > 0:
-            g_low = (1. / g_low - 1.)
+            g_low = (1. / g_low - eta)
             if g_low > 0:
                 g_low = log(g_low)
 
