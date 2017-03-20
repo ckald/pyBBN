@@ -43,7 +43,7 @@ class Universe(object):
         ['fraction', None, 1],
     ])
 
-    def __init__(self, folder=None, params=None, max_log_rate=1):
+    def __init__(self, folder=None, params=None, max_log_rate=2):
         """
         :param folder: Log file path (current `datetime` by default)
         """
@@ -328,11 +328,13 @@ class Universe(object):
         # Print parameters every now and then
         if self.log_throttler.output:
             print ('[{clock}] #{step}\tt = {t:e}s\taT = {aT:e}MeV\tT = {T:e}MeV'
+                   '\tδaT/aT = {daT:e}'
                    .format(clock=timedelta(seconds=int(time.time() - self.clock_start)),
                            step=self.step,
                            t=self.params.t / UNITS.s,
                            aT=self.params.aT / UNITS.MeV,
-                           T=self.params.T / UNITS.MeV))
+                           T=self.params.T / UNITS.MeV,
+                           daT=self.fraction * self.params.dy / self.params.aT))
 
     def total_energy_density(self):
         return sum(particle.energy_density for particle in self.particles)
