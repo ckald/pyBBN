@@ -57,7 +57,7 @@ def step_monitor(universe):
     # explanation of what is inside the file + first row which is a grid on y
     if universe.step == 1:
         for particle in [neutrino_e, neutrino_mu]:
-            with open(os.path.join(folder, particle.name + ".distribution.txt"), 'a') as f:
+            with open(os.path.join(folder, particle.name.replace(' ', '_') + ".distribution.txt"), 'a') as f:
                 f.write('# First line is a grid of y; Starting from second line: first number is temperature, next set of numbers is corresponding f/feq on the grid' + '\n')
                 f.write('## T     ' + '\t'.join([
                     '{:e}'.format(x)
@@ -68,7 +68,7 @@ def step_monitor(universe):
     # Output the distribution function distortion to file every 10 steps, first column is temperature
     if universe.step % 10 == 0:
         for particle in [neutrino_e, neutrino_mu]:
-            with open(os.path.join(folder, particle.name + ".distribution.txt"), 'a') as f:
+            with open(os.path.join(folder, particle.name.replace(' ', '_') + ".distribution.txt"), 'a') as f:
                 f.write ('{:e}'.format(universe.params.T/UNITS.MeV) + '\t')
                 f.write('\t'.join([
                     '{:e}'.format(x)
