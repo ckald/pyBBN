@@ -58,7 +58,8 @@ class Universe(object):
 
         self.folder = folder
         if self.folder:
-            shutil.rmtree(folder)
+            if os.path.exists(folder):
+                shutil.rmtree(folder)
             self.init_log(folder=folder)
 
         # Controls parallelization of the collision integrals calculations
