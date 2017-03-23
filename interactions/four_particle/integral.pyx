@@ -38,6 +38,8 @@ cdef struct particle_t:
     int eta
     double m
     grid_t grid
+    int in_equilibrium
+    double aT
 
 cdef struct reaction_t:
     particle_t specie
@@ -228,13 +230,21 @@ cpdef integrand(
         if temp == 0.:
             continue
 
-        for i in range(4):
-            f[i] = distribution_interpolation(
-                reaction[i].specie.grid.grid,
-                reaction[i].specie.grid.size,
-                reaction[i].specie.grid.distribution,
-                p[i], reaction[i].specie.m, reaction[i].specie.eta
-            )
+        # The distribution function of the main particle is not required here
+        f[0] = -1
+        for k in range(1, 4):
+            if reaction[k].specie.in_equilibrium:
+                f[k] = 1. / (
+                    exp(conformal_energy(p[k], reaction[k].specie.m) / reaction[k].specie.aT)
+                    + reaction[k].specie.eta
+                )
+            else:
+                f[k] = distribution_interpolation(
+                    reaction[k].specie.grid.grid,
+                    reaction[k].specie.grid.size,
+                    reaction[k].specie.grid.distribution,
+                    p[k], reaction[k].specie.m, reaction[k].specie.eta
+                )
 
         integrands_1[i] = temp * F_1(reaction, f)
         integrands_f[i] = temp * F_f(reaction, f)

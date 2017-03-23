@@ -111,7 +111,9 @@ class FourParticleIntegral(BoltzmannIntegral):
                         'distribution': particle.specie._distribution,
                         'size': particle.specie.grid.MOMENTUM_SAMPLES
                     },
-                    'eta': particle.specie.eta
+                    'eta': particle.specie.eta,
+                    'in_equilibrium': int(particle.specie.in_equilibrium),
+                    'aT': particle.specie.aT
                 },
                 'side': particle.side
             }
