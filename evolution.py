@@ -152,7 +152,7 @@ class Universe(object):
         order = min(len(self.data) + 1, 5)
         fs = [self.fraction]
         if order > 1:
-            fs = list(self.data.fraction[-(order-1):]) + fs
+            fs = list(self.data['fraction'][-(order-1):]) + fs
 
         self.params.aT +=\
             integrators.adams_bashforth_correction(fs=fs, h=self.params.dy, order=order)
@@ -304,8 +304,8 @@ class Universe(object):
                 self.kawano_data.columns[0]: self.params.t,
                 self.kawano_data.columns[1]: self.params.x,
                 self.kawano_data.columns[2]: self.params.T,
-                self.kawano_data.columns[3]: (self.params.T - self.data.T[-2])
-                / (self.params.t - self.data.t[-2]),
+                self.kawano_data.columns[3]: (self.params.T - self.data['T'][-2])
+                / (self.params.t - self.data['t'][-2]),
                 self.kawano_data.columns[4]: self.params.rho,
                 self.kawano_data.columns[5]: self.params.H
             }

@@ -213,11 +213,14 @@ class DynamicRecArray(object):
     def __len__(self):
         return self.length
 
-    def __getattr__(self, column):
-        if column in self.columns:
-            return self._data[column][:self.length]
-        else:
-            raise KeyError
+    # Unfortunately, this method causes infinite recursion with multiprocessing
+    # def __getattr__(self, column):
+    #     if column in self.__dict__:
+    #         return self.__dict__[column]
+    #     if column in self.columns:
+    #         return self._data[column][:self.length]
+    #     else:
+    #         raise KeyError
 
     def __getitem__(self, index):
         if index in self.columns:
