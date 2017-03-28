@@ -74,7 +74,7 @@ def step_monitor(universe):
                     '{:e}'.format(x)
                     for x in
                     (particle._distribution
-                     / particle.equilibrium_distribution(aT=particle.aT))
+                     / particle.equilibrium_distribution(aT=universe.params.aT/UNITS.MeV))
                 ]) + '\n')
 
 
