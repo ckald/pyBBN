@@ -210,7 +210,7 @@ cpdef integrand(
         temp = 1.
 
         # Avoid rounding errors and division by zero
-        for k in range(1, 2):
+        for k in range(1, 3):
             if m[k] != 0.:
                 temp *= p[k] / E[k]
 
