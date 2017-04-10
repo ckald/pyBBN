@@ -6,7 +6,7 @@ import contextlib
 import numpy
 import traceback
 import functools
-from collections import deque
+from collections import deque, Iterable
 
 
 class PicklableObject(object):
@@ -169,9 +169,18 @@ class Dynamic2DArray(object):
         return self.length
 
     def __getitem__(self, index):
-        if index < 0:
-            index = self.length+1-index
-        return self._data[index]
+        return self._data[:self.length][index]
+        # if isinstance(index, Iterable):
+        #     index = list(index)
+        #     if index[0] < 0:
+        #         index[0] = self.length+1-index[0]
+        #     elif isinstance(index[0], slice):
+        #         index[0] = slice(*index[0].indices(self.length))
+        # elif isinstance(index, slice):
+        #     index = slice(*index.indices(self.length))
+        # elif index < 0:
+        #     index = self.length+1-index
+        # return self._data[index]
 
     def append(self, row):
         if self.length == self.size:
