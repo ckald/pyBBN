@@ -78,7 +78,7 @@ cdef double F_A(vector[reaction_t] reaction, double[4] f, int skip_index=-1) nog
             if reaction[i].side == -1:
                 temp *= f[i]
             else:
-                temp *= 1. - reaction[i].specie.eta * f[i]
+                temp *= 1.
 
     return temp
 
@@ -103,7 +103,7 @@ cdef double F_B(vector[reaction_t] reaction, double[4] f, int skip_index=-1) nog
             if reaction[i].side == 1:
                 temp *= f[i]
             else:
-                temp *= 1. - reaction[i].specie.eta * f[i]
+                temp *= 1.
 
     return temp
 
@@ -128,7 +128,7 @@ corresponding expression. $\pm_j$ represents the $\eta$ value of the particle $j
 """
 cdef double F_f(vector[reaction_t] reaction, double[4] f) nogil:
     """ Variable part of the distribution functional """
-    return F_A(reaction, f, 0) - reaction[0].specie.eta * F_B(reaction, f, 0)
+    return F_A(reaction, f, 0)
 
 cdef double F_1(vector[reaction_t] reaction, double[4] f) nogil:
     """ Constant part of the distribution functional """
