@@ -58,8 +58,8 @@ def step_monitor(universe):
     if universe.step == 1:
         for particle in [neutrino_e, neutrino_mu]:
             with open(os.path.join(folder, particle.name.replace(' ', '_') + ".distribution.txt"), 'a') as f:
-                f.write('# First line is a grid of y; Starting from second line: first number is temperature, next set of numbers is corresponding to f(y) on the grid' + '\n')
-                f.write('## T     ' + '\t'.join([
+                f.write('# First line is a grid of y; Starting from second line: first number is a, second is temperature, next is set of numbers is corresponding to f(y) on the grid' + '\n')
+                f.write('## a     T     ' + '\t'.join([
                     '{:e}'.format(x)
                     for x in
                     particle.grid.TEMPLATE / UNITS.MeV
@@ -69,7 +69,7 @@ def step_monitor(universe):
     if universe.step % 10 == 0:
         for particle in [neutrino_e, neutrino_mu]:
             with open(os.path.join(folder, particle.name.replace(' ', '_') + ".distribution.txt"), 'a') as f:
-                f.write('{:e}'.format(universe.params.T/UNITS.MeV) + '\t')
+                f.write('{:e}'.format(universe.params.a) + '\t'+'{:e}'.format(universe.params.T/UNITS.MeV) + '\t')
                 f.write('\t'.join([
                     '{:e}'.format(x)
                     for x in particle._distribution
