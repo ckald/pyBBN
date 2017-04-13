@@ -128,11 +128,13 @@ corresponding expression. $\pm_j$ represents the $\eta$ value of the particle $j
 """
 cdef double F_f(vector[reaction_t] reaction, double[4] f) nogil:
     """ Variable part of the distribution functional """
-    return F_A(reaction, f, 0)
+    """ return F_A(reaction, f, 0) - reaction[0].specie.eta * F_B(reaction, f, 0) """
+    return -f[1]
 
 cdef double F_1(vector[reaction_t] reaction, double[4] f) nogil:
     """ Constant part of the distribution functional """
-    return F_B(reaction, f, 0)
+    """ return F_B(reaction, f, 0) """
+    return f[2] * f[3]
 
 
 
