@@ -11,6 +11,7 @@ This test checks that in the universe filled with photons, electrons and neutrin
 
 [Log file](log.txt)
 [Distribution functions](distributions.txt)
+[Collision integrals](collision_integrals.txt)
 
 
 """
@@ -28,7 +29,7 @@ folder = os.path.join(os.path.split(__file__)[0], 'output')
 T_interaction_freezeout = 0.05 * UNITS.MeV
 T_final = 0.0008 * UNITS.MeV
 params = Params(T=10. * UNITS.MeV,
-                dy=0.003125)
+				dy=0.003125)
 
 universe = Universe(params=params, folder=folder)
 
@@ -39,41 +40,49 @@ neutrino_mu = Particle(**SMP.leptons.neutrino_mu)
 neutrino_mu.dof = 4
 
 universe.add_particles([
-    photon,
-    electron,
-    neutrino_e,
-    neutrino_mu
+	photon,
+	electron,
+	neutrino_e,
+	neutrino_mu
 ])
 
 universe.interactions += (
-    SMI.neutrino_interactions(leptons=[electron],
-                              neutrinos=[neutrino_e, neutrino_mu])
+	SMI.neutrino_interactions(leptons=[electron],
+							  neutrinos=[neutrino_e, neutrino_mu])
 )
 
 universe.init_kawano(electron=electron, neutrino=neutrino_e)
 
 
 def step_monitor(universe):
-    # explanation of what is inside the file + first row which is a grid on y
-    if universe.step == 1:
-        for particle in [neutrino_e, neutrino_mu]:
-            with open(os.path.join(folder, particle.name.replace(' ', '_') + ".distribution.txt"), 'a') as f:
-                f.write('# First line is a grid of y; Starting from second line: first number is a, second is temperature, next is set of numbers is corresponding to f(y) on the grid' + '\n')
-                f.write('## a     T     ' + '\t'.join([
-                    '{:e}'.format(x)
-                    for x in
-                    particle.grid.TEMPLATE / UNITS.MeV
-                ]) + '\n')
+	# explanation of what is inside the file + first row which is a grid on y
+	if universe.step == 1:
+		for particle in [neutrino_e, neutrino_mu]:
+			with open(os.path.join(folder, particle.name.replace(' ', '_') + ".distribution.txt"), 'a') as f:
+				f.write('# First line is a grid of y; Starting from second line: first number is a, second is temperature, next is set of numbers is corresponding to f(y) on the grid' + '\n')
+				f.write('## a     T     ' + '\t'.join([
+					'{:e}'.format(x)
+					for x in
+					particle.grid.TEMPLATE / UNITS.MeV
+				]) + '\n')
+			with open(os.path.join(folder, particle.name.replace(' ', '_') + ".collision_integrals.txt"), 'a') as f1:
+				f1.write('# First line is a grid of y; Starting from second line each line is a set of numbers is corresponding to Icoll(f) on the grid y with temperature equal to the T in .distribution.txt' + '\n')
+				f1.write('##     ' + '\t'.join([
+					'{:e}'.format(x)
+					for x in
+					particle.grid.TEMPLATE / UNITS.MeV
+				]) + '\n')
 
-    # Output the distribution function distortion to file every 10 steps, first column is temperature
-    if universe.step % 10 == 0:
-        for particle in [neutrino_e, neutrino_mu]:
-            with open(os.path.join(folder, particle.name.replace(' ', '_') + ".distribution.txt"), 'a') as f:
-                f.write('{:e}'.format(universe.params.a) + '\t'+'{:e}'.format(universe.params.T/UNITS.MeV) + '\t')
-                f.write('\t'.join([
-                    '{:e}'.format(x)
-                    for x in particle._distribution
-                ]) + '\n')
+	# Output the distribution function and collision integrals distortion to file every 10 steps, first column is temperature
+	if universe.step % 10 == 0:
+		for particle in [neutrino_e, neutrino_mu]:
+			with open(os.path.join(folder, particle.name.replace(' ', '_') + ".distribution.txt"), 'a') as f:
+				f.write('{:e}'.format(universe.params.a) + '\t'+'{:e}'.format(universe.params.T/UNITS.MeV) + '\t')
+				f.write('\t'.join([
+					'{:e}'.format(x)
+					for x in particle._distribution
+				]) + '\n')
+
 
 
 universe.step_monitor = step_monitor
@@ -82,8 +91,10 @@ universe.evolve(T_interaction_freezeout, export=False)
 universe.interactions = tuple()
 universe.evolve(T_final)
 
+for particle in [neutrino_e, neutrino_mu]:
+        with open(os.path.join(folder, particle.name.replace(' ', '_') + ".collision_integrals.txt"), 'a') as f1:
+                 particle.data['collision_integral'].savetxt(f1)
 
-"""
 ### Plots for comparison with articles
 
 ### JCAP10(2012)014, Figure 9
