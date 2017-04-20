@@ -275,6 +275,15 @@ cdef double D(double p[4], double E[4], double m[4], double K1, double K2, int o
     return result
 
 
+def Dpy(p, E, m, K1, K2, order, sides):
+    cdef array.array[double] cp = array.array('d', p)
+    cdef array.array[double] cE = array.array('d', E)
+    cdef array.array[double] cm = array.array('d', m)
+    cdef array.array[int] corder = array.array('i', order)
+    cdef array.array[int] csides = array.array('i', sides)
+    return D(cp.data.as_doubles, cE.data.as_doubles, cm.data.as_doubles, K1, K2, corder.data.as_ints, csides.data.as_ints)
+
+
 cpdef double D1(double k1, double k2, double k3, double k4) nogil:
     """ Dimensionality: energy
 
