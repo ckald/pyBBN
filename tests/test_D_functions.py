@@ -11,7 +11,7 @@ cwd = os.path.split(__file__)[0]
 GRID = LogSpacedGrid(MOMENTUM_SAMPLES=20)
 
 def grid_iterator(dimension=4, grid=GRID):
-    value = numpy.zeros(dimension)
+    value = numpy.zeros(dimension, dtype=numpy.int)
 
     dim = dimension - 1
     while dim >= 0:
