@@ -20,7 +20,7 @@ class UNITS(object):
         As we use natural units in the project, all units from `numericalunits` except energy units
         are useless. Here some useful units are defined in terms of `GeV`s. """
 
-    use_numericalunits = False
+    use_numericalunits = True
     eV = nu.eV if use_numericalunits else 1e-9
 
     @classmethod
