@@ -194,7 +194,7 @@ cpdef integrand(
         p2 = p2s[i]
         p[:] = [p0, p1, p2, 0.]
         E[3] = 0.
-        for j in range(3):
+        for j in range(3):  # [0, 1, 2]
             E[j] = conformal_energy(p[j], m[j])
             E[3] += sides[j] * E[j]
 
@@ -232,7 +232,7 @@ cpdef integrand(
 
         # The distribution function of the main particle is not required here
         f[0] = -1
-        for k in range(1, 4):
+        for k in range(1, 4):  # [1, 2, 3]
             if reaction[k].specie.in_equilibrium:
                 f[k] = 1. / (
                     exp(conformal_energy(p[k], reaction[k].specie.m) / reaction[k].specie.aT)
@@ -496,15 +496,15 @@ cpdef double distribution_interpolation(double[:] grid, int grid_len,
         g_high = distribution[i_high]
         g_low = distribution[i_low]
 
-        if g_high > 0:
-            g_high = (1. / g_high - eta)
-            if g_high > 0:
-                g_high = log(g_high)
+        # if g_high > 0:
+        g_high = (1. / g_high - eta)
+            # if g_high > 0:
+        g_high = log(g_high)
 
-        if g_low > 0:
-            g_low = (1. / g_low - eta)
-            if g_low > 0:
-                g_low = log(g_low)
+        # if g_low > 0:
+        g_low = (1. / g_low - eta)
+            # if g_low > 0:
+        g_low = log(g_low)
 
         g = ((E_p - E_low) * g_high + (E_high - E_p) * g_low) / (E_high - E_low)
 
