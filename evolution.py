@@ -156,14 +156,14 @@ class Universe(object):
         if order > 1:
             fs = list(self.data['fraction'][-(order-1):]) + fs
 
+        if self.step_monitor:
+            self.step_monitor(self)
+
         self.params.aT +=\
             integrators.adams_bashforth_correction(fs=fs, h=self.params.dy, order=order)
         self.params.x += self.params.dx
 
         self.params.update(self.total_energy_density())
-
-        if self.step_monitor:
-            self.step_monitor(self)
 
         self.log_throttler.update()
 
