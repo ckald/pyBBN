@@ -80,12 +80,12 @@ class AbstractParticle(PicklableObject):
 
     def __str__(self):
         """ String-like representation of particle species it's regime and parameters """
-        return "%s (%s, %s)\nn = %s, rho = %s\n" % (
+        return "%s (%s, %s)\nn = %s MeV^3, rho = %s MeV^4\n" % (
             self.name,
             "eq" if self.in_equilibrium else "non-eq",
             self.regime.name,
-            self.density / UNITS.eV**3,
-            self.energy_density / UNITS.eV**4
+            self.density / UNITS.MeV**3,
+            self.energy_density / UNITS.MeV**4
         ) + ("-" * 80)
 
     def __repr__(self):
