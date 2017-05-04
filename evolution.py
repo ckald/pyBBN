@@ -109,6 +109,7 @@ class Universe(object):
             self.params.update(self.total_energy_density())
         self.save_params()
 
+        interrupted = False
         while self.params.T > T_final:
             try:
                 self.log()
@@ -120,10 +121,11 @@ class Universe(object):
                         self.data.savetxt(f)
             except KeyboardInterrupt:
                 print "Keyboard interrupt!"
+                interrupted = True
                 break
 
         self.log()
-        if export:
+        if export and not interrupted:
             self.export()
 
         return self.data
