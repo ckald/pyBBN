@@ -8,7 +8,6 @@ import math
 import numpy
 cimport numpy
 cimport cython
-from libc.stdlib cimport malloc, free
 
 cdef extern from "math.h" nogil:
     double sqrt(double)
