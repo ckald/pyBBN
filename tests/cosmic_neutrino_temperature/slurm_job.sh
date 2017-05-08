@@ -12,7 +12,7 @@
 #SBATCH --mail-user=ckaldeg@gmail.com,filimonovastasya@gmail.com
 
 ################################################################################
-# CAUTION: Copy this file to the test folder
+# CAUTION: Copy this file to the test folder. To start run using `sbatch`
 ################################################################################
 
 source ../../../env/bin/activate
