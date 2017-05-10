@@ -185,7 +185,7 @@ cpdef integrand(
         numpy.ndarray[double] integrands_1 = numpy.zeros([length])
         numpy.ndarray[double] integrands_f = numpy.zeros([length])
 
-    for i in range(4):
+    for i in range(4):  # [0, 1, 2, 3]
         sides[i] = reaction[i].side
         m[i] = reaction[i].specie.m
 
@@ -210,7 +210,7 @@ cpdef integrand(
         temp = 1.
 
         # Avoid rounding errors and division by zero
-        for k in range(1, 3):
+        for k in range(1, 3):  # [1, 2]
             if m[k] != 0.:
                 temp *= p[k] / E[k]
 

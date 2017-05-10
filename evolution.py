@@ -109,6 +109,7 @@ class Universe(object):
             self.params.update(self.total_energy_density())
         self.save_params()
 
+        interrupted = False
         while self.params.T > T_final:
             try:
                 self.log()
@@ -120,10 +121,11 @@ class Universe(object):
                         self.data.savetxt(f)
             except KeyboardInterrupt:
                 print "Keyboard interrupt!"
+                interrupted = True
                 break
 
         self.log()
-        if export:
+        if export and not interrupted:
             self.export()
 
         return self.data
@@ -154,14 +156,14 @@ class Universe(object):
         if order > 1:
             fs = list(self.data['fraction'][-(order-1):]) + fs
 
+        if self.step_monitor:
+            self.step_monitor(self)
+
         self.params.aT +=\
             integrators.adams_bashforth_correction(fs=fs, h=self.params.dy, order=order)
         self.params.x += self.params.dx
 
         self.params.update(self.total_energy_density())
-
-        if self.step_monitor:
-            self.step_monitor(self)
 
         self.log_throttler.update()
 
