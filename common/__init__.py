@@ -112,7 +112,7 @@ class Params(object):
         self.t = numpy.sqrt(3. / (32. * numpy.pi * CONST.G * rho))
         return self.t
 
-    def update(self, rho):
+    def update(self, rho, S):
         """ Hubble expansion parameter defined by a Friedmann equation:
 
             \begin{equation}
@@ -120,6 +120,7 @@ class Params(object):
             \end{equation}
         """
         self.rho = rho
+        self.S = S
         self.H = numpy.sqrt(8./3. * numpy.pi * rho) / CONST.M_p
 
         self.N_eff = (

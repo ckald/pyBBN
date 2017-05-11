@@ -43,16 +43,33 @@ def pressure(particle):
             { \sqrt{y^2 + \frac{M_N^2 x^2}{m^2}} }
         \end{equation}
     """
-    if particle.mass == 0:
-        return numpy.vectorize(lambda p: (
-            particle.distribution(p) * p**3
-            * particle.dof / 6. / numpy.pi**2 / particle.params.a**4
-        ), otypes=[numpy.float_])
 
     return numpy.vectorize(lambda p: (
         particle.distribution(p) * p**4 / particle.conformal_energy(p)
         * particle.dof / 6. / numpy.pi**2 / particle.params.a**4
     ), otypes=[numpy.float_])
+
+
+@lambda_integrate()
+def entropy(particle):
+    """ ## Entropy
+
+        \begin{equation}
+            s = - \int_0^\inf p^2 dp \left{ f(p) \ln f(p) \mp (1 \pm f(p)) \ln (1 \pm f(p)) \right}
+        \end{equation}
+    """
+
+    def integrand(p):
+        f = particle.distribution(p)
+        eta = particle.eta
+
+        if f == 0:
+            return 0.
+
+        return (- particle.dof / 2 / numpy.pi**2 / particle.params.a**3
+                * p**2 * (f * numpy.log(f) + eta * (1 - eta * f) * numpy.log(1 - eta * f)))
+
+    return numpy.vectorize(integrand, otypes=[numpy.float_])
 
 
 """ ## Master equation terms """

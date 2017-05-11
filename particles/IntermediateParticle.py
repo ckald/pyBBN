@@ -6,6 +6,7 @@ are obtained through integration of distribution function
 from common import integrators
 import numpy
 
+from particles import NonEqParticle
 
 name = 'intermediate'
 
@@ -82,6 +83,19 @@ def pressure(particle):
          particle.grid.MAX_MOMENTUM / particle.params.a)
     )
     return pressure
+
+
+entropy = NonEqParticle.entropy
+# Entropy computation as in non-equilibrium case turns out to be more accurate
+# def entropy(particle):
+#     """ ## Entropy
+
+#         \begin{equation}
+#             s = \frac{\rho + P}{T}
+#         \end{equation}
+#     """
+
+#     return (energy_density(particle) + pressure(particle)) / particle.params.T
 
 
 # ## Master equation terms

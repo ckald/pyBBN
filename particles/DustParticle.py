@@ -39,6 +39,17 @@ def pressure(particle):
     return density(particle) * particle.T
 
 
+def entropy(particle):
+    """ ## Entropy
+
+        \begin{equation}
+            s = \frac{\rho + P}{T} = (\frac52 + \frac{m}{T}) n
+        \end{equation}
+    """
+
+    return (5./2. + particle.mass / particle.params.T) * density(particle)
+
+
 # ## Master equation terms
 # Dust regime does not differ from intermediate regime here.
 numerator = IntermediateParticle.numerator

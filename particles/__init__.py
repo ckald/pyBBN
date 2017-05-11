@@ -96,6 +96,7 @@ class AbstractParticle(PicklableObject):
         self.density = regime.density(self)
         self.energy_density = regime.energy_density(self)
         self.pressure = regime.pressure(self)
+        self.entropy = regime.entropy(self)
         self.numerator = regime.numerator(self)
         self.denominator = regime.denominator(self)
 

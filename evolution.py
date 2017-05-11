@@ -41,6 +41,7 @@ class Universe(object):
         ['rho', 'MeV^4', UNITS.MeV**4],
         ['N_eff', None, 1],
         ['fraction', None, 1],
+        ['S', 'MeV^3', UNITS.MeV**3]
     ])
 
     def __init__(self, folder=None, params=None, max_log_rate=2):
@@ -106,7 +107,7 @@ class Universe(object):
 
         if self.params.rho is None:
             self.update_particles()
-            self.params.update(self.total_energy_density())
+            self.params.update(self.total_energy_density(), self.total_entropy())
         self.save_params()
 
         interrupted = False
@@ -163,7 +164,7 @@ class Universe(object):
             integrators.adams_bashforth_correction(fs=fs, h=self.params.dy, order=order)
         self.params.x += self.params.dx
 
-        self.params.update(self.total_energy_density())
+        self.params.update(self.total_energy_density(), self.total_entropy())
 
         self.log_throttler.update()
 
@@ -288,7 +289,8 @@ class Universe(object):
             'rho': self.params.rho,
             'N_eff': self.params.N_eff,
             't': self.params.t,
-            'fraction': self.fraction
+            'fraction': self.fraction,
+            'S': self.params.S
         })
 
     def save(self):
@@ -331,13 +333,17 @@ class Universe(object):
         # Print parameters every now and then
         if self.log_throttler.output:
             print ('[{clock}] #{step}\tt = {t:e}s\taT = {aT:e}MeV\tT = {T:e}MeV'
-                   '\tδaT/aT = {daT:e}'
+                   '\tδaT/aT = {daT:e}\tS = {S:e}MeV^3'
                    .format(clock=timedelta(seconds=int(time.time() - self.clock_start)),
                            step=self.step,
                            t=self.params.t / UNITS.s,
                            aT=self.params.aT / UNITS.MeV,
                            T=self.params.T / UNITS.MeV,
-                           daT=self.fraction * self.params.dy / self.params.aT))
+                           daT=self.fraction * self.params.h / self.params.aT,
+                           S=self.params.S / UNITS.MeV**3))
+
+    def total_entropy(self):
+        return sum(particle.entropy for particle in self.particles) * self.params.a**3
 
     def total_energy_density(self):
         return sum(particle.energy_density for particle in self.particles)
