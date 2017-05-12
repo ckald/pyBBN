@@ -2,6 +2,7 @@
 # cython: boundscheck=False
 # cython: nonecheck=False
 # cython: cdivision=True
+# cython: initializedcheck=False
 
 
 import math
@@ -19,8 +20,6 @@ import array
 
 numpy.import_array()
 
-
-ctypedef double (*f_type)(vector[reaction_t], double[4])
 
 cdef struct M_t:
     int[4] order
