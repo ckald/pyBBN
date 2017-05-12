@@ -177,6 +177,8 @@ cpdef integrand(
         double m[4]
         int sides[4]
 
+        M_t M
+
         double[4] f
 
         double p1, p2
