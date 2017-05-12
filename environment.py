@@ -37,6 +37,9 @@ defaults = {
 
     # Use Simpson's rule for computation of collision integrals instead of Gaussian quadrature
     'SIMPSONS_INTEGRATION': False,
+
+    'LAGUERRE_GAUSS_FOR_MASSIVE_EQUILIBRIUM_PARTICLES': False,
+
 }
 
 

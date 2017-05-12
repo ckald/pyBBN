@@ -3,6 +3,9 @@
 """
 from __future__ import division
 import numpy
+from scipy.integrate import simps
+
+import environment
 from common import linear_interpolation
 from common.integrators import lambda_integrate
 
@@ -82,15 +85,22 @@ def entropy(particle):
 """
 
 
-@lambda_integrate()
 def numerator(particle):
-    integral = linear_interpolation(particle.collision_integral / particle.params.x,
-                                    particle.grid.TEMPLATE)
-    return numpy.vectorize(lambda y: (
-        -1. * particle.dof / 2. / numpy.pi**2
-        * y**2 * particle.conformal_energy(y)
-        * integral(y)
-    ), otypes=[numpy.float_])
+    if environment.get('SIMPSONS_INTEGRATION'):
+        y = particle.grid.TEMPLATE
+        return simps((
+            -1. * particle.dof / 2. / numpy.pi**2
+            * y**2 * particle.conformal_energy(y)
+            * particle.collision_integral / particle.params.x
+        ), y)
+    else:
+        integral = linear_interpolation(particle.collision_integral / particle.params.x,
+                                        particle.grid.TEMPLATE)
+        return lambda_integrate()(numpy.vectorize(lambda y: (
+            -1. * particle.dof / 2. / numpy.pi**2
+            * y**2 * particle.conformal_energy(y)
+            * integral(y)
+        ), otypes=[numpy.float_]))
 
 
 def denominator(particle):
