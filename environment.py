@@ -7,7 +7,7 @@ defaults = {
     'FIXED_ORDER_1D_QUADRATURE': False,
 
     # The order of the Gauss-Legendre quadrature used by the code for momentum-space integrations
-    'GAUSS_LEGENDRE_ORDER': 80,
+    'GAUSS_LEGENDRE_ORDER': 30,
     # The order of the Gauss-Laguerre quadrature used by the code for momentum-space integrations
     'GAUSS_LAGUERRE_ORDER': 100,
 
@@ -24,7 +24,7 @@ defaults = {
     'ADAMS_MOULTON_DISTRIBUTION_CORRECTION': True,
 
     # The default number of points on the momentum space grid
-    'MOMENTUM_SAMPLES': 100,
+    'MOMENTUM_SAMPLES': 50,
     # The maximal value on the momentum space grid in MeV
     'MAX_MOMENTUM_MEV': 20,
 
