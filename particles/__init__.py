@@ -302,8 +302,13 @@ class DistributionParticle(AbstractParticle):
         """
 
         p = abs(p)
-        if self.in_equilibrium or p > self.grid.MAX_MOMENTUM:
+        if self.in_equilibrium:
             return self.equilibrium_distribution(p)
+
+        if p > self.grid.MAX_MOMENTUM:
+            # Match the latest known value of the distribution function to equilibrium
+            # asymptotic behavior
+            return self._distribution[-1] * numpy.exp((self.grid.MAX_MOMENTUM - p) / self.aT)
 
         return distribution_interpolation(
             self.grid.TEMPLATE, self.grid.MOMENTUM_SAMPLES,
