@@ -7,6 +7,7 @@ import time
 import shutil
 from datetime import timedelta
 
+import environment
 from common import UNITS, Params, integrators, parallelization, utils
 
 import kawano
@@ -55,7 +56,9 @@ class Universe(object):
         self.clock_start = time.time()
         self.log_throttler = utils.Throttler(max_log_rate)
 
-        self.params = Params() if not params else params
+        self.params = params
+        if not self.params:
+            self.params = Params()
 
         self.folder = folder
         if self.folder:
@@ -160,8 +163,12 @@ class Universe(object):
         if self.step_monitor:
             self.step_monitor(self)
 
-        self.params.aT +=\
-            integrators.adams_bashforth_correction(fs=fs, h=self.params.dy, order=order)
+        if environment.get('ADAMS_BASHFORTH_TEMPERATURE_CORRECTION'):
+            self.params.aT += integrators.adams_bashforth_correction(fs=fs, h=self.params.h,
+                                                                     order=order)
+        else:
+            self.params.aT += self.fraction * self.params.h
+
         self.params.x += self.params.dx
 
         self.params.update(self.total_energy_density(), self.total_entropy())
@@ -209,15 +216,13 @@ class Universe(object):
                     ]
                     for particle, result in parallelization.orders:
                         with (utils.benchmark(lambda: "δf/f ({}) = {}".format(particle.symbol,
-                              particle.collision_integral * self.params.dy
-                              / particle._distribution),
+                              particle.collision_integral * self.params.h / particle._distribution),
                               self.log_throttler.output)):
                             particle.collision_integral = numpy.array(result.get(1000))
             else:
                 for particle in particles:
                     with (utils.benchmark(lambda: "δf/f ({}) = {}".format(particle.symbol,
-                          particle.collision_integral * self.params.dy
-                          / particle._distribution),
+                          particle.collision_integral * self.params.h / particle._distribution),
                           self.log_throttler.output)):
                         particle.collision_integral = particle.integrate_collisions()
 
@@ -276,7 +281,11 @@ class Universe(object):
         self.update_distributions()
         # 5\. Calculate temperature equation terms
         numerator, denominator = self.calculate_temperature_terms()
-        self.fraction = self.params.x * numerator / denominator
+
+        if environment.get('LOGARITHMIC_TIMESTEP'):
+            self.fraction = self.params.x * numerator / denominator
+        else:
+            self.fraction = numerator / denominator
 
         return self.fraction
 

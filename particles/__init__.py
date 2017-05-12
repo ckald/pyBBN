@@ -9,13 +9,12 @@ from __future__ import division
 
 import numpy
 
+import environment
 from common import GRID, UNITS, statistics as STATISTICS
-from common.integrators import adams_moulton_solver
+from common.integrators import adams_moulton_solver, implicit_euler
 from common.utils import PicklableObject, trace_unhandled_exceptions, Dynamic2DArray, DynamicRecArray
 
 from particles import DustParticle, RadiationParticle, IntermediateParticle, NonEqParticle
-# from KAWANO.interpolation import dist_interp_values as distribution_interpolation
-# from particles.interpolation.interpolation import distribution_interpolation
 from interactions.four_particle.integral import distribution_interpolation
 
 
@@ -114,7 +113,7 @@ class AbstractParticle(PicklableObject):
         `REGIMES.INTERMEDIATE`. When $T$ drops down even further to the value $ M / \gamma $,\
         particle species can be treated as `REGIMES.DUST` with a Boltzmann distribution function.
         """
-        regime_factor = 1e1
+        regime_factor = environment.get('REGIME_SWITCHING_FACTOR')
 
         if not self.in_equilibrium:
             return REGIMES.NONEQ
@@ -207,13 +206,12 @@ class DistributionParticle(AbstractParticle):
         oldregime = self.regime
         oldeq = self.in_equilibrium
 
-        self.equilibrium_distribution_function = self.statistics
-
         # Update particle internal params only while it is in equilibrium
         if self.in_equilibrium or self.in_equilibrium != oldeq:
             # Particle species has temperature only when it is in equilibrium
-            self.T = self.params.T
             self.aT = self.params.aT
+
+        self.T = self.aT / self.params.a
 
         if self.in_equilibrium != oldeq and not self.in_equilibrium:
             # Particle decouples, have to init the distribution function array for kinetics
@@ -234,7 +232,7 @@ class DistributionParticle(AbstractParticle):
         if self.in_equilibrium:
             return
 
-        self._distribution += self.collision_integral * self.params.dy
+        self._distribution += self.collision_integral * self.params.h
         assert all(self._distribution >= 0)
         self._distribution = numpy.maximum(self._distribution, 0)
 
@@ -269,18 +267,20 @@ class DistributionParticle(AbstractParticle):
         if order > 1:
             fs = list(self.data['collision_integral'][-order+1:, index])
 
-        H = self.params.H
+        A = sum(As) / self.params.H
+        B = sum(Bs) / self.params.H
+        if not environment.get('LOGARITHMIC_TIMESTEP'):
+            A /= self.params.x
+            B /= self.params.x
 
-        prediction = adams_moulton_solver(y=self.distribution(p0), fs=fs,
-                                          A=sum(As) / H, B=sum(Bs) / H,
-                                          h=self.params.dy, order=order)
-        # Simplest numeric scheme for test purposes:
-        # from common.integrators import implicit_euler
-        # prediction = implicit_euler(y=self.distribution(p0), t=None,
-        #                             A=sum(As) / H, B=sum(Bs) / H,
-        #                             h=self.params.dy)
+        if environment.get('ADAMS_MOULTON_DISTRIBUTION_CORRECTION'):
+            prediction = adams_moulton_solver(y=self.distribution(p0), fs=fs,
+                                              A=A, B=B, h=self.params.h, order=order)
+        else:
+            prediction = implicit_euler(y=self.distribution(p0), t=None,
+                                        A=A, B=B, h=self.params.h)
 
-        total_integral = (prediction - self.distribution(p0)) / self.params.dy
+        total_integral = (prediction - self.distribution(p0)) / self.params.h
         return total_integral
 
     def distribution(self, p):

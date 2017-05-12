@@ -8,6 +8,8 @@ This file contains constants and utilities shared by all other modules in the pr
 import numpy
 import numericalunits as nu
 
+import environment
+
 
 class UNITS(object):
 
@@ -70,7 +72,20 @@ class CONST(object):
 
 class Params(object):
 
-    __slots__ = ('m', 'dy', 't', 'H', 'rho', 'a', 'x', 'y', 'T', 'aT', 'N_eff')
+    a = None
+    T = None
+    m = None
+    t = None
+    H = None
+    rho = None
+    N_eff = None
+
+    x = None
+    dx = None
+    y = None
+    dy = None
+
+    h = None
 
     def __init__(self, **kwargs):
         """ ## Parameters
@@ -81,8 +96,6 @@ class Params(object):
 
         # Arbitrary normalization of the conformal scale factor
         self.m = 1. * UNITS.MeV
-        # Conformal scale factor step size during computations
-        self.dy = 0.05
         # Initial time
         self.t = 0. * UNITS.s
         # Hubble rate
@@ -90,6 +103,9 @@ class Params(object):
         # Total energy density
         self.rho = None
         self.N_eff = 0.
+
+        self.dy = 0.05
+        self.dx = 0.005 * UNITS.MeV
 
         for key in kwargs:
             setattr(self, key, kwargs[key])
@@ -100,13 +116,27 @@ class Params(object):
 
         self.infer()
 
+        if environment.get('LOGARITHMIC_TIMESTEP') and not kwargs.get('dy'):
+            raise Exception("Using logarithmic timestep, but no Params.dy was specified")
+        if not environment.get('LOGARITHMIC_TIMESTEP') and not kwargs.get('dx'):
+            raise Exception("Using linear timestep, but no Params.dx was specified")
+
     def infer(self):
         """ Set initial cosmological parameters based on the value of `T` """
 
         # Compute present-state parameters that can be inferred from the base ones
         self.x = self.a * self.m
-        self.y = numpy.log(self.a)
+        if environment.get('LOGARITHMIC_TIMESTEP'):
+            self.y = numpy.log(self.a)
         self.aT = self.a * self.T
+
+        # Conformal scale factor step size during computations
+        if environment.get('LOGARITHMIC_TIMESTEP'):
+            self.dx = self.x * (numpy.exp(self.dy) - 1.)
+            self.h = self.dy
+        else:
+            self.dy = None
+            self.h = self.dx
 
     def init_time(self, rho):
         self.t = numpy.sqrt(3. / (32. * numpy.pi * CONST.G * rho))
@@ -119,6 +149,8 @@ class Params(object):
                 H = \sqrt{\frac{8 \pi}{3} G \rho}
             \end{equation}
         """
+        if environment.get('LOGARITHMIC_TIMESTEP'):
+            self.dx = self.x * (numpy.exp(self.dy) - 1.)
         self.rho = rho
         self.S = S
         self.H = numpy.sqrt(8./3. * numpy.pi * rho) / CONST.M_p
@@ -150,10 +182,6 @@ class Params(object):
         # dt = self.dx / self.x / self.H
         self.t += dt
 
-    @property
-    def dx(self):
-        return self.x * (numpy.exp(self.dy) - 1.)
-
 
 """
 ### Distribution functions grid
@@ -173,9 +201,14 @@ class LinearSpacedGrid(object):
 
     __slots__ = ('MIN_MOMENTUM', 'MAX_MOMENTUM', 'BOUNDS', 'MOMENTUM_SAMPLES', 'TEMPLATE')
 
-    def __init__(self, MOMENTUM_SAMPLES=50, MAX_MOMENTUM=20 * UNITS.MeV):
+    def __init__(self, MOMENTUM_SAMPLES=None, MAX_MOMENTUM=None):
+        if not MAX_MOMENTUM:
+            MAX_MOMENTUM = environment.get('MAX_MOMENTUM_MEV') * UNITS.MeV
+        if not MOMENTUM_SAMPLES:
+            MOMENTUM_SAMPLES = environment.get('MOMENTUM_SAMPLES')
+
         self.MIN_MOMENTUM = 0
-        self.MAX_MOMENTUM = self.MIN_MOMENTUM + MAX_MOMENTUM
+        self.MAX_MOMENTUM = MAX_MOMENTUM
         self.BOUNDS = (self.MIN_MOMENTUM, self.MAX_MOMENTUM)
         self.MOMENTUM_SAMPLES = MOMENTUM_SAMPLES
 
@@ -197,7 +230,12 @@ class LogSpacedGrid(object):
 
     __slots__ = ('MIN_MOMENTUM', 'MAX_MOMENTUM', 'BOUNDS', 'MOMENTUM_SAMPLES', 'TEMPLATE')
 
-    def __init__(self, MOMENTUM_SAMPLES=50, MAX_MOMENTUM=20 * UNITS.MeV):
+    def __init__(self, MOMENTUM_SAMPLES=None, MAX_MOMENTUM=None):
+        if not MAX_MOMENTUM:
+            MAX_MOMENTUM = environment.get('MAX_MOMENTUM_MEV') * UNITS.MeV
+        if not MOMENTUM_SAMPLES:
+            MOMENTUM_SAMPLES = environment.get('MOMENTUM_SAMPLES')
+
         self.MIN_MOMENTUM = 0
         self.MAX_MOMENTUM = self.MIN_MOMENTUM + MAX_MOMENTUM
         self.BOUNDS = (self.MIN_MOMENTUM, self.MAX_MOMENTUM)
