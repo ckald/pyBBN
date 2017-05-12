@@ -96,11 +96,11 @@ def numerator(particle):
     else:
         integral = linear_interpolation(particle.collision_integral / particle.params.x,
                                         particle.grid.TEMPLATE)
-        return lambda_integrate()(numpy.vectorize(lambda y: (
+        return lambda_integrate()(lambda particle: numpy.vectorize(lambda y: (
             -1. * particle.dof / 2. / numpy.pi**2
             * y**2 * particle.conformal_energy(y)
             * integral(y)
-        ), otypes=[numpy.float_]))
+        ), otypes=[numpy.float_]))(particle)
 
 
 def denominator(particle):

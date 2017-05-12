@@ -8,7 +8,6 @@ import numpy
 import environment
 from common import integrators
 from common.integrators import gauss_laguerre
-from particles import NonEqParticle
 
 
 name = 'intermediate'
@@ -23,10 +22,9 @@ def density(particle):
     """
     density, _ = integrators.integrate_1D(
         lambda p: (
-            particle.distribution(particle.energy(p) / particle.T)
+            particle.equilibrium_distribution_function(particle.energy(p) / particle.T)
             * p**2 * particle.dof / 2. / numpy.pi**2
-        ), (particle.grid.MIN_MOMENTUM,
-            particle.grid.MAX_MOMENTUM)
+        ), (0, 20 * particle.T)
     )
     return density
 
@@ -40,7 +38,7 @@ def energy_density_integrand(p, particle):
     """
     E = particle.energy(p)
     return (
-        particle.distribution(E / particle.T)
+        particle.equilibrium_distribution_function(E / particle.T)
         * p**2 * E
         * particle.dof / 2. / numpy.pi**2
     )
@@ -53,8 +51,7 @@ def energy_density(particle):
     """
     energy_density, _ = integrators.integrate_1D(
         lambda p: energy_density_integrand(p, particle),
-        (particle.grid.MIN_MOMENTUM,
-         particle.grid.MAX_MOMENTUM)
+        (0, 20 * particle.T)
     )
     return energy_density
 
@@ -68,7 +65,7 @@ def pressure_integrand(p, particle):
     """
     E = particle.energy(p)
     return (
-        particle.distribution(E / particle.T)
+        particle.equilibrium_distribution_function(E / particle.T)
         * p**4 / E
         * particle.dof / 6. / numpy.pi**2
     )
@@ -81,23 +78,20 @@ def pressure(particle):
     """
     pressure, _ = integrators.integrate_1D(
         lambda p: pressure_integrand(p, particle),
-        (particle.grid.MIN_MOMENTUM,
-         particle.grid.MAX_MOMENTUM)
+        (0, 20 * particle.T)
     )
     return pressure
 
 
-entropy = NonEqParticle.entropy
-# Entropy computation as in non-equilibrium case turns out to be more accurate
-# def entropy(particle):
-#     """ ## Entropy
+def entropy(particle):
+    """ ## Entropy
 
-#         \begin{equation}
-#             s = \frac{\rho + P}{T}
-#         \end{equation}
-#     """
+        \begin{equation}
+            s = \frac{\rho + P}{T}
+        \end{equation}
+    """
 
-#     return (energy_density(particle) + pressure(particle)) / particle.params.T
+    return (energy_density(particle) + pressure(particle)) / particle.params.T
 
 
 # ## Master equation terms
