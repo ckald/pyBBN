@@ -1,3 +1,4 @@
+import environment
 from common import Params, UNITS
 from particles import Particle, REGIMES
 from library.SM import particles as SMP
@@ -72,11 +73,11 @@ def temperature_regime_switching_test(params):
     electron = Particle(params=params, **SMP.leptons.electron)
     assert electron.regime == REGIMES.INTERMEDIATE
 
-    params.T = 100 * UNITS.MeV
+    params.aT = params.a * electron.mass * environment.get('REGIME_SWITCHING_FACTOR') * 2
     electron.update()
     assert electron.regime == REGIMES.RADIATION
 
-    params.T = 1 * UNITS.keV
+    params.aT = params.a * electron.mass / environment.get('REGIME_SWITCHING_FACTOR') / 2
     electron.update()
     assert electron.regime == REGIMES.DUST
 
