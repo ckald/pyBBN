@@ -96,8 +96,8 @@ class AbstractParticle(PicklableObject):
         self.energy_density = regime.energy_density(self)
         self.pressure = regime.pressure(self)
         self.entropy = regime.entropy(self)
-        self.numerator = regime.numerator(self)
-        self.denominator = regime.denominator(self)
+        self.numerator = lambda: regime.numerator(self)
+        self.denominator = lambda: regime.denominator(self)
 
     @property
     def regime(self):
@@ -217,6 +217,8 @@ class DistributionParticle(AbstractParticle):
             # Particle decouples, have to init the distribution function array for kinetics
             self.init_distribution()
 
+        self.collision_integral = numpy.zeros(self.grid.MOMENTUM_SAMPLES, dtype=numpy.float_)
+
         self.populate_methods()
 
         self.data['params'].append({
@@ -240,7 +242,6 @@ class DistributionParticle(AbstractParticle):
         self.collision_integrals = []
         self.data['collision_integral'].append(self.collision_integral)
         self.data['distribution'].append(self._distribution)
-        self.collision_integral *= 0.
 
     def integrate_collisions(self):
         return numpy.vectorize(self.calculate_collision_integral,

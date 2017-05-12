@@ -248,8 +248,8 @@ class Universe(object):
         denominator = 0
 
         for particle in self.particles:
-            numerator += particle.numerator
-            denominator += particle.denominator
+            numerator += particle.numerator()
+            denominator += particle.denominator()
 
         return numerator, denominator
 
