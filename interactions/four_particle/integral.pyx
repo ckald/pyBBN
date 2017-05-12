@@ -192,6 +192,10 @@ cpdef tuple integrand(
     for i in range(length):
         p1 = p1s[i]
         p2 = p2s[i]
+
+        if p2 > p0 + p1:
+            continue
+
         p[:] = [p0, p1, p2, 0.]
         E[3] = 0.
         for j in range(3):  # [0, 1, 2]
