@@ -51,6 +51,17 @@ def pressure(particle):
     return 1. * energy_density(particle) / 3.
 
 
+def entropy(particle):
+    """ ## Entropy
+
+        \begin{equation}
+            s = \frac{\rho + P}{T} = \frac43 \frac{\rho}{T}
+        \end{equation}
+    """
+
+    return 4. / 3. * energy_density(particle) / particle.params.T
+
+
 # ## Master equation terms
 
 def numerator(particle):

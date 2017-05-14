@@ -1,6 +1,5 @@
-from common import CONST
 from . import non_equilibium_setup, with_setup_args, setup
-from common import UNITS
+from common import CONST, UNITS
 from evolution import Universe
 from particles import Particle
 from library.SM import particles as SMP
@@ -10,7 +9,7 @@ from library.NuMSM import particles as NuP, interactions as NuI
 @with_setup_args(non_equilibium_setup)
 def neutrino_scattering_amplitude_test(params, universe):
 
-    params.update(universe.total_energy_density())
+    params.update(universe.total_energy_density(), universe.total_entropy())
 
     photon, neutrino_e, neutrino_mu = universe.particles
 

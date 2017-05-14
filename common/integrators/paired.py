@@ -1,4 +1,13 @@
 import numpy
+from scipy.integrate import simps
+
+from common.integrators.gauss_legendre import weights, grid
+
+
+def integrate_2D_simpsons(integrands, bounds, grids):
+    integral_1 = simps(simps(integrands[0], grids[0]), grids[1])
+    integral_f = simps(simps(integrands[1], grids[0]), grids[1])
+    return integral_1, integral_f
 
 
 def integrate_2D(integrands, bounds):
@@ -9,13 +18,6 @@ def integrate_2D(integrands, bounds):
     )
 
     return integrals
-
-
-GAUSS_LEGENDRE_ORDER = 30
-points, weights = numpy.polynomial.legendre.leggauss(GAUSS_LEGENDRE_ORDER)
-# alpha, beta = orthopoly.rec_jacobi(GAUSS_LEGENDRE_ORDER, 0, 0)
-# points, weights = orthopoly.lobatto(alpha, beta, -1, 1)
-grid = numpy.meshgrid(points, points)
 
 
 def remap_interval(fs, x, y, bounds):

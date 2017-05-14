@@ -5,7 +5,7 @@ from . import non_equilibium_setup, with_setup_args
 
 @with_setup_args(non_equilibium_setup)
 def free_non_equilibrium_test(params, universe):
-    params.update(universe.total_energy_density())
+    params.update(universe.total_energy_density(), universe.total_entropy())
     eps = 1e-14
     photon, neutrino_e, neutrino_mu = universe.particles
 

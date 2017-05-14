@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 import numpy
 from array import array
+
+import environment
 from common.integrators import paired as paired_integrators
 from interactions.boltzmann import BoltzmannIntegral
 from interactions.four_particle.integral import integrand
@@ -127,9 +129,17 @@ class FourParticleIntegral(BoltzmannIntegral):
         params = self.particle.params
 
         constant = (params.m / params.x)**5 / 64. / numpy.pi**3
-        integral_1, integral_f = paired_integrators.integrate_2D(
-            prepared_integrand,
-            bounds=bounds
-        )
+
+        if environment.get('SIMPSONS_INTEGRATION'):
+            integral_1, integral_f = paired_integrators.integrate_2D_simpsons(
+                prepared_integrand(*numpy.meshgrid(self.grids[0].TEMPLATE, self.grids[1].TEMPLATE)),
+                bounds=bounds,
+                grids=[self.grids[0].TEMPLATE, self.grids[1].TEMPLATE]
+            )
+        else:
+            integral_1, integral_f = paired_integrators.integrate_2D(
+                prepared_integrand,
+                bounds=bounds
+            )
 
         return constant * integral_1, constant * integral_f

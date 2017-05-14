@@ -7,6 +7,7 @@ import time
 import shutil
 from datetime import timedelta
 
+import environment
 from common import UNITS, Params, integrators, parallelization, utils
 
 import kawano
@@ -41,6 +42,7 @@ class Universe(object):
         ['rho', 'MeV^4', UNITS.MeV**4],
         ['N_eff', None, 1],
         ['fraction', None, 1],
+        ['S', 'MeV^3', UNITS.MeV**3]
     ])
 
     def __init__(self, folder=None, params=None, max_log_rate=2):
@@ -54,7 +56,9 @@ class Universe(object):
         self.clock_start = time.time()
         self.log_throttler = utils.Throttler(max_log_rate)
 
-        self.params = Params() if not params else params
+        self.params = params
+        if not self.params:
+            self.params = Params()
 
         self.folder = folder
         if self.folder:
@@ -106,7 +110,7 @@ class Universe(object):
 
         if self.params.rho is None:
             self.update_particles()
-            self.params.update(self.total_energy_density())
+            self.params.update(self.total_energy_density(), self.total_entropy())
         self.save_params()
 
         interrupted = False
@@ -159,11 +163,15 @@ class Universe(object):
         if self.step_monitor:
             self.step_monitor(self)
 
-        self.params.aT +=\
-            integrators.adams_bashforth_correction(fs=fs, h=self.params.dy, order=order)
+        if environment.get('ADAMS_BASHFORTH_TEMPERATURE_CORRECTION'):
+            self.params.aT += integrators.adams_bashforth_correction(fs=fs, h=self.params.h,
+                                                                     order=order)
+        else:
+            self.params.aT += self.fraction * self.params.h
+
         self.params.x += self.params.dx
 
-        self.params.update(self.total_energy_density())
+        self.params.update(self.total_energy_density(), self.total_entropy())
 
         self.log_throttler.update()
 
@@ -208,15 +216,13 @@ class Universe(object):
                     ]
                     for particle, result in parallelization.orders:
                         with (utils.benchmark(lambda: "δf/f ({}) = {}".format(particle.symbol,
-                              particle.collision_integral * self.params.dy
-                              / particle._distribution),
+                              particle.collision_integral * self.params.h / particle._distribution),
                               self.log_throttler.output)):
                             particle.collision_integral = numpy.array(result.get(1000))
             else:
                 for particle in particles:
                     with (utils.benchmark(lambda: "δf/f ({}) = {}".format(particle.symbol,
-                          particle.collision_integral * self.params.dy
-                          / particle._distribution),
+                          particle.collision_integral * self.params.h / particle._distribution),
                           self.log_throttler.output)):
                         particle.collision_integral = particle.integrate_collisions()
 
@@ -242,8 +248,8 @@ class Universe(object):
         denominator = 0
 
         for particle in self.particles:
-            numerator += particle.numerator
-            denominator += particle.denominator
+            numerator += particle.numerator()
+            denominator += particle.denominator()
 
         return numerator, denominator
 
@@ -275,7 +281,11 @@ class Universe(object):
         self.update_distributions()
         # 5\. Calculate temperature equation terms
         numerator, denominator = self.calculate_temperature_terms()
-        self.fraction = self.params.x * numerator / denominator
+
+        if environment.get('LOGARITHMIC_TIMESTEP'):
+            self.fraction = self.params.x * numerator / denominator
+        else:
+            self.fraction = numerator / denominator
 
         return self.fraction
 
@@ -288,7 +298,8 @@ class Universe(object):
             'rho': self.params.rho,
             'N_eff': self.params.N_eff,
             't': self.params.t,
-            'fraction': self.fraction
+            'fraction': self.fraction,
+            'S': self.params.S
         })
 
     def save(self):
@@ -331,13 +342,17 @@ class Universe(object):
         # Print parameters every now and then
         if self.log_throttler.output:
             print ('[{clock}] #{step}\tt = {t:e}s\taT = {aT:e}MeV\tT = {T:e}MeV'
-                   '\tδaT/aT = {daT:e}'
+                   '\tδaT/aT = {daT:e}\tS = {S:e}MeV^3'
                    .format(clock=timedelta(seconds=int(time.time() - self.clock_start)),
                            step=self.step,
                            t=self.params.t / UNITS.s,
                            aT=self.params.aT / UNITS.MeV,
                            T=self.params.T / UNITS.MeV,
-                           daT=self.fraction * self.params.dy / self.params.aT))
+                           daT=self.fraction * self.params.h / self.params.aT,
+                           S=self.params.S / UNITS.MeV**3))
+
+    def total_entropy(self):
+        return sum(particle.entropy for particle in self.particles) * self.params.a**3
 
     def total_energy_density(self):
         return sum(particle.energy_density for particle in self.particles)

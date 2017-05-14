@@ -1,8 +1,11 @@
 import numpy
+from scipy import integrate
 import functools
 
+import environment
 from common import GRID
-from common import orthopoly
+
+from common.integrators import gauss_legendre
 
 
 def euler_correction(y, t, f, h):
@@ -103,11 +106,17 @@ def adams_moulton_solver(y, fs, A, B, h, order=None):
 
 
 def integrate_1D(integrand, bounds):
-    integral = gaussian(
-        integrand,
-        bounds[0], bounds[1]
-    )
-    error = numpy.nan
+    if not environment.get('FIXED_ORDER_1D_QUADRATURE'):
+        integral, error = integrate.quad(
+            integrand,
+            bounds[0], bounds[1]
+        )
+    else:
+        integral = gaussian(
+            integrand,
+            bounds[0], bounds[1]
+        )
+        error = numpy.nan
 
     return integral, error
 
@@ -123,13 +132,6 @@ def integrate_2D(integrand, bounds):
     return integral, error
 
 
-GAUSS_LEGENDRE_ORDER = 30
-points, weights = numpy.polynomial.legendre.leggauss(GAUSS_LEGENDRE_ORDER)
-# alpha, beta = orthopoly.rec_jacobi(GAUSS_LEGENDRE_ORDER, 0, 0)
-# points, weights = orthopoly.lobatto(alpha, beta, -1, 1)
-grid = numpy.meshgrid(points, points)
-
-
 def gaussian(f, a, b):
 
     sub = (b - a) / 2.
@@ -138,7 +140,7 @@ def gaussian(f, a, b):
     if sub == 0:
         return 0.
 
-    return sub * numpy.dot(f(sub * points + add), weights)
+    return sub * numpy.dot(f(sub * gauss_legendre.points + add), gauss_legendre.weights)
 
 
 def remap_interval(f, x, y, bounds):
@@ -159,9 +161,10 @@ def remap_interval(f, x, y, bounds):
 
 def double_gaussian(f, a, b, g, h):
 
-    x, y = grid
+    x, y = gauss_legendre.grid
     mesh = remap_interval(f, x, y, bounds=(a, b, g, h))
-    integral = numpy.dot(numpy.transpose(weights), numpy.dot(mesh, weights))
+    integral = numpy.dot(numpy.transpose(gauss_legendre.weights),
+                         numpy.dot(mesh, gauss_legendre.weights))
 
     return integral
 

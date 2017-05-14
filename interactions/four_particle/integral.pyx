@@ -2,13 +2,13 @@
 # cython: boundscheck=False
 # cython: nonecheck=False
 # cython: cdivision=True
+# cython: initializedcheck=False
 
 
 import math
 import numpy
 cimport numpy
 cimport cython
-from libc.stdlib cimport malloc, free
 
 cdef extern from "math.h" nogil:
     double sqrt(double)
@@ -20,8 +20,6 @@ import array
 
 numpy.import_array()
 
-
-ctypedef double (*f_type)(vector[reaction_t], double[4])
 
 cdef struct M_t:
     int[4] order
@@ -162,7 +160,7 @@ cdef double in_bounds(double p[4], double E[4], double m[4]) nogil:
     return (E[3] >= m[3] and q1 <= q2 + q3 + q4 and q3 <= q1 + q2 + q4)
 
 
-cpdef integrand(
+cpdef tuple integrand(
     double p0, vector[double] p1s, vector[double] p2s, int length,
     vector[reaction_t] reaction, vector[M_t] Ms
 ):
@@ -179,11 +177,13 @@ cpdef integrand(
         double m[4]
         int sides[4]
 
+        M_t M
+
         double[4] f
 
         double p1, p2
-        numpy.ndarray[double] integrands_1 = numpy.zeros([length])
-        numpy.ndarray[double] integrands_f = numpy.zeros([length])
+        array.array[double] integrands_1 = array.clone(array.array('d', []), length, zero=True)
+        array.array[double] integrands_f = array.clone(array.array('d', []), length, zero=True)
 
     for i in range(4):  # [0, 1, 2, 3]
         sides[i] = reaction[i].side
@@ -192,6 +192,10 @@ cpdef integrand(
     for i in range(length):
         p1 = p1s[i]
         p2 = p2s[i]
+
+        if p2 > p0 + p1:
+            continue
+
         p[:] = [p0, p1, p2, 0.]
         E[3] = 0.
         for j in range(3):  # [0, 1, 2]
@@ -246,8 +250,8 @@ cpdef integrand(
                     p[k], reaction[k].specie.m, reaction[k].specie.eta
                 )
 
-        integrands_1[i] = temp * F_1(reaction, f)
-        integrands_f[i] = temp * F_f(reaction, f)
+        integrands_1.data.as_doubles[i] = temp * F_1(reaction, f)
+        integrands_f.data.as_doubles[i] = temp * F_f(reaction, f)
 
     return integrands_1, integrands_f
 

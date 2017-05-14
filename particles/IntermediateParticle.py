@@ -3,8 +3,11 @@ For intermediate regime equilibrium particles, density, energy density and press
 are obtained through integration of distribution function
 """
 
-from common import integrators
 import numpy
+
+import environment
+from common import integrators
+from common.integrators import gauss_laguerre
 
 
 name = 'intermediate'
@@ -19,11 +22,9 @@ def density(particle):
     """
     density, _ = integrators.integrate_1D(
         lambda p: (
-            particle.equilibrium_distribution_function(
-                particle.energy(p) / particle.T
-            ) * p**2 * particle.dof / 2. / numpy.pi**2
-        ), (particle.grid.MIN_MOMENTUM / particle.params.a,
-            particle.grid.MAX_MOMENTUM / particle.params.a)
+            particle.equilibrium_distribution_function(particle.energy(p) / particle.T)
+            * p**2 * particle.dof / 2. / numpy.pi**2
+        ), (0, 20 * particle.T)
     )
     return density
 
@@ -50,8 +51,7 @@ def energy_density(particle):
     """
     energy_density, _ = integrators.integrate_1D(
         lambda p: energy_density_integrand(p, particle),
-        (particle.grid.MIN_MOMENTUM / particle.params.a,
-         particle.grid.MAX_MOMENTUM / particle.params.a)
+        (0, 20 * particle.T)
     )
     return energy_density
 
@@ -78,10 +78,20 @@ def pressure(particle):
     """
     pressure, _ = integrators.integrate_1D(
         lambda p: pressure_integrand(p, particle),
-        (particle.grid.MIN_MOMENTUM / particle.params.a,
-         particle.grid.MAX_MOMENTUM / particle.params.a)
+        (0, 20 * particle.T)
     )
     return pressure
+
+
+def entropy(particle):
+    """ ## Entropy
+
+        \begin{equation}
+            s = \frac{\rho + P}{T}
+        \end{equation}
+    """
+
+    return (energy_density(particle) + pressure(particle)) / particle.params.T
 
 
 # ## Master equation terms
@@ -92,8 +102,8 @@ def numerator(particle):
         \end{equation}
     """
     return (particle.mass**2 * particle.params.x
-            / particle.params.m**2 / particle.aT
-            * I(particle, 2))
+            / particle.params.m**2 / particle.params.aT
+            * Int(particle, 2))
 
 
 def denominator(particle):
@@ -101,19 +111,30 @@ def denominator(particle):
             \frac{I(4) + M_N^2 I(2)}{(a T)^2}
         \end{equation}
     """
-    return (I(particle, 4) + particle.conformal_mass**2 * I(particle)) / particle.aT**2
+    return (Int(particle, 4)
+            + particle.conformal_mass**2 * Int(particle, 2)) / particle.params.aT**2
 
 
-def I(particle, y_power=2):
-    """ \begin{equation}
-            I(n) = \frac{g}{2 \pi^2} \int y^n dy \frac{ e^{-\frac{E_N(y)}{a T}} } \
-            { \left(e^{-\frac{E_N(y)}{a T}} + \eta \right)^2 }
-        \end{equation}
-    """
-    return particle.dof / 2. / numpy.pi**2 * integrators.integrate_1D(
-        lambda y: (
-            y**y_power * numpy.exp(-particle.conformal_energy(y) / particle.aT)
-            / (numpy.exp(-particle.conformal_energy(y) / particle.aT) + particle.eta) ** 2
-        ),
-        (particle.grid.MIN_MOMENTUM, particle.grid.MAX_MOMENTUM)
-    )[0]
+def Int(particle, y_power=2):
+    if environment.get('LAGUERRE_GAUSS_FOR_MASSIVE_EQUILIBRIUM_PARTICLES'):
+        aT = particle.params.aT
+        mat = particle.conformal_mass / aT
+
+        laguerre = (
+            particle.dof / 2. / numpy.pi**2 * aT**(y_power+1) * numpy.exp(-mat)
+            * gauss_laguerre.integrate_1D(lambda eps: (
+                (eps+mat) * (eps * (eps + 2. * mat))**((y_power-1.)/2.)
+                / (numpy.exp(-eps-mat) + particle.eta)**2
+            ))[0]
+        )
+        return laguerre
+    else:
+        legendre = particle.dof / 2. / numpy.pi**2 * integrators.integrate_1D(
+            lambda y: (
+                y**y_power * numpy.exp(-particle.conformal_energy(y) / particle.params.aT)
+                / (numpy.exp(-particle.conformal_energy(y) / particle.params.aT) + particle.eta)**2
+            ),
+            (particle.grid.MIN_MOMENTUM, particle.grid.MAX_MOMENTUM)
+        )[0]
+
+        return legendre
