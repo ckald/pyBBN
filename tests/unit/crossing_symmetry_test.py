@@ -41,10 +41,10 @@ def three_particle_integral_test(params):
 
     params.update(universe.total_energy_density())
 
-    print universe.interactions
+    print(universe.interactions)
     assert len(universe.interactions) == 2
-    print universe.interactions[0].integrals
-    print universe.interactions[1].integrals
+    print(universe.interactions[0].integrals)
+    print(universe.interactions[1].integrals)
     assert len(universe.interactions[0].integrals) == 2
     assert len(universe.interactions[1].integrals) == 3
     integral = universe.interactions[0].integrals[0]

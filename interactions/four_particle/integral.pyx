@@ -134,7 +134,7 @@ cdef double F_1(vector[reaction_t] reaction, double[4] f) nogil:
 
 
 
-cpdef double conformal_energy(double y, double mass=0) nogil:
+cpdef inline double conformal_energy(double y, double mass=0) nogil:
     """ Conformal energy of the particle in comoving coordinates with evolving mass term
 
         \begin{equation}
@@ -456,7 +456,7 @@ cdef extern from "math.h" nogil:
 
 cdef int exponential_interpolation = True
 
-cdef double energy(double p, double m) nogil:
+cdef inline double energy(double p, double m) nogil:
     return sqrt(p**2 + m**2)
 
 

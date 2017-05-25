@@ -151,7 +151,7 @@ class CrossGeneratingInteraction(Interaction):
                                       " for Majorana particles")
 
         # if any(specie.majorana for specie in itertools.chain.from_iterable(self.particles)):
-        #     print "There is Majorana in da house!"
+        #     print "There is Majorana!"
         #     conjugated_antiparticles = (
         #         tuple(not antip if not specie.majorana else False
         #               for specie, antip in zip(self.particles[0], self.antiparticles[0])),

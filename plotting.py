@@ -38,16 +38,16 @@ def monitor_datafile(datafolder, timer=1):
             try:
                 data = pandas.read_pickle(datafile)
                 if len(data) < last_datalen:
-                    print "Datafile is shorter than before, clearing the output"
+                    print("Datafile is shorter than before, clearing the output")
                     plt.close('all')
                     plotting = Plotting()
                     last_datalen = 0
 
                 last_datalen = plot_backlog(data, last_datalen)
-                print "Plotting done at", mtime
+                print("Plotting done at", mtime)
 
             except Exception as e:
-                print e
+                print(e)
             last_mtime = mtime
         time.sleep(timer)
 

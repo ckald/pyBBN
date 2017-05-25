@@ -99,10 +99,10 @@ class Universe(object):
         """
 
         for particle in self.particles:
-            print particle
+            print(particle)
 
         for interaction in self.interactions:
-            print interaction
+            print(interaction)
 
         # TODO: test if changing updating particles beforehand changes the computed time
         if init_time:
@@ -121,10 +121,10 @@ class Universe(object):
                 self.save()
                 self.step += 1
                 if self.folder and self.step % self.export_freq == 0:
-                    with open(os.path.join(self.folder, "evolution.txt"), "w") as f:
+                    with open(os.path.join(self.folder, "evolution.txt"), "wb") as f:
                         self.data.savetxt(f)
             except KeyboardInterrupt:
-                print "Keyboard interrupt!"
+                print("Keyboard interrupt!")
                 interrupted = True
                 break
 
@@ -136,20 +136,20 @@ class Universe(object):
 
     def export(self):
         for particle in self.particles:
-            print particle
+            print(particle)
 
         if self.folder:
             if self.kawano:
 
                 self.kawano_log.close()
-                print kawano.run(self.folder)
+                print(kawano.run(self.folder))
 
-                with open(os.path.join(self.folder, "kawano.txt"), "w") as f:
+                with open(os.path.join(self.folder, "kawano.txt"), "wb") as f:
                     self.kawano_data.savetxt(f)
 
-            print "Execution log saved to file {}".format(self.logfile)
+            print("Execution log saved to file {}".format(self.logfile))
 
-            with open(os.path.join(self.folder, "evolution.txt"), "w") as f:
+            with open(os.path.join(self.folder, "evolution.txt"), "wb") as f:
                 self.data.savetxt(f)
 
     def make_step(self):
@@ -329,7 +329,7 @@ class Universe(object):
             self.kawano_data.append(row)
 
             if self.log_throttler.output:
-                print "KAWANO", self.kawano_data.row_repr(-1, names=True)
+                print("KAWANO", self.kawano_data.row_repr(-1, names=True))
             self.kawano_log.write(self.kawano_data.row_repr(-1) + "\n")
 
     def init_log(self, folder=''):
@@ -341,15 +341,15 @@ class Universe(object):
 
         # Print parameters every now and then
         if self.log_throttler.output:
-            print ('[{clock}] #{step}\tt = {t:e}s\taT = {aT:e}MeV\tT = {T:e}MeV'
-                   '\tδaT/aT = {daT:e}\tS = {S:e}MeV^3'
-                   .format(clock=timedelta(seconds=int(time.time() - self.clock_start)),
-                           step=self.step,
-                           t=self.params.t / UNITS.s,
-                           aT=self.params.aT / UNITS.MeV,
-                           T=self.params.T / UNITS.MeV,
-                           daT=self.fraction * self.params.h / self.params.aT,
-                           S=self.params.S / UNITS.MeV**3))
+            print('[{clock}] #{step}\tt = {t:e}s\taT = {aT:e}MeV\tT = {T:e}MeV'
+                  '\tδaT/aT = {daT:e}\tS = {S:e}MeV^3'
+                  .format(clock=timedelta(seconds=int(time.time() - self.clock_start)),
+                          step=self.step,
+                          t=self.params.t / UNITS.s,
+                          aT=self.params.aT / UNITS.MeV,
+                          T=self.params.T / UNITS.MeV,
+                          daT=self.fraction * self.params.h / self.params.aT,
+                          S=self.params.S / UNITS.MeV**3))
 
     def total_entropy(self):
         return sum(particle.entropy for particle in self.particles) * self.params.a**3

@@ -13,11 +13,6 @@ import environment
 
 class UNITS(object):
 
-    __slots__ = ('use_numericalunits',
-                 'eV', 'keV', 'MeV', 'GeV', 'TeV',
-                 's', 'kg', 'm', 'N',
-                 'K9', 'g_cm3')
-
     """ ## Units
         As we use natural units in the project, all units from `numericalunits` except energy units
         are useless. Here some useful units are defined in terms of `GeV`s. """
@@ -44,8 +39,6 @@ UNITS.reset_units()
 
 
 class CONST(object):
-
-    __slots__ = ('G', 'M_p', 'G_F', 'sin_theta_w_2', 'g_R', 'g_L', 'f_pi', 'rate_normalization')
 
     """ ### Physical constants """
 
@@ -199,8 +192,6 @@ and errors).
 
 class LinearSpacedGrid(object):
 
-    __slots__ = ('MIN_MOMENTUM', 'MAX_MOMENTUM', 'BOUNDS', 'MOMENTUM_SAMPLES', 'TEMPLATE')
-
     def __init__(self, MOMENTUM_SAMPLES=None, MAX_MOMENTUM=None):
         if not MAX_MOMENTUM:
             MAX_MOMENTUM = environment.get('MAX_MOMENTUM_MEV') * UNITS.MeV
@@ -228,8 +219,6 @@ class LinearSpacedGrid(object):
 
 class LogSpacedGrid(object):
 
-    __slots__ = ('MIN_MOMENTUM', 'MAX_MOMENTUM', 'BOUNDS', 'MOMENTUM_SAMPLES', 'TEMPLATE')
-
     def __init__(self, MOMENTUM_SAMPLES=None, MAX_MOMENTUM=None):
         if not MAX_MOMENTUM:
             MAX_MOMENTUM = environment.get('MAX_MOMENTUM_MEV') * UNITS.MeV
@@ -254,8 +243,6 @@ class LogSpacedGrid(object):
 
 
 class HeuristicGrid(object):
-
-    __slots__ = ('MIN_MOMENTUM', 'MAX_MOMENTUM', 'BOUNDS', 'MOMENTUM_SAMPLES', 'TEMPLATE')
 
     def __init__(self, M, tau, aT=1*UNITS.MeV, b=20, c=5):
         H = 0.5 / UNITS.s  # such that at T=1 <=> t=1

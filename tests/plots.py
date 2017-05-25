@@ -1,6 +1,5 @@
 import os
 import csv
-from itertools import izip
 
 import numpy
 import matplotlib
@@ -93,7 +92,7 @@ def spectrum(universe, particle):
     with open(os.path.join(universe.folder, 'spectrum_{}.dat'.format(particle.name)), 'w') as f:
         writer = csv.writer(f, delimiter='\t')
         writer.writerow(['# y, MeV', 'f'])
-        for y, f in izip(particle.grid.TEMPLATE, particle._distribution):
+        for y, f in zip(particle.grid.TEMPLATE, particle._distribution):
             writer.writerow([y / UNITS.MeV, f])
 
 
@@ -101,7 +100,7 @@ def spectrum_distortion(universe, particle):
     with open(os.path.join(universe.folder, 'distortion_{}.dat'.format(particle.name)), 'w') as f:
         writer = csv.writer(f, delimiter='\t')
         writer.writerow(['# y, MeV', 'y^2 (f-f_eq)'])
-        for y, f in izip(particle.grid.TEMPLATE, particle._distribution):
+        for y, f in zip(particle.grid.TEMPLATE, particle._distribution):
             writer.writerow([
                 y / UNITS.MeV,
                 y**2 * (f - particle.equilibrium_distribution(y))
@@ -114,7 +113,7 @@ def energy_density_deviation(universe, particle):
               'energy_deviation_{}.dat'.format(particle.name)), 'w') as f:
         writer = csv.writer(f, delimiter='\t')
         writer.writerow(['# a', 'rho/rho_eq - 1'])
-        for a, T, rho in izip(universe.data['a'], universe.data['T'],
+        for a, T, rho in zip(universe.data['a'], universe.data['T'],
                               particle.data['energy_density'][1:]):
             writer.writerow([
                 a,

@@ -1,4 +1,4 @@
-from itertools import izip
+from six.moves import zip
 from multiprocessing import Pool, Pipe, Process, cpu_count
 
 
@@ -61,7 +61,7 @@ def spawn(f):
 
 def parmap(f, X, workers=worker_count):
     pipe = [Pipe() for x in X]
-    processes = [Process(target=spawn(f), args=(c, x)) for x, (p, c) in izip(X, pipe)]
+    processes = [Process(target=spawn(f), args=(c, x)) for x, (p, c) in zip(X, pipe)]
     numProcesses = len(processes)
     processNum = 0
     outputList = []

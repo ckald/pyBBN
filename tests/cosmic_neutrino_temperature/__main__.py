@@ -52,8 +52,8 @@ universe.init_kawano(electron=electron, neutrino=neutrino_e)
 universe.evolve(T_final)
 
 
-print """
+print ("""
     Cosmic photon background temperature is {:e} times bigger than cosmic neutrinos temperature.
     Relative error is {:e} %
     """.format(universe.params.aT / UNITS.MeV,
-               (universe.params.aT / UNITS.MeV - 1.40102) / 1.40102 * 100)
+               (universe.params.aT / UNITS.MeV - 1.40102) / 1.40102 * 100))
