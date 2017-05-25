@@ -16,10 +16,10 @@ def init_distribution_test(params):
 
     neutrino.update()
 
-    print neutrino._distribution - numpy.vectorize(neutrino.distribution)(neutrino.grid.TEMPLATE)
-
-    assert all(photon._distribution == numpy.vectorize(photon.distribution)(photon.grid.TEMPLATE))
-    assert all(neutrino._distribution == numpy.vectorize(neutrino.distribution)(neutrino.grid.TEMPLATE))
+    assert numpy.allclose(photon._distribution,
+                          numpy.vectorize(photon.distribution)(photon.grid.TEMPLATE))
+    assert numpy.allclose(neutrino._distribution,
+                          numpy.vectorize(neutrino.distribution)(neutrino.grid.TEMPLATE))
 
 
 @with_setup_args(setup)

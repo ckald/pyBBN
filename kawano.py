@@ -35,7 +35,7 @@ def run(data_folder, input="s4.dat", output="kawano_output.dat"):
         "INPUT": os.path.join(data_folder, input),
         "OUTPUT": os.path.join(data_folder, output)
     })
-    p.communicate(os.linesep.join([
+    p.communicate(bytes(os.linesep.join([
         # ...
         "",
         # Run
@@ -52,7 +52,7 @@ def run(data_folder, input="s4.dat", output="kawano_output.dat"):
         "1",
         # ...
         "", "", "", ""
-    ]))
+    ]), 'utf-8'))
     with open(os.path.join(data_folder, output), "r") as kawano_output:
         return kawano_output.read()
 
@@ -273,4 +273,4 @@ if __name__ == "__main__":
     parser.add_argument('--input', default='s4.dat')
     parser.add_argument('--output', default='kawano_output.dat')
     args = parser.parse_args()
-    print run(args.folder, input=args.input, output=args.output)
+    print(run(args.folder, input=args.input, output=args.output))

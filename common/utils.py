@@ -6,7 +6,7 @@ import contextlib
 import numpy
 import traceback
 import functools
-from collections import deque, Iterable
+from collections import deque
 
 
 class PicklableObject(object):
@@ -35,13 +35,13 @@ class Logger(object):
     """ Convenient double logger that redirects `stdout` and save the output also to the file """
     def __init__(self, filename):
         self.terminal = sys.stdout
-        self.log = codecs.open(filename, "w", encoding="utf8")
+        self.log = codecs.open(filename, "wb", encoding="utf8")
 
     def write(self, message, terminal=True, log=True):
         if terminal:
             self.terminal.write(message)
         if log:
-            self.log.write(message.decode('utf8'))
+            self.log.write(message)
 
     def __del__(self):
         if sys:
@@ -152,7 +152,7 @@ def trace_unhandled_exceptions(func):
         try:
             return func(*args, **kwargs)
         except Exception:
-            print 'Exception in ' + func.__name__
+            print('Exception in ' + func.__name__)
             traceback.print_exc()
     return wrapped_func
 

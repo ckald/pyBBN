@@ -90,6 +90,9 @@ class AbstractParticle(PicklableObject):
     def __repr__(self):
         return self.symbol
 
+    def __gt__(self, other):
+        return self.name > other.name
+
     def populate_methods(self):
         regime = self.regime
         self.density = regime.density(self)
@@ -227,7 +230,7 @@ class DistributionParticle(AbstractParticle):
         })
 
         if force_print or self.regime != oldregime or self.in_equilibrium != oldeq:
-            print self
+            print(self)
 
     def update_distribution(self):
         """ Apply collision integral to modify the distribution function """

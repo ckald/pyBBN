@@ -38,6 +38,6 @@ if __name__ == '__main__':
                     if data:
                         observables.append("{}\t{}".format(data, os.path.join(dirpath, folder)))
                 except Exception, e:
-                    print e
+                    print(e)
 
-    print "\n".join(observables)
+    print("\n".join(observables))

@@ -15,7 +15,7 @@ def grid_iterator(dimension=4, grid=GRID):
 
     dim = dimension - 1
     while dim >= 0:
-        # print value
+        # print(value)
         value[dim] += 1
         if value[dim] >= grid.MOMENTUM_SAMPLES:
             while dim >= 0 and value[dim] >= grid.MOMENTUM_SAMPLES:
@@ -32,7 +32,7 @@ with open(os.path.join(cwd, 'grid.json'), 'w') as f:
     f.write(grid_json)
 
 
-print "Computing D1..."
+print("Computing D1...")
 d1_table = numpy.ndarray(shape=(GRID.MOMENTUM_SAMPLES, GRID.MOMENTUM_SAMPLES,
                                 GRID.MOMENTUM_SAMPLES, GRID.MOMENTUM_SAMPLES))
 
@@ -41,9 +41,9 @@ for (i, j, k, l), momenta in grid_iterator():
 
 with open(os.path.join(cwd, 'D1.json'), 'w') as f:
     f.write(json.dumps(d1_table.tolist()))
-print "Done"
+print("Done")
 
-print "Computing D2..."
+print("Computing D2...")
 d2_table = numpy.ndarray(shape=(GRID.MOMENTUM_SAMPLES, GRID.MOMENTUM_SAMPLES,
                                 GRID.MOMENTUM_SAMPLES, GRID.MOMENTUM_SAMPLES))
 
@@ -52,9 +52,9 @@ for (i, j, k, l), momenta in grid_iterator():
 
 with open(os.path.join(cwd, 'D2.json'), 'w') as f:
     f.write(json.dumps(d2_table.tolist()))
-print "Done"
+print("Done")
 
-print "Computing D3..."
+print("Computing D3...")
 d3_table = numpy.ndarray(shape=(GRID.MOMENTUM_SAMPLES, GRID.MOMENTUM_SAMPLES,
                                 GRID.MOMENTUM_SAMPLES, GRID.MOMENTUM_SAMPLES))
 
@@ -63,4 +63,4 @@ for (i, j, k, l), momenta in grid_iterator():
 
 with open(os.path.join(cwd, 'D3.json'), 'w') as f:
     f.write(json.dumps(d3_table.tolist()))
-print "Done"
+print("Done")

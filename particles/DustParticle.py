@@ -2,7 +2,7 @@
 Non-relativistic simplifications of density, energy density and pressure calculations
 """
 import numpy
-import IntermediateParticle
+from particles import IntermediateParticle
 
 
 name = 'dust'
