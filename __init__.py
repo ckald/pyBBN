@@ -15,7 +15,7 @@
      * Mac OS X and [Homebrew](https://brew.sh/): `brew install scipy`
 
 ```
-    sudo pip install -r requirements.txt
+    sudo pip3 install -r requirements.txt
 ```
 
  1. Compile modified KAWANO nucleosynthesis code and run unit tests
@@ -33,10 +33,10 @@
 To run some script in the context of the code, one should temporarily alter the `PYTHONPATH`\
 environment variable:
 
-    PYTHONPATH=. python some_script.py
+    PYTHONPATH=. python3 some_script.py
 
 For example, to run the cosmic neutrino background temperature test:
 
-    PYTHONPATH=. python tests/cosmic_neutrino_temperature
+    PYTHONPATH=. python3 tests/cosmic_neutrino_temperature
 
 """

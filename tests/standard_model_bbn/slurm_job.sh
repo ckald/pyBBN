@@ -17,7 +17,7 @@
 
 source ../../../env/bin/activate
 cd ../../
-PYTHONPATH=. PARALLELIZE=10 python ~-/__main__.py
+PYTHONPATH=. PARALLELIZE=10 python3 ~-/__main__.py
 
 # For future reference
 #SBATCH --job-name=

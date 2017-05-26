@@ -3,7 +3,7 @@
     To build an extension, run
 
         cd <extension_folder>
-        python setup.py build_ext --inplace
+        python3 setup.py build_ext --inplace
 """
 
 from distutils.core import setup
