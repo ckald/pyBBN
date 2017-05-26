@@ -206,7 +206,7 @@ class Universe(object):
 
         particles = [particle for particle in self.particles if particle.collision_integrals]
 
-        with utils.printoptions(precision=2, linewidth=100):
+        with utils.printoptions(precision=3, linewidth=100):
             if self.PARALLELIZE:
                 for particle in particles:
                     parallelization.orders = [
