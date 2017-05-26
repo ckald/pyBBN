@@ -1,6 +1,10 @@
 all: clean compile test
 
-compile:
+compile: compile3
+
+compile2:
+	cd interactions/four_particle && python2 setup.py build_ext --inplace
+compile3:
 	cd interactions/four_particle && python3 setup.py build_ext --inplace
 
 
