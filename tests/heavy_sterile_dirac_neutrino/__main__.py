@@ -14,6 +14,8 @@ http://arxiv.org/pdf/hep-ph/0002223v2.pdf
 """
 
 import os
+os.environ['MAX_MOMENTUM_MEV'] = '30'
+
 import argparse
 from collections import defaultdict
 
@@ -26,9 +28,9 @@ from common import UNITS, Params
 
 parser = argparse.ArgumentParser(description='Run simulation for given mass and mixing angle')
 parser.add_argument('--mass', default='33.9')
-parser.add_argument('--theta', default='0.0486')
+parser.add_argument('--theta', default='0.0436444')
 parser.add_argument('--tau', default='0.3')
-parser.add_argument('--Tdec', default='5')
+parser.add_argument('--Tdec', default='50')
 parser.add_argument('--comment', default='')
 args = parser.parse_args()
 
@@ -44,7 +46,7 @@ T_initial = max(50. * UNITS.MeV, T_dec)
 T_interaction_freezeout = 0.05 * UNITS.MeV
 T_final = 0.0008 * UNITS.MeV
 params = Params(T=T_initial,
-                dy=0.05)
+                dy=0.003125)
 
 universe = Universe(params=params, folder=folder)
 
@@ -57,9 +59,9 @@ neutrino_tau = Particle(**SMP.leptons.neutrino_tau)
 sterile = Particle(**NuP.dirac_sterile_neutrino(mass))
 
 sterile.decoupling_temperature = T_initial
-neutrino_e.decoupling_temperature = 5 * UNITS.MeV
-neutrino_mu.decoupling_temperature = 5 * UNITS.MeV
-neutrino_tau.decoupling_temperature = 5 * UNITS.MeV
+neutrino_e.decoupling_temperature = 10 * UNITS.MeV
+neutrino_mu.decoupling_temperature = 10 * UNITS.MeV
+neutrino_tau.decoupling_temperature = 10 * UNITS.MeV
 
 universe.add_particles([
     photon,
@@ -88,9 +90,35 @@ universe.interactions += (
 
 universe.init_kawano(electron=electron, neutrino=neutrino_e)
 
+
+def step_monitor(universe):
+    # explanation of what is inside the file
+    if universe.step == 1:
+        with open(os.path.join(folder, "sterile_densities.txt"), 'a') as f:
+            f.write('## a     rho_sterile     n_sterile' + '\n')
+        with open(os.path.join(folder, "sterile_distribution.txt"), 'a') as f:
+            f.write('# First line is a grid of y; Starting from second line: first number is a, second is temperature, next is set of numbers is corresponding to f(y) on the grid' + '\n')
+            f.write('## a     T     ' + '\t'.join([
+                '{:e}'.format(x)
+                for x in
+                sterile.grid.TEMPLATE / UNITS.MeV
+            ]) + '\n')
+    # Output the density and energy density of sterile neutrino
+    if universe.step % 10 == 0:
+        with open(os.path.join(folder,"sterile_densities.txt"), 'a') as f:
+            f.write('{:e}'.format(universe.params.a) + '\t'+'{:e}'.format(sterile.energy_density/(UNITS.MeV)**4) + '\t')
+            f.write('{:e}'.format(sterile.density/(UNITS.MeV)**3) + '\n')
+        with open(os.path.join(folder, "sterile_distribution.txt"), 'a') as f:
+            f.write('{:e}'.format(universe.params.a) + '\t'+'{:e}'.format(universe.params.T/UNITS.MeV) + '\t')
+            f.write('\t'.join([
+                '{:e}'.format(x)
+                for x in sterile._distribution
+            ]) + '\n')
+
+universe.step_monitor = step_monitor
+
 universe.evolve(T_interaction_freezeout, export=False)
 universe.interactions = tuple()
-universe.params.dy = 0.0125
 universe.evolve(T_final)
 
 
@@ -104,3 +132,4 @@ universe.evolve(T_final)
 <img src="figure_10.svg" width=100% />
 <img src="figure_10_full.svg" width=100% />
 """
+

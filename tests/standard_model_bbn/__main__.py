@@ -12,21 +12,19 @@ This test checks that in the universe filled with photons, electrons and neutrin
 [Log file](log.txt)
 [Distribution functions](distributions.txt)
 [Collision integrals](collision_integrals.txt)
-
+[Energy density of neutrinos](rho_nu.txt)
 
 """
 
 import os
-
 from particles import Particle
 from library.SM import particles as SMP, interactions as SMI
 from evolution import Universe
 from common import UNITS, Params
 
-
 folder = os.path.join(os.path.split(__file__)[0], 'output')
 
-T_interaction_freezeout = 0.05 * UNITS.MeV
+T_interaction_freezeout = 0.001 * UNITS.MeV
 T_final = 0.0008 * UNITS.MeV
 params = Params(T=10. * UNITS.MeV,
 				dy=0.003125)
@@ -35,9 +33,16 @@ universe = Universe(params=params, folder=folder)
 
 photon = Particle(**SMP.photon)
 electron = Particle(**SMP.leptons.electron)
-neutrino_e = Particle(**SMP.leptons.neutrino_e)
-neutrino_mu = Particle(**SMP.leptons.neutrino_mu)
+
+# Set linearly spaced grid for neutrinos (such that 3, 5 and 7 MeV are in the grid)
+from common import LinearSpacedGrid
+linear_grid = LinearSpacedGrid(MOMENTUM_SAMPLES=51, MAX_MOMENTUM=20*UNITS.MeV)
+
+neutrino_e = Particle(**SMP.leptons.neutrino_e, **{'grid': linear_grid})
+neutrino_mu = Particle(**SMP.leptons.neutrino_mu, **{'grid':linear_grid})
 neutrino_mu.dof = 4
+neutrino_e.decoupling_temperature=10 * UNITS.MeV
+neutrino_mu.decoupling_temperature=10 * UNITS.MeV
 
 universe.add_particles([
 	photon,
@@ -47,8 +52,7 @@ universe.add_particles([
 ])
 
 universe.interactions += (
-	SMI.neutrino_interactions(leptons=[electron],
-							  neutrinos=[neutrino_e, neutrino_mu])
+	SMI.neutrino_interactions(leptons=[electron], neutrinos=[neutrino_e, neutrino_mu])
 )
 
 universe.init_kawano(electron=electron, neutrino=neutrino_e)
@@ -72,6 +76,10 @@ def step_monitor(universe):
 					for x in
 					particle.grid.TEMPLATE / UNITS.MeV
 				]) + '\n')
+			with open(os.path.join(folder, particle.name.replace(' ', '_') + ".rho.txt"), 'a') as f3:
+				f3.write('## a     T     aT    rho_nu' + '\n')
+		with open(os.path.join(folder, "rho_nu.txt"), 'a') as f2:
+                	f2.write('# a    rho_nu' + '\n')
 
 	# Output the distribution function and collision integrals distortion to file every 10 steps, first column is temperature
 	if universe.step % 10 == 0:
@@ -82,6 +90,12 @@ def step_monitor(universe):
 					'{:e}'.format(x)
 					for x in particle._distribution
 				]) + '\n')
+			with open(os.path.join(folder, particle.name.replace(' ', '_') + ".rho.txt"), 'a') as f3:
+				f3.write('{:e}'.format(universe.params.a) + '\t' + '{:e}'.format(universe.params.T/UNITS.MeV) + '\t' + '{:e}'.format(universe.params.aT/UNITS.MeV) + '\t' + '{:e}'.format(particle.energy_density/(UNITS.MeV)**4) + '\n')
+		with open(os.path.join(folder, "rho_nu.txt"), 'a') as f2:
+                	f2.write('{:e}'.format(universe.params.a) + '\t' +\
+                    	'{:e}'.format(sum(particle.energy_density/(UNITS.MeV)**4 for particle in [neutrino_e, neutrino_mu]))\
+                     	+ '\n')
 
 
 
@@ -91,10 +105,7 @@ universe.evolve(T_interaction_freezeout, export=False)
 universe.interactions = tuple()
 universe.evolve(T_final)
 
-for particle in [neutrino_e, neutrino_mu]:
-        with open(os.path.join(folder, particle.name.replace(' ', '_') + ".collision_integrals.txt"), 'a') as f1:
-                 particle.data['collision_integral'].savetxt(f1)
-
+"""
 ### Plots for comparison with articles
 
 ### JCAP10(2012)014, Figure 9
