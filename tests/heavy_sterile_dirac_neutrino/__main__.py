@@ -17,27 +17,27 @@ import os
 os.environ['MAX_MOMENTUM_MEV'] = '30'
 
 import argparse
+import numpy
 from collections import defaultdict
 
 from particles import Particle
 from library.SM import particles as SMP, interactions as SMI
 from library.NuMSM import particles as NuP, interactions as NuI
 from evolution import Universe
-from common import UNITS, Params
+from common import UNITS, Params, CONST
 
 
 parser = argparse.ArgumentParser(description='Run simulation for given mass and mixing angle')
 parser.add_argument('--mass', default='33.9')
-parser.add_argument('--theta', default='0.0436444')
 parser.add_argument('--tau', default='0.3')
-parser.add_argument('--Tdec', default='50')
 parser.add_argument('--comment', default='')
 args = parser.parse_args()
 
 mass = float(args.mass) * UNITS.MeV
-theta = float(args.theta)
 lifetime = float(args.tau) * UNITS.s
-T_dec = float(args.Tdec) * UNITS.MeV
+theta = 0.5 * numpy.arcsin(numpy.sqrt(4*5.7*10**(-4)/float(args.tau)))
+T_dec = (10 + numpy.sqrt(CONST.M_p/(float(args.tau)))) / (UNITS.s)**(0.5)
+print('theta=',theta, ' Tdec=', T_dec/ UNITS.MeV)
 
 
 folder = os.path.join(os.path.split(__file__)[0], "output", args.tau)
