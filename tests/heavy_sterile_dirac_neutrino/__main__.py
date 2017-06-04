@@ -35,15 +35,16 @@ args = parser.parse_args()
 
 mass = float(args.mass) * UNITS.MeV
 lifetime = float(args.tau) * UNITS.s
-theta = 0.5 * numpy.arcsin(numpy.sqrt(4*5.7*10**(-4)/float(args.tau)))
-T_dec = (10 + numpy.sqrt(CONST.M_p/(float(args.tau)))) / (UNITS.s)**(0.5)
+#theta = 0.5 * numpy.arcsin(numpy.sqrt(4*5.7*10**(-4)/float(args.tau)))
+theta = 0.031
+T_dec = 30 * UNITS.MeV
 print('theta=',theta, ' Tdec=', T_dec/ UNITS.MeV)
 
 
 folder = os.path.join(os.path.split(__file__)[0], "output", args.tau)
 
 T_initial = max(50. * UNITS.MeV, T_dec)
-T_interaction_freezeout = 0.05 * UNITS.MeV
+T_interaction_freezeout = 0.08 * UNITS.MeV
 T_final = 0.0008 * UNITS.MeV
 params = Params(T=T_initial,
                 dy=0.003125)
@@ -106,7 +107,7 @@ def step_monitor(universe):
     # Output the density and energy density of sterile neutrino
     if universe.step % 10 == 0:
         with open(os.path.join(folder,"sterile_densities.txt"), 'a') as f:
-            f.write('{:e}'.format(universe.params.a) + '\t'+'{:e}'.format(sterile.energy_density/(UNITS.MeV)**4) + '\t')
+            f.write('{:e}'.format(universe.params.a) + '\t' + '{:e}'.format(universe.params.T/UNITS.MeV) + '\t'+'{:e}'.format(universe.params.aT/UNITS.MeV) + '\t'+'{:e}'.format(sterile.energy_density/(UNITS.MeV)**4) + '\t')
             f.write('{:e}'.format(sterile.density/(UNITS.MeV)**3) + '\n')
         with open(os.path.join(folder, "sterile_distribution.txt"), 'a') as f:
             f.write('{:e}'.format(universe.params.a) + '\t'+'{:e}'.format(universe.params.T/UNITS.MeV) + '\t')
