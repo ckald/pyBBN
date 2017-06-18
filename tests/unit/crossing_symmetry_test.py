@@ -1,6 +1,5 @@
-from common import CONST
 from . import non_equilibium_setup, with_setup_args, setup
-from common import UNITS
+from common import CONST, UNITS
 from evolution import Universe
 from particles import Particle
 from library.SM import particles as SMP
@@ -10,7 +9,7 @@ from library.NuMSM import particles as NuP, interactions as NuI
 @with_setup_args(non_equilibium_setup)
 def neutrino_scattering_amplitude_test(params, universe):
 
-    params.update(universe.total_energy_density())
+    params.update(universe.total_energy_density(), universe.total_entropy())
 
     photon, neutrino_e, neutrino_mu = universe.particles
 
@@ -36,16 +35,16 @@ def three_particle_integral_test(params):
     pion_interactions = NuI.sterile_pion_neutral(theta=1e-3, sterile=sterile,
                                                  active=neutrino_e, pion=neutral_pion)
 
-    universe = Universe(params=params, plotting=False)
+    universe = Universe(params=params)
     universe.add_particles([photon, neutrino_e, sterile, neutral_pion])
     universe.interactions += pion_interactions
 
     params.update(universe.total_energy_density())
 
-    print universe.interactions
+    print(universe.interactions)
     assert len(universe.interactions) == 2
-    print universe.interactions[0].integrals
-    print universe.interactions[1].integrals
+    print(universe.interactions[0].integrals)
+    print(universe.interactions[1].integrals)
     assert len(universe.interactions[0].integrals) == 2
     assert len(universe.interactions[1].integrals) == 3
     integral = universe.interactions[0].integrals[0]

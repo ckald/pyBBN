@@ -2,7 +2,12 @@
 *.sublime-*
 docs/*
 build/*
-logs/*.txt
+tests/*/output/*
+particles/interpolation/*.c
+particles/interpolation/*.cpp
+interactions/four_particle/*.c
+interactions/four_particle/*.cpp
 *.o
 *.so
 .coverage
+.cache

@@ -17,14 +17,13 @@ This test checks that in the universe filled with photons, electrons and neutrin
 
 import os
 
-from plotting import RadiationParticleMonitor
 from particles import Particle
 from library.SM import particles as SMP, interactions as SMI
 from evolution import Universe
 from common import UNITS, Params
 
 
-folder = os.path.split(__file__)[0]
+folder = os.path.join(os.path.split(__file__)[0], 'output')
 
 T_kawano = 10 * UNITS.MeV
 T_simple = 0.05 * UNITS.MeV
@@ -64,13 +63,6 @@ universe.interactions += (
 
 universe.init_kawano(electron=electron, neutrino=neutrino_e)
 
-if universe.graphics:
-    universe.graphics.monitor([
-        (neutrino_e, RadiationParticleMonitor),
-        (neutrino_mu_tau, RadiationParticleMonitor)
-    ])
-
-
 universe.evolve(T_simple, export=False)
 universe.interactions = tuple()
 universe.evolve(T_final)
@@ -85,6 +77,3 @@ universe.evolve(T_final)
 <img src="figure_10.svg" width=100% />
 <img src="figure_10_full.svg" width=100% />
 """
-
-from tests.plots import articles_comparison_plots
-articles_comparison_plots(universe, [neutrino_e, neutrino_mu_tau])

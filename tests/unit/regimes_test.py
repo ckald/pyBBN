@@ -1,3 +1,4 @@
+import environment
 from common import Params, UNITS
 from particles import Particle, REGIMES
 from library.SM import particles as SMP
@@ -45,8 +46,6 @@ def dust_regime_test(params):
     proton = Particle(params=params, **SMP.hadrons.proton)
     assert proton.in_equilibrium, "Proton must always stay in equilibrium"
     assert not proton.decoupling_temperature, "Proton can't decouple"
-    assert proton.regime == REGIMES.DUST, \
-        "Proton non-relativistic at {} MeV".format(params.T/UNITS.MeV)
     assert proton.mass != 0, "Proton is massive"
     assert proton.eta == 1, "Proton is a fermion, it's eta must be equal to 1"
     assert proton.numerator() != 0, "Massive particles contribute to the numerator"
@@ -72,11 +71,11 @@ def temperature_regime_switching_test(params):
     electron = Particle(params=params, **SMP.leptons.electron)
     assert electron.regime == REGIMES.INTERMEDIATE
 
-    params.T = 100 * UNITS.MeV
+    params.aT = params.a * electron.mass * environment.get('REGIME_SWITCHING_FACTOR') * 2
     electron.update()
     assert electron.regime == REGIMES.RADIATION
 
-    params.T = 1 * UNITS.keV
+    params.aT = params.a * electron.mass / environment.get('REGIME_SWITCHING_FACTOR') / 2
     electron.update()
     assert electron.regime == REGIMES.DUST
 
@@ -86,6 +85,7 @@ def statistics_consistency_test(params):
 
     photon = Particle(params=params, **SMP.photon)
     neutrino = Particle(params=params, **SMP.leptons.neutrino_e)
+    neutrino.update()
     assert 7. / 8. - neutrino.energy_density / photon.energy_density < eps
 
 
@@ -123,8 +123,8 @@ def homeostasis_test(params):
     energy_density = neutrino.energy_density
     density = neutrino.density
     pressure = neutrino.pressure
-    numerator = neutrino.numerator
-    denominator = neutrino.denominator
+    numerator = neutrino.numerator()
+    denominator = neutrino.denominator()
 
     params.T /= 2
     params.aT *= 7
@@ -133,22 +133,23 @@ def homeostasis_test(params):
     assert neutrino.energy_density == energy_density \
         and neutrino.density == density \
         and neutrino.pressure == pressure \
-        and neutrino.numerator == numerator \
-        and neutrino.denominator == denominator, "Particle state should be persistent"
+        and neutrino.numerator() == numerator \
+        and neutrino.denominator() == denominator, "Particle state should be persistent"
 
 
 @with_setup_args(setup)
 def smooth_decoupling_test(params):
 
     neutrino = Particle(params=params, **SMP.leptons.neutrino_e)
+    neutrino.update()
 
     energy_density = REGIMES.RADIATION.energy_density(neutrino)
     density = REGIMES.RADIATION.density(neutrino)
     pressure = REGIMES.RADIATION.pressure(neutrino)
     numerator = REGIMES.RADIATION.numerator(neutrino)
     denominator = REGIMES.RADIATION.denominator(neutrino)
-    assert neutrino.energy_density() - energy_density < eps
-    assert neutrino.density() - density < eps
-    assert neutrino.pressure() - pressure < eps
+    assert neutrino.energy_density - energy_density < eps
+    assert neutrino.density - density < eps
+    assert neutrino.pressure - pressure < eps
     assert neutrino.numerator() - numerator < eps
     assert neutrino.denominator() - denominator < eps

@@ -4,100 +4,18 @@ from common import integrators
 from common.utils import PicklableObject
 
 
-class DistributionFunctional(object):
-    """ ## $\mathcal{F}(f_\alpha)$ functional """
-
-    """ ### Naive form
-
-        \begin{align}
-            \mathcal{F} &= (1 \pm f_1)(1 \pm f_2) f_3 f_4 - f_1 f_2 (1 \pm f_3) (1 \pm f_4)
-            \\\\ &= \mathcal{F}_B + \mathcal{F}_A
-        \end{align}
-    """
-
-    def F_A(self, p, skip_index=None):
-        """
-        Forward reaction distribution functional term
-
-        \begin{equation}
-            \mathcal{F}_A = - f_1 f_2 (1 \pm f_3) (1 \pm f_4)
-        \end{equation}
-
-        :param skip_index: Particle to skip in the expression
-        """
-        temp = -1.
-
-        for i, particle in enumerate(self.reaction):
-            if skip_index is None or i != skip_index:
-                if particle.side == -1:
-                    temp *= particle.specie.distribution(p[i])
-                else:
-                    temp *= 1. - particle.specie.eta * particle.specie.distribution(p[i])
-
-        return temp
-
-    def F_B(self, p, skip_index=None):
-        """
-        Backward reaction distribution functional term
-
-        \begin{equation}
-            \mathcal{F}_B = f_3 f_4 (1 \pm f_1) (1 \pm f_2)
-        \end{equation}
-
-        :param skip_index: Particle to skip in the expression
-        """
-        temp = 1.
-
-        for i, particle in enumerate(self.reaction):
-            if skip_index is None or i != skip_index:
-                if particle.side == 1:
-                    temp *= particle.specie.distribution(p[i])
-                else:
-                    temp *= 1. - particle.specie.eta * particle.specie.distribution(p[i])
-
-        return temp
-
-    """
-    ### Linearized in $\, f_1$ form
-
-    \begin{equation}
-        \mathcal{F}(f) = f_3 f_4 (1 \pm f_1) (1 \pm f_2) - f_1 f_2 (1 \pm f_3) (1 \pm f_4)
-    \end{equation}
-
-    \begin{equation}
-        \mathcal{F}(f) = f_1 (\mp f_3 f_4 (1 \pm f_2) - f_2 (1 \pm f_3) (1 \pm f_4)) \
-        + f_3 f_4 (1 \pm f_2)
-    \end{equation}
-
-    \begin{equation}
-        \mathcal{F}(f) = \mathcal{F}_B^{(1)} + f_1 (\mathcal{F}_A^{(1)} \pm_1 \mathcal{F}_B^{(1)})
-    \end{equation}
-
-    $^{(i)}$ in $\mathcal{F}^{(i)}$ means that the distribution function $f_i$ was omitted in the\
-    corresponding expression. $\pm_j$ represents the $\eta$ value of the particle $j$.
-    """
-    def F_f(self, p):
-        """ Variable part of the distribution functional """
-        return (
-            self.F_A(p=p, skip_index=0) - self.particle.eta * self.F_B(p=p, skip_index=0)
-        )
-
-    def F_1(self, p):
-        """ Constant part of the distribution functional """
-        return self.F_B(p=p, skip_index=0)
-
-
-class BoltzmannIntegral(PicklableObject, DistributionFunctional):
+class BoltzmannIntegral(PicklableObject):
 
     """ ## Integral
         Representation of the concrete collision integral for a specific particle \
         `Integral.reaction[0]` """
 
     _saveable_fields = [
-        'particle', 'reaction', 'decoupling_temperature', 'constant', 'Ms', 'grids',
+        'particle', 'reaction', 'sides', 'decoupling_temperature', 'constant', 'Ms', 'grids',
     ]
 
     reaction = None  # All particles involved
+    sides = None
 
     """ ### Crossed particles in the integral
 
@@ -140,7 +58,7 @@ class BoltzmannIntegral(PicklableObject, DistributionFunctional):
         if not self.Ms:
             self.Ms = []
 
-        self.integrand = numpy.vectorize(self.integrand, otypes=[numpy.float_])
+        self.sides = tuple([item.side for item in self.reaction])
 
     def __str__(self):
         """ String-like representation of the integral. Corresponds to the first particle """
@@ -162,31 +80,12 @@ class BoltzmannIntegral(PicklableObject, DistributionFunctional):
         """
         raise NotImplementedError()
 
-    def calculate_kinematics(self, p):
-        """ Helper procedure that caches conformal energies and masses of the reaction """
-        particle_count = len(self.reaction)
-        p = (p + [0.]*particle_count)[:particle_count]
-        E = []
-        m = []
-        for i, particle in enumerate(self.reaction):
-            E.append(particle.specie.conformal_energy(p[i]))
-            m.append(particle.specie.conformal_mass)
-
-        """ Parameters of one particle can be inferred from the energy conservation law
-            \begin{equation}E_3 = -s_3 \sum_{i \neq 3} s_i E_i \end{equation} """
-        E[particle_count-1] = self.reaction[particle_count-1].side \
-            * sum([-self.reaction[i].side * E[i] for i in range(particle_count-1)])
-        p[particle_count-1] = numpy.sqrt(numpy.abs(E[particle_count-1]**2 - m[particle_count-1]**2))
-        return p, E, m
-
     def rates(self):
-        def forward_integral(p):
-            return numpy.vectorize(lambda p0: p0**2 / (2 * numpy.pi)**3
-                                   * self.integrate(p0, self.F_A)[0])(p)
+        forward_integral = numpy.vectorize(lambda p0: p0**2 / (2 * numpy.pi)**3
+                                           * self.integrate(p0, self.F_A)[0])
 
-        def backward_integral(p):
-            return numpy.vectorize(lambda p0: p0**2 / (2 * numpy.pi)**3
-                                   * self.integrate(p0, self.F_B)[0])(p)
+        backward_integral = numpy.vectorize(lambda p0: p0**2 / (2 * numpy.pi)**3
+                                            * self.integrate(p0, self.F_B)[0])
 
         grid = self.particle.grid
 
@@ -224,32 +123,3 @@ class BoltzmannIntegral(PicklableObject, DistributionFunctional):
             points.append((p1, self.upper_bound(p0, p1),))
 
         return points
-
-    def lower_bound(self, p0, p1):
-        """ Find the first `self.particle.grid` point in the integration region """
-
-        index = 0
-        while (index < self.particle.grid.MOMENTUM_SAMPLES
-               and not self.in_bounds([p0, p1, self.particle.grid.TEMPLATE[index]])):
-            index += 1
-
-        if index == self.particle.grid.MOMENTUM_SAMPLES:
-            return self.particle.grid.MIN_MOMENTUM
-
-        return self.particle.grid.TEMPLATE[index]
-
-    def upper_bound(self, p0, p1):
-        """ Find the last `self.particle.grid` point in the integration region """
-
-        index = int(
-            (min(p0 + p1, self.particle.grid.MAX_MOMENTUM) - self.particle.grid.MIN_MOMENTUM)
-            / self.particle.grid.MOMENTUM_STEP
-        )
-
-        while index >= 0 and not self.in_bounds([p0, p1, self.particle.grid.TEMPLATE[index]]):
-            index -= 1
-
-        if index == -1:
-            return self.particle.grid.MIN_MOMENTUM
-
-        return self.particle.grid.TEMPLATE[index]

@@ -27,21 +27,25 @@ from common import UNITS, Params, utils
 parser = argparse.ArgumentParser(description='Run simulation for given mass and mixing angle')
 parser.add_argument('--mass', required=True)
 parser.add_argument('--theta', required=True)
+parser.add_argument('--Tdec', default='100')
 parser.add_argument('--comment', default='')
 args = parser.parse_args()
 
 mass = float(args.mass) * UNITS.MeV
 theta = float(args.theta)
+Tdec = float(args.Tdec) * UNITS.MeV
 
 folder = utils.ensure_dir(os.path.split(__file__)[0],
-                          "mass={:e}_theta={:e}".format(mass / UNITS.MeV, theta)
+                          'output',
+                          "mass={:e}_theta={:e}_Tdec={:e}".format(mass / UNITS.MeV, theta, Tdec / UNITS.MeV)
                           + args.comment)
 
 
-T_initial = 100. * UNITS.MeV
+T_initial = Tdec
+T_interaction_freezeout = 0.005 * UNITS.MeV
 T_final = 0.0008 * UNITS.MeV
 params = Params(T=T_initial,
-                dy=0.025)
+                dy=0.003125)
 
 universe = Universe(params=params, folder=folder)
 
@@ -85,17 +89,8 @@ universe.interactions += (
 
 universe.init_kawano(electron=electron, neutrino=neutrino_e)
 
-if universe.graphics:
-    from plotting import RadiationParticleMonitor, MassiveParticleMonitor, AbundanceMonitor
-    universe.graphics.monitor([
-        (neutrino_e, RadiationParticleMonitor),
-        (neutrino_mu, RadiationParticleMonitor),
-        (neutrino_tau, RadiationParticleMonitor),
-        (sterile, MassiveParticleMonitor),
-        (sterile, AbundanceMonitor)
-    ])
-
-
+universe.evolve(T_interaction_freezeout, export=False)
+universe.interactions = tuple()
 universe.evolve(T_final)
 
 """
@@ -108,7 +103,3 @@ universe.evolve(T_final)
 <img src="figure_10.svg" width=100% />
 <img src="figure_10_full.svg" width=100% />
 """
-
-if universe.graphics:
-    from tests.plots import articles_comparison_plots
-    articles_comparison_plots(universe, [neutrino_e, neutrino_mu, neutrino_tau, sterile])

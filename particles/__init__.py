@@ -9,12 +9,13 @@ from __future__ import division
 
 import numpy
 
+import environment
 from common import GRID, UNITS, statistics as STATISTICS
-from common.integrators import adams_moulton_solver
-from common.utils import PicklableObject, trace_unhandled_exceptions
+from common.integrators import adams_moulton_solver, implicit_euler
+from common.utils import PicklableObject, trace_unhandled_exceptions, Dynamic2DArray, DynamicRecArray
 
 from particles import DustParticle, RadiationParticle, IntermediateParticle, NonEqParticle
-from KAWANO.interpolation import dist_interp_values as distribution_interpolation
+from interactions.four_particle.integral import distribution_interpolation
 
 
 class REGIMES(dict):
@@ -64,35 +65,42 @@ class AbstractParticle(PicklableObject):
 
         self.collision_integrals = []
         self.data = {
-            'distribution': [self._distribution],
-            'collision_integral': [],
-            'density': [],
-            'energy_density': []
+            'distribution': Dynamic2DArray(self.grid.TEMPLATE),
+            'collision_integral': Dynamic2DArray(self.grid.TEMPLATE),
+            'params': DynamicRecArray([
+                ['density', 'MeV^3', UNITS.MeV**3],
+                ['energy_density', 'MeV^4', UNITS.MeV**4]
+            ])
         }
+        # self.data['distribution'].append(self._distribution)
 
         if self.params:
             self.set_params(self.params)
 
     def __str__(self):
         """ String-like representation of particle species it's regime and parameters """
-        return "%s (%s, %s)\nn = %s, rho = %s\n" % (
+        return "%s (%s, %s)\nn = %s MeV^3, rho = %s MeV^4\n" % (
             self.name,
             "eq" if self.in_equilibrium else "non-eq",
             self.regime.name,
-            self.density / UNITS.eV**3,
-            self.energy_density / UNITS.eV**4
+            self.density / UNITS.MeV**3,
+            self.energy_density / UNITS.MeV**4
         ) + ("-" * 80)
 
     def __repr__(self):
         return self.symbol
+
+    def __gt__(self, other):
+        return self.name > other.name
 
     def populate_methods(self):
         regime = self.regime
         self.density = regime.density(self)
         self.energy_density = regime.energy_density(self)
         self.pressure = regime.pressure(self)
-        self.numerator = regime.numerator(self)
-        self.denominator = regime.denominator(self)
+        self.entropy = regime.entropy(self)
+        self.numerator = lambda: regime.numerator(self)
+        self.denominator = lambda: regime.denominator(self)
 
     @property
     def regime(self):
@@ -108,7 +116,7 @@ class AbstractParticle(PicklableObject):
         `REGIMES.INTERMEDIATE`. When $T$ drops down even further to the value $ M / \gamma $,\
         particle species can be treated as `REGIMES.DUST` with a Boltzmann distribution function.
         """
-        regime_factor = 1e1
+        regime_factor = environment.get('REGIME_SWITCHING_FACTOR')
 
         if not self.in_equilibrium:
             return REGIMES.NONEQ
@@ -134,6 +142,7 @@ class AbstractParticle(PicklableObject):
                 E = \sqrt{p^2 + M^2}
             \end{equation}
         """
+
         if self.mass > 0:
             return numpy.sqrt(p**2 + self.mass**2)
         else:
@@ -200,32 +209,36 @@ class DistributionParticle(AbstractParticle):
         oldregime = self.regime
         oldeq = self.in_equilibrium
 
-        self.equilibrium_distribution_function = self.statistics
-
         # Update particle internal params only while it is in equilibrium
         if self.in_equilibrium or self.in_equilibrium != oldeq:
             # Particle species has temperature only when it is in equilibrium
-            self.T = self.params.T
             self.aT = self.params.aT
+
+        self.T = self.aT / self.params.a
 
         if self.in_equilibrium != oldeq and not self.in_equilibrium:
             # Particle decouples, have to init the distribution function array for kinetics
             self.init_distribution()
 
+        self.collision_integral = numpy.zeros(self.grid.MOMENTUM_SAMPLES, dtype=numpy.float_)
+
         self.populate_methods()
 
-        self.data['density'].append(self.density)
-        self.data['energy_density'].append(self.energy_density)
+        self.data['params'].append({
+            'density': self.density,
+            'energy_density': self.energy_density
+        })
 
         if force_print or self.regime != oldregime or self.in_equilibrium != oldeq:
-            print self
+            print(self)
 
     def update_distribution(self):
         """ Apply collision integral to modify the distribution function """
         if self.in_equilibrium:
             return
 
-        self._distribution += self.collision_integral * self.params.dy
+        self._distribution += self.collision_integral * self.params.h
+        assert all(self._distribution >= 0)
         self._distribution = numpy.maximum(self._distribution, 0)
 
         # Clear collision integrands for the next computation step
@@ -248,30 +261,30 @@ class DistributionParticle(AbstractParticle):
         Bs = []
 
         for integral in self.collision_integrals:
-            As.append(integral.integrate(p0, integral.F_1))
-            Bs.append(integral.integrate(p0, integral.F_f))
+            A, B = integral.integrate(p0)
+            As.append(A)
+            Bs.append(B)
 
         order = min(len(self.data['collision_integral']) + 1, 5)
-
         index = numpy.searchsorted(self.grid.TEMPLATE, p0)
-        fs = [i[index] for i in self.data['collision_integral'][-order+1:]]
+        fs = []
+        if order > 1:
+            fs = list(self.data['collision_integral'][-order+1:, index])
 
-        H = self.params.H
+        A = sum(As) / self.params.H
+        B = sum(Bs) / self.params.H
+        if not environment.get('LOGARITHMIC_TIMESTEP'):
+            A /= self.params.x
+            B /= self.params.x
 
-        if p0 == 0:
-            A = sum(As)
-            B = sum(Bs)
-            feq = self.equilibrium_distribution(p0)
-            print "{} p0 = {:.3e} A = {:.3e} t = {:.3e} d = {:.3e}".format(
-                self.symbol, p0 / UNITS.MeV, A * UNITS.s, -1. / B / UNITS.s, -(A/B) / feq
-            )
+        if environment.get('ADAMS_MOULTON_DISTRIBUTION_CORRECTION'):
+            prediction = adams_moulton_solver(y=self.distribution(p0), fs=fs,
+                                              A=A, B=B, h=self.params.h, order=order)
+        else:
+            prediction = implicit_euler(y=self.distribution(p0), t=None,
+                                        A=A, B=B, h=self.params.h)
 
-        prediction = adams_moulton_solver(y=self.distribution(p0), fs=fs,
-                                          A=sum(As) / H, B=sum(Bs) / H,
-                                          h=self.params.dy, order=order)
-
-        total_integral = (prediction - self.distribution(p0)) / self.params.dy
-
+        total_integral = (prediction - self.distribution(p0)) / self.params.h
         return total_integral
 
     def distribution(self, p):
@@ -293,49 +306,20 @@ class DistributionParticle(AbstractParticle):
         """
 
         p = abs(p)
-        if self.in_equilibrium or p > self.grid.MAX_MOMENTUM:
+        if self.in_equilibrium:
             return self.equilibrium_distribution(p)
 
+        if p > self.grid.MAX_MOMENTUM:
+            # Match the latest known value of the distribution function to equilibrium
+            # asymptotic behavior
+            return self._distribution[-1] * numpy.exp((self.grid.MAX_MOMENTUM - p) / self.aT)
+
         return distribution_interpolation(
-            p,
-            self.grid.TEMPLATE,
-            self._distribution
+            self.grid.TEMPLATE, self.grid.MOMENTUM_SAMPLES,
+            self._distribution,
+            p, self.conformal_mass,
+            self.eta
         )
-
-        index = numpy.searchsorted(self.grid.TEMPLATE, p)
-
-        if index >= self.grid.MOMENTUM_SAMPLES - 1:
-            return self._distribution[-1]
-
-        if p == self.grid.TEMPLATE[index]:
-            return self._distribution[index]
-
-        # Determine the closest grid points
-
-        i_low = index
-        p_low = self.grid.TEMPLATE[i_low]
-
-        i_high = index + 1
-        p_high = self.grid.TEMPLATE[i_high]
-
-        """ ### Exponential interpolation """
-        E_p = self.conformal_energy(p)
-        E_low = self.conformal_energy(p_low)
-        E_high = self.conformal_energy(p_high)
-
-        """
-        \begin{equation}
-            g = \frac{ (E_p - E_{low}) g_{high} + (E_{high} - E_p) g_{low} }\
-            { (E_{high} - E_{low}) }
-        \end{equation}
-        """
-
-        g_high = numpy.log(1 / self._distribution[i_high] - 1)
-        g_low = numpy.log(1 / self._distribution[i_low] - 1)
-
-        g = ((E_p - E_low) * g_high + (E_high - E_p) * g_low) / (E_high - E_low)
-
-        return 1. / (numpy.exp(g) + self.eta)
 
     def equilibrium_distribution(self, y=None, aT=None):
 
@@ -352,165 +336,6 @@ class DistributionParticle(AbstractParticle):
     def init_distribution(self):
         self._distribution = self.equilibrium_distribution()
         return self._distribution
-
-
-class DensityParticle(AbstractParticle):
-
-    """ ## Particle
-        Master-class for particle species. Realized as finite state machine that switches to\
-        different regime when temperature becomes comparable to the particle mass or drops below\
-        particle `decoupling_temperature`
-    """
-
-    _saveable_fields = [
-        'name', 'symbol',
-        'mass', 'decoupling_temperature',
-        'dof', 'eta', 'equilibrium_distribution_function',
-        'data',
-        '_density'
-        'collision_integral', 'collision_integrals',
-        'T', 'aT', 'params',
-        'mu'
-    ]
-
-    _defaults = {
-        'mass': 0 * UNITS.eV,
-        'decoupling_temperature': 0 * UNITS.eV,
-        'name': 'Particle',
-        'symbol': 'p',
-        'dof': 2,
-        'statistics': STATISTICS.FERMION,
-        'params': None,
-        '_density': 0,
-        'mu': 0
-    }
-
-    def __init__(self, **kwargs):
-
-        settings = dict(self._defaults)
-        settings.update(kwargs)
-
-        for key, value in settings.items():
-            setattr(self, key, value)
-
-        self.eta = 1. if self.statistics == STATISTICS.FERMION else -1.
-        self.equilibrium_distribution_function = self.statistics
-
-        self.collision_integrals = []
-        self.data = {
-            'collision_integral': [],
-            'density': [],
-            'energy_density': []
-        }
-
-        if self.params:
-            self.set_params(self.params)
-
-    def __str__(self):
-        """ String-like representation of particle species it's regime and parameters """
-        return "%s (%s, %s)\nn = %s, rho = %s\n" % (
-            self.name,
-            "eq" if self.in_equilibrium else "non-eq",
-            self.regime.name,
-            self.density / UNITS.eV**3,
-            self.energy_density / UNITS.eV**4
-        ) + ("-" * 80)
-
-    def __repr__(self):
-        return self.symbol
-
-    def set_params(self, params):
-        """ Set internal parameters using arguments or default values """
-        self.params = params
-        self.T = params.T
-        self.aT = params.aT
-
-        self.update()
-
-    def update(self, force_print=False):
-        """ Update the particle parameters according to the new state of the system """
-        oldregime = self.regime
-        oldeq = self.in_equilibrium
-
-        # Update particle internal params only while it is in equilibrium
-        if self.in_equilibrium or self.in_equilibrium != oldeq:
-            # Particle species has temperature only when it is in equilibrium
-            self.T = self.params.T
-            self.aT = self.params.aT
-
-        if self.in_equilibrium != oldeq and not self.in_equilibrium:
-            # Particle decouples, have to init the distribution function array for kinetics
-            self.init_density()
-
-        self.data['density'].append(self.density)
-        self.data['energy_density'].append(self.energy_density)
-
-        if force_print or self.regime != oldregime or self.in_equilibrium != oldeq:
-            print self
-
-    def update_density(self):
-        """ Apply collision integral to modify the distribution function """
-        if self.in_equilibrium:
-            return
-
-        self._density += self.collision_integral * self.params.dy
-        self._density = numpy.maximum(self._density, 0)
-        self.compute_chemical_potential()
-
-        # Clear collision integrands for the next computation step
-        self.collision_integrals = []
-        self.data['collision_integral'].append(self.collision_integral)
-        self.data['density'].append(self._density)
-
-    def compute_chemical_potential(self):
-        self.mu = self._density / (self.dof * (self.mass * self.T / (2 * numpy.pi)) ** 1.5)
-        return self.mu
-
-    def integrate_collisions(self):
-        return numpy.vectorize(self.calculate_collision_integral,
-                               otypes=[numpy.float_])(self.grid.TEMPLATE)
-
-    @trace_unhandled_exceptions
-    def calculate_collision_integral(self):
-        """ ### Particle collisions integration """
-
-        if not self.collision_integrals:
-            return 0
-
-        As = []
-        Bs = []
-
-        for integral in self.collision_integrals:
-            As.append(integral.integrate(integral.F_1))
-            Bs.append(integral.integrate(integral.F_f))
-
-        order = min(len(self.data['collision_integral']) + 1, 5)
-
-        fs = self.data['collision_integral'][-order+1:]
-
-        H = self.params.H
-
-        prediction = adams_moulton_solver(y=self._density, fs=fs,
-                                          A=sum(As) / H, B=sum(Bs) / H,
-                                          h=self.params.dy, order=order)
-
-        total_integral = (prediction - self._density) / self.params.dy
-
-        return total_integral
-
-    def equilibrium_density(self):
-        """ Equilibrium density that corresponds to the particle internal temperature """
-        return IntermediateParticle.density(self)
-
-    def distribution(self, p):
-        return self.mu * numpy.exp(-p**2 / (2 * self.conformal_mass * self.aT))
-
-    def init_density(self):
-        self._density = self.equilibrium_density()
-        return self._density
-
-    def density(self):
-        return self._density
 
 
 Particle = DistributionParticle

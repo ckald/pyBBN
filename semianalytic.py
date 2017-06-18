@@ -8,23 +8,25 @@ def step_monitor(universe):
     from copy import deepcopy
 
     if not hasattr(universe, 'neutron_decoupling_parameters') and len(universe.kawano_data):
-        datarow = universe.kawano_data.tail(1)
-        rates = datarow.values[0][-6:]
+        print([field[0] for field in universe.kawano_data.data.dtype[-6:]])
+        rates = universe.kawano_data.data[-1][
+            [field[0] for field in universe.kawano_data.data.dtype[-6:]]
+        ]
         neutron_equilibration = (sum(rates[0::2]) / sum(rates[1::2]))
         if neutron_equilibration > 10 or neutron_equilibration < 0.1:
             universe.neutron_decoupling_parameters = deepcopy(universe.params)
-            print "Neutron decoupled at T = {:e} MeV".format(universe.params.T / UNITS.MeV)
+            print("Neutron decoupled at T = {:e} MeV".format(universe.params.T / UNITS.MeV))
 
     if not hasattr(universe, 'deuterium_generation_parameters') and universe.params.T <= T_BBN:
-            print "Deuterium generation"
+            print("Deuterium generation")
             universe.deuterium_generation_parameters = deepcopy(universe.params)
 
     if (hasattr(universe, 'neutron_decoupling_parameters')
             and hasattr(universe, 'deuterium_generation_parameters')
             and not hasattr(universe, 'BBN_estimates')):
 
-        print '_' * 80
-        print 'BBN estimates'
+        print('_' * 80)
+        print('BBN estimates')
 
         nparams = universe.neutron_decoupling_parameters
         dparams = universe.deuterium_generation_parameters
@@ -46,13 +48,13 @@ def step_monitor(universe):
             helium_fraction
         )
 
-        print "Neutron decoupling: T = {:e} MeV, t = {:e} s, N_eff = {:e}".format(
+        print("Neutron decoupling: T = {:e} MeV, t = {:e} s, N_eff = {:e}".format(
             nparams.T / UNITS.MeV, nparams.t / UNITS.s, nparams.N_eff
-        )
-        print "Deuterium generation: T = {:e} MeV, t = {:e} s, N_eff = {:e}".format(
+        ))
+        print("Deuterium generation: T = {:e} MeV, t = {:e} s, N_eff = {:e}".format(
             dparams.T / UNITS.MeV, dparams.t / UNITS.s, dparams.N_eff
-        )
-        print "Neutron decay time: {:e} s".format(neutron_decay_time / UNITS.s)
-        print "Neutron-to-proton ratio: {:e}".format(neutron_to_proton)
-        print "Helium fraction: {:e}".format(helium_fraction)
-        print '_' * 80
+        ))
+        print("Neutron decay time: {:e} s".format(neutron_decay_time / UNITS.s))
+        print("Neutron-to-proton ratio: {:e}".format(neutron_to_proton))
+        print("Helium fraction: {:e}".format(helium_fraction))
+        print('_' * 80)

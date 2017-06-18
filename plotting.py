@@ -38,16 +38,16 @@ def monitor_datafile(datafolder, timer=1):
             try:
                 data = pandas.read_pickle(datafile)
                 if len(data) < last_datalen:
-                    print "Datafile is shorter than before, clearing the output"
+                    print("Datafile is shorter than before, clearing the output")
                     plt.close('all')
                     plotting = Plotting()
                     last_datalen = 0
 
                 last_datalen = plot_backlog(data, last_datalen)
-                print "Plotting done at", mtime
+                print("Plotting done at", mtime)
 
             except Exception as e:
-                print e
+                print(e)
             last_mtime = mtime
         time.sleep(timer)
 
@@ -135,7 +135,7 @@ class Plotting(object):
     def plot(self, data, redraw=True):
         """ Plot cosmological parameters and monitored particles distribution functions """
 
-        last_t = data['t'].iloc[-1] / UNITS.s
+        last_t = data['t'][-1] / UNITS.s
         if last_t == 0:
             return
 
@@ -148,7 +148,7 @@ class Plotting(object):
             if last_t >= xmax:
                 plot.set_xlim(self.times[0], last_t * 1.1)
 
-            last_data = data[self.plot_map[i]].iloc[-1] / self.divider_map[i]
+            last_data = data[self.plot_map[i]][-1] / self.divider_map[i]
             self.plots_data[i].append(last_data)
 
             if last_data >= ymax:
@@ -243,8 +243,8 @@ class EquilibriumRadiationParticleMonitor(RadiationParticleMonitor):
     def comparison_distributions(self, data):
         T = self.particle.params.T
         aT = self.particle.params.aT
-        # T = data['T'].iloc[-1]
-        # aT = data['aT'].iloc[-1]
+        # T = data['T'][-1]
+        # aT = data['aT'][-1]
 
         rhoeq = self.particle.energy_density / (
             self.particle.dof * numpy.pi**2 / 30 * T**4
@@ -291,7 +291,7 @@ class MassiveParticleMonitor(ParticleMonitor):
         self.plots[1].set_ylabel("(f-f_eq) y^2")
 
     def plot(self, data):
-        T = data['T'].iloc[-1]
+        T = data['T'][-1]
 
         from particles.NonEqParticle import energy_density, density
 
@@ -322,7 +322,7 @@ class EquilibrationMonitor(ParticleMonitor):
         self.plots[1].set_ylabel("numerator, MeV^-1")
 
     def plot(self, data):
-        a = data['a'].iloc[-1]
+        a = data['a'][-1]
 
         from particles.NonEqParticle import numerator
 
@@ -348,9 +348,9 @@ class AbundanceMonitor(ParticleMonitor):
         self.plots[1].set_ylabel("n a^3")
 
     def plot(self, data):
-        T = data['T'].iloc[-1]
+        T = data['T'][-1]
 
-        total_rho = data['rho'].iloc[-1]
+        total_rho = data['rho'][-1]
         rho = self.particle.energy_density
         self.scatter(0, T / UNITS.MeV, rho / total_rho, s=1)
 
@@ -374,7 +374,7 @@ class DensityAndEnergyMonitor(ParticleMonitor):
         self.plots[1].set_ylabel("n a^3")
 
     def plot(self, data):
-        T = data['T'].iloc[-1]
+        T = data['T'][-1]
 
         rho = self.particle.energy_density * self.particle.params.a**4 / UNITS.MeV**4
         self.scatter(0, T / UNITS.MeV, rho, s=1)

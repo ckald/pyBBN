@@ -8,7 +8,7 @@ from __future__ import division
 import itertools
 
 from common import UNITS, CONST, statistics as STATISTICS
-from interactions import Interaction
+from interactions import CrossGeneratingInteraction
 from interactions.three_particle import ThreeParticleM, ThreeParticleIntegral
 from interactions.four_particle import FourParticleIntegral
 from library.SM import WeakM, particles as SM_particles
@@ -52,12 +52,12 @@ class interactions(object):
         # SOMETHING IS CLEARLY NOT RIGHT
         K1 = 2. if active_a == active_b else 1
 
-        return Interaction(
+        return CrossGeneratingInteraction(
             name="Sterile-active neutrino scattering",
             particles=((sterile, active_b), (active_a, active_b)),
             antiparticles=((False, False), (False, False)),
             Ms=(WeakM(K1=theta**2 * K1, order=(0, 1, 2, 3)), ),
-            integral=FourParticleIntegral
+            integral_type=FourParticleIntegral
         )
 
     @staticmethod
@@ -68,7 +68,7 @@ class interactions(object):
             \end{align}
         """
 
-        return Interaction(
+        return CrossGeneratingInteraction(
             name="Sterile decay into neutrino and leptons pair",
             particles=((sterile, active), (lepton, lepton)),
             antiparticles=((False, True), (True, False)),
@@ -77,7 +77,7 @@ class interactions(object):
                 WeakM(K1=4. * CONST.g_R**2 * theta**2, order=(0, 2, 1, 3)),
                 WeakM(K2=4. * CONST.g_R * g_L * theta**2, order=(2, 3, 0, 1))
             ),
-            integral=FourParticleIntegral
+            integral_type=FourParticleIntegral
         )
 
     @classmethod
@@ -133,9 +133,9 @@ class interactions(object):
             for lepton in leptons:
                 if thetas[lepton.flavour]:
                     inters.append(interactions.sterile_quark_charged(
-                         theta=thetas[lepton.flavour], sterile=sterile,
-                         lepton=lepton, up=up, down=down
-                     ))
+                        theta=thetas[lepton.flavour], sterile=sterile,
+                        lepton=lepton, up=up, down=down
+                    ))
 
         return inters
 
@@ -153,7 +153,7 @@ class interactions(object):
         if quark.Q == -1./3.:
             x = (3 - 2 * g_R)
 
-        return Interaction(
+        return CrossGeneratingInteraction(
             name="Sterile-quarks neutral channel interaction",
             particles=((sterile, active), (quark, quark)),
             antiparticles=((False, True), (False, True)),
@@ -162,7 +162,7 @@ class interactions(object):
                 WeakM(K1=2./9. * x**2 * theta**2, order=(0, 2, 1, 3)),
                 WeakM(K2=16./9. * g_R * x * theta**2, order=(0, 1, 2, 3)),
             ),
-            integral=FourParticleIntegral
+            integral_type=FourParticleIntegral
         )
 
     @staticmethod
@@ -174,7 +174,7 @@ class interactions(object):
 
         CKM = SM_particles.quarks.CKM[(up.family, down.family)]
 
-        return Interaction(
+        return CrossGeneratingInteraction(
             name="Sterile-quarks charged channel interaction",
             particles=((sterile, lepton), (up, down)),
             antiparticles=((False, True), (False, True)),
@@ -182,7 +182,7 @@ class interactions(object):
                 WeakM(K1=.5 * CKM**2 * theta**2, order=(0, 2, 1, 3)),
                 WeakM(K1=.5 * CKM**2 * theta**2, order=(0, 3, 1, 2)),
             ),
-            integral=FourParticleIntegral
+            integral_type=FourParticleIntegral
         )
 
     @classmethod
@@ -218,13 +218,13 @@ class interactions(object):
             \end{align}
         """
 
-        return [Interaction(
+        return [CrossGeneratingInteraction(
             name="Sterile neutrino decay to neutral pion and neutrino",
             particles=((sterile, ), (active, pion)),
             antiparticles=antiparticles,
             Ms=(ThreeParticleM(K=(CONST.G_F * theta * CONST.f_pi)**2
                                * sterile.mass**2 * (sterile.mass**2 - pion.mass**2)), ),
-            integral=ThreeParticleIntegral
+            integral_type=ThreeParticleIntegral
         ) for antiparticles in [
             ((False, ), (False, False)),
             ((True, ), (True, False))
@@ -239,18 +239,17 @@ class interactions(object):
 
         CKM = SM_particles.quarks.CKM[(1, 1)]
 
-        return [Interaction(
+        return [CrossGeneratingInteraction(
             name="Sterile neutrino decay to charged pion and lepton",
             particles=((sterile, ), (lepton, pion)),
             antiparticles=antiparticles,
             Ms=(ThreeParticleM(
-                K=(CONST.G_F * theta * CONST.f_pi * CKM)**2
-                * (
-                   (sterile.mass**2 - lepton.mass**2)**2
-                   - pion.mass**2 * (sterile.mass**2 + lepton.mass**2)
+                K=(CONST.G_F * theta * CONST.f_pi * CKM)**2 * (
+                    (sterile.mass**2 - lepton.mass**2)**2
+                    - pion.mass**2 * (sterile.mass**2 + lepton.mass**2)
                 )
             ),),
-            integral=ThreeParticleIntegral
+            integral_type=ThreeParticleIntegral
         ) for antiparticles in [
             ((False, ), (False, True)),
             ((True, ), (True, False))

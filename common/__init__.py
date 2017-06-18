@@ -8,19 +8,16 @@ This file contains constants and utilities shared by all other modules in the pr
 import numpy
 import numericalunits as nu
 
+import environment
+
 
 class UNITS(object):
-
-    __slots__ = ('use_numericalunits',
-                 'eV', 'keV', 'MeV', 'GeV', 'TeV',
-                 's', 'kg', 'm', 'N',
-                 'K9', 'g_cm3')
 
     """ ## Units
         As we use natural units in the project, all units from `numericalunits` except energy units
         are useless. Here some useful units are defined in terms of `GeV`s. """
 
-    use_numericalunits = False
+    use_numericalunits = True
     eV = nu.eV if use_numericalunits else 1e-9
 
     @classmethod
@@ -43,14 +40,13 @@ UNITS.reset_units()
 
 class CONST(object):
 
-    __slots__ = ('G', 'M_p', 'G_F', 'sin_theta_w_2', 'g_R', 'g_L', 'f_pi', 'rate_normalization')
-
     """ ### Physical constants """
 
-    # Gravitational constant
-    G = 6.67 * 1e-11 * (UNITS.N / UNITS.kg**2 * UNITS.m**2)
     # Planck mass
     M_p = 1.2209 * 1e22 * UNITS.MeV
+    # Gravitational constant
+    # G = 6.67 * 1e-11 * (UNITS.N / UNITS.kg**2 * UNITS.m**2)
+    G = 1 / M_p**2
     # Fermi constant
     G_F = 1.166 * 1e-5 / UNITS.GeV**2
     # Hubble constant
@@ -69,7 +65,20 @@ class CONST(object):
 
 class Params(object):
 
-    __slots__ = ('m', 'dy', 't', 'H', 'rho', 'a', 'x', 'y', 'T', 'aT', 'N_eff')
+    a = None
+    T = None
+    m = None
+    t = None
+    H = None
+    rho = None
+    N_eff = None
+
+    x = None
+    dx = None
+    y = None
+    dy = None
+
+    h = None
 
     def __init__(self, **kwargs):
         """ ## Parameters
@@ -80,8 +89,6 @@ class Params(object):
 
         # Arbitrary normalization of the conformal scale factor
         self.m = 1. * UNITS.MeV
-        # Conformal scale factor step size during computations
-        self.dy = 0.05
         # Initial time
         self.t = 0. * UNITS.s
         # Hubble rate
@@ -89,6 +96,9 @@ class Params(object):
         # Total energy density
         self.rho = None
         self.N_eff = 0.
+
+        self.dy = 0.05
+        self.dx = 0.005 * UNITS.MeV
 
         for key in kwargs:
             setattr(self, key, kwargs[key])
@@ -99,27 +109,48 @@ class Params(object):
 
         self.infer()
 
+        if environment.get('LOGARITHMIC_TIMESTEP') and not kwargs.get('dy'):
+            raise Exception("Using logarithmic timestep, but no Params.dy was specified")
+        if not environment.get('LOGARITHMIC_TIMESTEP') and not kwargs.get('dx'):
+            raise Exception("Using linear timestep, but no Params.dx was specified")
+
     def infer(self):
         """ Set initial cosmological parameters based on the value of `T` """
 
         # Compute present-state parameters that can be inferred from the base ones
         self.x = self.a * self.m
-        self.y = numpy.log(self.a)
+        if environment.get('LOGARITHMIC_TIMESTEP'):
+            self.y = numpy.log(self.a)
         self.aT = self.a * self.T
 
-    def update(self, rho):
+        # Conformal scale factor step size during computations
+        if environment.get('LOGARITHMIC_TIMESTEP'):
+            self.dx = self.x * (numpy.exp(self.dy) - 1.)
+            self.h = self.dy
+        else:
+            self.dy = None
+            self.h = self.dx
+
+    def init_time(self, rho):
+        self.t = numpy.sqrt(3. / (32. * numpy.pi * CONST.G * rho))
+        return self.t
+
+    def update(self, rho, S):
         """ Hubble expansion parameter defined by a Friedmann equation:
 
             \begin{equation}
                 H = \sqrt{\frac{8 \pi}{3} G \rho}
             \end{equation}
         """
+        if environment.get('LOGARITHMIC_TIMESTEP'):
+            self.dx = self.x * (numpy.exp(self.dy) - 1.)
         self.rho = rho
+        self.S = S
         self.H = numpy.sqrt(8./3. * numpy.pi * rho) / CONST.M_p
 
         self.N_eff = (
-            (rho - (numpy.pi**2 / 15 * self.T**4))
-            / (7./8. * numpy.pi**2 / 15 * (self.T / 1.4)**4)
+            (rho - (numpy.pi**2 / 15. * self.T**4))
+            / (7./8. * numpy.pi**2 / 15. * (self.T / 1.401)**4)
         )
 
         old_a = self.a
@@ -144,31 +175,31 @@ class Params(object):
         # dt = self.dx / self.x / self.H
         self.t += dt
 
-    @property
-    def dx(self):
-        return self.x * (numpy.exp(self.dy) - 1.)
+
+"""
+### Distribution functions grid
+
+To capture non-equilibrium effects in the Early Universe, we work with particle species
+distribution functions $f(\vec{p}, \vec{r}, t)$. Assuming that the Universe is homogeneous
+and isotropic, we can forget dependency on the position and the momentum direction:
+$f(p, t)$.
+
+Resulting functions are sampled across a wide range of momenta. However, momentum range
+cannot include both 0 momenta and very large momenta (either leads to numerical overflows
+and errors).
+"""
 
 
-class LogSpacedGrid(object):
+class LinearSpacedGrid(object):
 
-    """ ### Distribution functions grid
+    def __init__(self, MOMENTUM_SAMPLES=None, MAX_MOMENTUM=None):
+        if not MAX_MOMENTUM:
+            MAX_MOMENTUM = environment.get('MAX_MOMENTUM_MEV') * UNITS.MeV
+        if not MOMENTUM_SAMPLES:
+            MOMENTUM_SAMPLES = environment.get('MOMENTUM_SAMPLES')
 
-        To capture non-equilibrium effects in the Early Universe, we work with particle species
-        distribution functions $f(\vec{p}, \vec{r}, t)$. Assuming that the Universe is homogeneous
-        and isotropic, we can forget dependency on the position and the momentum direction:
-        $f(p, t)$.
-
-        Resulting functions are sampled across a wide range of momenta. However, momentum range
-        cannot include both 0 momenta and very large momenta (either leads to numerical overflows
-        and errors).
-        """
-
-    __slots__ = ('MIN_MOMENTUM', 'MAX_MOMENTUM', 'BOUNDS', 'MOMENTUM_SAMPLES', 'TEMPLATE')
-
-    def __init__(self, MOMENTUM_SAMPLES=50, MAX_MOMENTUM=20 * UNITS.MeV):
-        # self.MIN_MOMENTUM = 1. * UNITS.eV
         self.MIN_MOMENTUM = 0
-        self.MAX_MOMENTUM = self.MIN_MOMENTUM + MAX_MOMENTUM
+        self.MAX_MOMENTUM = MAX_MOMENTUM
         self.BOUNDS = (self.MIN_MOMENTUM, self.MAX_MOMENTUM)
         self.MOMENTUM_SAMPLES = MOMENTUM_SAMPLES
 
@@ -182,6 +213,23 @@ class LogSpacedGrid(object):
 
         yields an array of particle conformal energy mapped over the `GRID`
         """
+        self.TEMPLATE = numpy.linspace(self.MIN_MOMENTUM, self.MAX_MOMENTUM,
+                                       num=self.MOMENTUM_SAMPLES, endpoint=True)
+
+
+class LogSpacedGrid(object):
+
+    def __init__(self, MOMENTUM_SAMPLES=None, MAX_MOMENTUM=None):
+        if not MAX_MOMENTUM:
+            MAX_MOMENTUM = environment.get('MAX_MOMENTUM_MEV') * UNITS.MeV
+        if not MOMENTUM_SAMPLES:
+            MOMENTUM_SAMPLES = environment.get('MOMENTUM_SAMPLES')
+
+        self.MIN_MOMENTUM = 0
+        self.MAX_MOMENTUM = self.MIN_MOMENTUM + MAX_MOMENTUM
+        self.BOUNDS = (self.MIN_MOMENTUM, self.MAX_MOMENTUM)
+        self.MOMENTUM_SAMPLES = MOMENTUM_SAMPLES
+
         self.TEMPLATE = self.generate_template()
 
     def generate_template(self):
@@ -193,13 +241,8 @@ class LogSpacedGrid(object):
             / (base ** (self.MOMENTUM_SAMPLES - 1.) - 1.)
         )
 
-        # self.TEMPLATE = numpy.linspace(self.MIN_MOMENTUM, self.MAX_MOMENTUM,
-        #                                num=self.MOMENTUM_SAMPLES, endpoint=True)
-
 
 class HeuristicGrid(object):
-
-    __slots__ = ('MIN_MOMENTUM', 'MAX_MOMENTUM', 'BOUNDS', 'MOMENTUM_SAMPLES', 'TEMPLATE')
 
     def __init__(self, M, tau, aT=1*UNITS.MeV, b=20, c=5):
         H = 0.5 / UNITS.s  # such that at T=1 <=> t=1

@@ -3,4 +3,6 @@ scipy
 matplotlib
 Cython
 ipdb
-pandas
+nose
+pytest
+six

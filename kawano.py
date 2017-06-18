@@ -3,7 +3,6 @@
 import os
 import itertools
 import numpy
-import pandas
 import argparse
 
 from subprocess import Popen, PIPE
@@ -36,7 +35,7 @@ def run(data_folder, input="s4.dat", output="kawano_output.dat"):
         "INPUT": os.path.join(data_folder, input),
         "OUTPUT": os.path.join(data_folder, output)
     })
-    p.communicate(os.linesep.join([
+    p.communicate(bytes(os.linesep.join([
         # ...
         "",
         # Run
@@ -53,7 +52,7 @@ def run(data_folder, input="s4.dat", output="kawano_output.dat"):
         "1",
         # ...
         "", "", "", ""
-    ]))
+    ]), 'utf-8'))
     with open(os.path.join(data_folder, output), "r") as kawano_output:
         return kawano_output.read()
 
@@ -154,22 +153,31 @@ Plotting = namedtuple('Plotting', 'figure plots')
 parameters_plots = None
 rates_plots = None
 
-heading = ("t[s]", "x",
-           "Tg[10^9K]", "dTg/dt[10^9K/s]",
-           "rho_tot[g cm^-3]", "H[s^-1]",
-           "n nue->p e", "p e->n nue",
-           "n->p e nue", "p e nue->n",
-           "n e->p nue", "p nue->n e")
+heading = [
+    ["t", 's', UNITS.s],
+    ["x", 'MeV', UNITS.MeV],
+    ["Tg", '10^9K', UNITS.K9],
+    ["dTg/dt", '10^9K/s', UNITS.K9/UNITS.s],
+    ["rho_tot", 'g/cm^3', UNITS.g_cm3],
+    ["H", '1/s', 1/UNITS.s],
+    ["n nue->p e", 'MeV^5', 1/UNITS.MeV**5],
+    ["p e->n nue", 'MeV^5', 1/UNITS.MeV**5],
+    ["n->p e nue", 'MeV^5', 1/UNITS.MeV**5],
+    ["p e nue->n", 'MeV^5', 1/UNITS.MeV**5],
+    ["n e->p nue", 'MeV^5', 1/UNITS.MeV**5],
+    ["p nue->n e", 'MeV^5', 1/UNITS.MeV**5]
+]
 
 
 def import_data(filepath):
+    import pandas
     with open(filepath) as f:
         line = f.readline()
         try:
             line = line.split()
             if int(line[0]):
                 f.readline()
-        except:
+        except Exception:
             pass
 
         data = pandas.DataFrame(
@@ -265,4 +273,4 @@ if __name__ == "__main__":
     parser.add_argument('--input', default='s4.dat')
     parser.add_argument('--output', default='kawano_output.dat')
     args = parser.parse_args()
-    print run(args.folder, input=args.input, output=args.output)
+    print(run(args.folder, input=args.input, output=args.output))
