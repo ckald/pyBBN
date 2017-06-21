@@ -36,22 +36,21 @@ args = parser.parse_args()
 mass = float(args.mass) * UNITS.MeV
 theta = float(args.theta)
 lifetime = float(args.tau) * UNITS.s
-T_dec = float(args.Tdec) * UNITS.MeV
+Tdec = float(args.Tdec) * UNITS.MeV
 
 folder = utils.ensure_dir(
     os.path.split(__file__)[0],
     'output',
-    "mass={:e}_tau={:e}_theta={:e}".format(mass / UNITS.MeV, lifetime / UNITS.s, theta)
+    "mass={:e}_theta={:e}_Tdec={:e}_tau={:e}".format(mass / UNITS.MeV, theta, Tdec / UNITS.MeV, lifetime / UNITS.s)
     + args.comment
 )
 
 
-T_kawano = 10 * UNITS.MeV
-T_initial = max(T_dec, T_kawano)
-T_interactions_freeze_out = 0.05 * UNITS.MeV
+T_initial = Tdec
+T_interactions_freeze_out = 0.005 * UNITS.MeV
 T_final = 0.0008 * UNITS.MeV
 params = Params(T=T_initial,
-                dy=0.05)
+                dy=0.003125)
 
 universe = Universe(params=params, folder=folder)
 
@@ -63,12 +62,10 @@ neutrino_mu = Particle(**SMP.leptons.neutrino_mu)
 neutrino_tau = Particle(**SMP.leptons.neutrino_tau)
 sterile = Particle(**NuP.dirac_sterile_neutrino(mass))
 
-grid = HeuristicGrid(mass, lifetime)
 
-sterile.decoupling_temperature = T_dec
+sterile.decoupling_temperature = T_initial
 for neutrino in [neutrino_e, neutrino_mu, neutrino_tau]:
     neutrino.decoupling_temperature = 10 * UNITS.MeV
-    neutrino.set_grid(grid)
 
 universe.add_particles([
     photon,
@@ -97,13 +94,9 @@ universe.interactions += (
 
 universe.init_kawano(electron=electron, neutrino=neutrino_e)
 universe.init_oscillations(SMP.leptons.oscillations_map(), (neutrino_e, neutrino_mu, neutrino_tau))
-universe.step_monitor = step_monitor
 
 
-universe.evolve(T_kawano, export=False)
-universe.params.dy = 0.025
 universe.evolve(T_interactions_freeze_out, export=False)
-universe.params.dy = 0.00625
 universe.interactions = tuple()
 universe.evolve(T_final)
 
