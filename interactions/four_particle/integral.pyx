@@ -3,6 +3,8 @@
 # cython: nonecheck=False
 # cython: cdivision=True
 # cython: initializedcheck=False
+# cython: language_level=3
+# cython: overflowcheck=False
 
 
 import math
@@ -14,6 +16,7 @@ cdef extern from "math.h" nogil:
     double sqrt(double)
     double fabs(double)
 
+from libc.math cimport isnan
 from libcpp.vector cimport vector
 from cpython cimport array
 import array
@@ -500,19 +503,24 @@ cpdef double distribution_interpolation(double[:] grid, int grid_len,
         g_high = distribution[i_high]
         g_low = distribution[i_low]
 
-        # if g_high > 0:
         g_high = (1. / g_high - eta)
-            # if g_high > 0:
-        g_high = log(g_high)
+        if g_high > 0:
+            g_high = log(g_high)
+        else:
+            return 0.
 
-        # if g_low > 0:
         g_low = (1. / g_low - eta)
-            # if g_low > 0:
-        g_low = log(g_low)
+        if g_low > 0:
+            g_low = log(g_low)
+        else:
+            return 0.
 
         g = ((E_p - E_low) * g_high + (E_high - E_p) * g_low) / (E_high - E_low)
 
-        return 1. / (exp(g) + eta)
+        g = 1. / (exp(g) + eta)
+        if isnan(g):
+            return 0.
+        return g
 
     else:
         """ === Linear interpolation === """
