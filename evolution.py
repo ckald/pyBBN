@@ -341,8 +341,8 @@ class Universe(object):
 
         # Print parameters every now and then
         if self.log_throttler.output:
-            print('[{clock}] #{step}\tt = {t:e}s\taT = {aT:e}MeV\tT = {T:e}MeV'
-                  '\tδaT/aT = {daT:e}\tS = {S:e}MeV^3'
+            print('[{clock}] #{step}\tt = {t:e} s\taT = {aT:e} MeV\tT = {T:e} MeV'
+                  '\tδaT/aT = {daT:e}\tS = {S:e} MeV^3'
                   .format(clock=timedelta(seconds=int(time.time() - self.clock_start)),
                           step=self.step,
                           t=self.params.t / UNITS.s,
