@@ -261,7 +261,8 @@ class DynamicRecArray(object):
         row = self.data[index]
         if names:
             heading = [
-                '{} = {:.2e}'.format(name, row[name] / unit) + (unit_name if unit_name else '')
+                '{} = {:.2e}'.format(name, row[name] / unit)
+                + (' ' + unit_name if unit_name else '')
                 for name, unit_name, unit in zip(self.columns, self.unit_names, self.units)
             ]
         else:

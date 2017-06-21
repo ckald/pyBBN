@@ -237,9 +237,12 @@ class DistributionParticle(AbstractParticle):
         if self.in_equilibrium:
             return
 
+        assert numpy.all(numpy.isfinite(self.collision_integral))
+
         self._distribution += self.collision_integral * self.params.h
-        assert all(self._distribution >= 0)
-        self._distribution = numpy.maximum(self._distribution, 0)
+        # assert all(self._distribution >= 0), self._distribution
+        # self._distribution = numpy.maximum(self._distribution, 0)
+        self._distribution[self._distribution < 1e-25] = 0
 
         # Clear collision integrands for the next computation step
         self.collision_integrals = []
@@ -265,17 +268,17 @@ class DistributionParticle(AbstractParticle):
             As.append(A)
             Bs.append(B)
 
-        order = min(len(self.data['collision_integral']) + 1, 5)
-        index = numpy.searchsorted(self.grid.TEMPLATE, p0)
-        fs = []
-        if order > 1:
-            fs = list(self.data['collision_integral'][-order+1:, index])
-
         A = sum(As) / self.params.H
         B = sum(Bs) / self.params.H
         if not environment.get('LOGARITHMIC_TIMESTEP'):
             A /= self.params.x
             B /= self.params.x
+
+        order = min(len(self.data['collision_integral']) + 1, 5)
+        index = numpy.searchsorted(self.grid.TEMPLATE, p0)
+        fs = []
+        if order > 1:
+            fs = list(self.data['collision_integral'][-order+1:, index])
 
         if environment.get('ADAMS_MOULTON_DISTRIBUTION_CORRECTION'):
             prediction = adams_moulton_solver(y=self.distribution(p0), fs=fs,
