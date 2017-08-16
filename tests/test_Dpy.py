@@ -2,7 +2,8 @@ import os
 import json
 import numpy
 
-from interactions.four_particle.integral import Dpy
+# from interactions.four_particle.integral import Dpy
+from interactions.four_particle.cpp.integral import D as Dpy
 from common import LogSpacedGrid
 
 # process ν_μ + e ⟶ ν_μ + e
@@ -42,7 +43,7 @@ order112 = (0, 1, 2, 3)
 for (i, j, k, l), momenta in grid_iterator():
     p = (i, j, k, l)
     E = (i, numpy.sqrt(j**2 + 0.5**2), k, numpy.sqrt(l**2 + 0.5**2))
-    dpy112_table[i, j, k, l] = Dpy(p, E, m, K112, 0, order112, sides)
+    dpy112_table[i, j, k, l] = Dpy(list(p), list(E), list(m), K112, 0, list(order112), list(sides))
 
 with open(os.path.join(cwd, 'Dpy112.json'), 'w') as f:
     f.write(json.dumps(dpy112_table.tolist()))
@@ -50,12 +51,12 @@ print("Done")
 
 print("Computing Dpy114...")
 dpy114_table = numpy.ndarray(shape=(GRID.MOMENTUM_SAMPLES, GRID.MOMENTUM_SAMPLES,
-                                GRID.MOMENTUM_SAMPLES, GRID.MOMENTUM_SAMPLES))
+                                    GRID.MOMENTUM_SAMPLES, GRID.MOMENTUM_SAMPLES))
 order114 = (0, 3, 1, 2)
 for (i, j, k, l), momenta in grid_iterator():
-    p= (i,j,k,l)
-    E= (i, numpy.sqrt(j**2 + 0.5**2), k, numpy.sqrt(l**2 + 0.5**2))
-    dpy114_table[i, j, k, l] = Dpy(p, E, m, K114, 0, order114, sides)
+    p = (i, j, k, l)
+    E = (i, numpy.sqrt(j**2 + 0.5**2), k, numpy.sqrt(l**2 + 0.5**2))
+    dpy114_table[i, j, k, l] = Dpy(list(p), list(E), list(m), K114, 0, list(order114), list(sides))
 
 with open(os.path.join(cwd, 'Dpy114.json'), 'w') as f:
     f.write(json.dumps(dpy114_table.tolist()))
@@ -63,12 +64,12 @@ print("Done")
 
 print("Computing Dpy213...")
 dpy213_table = numpy.ndarray(shape=(GRID.MOMENTUM_SAMPLES, GRID.MOMENTUM_SAMPLES,
-                                GRID.MOMENTUM_SAMPLES, GRID.MOMENTUM_SAMPLES))
+                                    GRID.MOMENTUM_SAMPLES, GRID.MOMENTUM_SAMPLES))
 order213 = (1, 3, 0, 2)
 for (i, j, k, l), momenta in grid_iterator():
-    p= (i,j,k,l)
-    E= (i, numpy.sqrt(j**2 + 0.5**2), k, numpy.sqrt(l**2 + 0.5**2))
-    dpy213_table[i, j, k, l] = Dpy(p, E, m, K213, 0, order213, sides)
+    p = (i, j, k, l)
+    E = (i, numpy.sqrt(j**2 + 0.5**2), k, numpy.sqrt(l**2 + 0.5**2))
+    dpy213_table[i, j, k, l] = Dpy(list(p), list(E), list(m), K213, 0, list(order213), list(sides))
 
 with open(os.path.join(cwd, 'Dpy213.json'), 'w') as f:
     f.write(json.dumps(dpy213_table.tolist()))
@@ -76,7 +77,7 @@ print("Done")
 
 print("Computing Dpy...")
 dpy_table = numpy.ndarray(shape=(GRID.MOMENTUM_SAMPLES, GRID.MOMENTUM_SAMPLES,
-                                GRID.MOMENTUM_SAMPLES, GRID.MOMENTUM_SAMPLES))
+                                 GRID.MOMENTUM_SAMPLES, GRID.MOMENTUM_SAMPLES))
 order213 = (1, 3, 0, 2)
 for (i, j, k, l), momenta in grid_iterator():
     dpy_table[i, j, k, l] = dpy112_table[i, j, k, l] + dpy114_table[i, j, k, l] + dpy213_table[i, j, k, l]

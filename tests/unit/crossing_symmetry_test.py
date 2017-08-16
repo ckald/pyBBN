@@ -39,7 +39,7 @@ def three_particle_integral_test(params):
     universe.add_particles([photon, neutrino_e, sterile, neutral_pion])
     universe.interactions += pion_interactions
 
-    params.update(universe.total_energy_density())
+    params.update(universe.total_energy_density(), universe.total_entropy())
 
     print(universe.interactions)
     assert len(universe.interactions) == 2

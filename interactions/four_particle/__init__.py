@@ -5,7 +5,8 @@ from array import array
 import environment
 from common.integrators import paired as paired_integrators
 from interactions.boltzmann import BoltzmannIntegral
-from interactions.four_particle.integral import integrand
+# from interactions.four_particle.integral import integrand
+from interactions.four_particle.cpp.integral import integrand, M_t, grid_t, particle_t, reaction_t
 
 
 class FourParticleM(object):
@@ -99,30 +100,30 @@ class FourParticleIntegral(BoltzmannIntegral):
             )
 
         cMs = [
-            {'order': array('i', M.order), 'K1': M.K1, 'K2': M.K2}
+            M_t(order=list(M.order), K1=M.K1, K2=M.K2)
             for M in self.Ms
         ]
 
         creaction = [
-            {
-                'specie': {
-                    'm': particle.specie.conformal_mass,
-                    'grid': {
-                        'grid': particle.specie.grid.TEMPLATE,
-                        'distribution': particle.specie._distribution,
-                        'size': particle.specie.grid.MOMENTUM_SAMPLES
-                    },
-                    'eta': particle.specie.eta,
-                    'in_equilibrium': int(particle.specie.in_equilibrium),
-                    'aT': particle.specie.aT
-                },
-                'side': particle.side
-            }
+            reaction_t(
+                specie=particle_t(
+                    m=particle.specie.conformal_mass,
+                    grid=grid_t(
+                        grid=particle.specie.grid.TEMPLATE,
+                        distribution=particle.specie._distribution,
+                        size=particle.specie.grid.MOMENTUM_SAMPLES
+                    ),
+                    eta=int(particle.specie.eta),
+                    in_equilibrium=int(particle.specie.in_equilibrium),
+                    aT=particle.specie.aT
+                ),
+                side=particle.side
+            )
             for particle in self.reaction
         ]
 
         def prepared_integrand(p1, p2):
-            integrand_1, integrand_f = integrand(p0, p1.ravel(), p2.ravel(), p1.size, creaction, cMs)
+            integrand_1, integrand_f = integrand(p0, list(p1.ravel()), list(p2.ravel()), p1.size, creaction, cMs)
             return numpy.reshape(integrand_1, p1.shape), numpy.reshape(integrand_f, p1.shape)
 
         params = self.particle.params

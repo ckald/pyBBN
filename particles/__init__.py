@@ -15,7 +15,8 @@ from common.integrators import adams_moulton_solver, implicit_euler
 from common.utils import PicklableObject, trace_unhandled_exceptions, Dynamic2DArray, DynamicRecArray
 
 from particles import DustParticle, RadiationParticle, IntermediateParticle, NonEqParticle
-from interactions.four_particle.integral import distribution_interpolation
+# from interactions.four_particle.integral import distribution_interpolation
+from interactions.four_particle.cpp.integral import distribution_interpolation
 
 
 class REGIMES(dict):
@@ -318,10 +319,10 @@ class DistributionParticle(AbstractParticle):
             return self._distribution[-1] * numpy.exp((self.grid.MAX_MOMENTUM - p) / self.aT)
 
         return distribution_interpolation(
-            self.grid.TEMPLATE, self.grid.MOMENTUM_SAMPLES,
-            self._distribution,
+            list(self.grid.TEMPLATE),
+            list(self._distribution),
             p, self.conformal_mass,
-            self.eta
+            int(self.eta)
         )
 
     def equilibrium_distribution(self, y=None, aT=None):
