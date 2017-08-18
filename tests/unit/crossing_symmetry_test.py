@@ -1,3 +1,4 @@
+import unittest
 from . import non_equilibium_setup, with_setup_args, setup
 from common import CONST, UNITS
 from evolution import Universe
@@ -24,6 +25,7 @@ def neutrino_scattering_amplitude_test(params, universe):
                for M in integral.Ms)
 
 
+@unittest.skip("temporarily disabled")
 @with_setup_args(setup)
 def three_particle_integral_test(params):
 
