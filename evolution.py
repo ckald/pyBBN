@@ -125,8 +125,10 @@ class Universe(object):
                         self.data.savetxt(f)
             except KeyboardInterrupt:
                 print("Keyboard interrupt!")
-                interrupted = True
                 break
+        else:
+            interrupted = True
+            print("Simulation was interrupted.")
 
         self.log()
         if export and not interrupted:
