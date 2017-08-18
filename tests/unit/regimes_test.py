@@ -1,3 +1,4 @@
+import numpy
 import environment
 from common import Params, UNITS
 from particles import Particle, REGIMES
@@ -9,7 +10,7 @@ from . import eps, setup, with_setup_args
 @with_setup_args(setup)
 def params_inferrence_test(params):
     assert params.T == 5. * UNITS.MeV
-    assert params.aT == params.m, "Initial `aT` must be equal to 1"
+    assert numpy.allclose(params.aT, params.m), "Initial `aT` must be equal to 1"
     assert params.x - params.m * params.aT / params.T < eps
 
 
