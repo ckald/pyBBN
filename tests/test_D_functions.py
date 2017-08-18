@@ -2,7 +2,9 @@ import os
 import json
 import numpy
 
-from interactions.four_particle.integral import D1, D2, D3
+# from interactions.four_particle.integral import D1, D2, D3
+from interactions.four_particle.cpp.integral import D1, D2, D3
+
 from common import LogSpacedGrid
 
 cwd = os.path.split(__file__)[0]
