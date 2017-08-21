@@ -319,8 +319,8 @@ class DistributionParticle(AbstractParticle):
             return self._distribution[-1] * numpy.exp((self.grid.MAX_MOMENTUM - p) / self.aT)
 
         return distribution_interpolation(
-            list(self.grid.TEMPLATE),
-            list(self._distribution),
+            self.grid.TEMPLATE,
+            self._distribution,
             p, self.conformal_mass,
             int(self.eta)
         )

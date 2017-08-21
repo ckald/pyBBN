@@ -123,7 +123,7 @@ class FourParticleIntegral(BoltzmannIntegral):
         ]
 
         def prepared_integrand(p1, p2):
-            integrand_1, integrand_f = integrand(p0, list(p1.ravel()), list(p2.ravel()), p1.size, creaction, cMs)
+            integrand_1, integrand_f = integrand(p0, p1.ravel(), p2.ravel(), creaction, cMs)
             return numpy.reshape(integrand_1, p1.shape), numpy.reshape(integrand_f, p1.shape)
 
         params = self.particle.params
