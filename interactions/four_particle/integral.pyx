@@ -164,7 +164,7 @@ cdef double in_bounds(double p[4], double E[4], double m[4]) nogil:
 
 
 cpdef tuple integrand(
-    double p0, vector[double] p1s, vector[double] p2s, int length,
+    double p0, const vector[double] &p1s, const vector[double] &p2s, int length,
     vector[reaction_t] reaction, vector[M_t] Ms
 ):
     """
@@ -463,8 +463,8 @@ cdef inline double energy(double p, double m) nogil:
     return sqrt(p**2 + m**2)
 
 
-cpdef double distribution_interpolation(double[:] grid, int grid_len,
-                                        double[:] distribution,
+cpdef double distribution_interpolation(const double[:] &grid, int grid_len,
+                                        const double[:] &distribution,
                                         double p,
                                         double m,
                                         int eta) nogil:
