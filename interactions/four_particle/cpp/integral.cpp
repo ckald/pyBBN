@@ -2,6 +2,7 @@
 #include <cmath>
 #include <array>
 #include <vector>
+#include <errno.h>
 
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
@@ -109,21 +110,36 @@ double distribution_interpolation(const std::vector<double> &grid,
 
     g_high = (1. / g_high - eta);
     if (g_high > 0) {
+        errno = 0;
         g_high = log(g_high);
+        if (errno == ERANGE) {
+            printf("log = %f overflows\n", g_high);
+            return 0.;
+        }
     } else {
         return 0.;
     }
 
     g_low = (1. / g_low - eta);
     if (g_low > 0) {
+        errno = 0;
         g_low = log(g_low);
+        if (errno == ERANGE) {
+            printf("log = %f overflows\n", g_low);
+            return 0.;
+        }
     } else {
         return 0.;
     }
 
     g = ((E_p - E_low) * g_high + (E_high - E_p) * g_low) / (E_high - E_low);
 
+    errno = 0;
     g = 1. / (exp(g) + eta);
+    if (errno == ERANGE) {
+        printf("exp = %f overflows\n", g);
+        return 0.;
+    }
     if (isnan(g)) {
         return 0.;
     }
@@ -184,7 +200,8 @@ double D2(double q1, double q2, double q3, double q4) {
         if (q1 + q4 >= q2 + q3) {
             double a = q1 - q2;
             return (
-                a * (pow(a, 2) - 3. * (pow(q3, 2) + pow(q4, 2))) + 2. * (pow(q3, 3) + pow(q4, 3))
+                a * (pow(a, 2) - 3. * (pow(q3, 2) + pow(q4, 2)))
+                + 2. * (pow(q3, 3) + pow(q4, 3))
             ) / 12.;
         }
         else {
@@ -197,7 +214,8 @@ double D2(double q1, double q2, double q3, double q4) {
         else {
             double a = q1 + q2;
             return (
-                a * (3. * (pow(q3, 2) + pow(q4, 2)) - pow(a, 2)) + 2. * (pow(q4, 3) - pow(q3, 3))
+                a * (3. * (pow(q3, 2) + pow(q4, 2)) - pow(a, 2))
+                + 2. * (pow(q4, 3) - pow(q3, 3))
             ) / 12.;
         }
     }
@@ -374,7 +392,9 @@ double F_A(const std::vector<reaction_t> &reaction, const std::array<double, 4> 
 
     for (int i = 0; i < 4; ++i) {
         if (i != skip_index) {
-            if (f[i] < 0) { throw; }
+            if (f[i] < 0) {
+                throw std::runtime_error("Negative value of distribution function");
+            }
             if (reaction[i].side == -1) {
                 temp *= f[i];
             } else {
@@ -401,7 +421,9 @@ double F_B(const std::vector<reaction_t> &reaction, const std::array<double, 4> 
 
     for (int i = 0; i < 4; ++i) {
         if (i != skip_index) {
-            if (f[i] < 0) { throw; }
+            if (f[i] < 0) {
+                throw std::runtime_error("Negative value of distribution function");
+            }
             if (reaction[i].side == 1) {
                 temp *= f[i];
             } else {
@@ -551,10 +573,15 @@ std::pair<py::array_t<double>, py::array_t<double>> integrand(
         f[0] = -1;
         for (int k = 1; k < 4; ++k) {
             if (reaction[k].specie.in_equilibrium) {
+                errno = 0;
                 f[k] = 1. / (
                     exp(energy(p[k], reaction[k].specie.m) / reaction[k].specie.aT)
                     + reaction[k].specie.eta
                 );
+                if (errno == ERANGE) {
+                    printf("exp = %f overflows\n", f[k]);
+                    f[k] = 0.;
+                }
             } else {
                 f[k] = distribution_interpolation(
                     reaction[k].specie.grid.grid,
