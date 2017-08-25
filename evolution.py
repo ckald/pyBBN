@@ -208,17 +208,18 @@ class Universe(object):
 
         with utils.printoptions(precision=3, linewidth=100):
             if self.PARALLELIZE:
+                parallelization.orders = []
                 for particle in particles:
-                    parallelization.orders = [
+                    parallelization.orders.append(
                         (particle,
                          parallelization.poolmap(particle, 'calculate_collision_integral',
                                                  particle.grid.TEMPLATE))
-                    ]
-                    for particle, result in parallelization.orders:
-                        with (utils.benchmark(lambda: "δf/f ({}) = {}".format(particle.symbol,
-                              particle.collision_integral * self.params.h / particle._distribution),
-                              self.log_throttler.output)):
-                            particle.collision_integral = numpy.array(result.get(1000))
+                    )
+                for particle, result in parallelization.orders:
+                    with (utils.benchmark(lambda: "δf/f ({}) = {}".format(particle.symbol,
+                          particle.collision_integral * self.params.h / particle._distribution),
+                          self.log_throttler.output)):
+                        particle.collision_integral = numpy.array(result.get(1000))
             else:
                 for particle in particles:
                     with (utils.benchmark(lambda: "δf/f ({}) = {}".format(particle.symbol,
