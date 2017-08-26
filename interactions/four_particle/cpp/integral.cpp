@@ -553,6 +553,8 @@ std::pair<py::array_t<double>, py::array_t<double>> integrand(
             }
         }
 
+        if(isnan(temp)) { printf("NaN in C++ (1): %f, p=[%f, %f, %f, %f]", temp, p[0], p[1], p[2], p[3]); }
+
         if (temp == 0.) { continue; }
 
         ds = 0.;
@@ -567,6 +569,7 @@ std::pair<py::array_t<double>, py::array_t<double>> integrand(
             }
         }
         temp *= ds;
+        if(isnan(temp)) { printf("NaN in C++ (2): %f, p=[%f, %f, %f, %f]", temp, p[0], p[1], p[2], p[3]); }
 
         if (temp == 0.) { continue; }
 
@@ -584,16 +587,23 @@ std::pair<py::array_t<double>, py::array_t<double>> integrand(
                     printf("exp = %f overflows\n", f[k]);
                     f[k] = 0.;
                 }
+                if(isnan(f[k])) { printf("NaN in C++ (3): %f, p=[%f, %f, %f, %f]", f[k], p[0], p[1], p[2], p[3]); }
+
             } else {
                 f[k] = distribution_interpolation(
                     reaction[k].specie.grid.grid,
                     reaction[k].specie.grid.distribution,
                     p[k], reaction[k].specie.m, reaction[k].specie.eta
                 );
+                if(isnan(f[k])) { printf("NaN in C++ (4): %f, p=[%f, %f, %f, %f]", f[k], p[0], p[1], p[2], p[3]); }
             }
         }
+
         integrands_1[i] = temp * F_1(reaction, f);
         integrands_f[i] = temp * F_f(reaction, f);
+        if(isnan(integrands_1[i])) { printf("NaN in C++ (5): %f, p=[%f, %f, %f, %f]", integrands_1[i], p[0], p[1], p[2], p[3]); }
+        if(isnan(integrands_f[i])) { printf("NaN in C++ (6): %f, p=[%f, %f, %f, %f]", integrands_f[i], p[0], p[1], p[2], p[3]); }
+
     }
 
     return std::make_pair(
