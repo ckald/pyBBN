@@ -518,6 +518,7 @@ std::pair<py::array_t<double>, py::array_t<double>> integrand(
         m[i] = reaction[i].specie.m;
     }
 
+    #pragma omp parallel
     for (size_t i = 0; i < length; ++i) {
         double p1 = p1s[i],
                p2 = p2s[i];
