@@ -510,7 +510,7 @@ std::pair<py::array_t<double>, py::array_t<double>> integrand(
     std::vector<double> integrands_1(length, 0.),
                         integrands_f(length, 0.);
 
-    std::array<double, 4> p, E, m;
+    std::array<double, 4> m;
     std::array<int, 4> sides;
 
     for (int i = 0; i < 4; ++i) {
@@ -518,14 +518,14 @@ std::pair<py::array_t<double>, py::array_t<double>> integrand(
         m[i] = reaction[i].specie.m;
     }
 
-    extern int parallelism_enabled;
-    #pragma omp parallel for if(parallelism_enabled);
+    #pragma omp parallel for default(none) shared(length, p0, p1s, p2s, m, sides, Ms, reaction, integrands_1, integrands_f) private(temp, ds)
     for (size_t i = 0; i < length; ++i) {
         double p1 = p1s[i],
                p2 = p2s[i];
 
         if (p2 > p0 + p1) { continue; }
 
+        std::array<double, 4> p, E;
         p[0] = p0;
         p[1] = p1;
         p[2] = p2;
