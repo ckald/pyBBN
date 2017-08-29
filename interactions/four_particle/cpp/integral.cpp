@@ -10,6 +10,7 @@
 
 namespace py = pybind11;
 using namespace pybind11::literals;
+typedef py::array_t<double> npdouble;
 
 
 struct M_t {
@@ -483,32 +484,30 @@ double in_bounds(const std::array<double, 4> p, const std::array<double, 4> E, c
     return (E[3] >= m[3] && q1 <= q2 + q3 + q4 && q3 <= q1 + q2 + q4);
 }
 
-std::pair<py::array_t<double>, py::array_t<double>> integrand(
-    double p0, py::array_t<double> &p1_buffer, py::array_t<double> &p2_buffer,
+std::pair<npdouble, npdouble> integrand(
+    double p0, npdouble &p1_buffer, npdouble &p2_buffer,
     const std::vector<reaction_t> &reaction, const std::vector<M_t> &Ms
 ) {
     /*
     Collision integral interior.
     */
 
-    double ds(0.), temp(0.);
+    auto p1s = p1_buffer.unchecked<1>(),
+         p2s = p2_buffer.unchecked<1>();
 
-    py::buffer_info p1_buffer_info = p1_buffer.request(),
-                    p2_buffer_info = p2_buffer.request();
-    double *p1s = (double*) p1_buffer_info.ptr,
-           *p2s = (double*) p2_buffer_info.ptr;
-
-    size_t length = p1_buffer_info.shape[0];
-
-    if (p1_buffer_info.ndim != 1 || p2_buffer_info.ndim != 1) {
+    if (p1s.ndim() != 1 || p2s.ndim() != 1) {
         throw std::runtime_error("p1s and p2s must be 1-dimensional");
     }
-    if (p1_buffer_info.shape[0] != p2_buffer_info.shape[0]) {
+    if (p1s.shape(0) != p2s.shape(0)) {
         throw std::runtime_error("p1s and p2s must be of the same size!");
     }
+    size_t length = p1s.size();
 
-    std::vector<double> integrands_1(length, 0.),
-                        integrands_f(length, 0.);
+    auto integrands_1_buffer = npdouble(length),
+         integrands_f_buffer = npdouble(length);
+
+    auto integrands_1 = integrands_1_buffer.mutable_unchecked<1>(),
+         integrands_f = integrands_f_buffer.mutable_unchecked<1>();
 
     std::array<double, 4> m;
     std::array<int, 4> sides;
@@ -518,10 +517,13 @@ std::pair<py::array_t<double>, py::array_t<double>> integrand(
         m[i] = reaction[i].specie.m;
     }
 
-    #pragma omp parallel for default(none) shared(length, p0, p1s, p2s, m, sides, Ms, reaction, integrands_1, integrands_f) private(temp, ds)
+    #pragma omp parallel for default(none) shared(length, p0, p1s, p2s, m, sides, Ms, reaction, integrands_1, integrands_f)
     for (size_t i = 0; i < length; ++i) {
-        double p1 = p1s[i],
-               p2 = p2s[i];
+        double p1 = p1s(i),
+               p2 = p2s(i);
+
+        integrands_1(i) = 0.;
+        integrands_f(i) = 0.;
 
         if (p2 > p0 + p1) { continue; }
 
@@ -544,7 +546,7 @@ std::pair<py::array_t<double>, py::array_t<double>> integrand(
 
         if (!in_bounds(p, E, m)) { continue; }
 
-        temp = 1.;
+        double temp = 1.;
 
         // Avoid rounding errors and division by zero
         for (int k = 1; k < 3; ++k) {
@@ -553,11 +555,9 @@ std::pair<py::array_t<double>, py::array_t<double>> integrand(
             }
         }
 
-        if(isnan(temp)) { printf("NaN in C++ (1): %f, p=[%f, %f, %f, %f]", temp, p[0], p[1], p[2], p[3]); }
-
         if (temp == 0.) { continue; }
 
-        ds = 0.;
+        double ds = 0.;
         if (p[0] != 0.) {
             for (const M_t &M : Ms) {
                 ds += D(p, E, m, M.K1, M.K2, M.order, sides);
@@ -569,7 +569,6 @@ std::pair<py::array_t<double>, py::array_t<double>> integrand(
             }
         }
         temp *= ds;
-        if(isnan(temp)) { printf("NaN in C++ (2): %f, p=[%f, %f, %f, %f]", temp, p[0], p[1], p[2], p[3]); }
 
         if (temp == 0.) { continue; }
 
@@ -587,7 +586,6 @@ std::pair<py::array_t<double>, py::array_t<double>> integrand(
                     printf("exp = %f overflows\n", f[k]);
                     f[k] = 0.;
                 }
-                if(isnan(f[k])) { printf("NaN in C++ (3): %f, p=[%f, %f, %f, %f]", f[k], p[0], p[1], p[2], p[3]); }
 
             } else {
                 f[k] = distribution_interpolation(
@@ -595,21 +593,15 @@ std::pair<py::array_t<double>, py::array_t<double>> integrand(
                     reaction[k].specie.grid.distribution,
                     p[k], reaction[k].specie.m, reaction[k].specie.eta
                 );
-                if(isnan(f[k])) { printf("NaN in C++ (4): %f, p=[%f, %f, %f, %f]", f[k], p[0], p[1], p[2], p[3]); }
             }
         }
 
-        integrands_1[i] = temp * F_1(reaction, f);
-        integrands_f[i] = temp * F_f(reaction, f);
-        if(isnan(integrands_1[i])) { printf("NaN in C++ (5): %f, p=[%f, %f, %f, %f]", integrands_1[i], p[0], p[1], p[2], p[3]); }
-        if(isnan(integrands_f[i])) { printf("NaN in C++ (6): %f, p=[%f, %f, %f, %f]", integrands_f[i], p[0], p[1], p[2], p[3]); }
+        integrands_1(i) = temp * F_1(reaction, f);
+        integrands_f(i) = temp * F_f(reaction, f);
 
     }
 
-    return std::make_pair(
-        py::array_t<double>(length, integrands_1.data()),
-        py::array_t<double>(length, integrands_f.data())
-    );
+    return std::make_pair(integrands_1_buffer, integrands_f_buffer);
 }
 
 
@@ -636,7 +628,7 @@ PYBIND11_MODULE(integral, m) {
 
     py::class_<M_t>(m, "M_t")
         .def(py::init<std::array<int, 4>, double, double>(),
-             "order"_a, "K1"_a, "K2"_a);
+             "order"_a, "K1"_a=0., "K2"_a=0.);
     py::class_<grid_t>(m, "grid_t")
         .def(py::init<std::vector<double>, std::vector<double>, int>(),
              "grid"_a, "distribution"_a, "size"_a);
