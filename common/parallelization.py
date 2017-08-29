@@ -17,7 +17,7 @@ def init_pool(workers=None):
 
     if workers is not None:
         worker_count = min(workers, worker_count)
-    pool = Pool(processes=worker_count)
+    pool = Pool(processes=worker_count, maxtasksperchild=10000)
 
 
 def close_pool():
