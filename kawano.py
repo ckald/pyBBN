@@ -160,12 +160,12 @@ heading = [
     ["dTg/dt", '10^9K/s', UNITS.K9/UNITS.s],
     ["rho_tot", 'g/cm^3', UNITS.g_cm3],
     ["H", '1/s', 1/UNITS.s],
-    ["n nue->p e", 'MeV^5', 1/UNITS.MeV**5],
-    ["p e->n nue", 'MeV^5', 1/UNITS.MeV**5],
-    ["n->p e nue", 'MeV^5', 1/UNITS.MeV**5],
-    ["p e nue->n", 'MeV^5', 1/UNITS.MeV**5],
-    ["n e->p nue", 'MeV^5', 1/UNITS.MeV**5],
-    ["p nue->n e", 'MeV^5', 1/UNITS.MeV**5]
+    ["n nue->p e", 'MeV^5', UNITS.MeV**5],
+    ["p e->n nue", 'MeV^5', UNITS.MeV**5],
+    ["n->p e nue", 'MeV^5', UNITS.MeV**5],
+    ["p e nue->n", 'MeV^5', UNITS.MeV**5],
+    ["n e->p nue", 'MeV^5', UNITS.MeV**5],
+    ["p nue->n e", 'MeV^5', UNITS.MeV**5]
 ]
 
 
