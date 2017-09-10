@@ -14,15 +14,14 @@ http://arxiv.org/pdf/hep-ph/0002223v2.pdf
 """
 
 import argparse
-import os
+import os.path as op
 from collections import defaultdict
 
 from particles import Particle
 from library.SM import particles as SMP, interactions as SMI
 from library.NuMSM import particles as NuP, interactions as NuI
 from evolution import Universe
-from common import UNITS, Params, utils, HeuristicGrid
-from semianalytic import step_monitor
+from common import UNITS, Params, utils
 
 
 parser = argparse.ArgumentParser(description='Run simulation for given mass and mixing angle')
@@ -39,10 +38,11 @@ lifetime = float(args.tau) * UNITS.s
 Tdec = float(args.Tdec) * UNITS.MeV
 
 folder = utils.ensure_dir(
-    os.path.split(__file__)[0],
+    op.split(__file__)[0],
     'output',
-    "mass={:e}_theta={:e}_Tdec={:e}_tau={:e}".format(mass / UNITS.MeV, theta, Tdec / UNITS.MeV, lifetime / UNITS.s)
-    + args.comment
+    "mass={:e}_theta={:e}_Tdec={:e}_tau={:e}".format(
+        mass / UNITS.MeV, theta, Tdec / UNITS.MeV, lifetime / UNITS.s
+    ) + args.comment
 )
 
 
@@ -96,7 +96,56 @@ universe.init_kawano(electron=electron, neutrino=neutrino_e)
 universe.init_oscillations(SMP.leptons.oscillations_map(), (neutrino_e, neutrino_mu, neutrino_tau))
 
 
+def step_monitor(universe):
+    # explanation of what is inside the file + first row which is a grid on y
+    if universe.step == 1:
+        for particle in [neutrino_e, neutrino_mu, neutrino_tau, sterile]:
+            with open(op.join(folder, particle.name.replace(' ', '_') + ".distribution.txt"), 'a') as f:
+                f.write('# First line is a grid of y; Starting from second line: '
+                        + 'first number is a, second is temperature, next is set of numbers '
+                        + 'is corresponding to f(y) on the grid\n')
+                f.write('## a\tT\t' + '\t'.join([
+                    '{:e}'.format(x)
+                    for x in
+                    particle.grid.TEMPLATE / UNITS.MeV
+                ]) + '\n')
+            with open(op.join(folder, particle.name.replace(' ', '_') + ".rho.txt"), 'a') as f3:
+                f3.write('## a\tT, MeV\taT, MeV\trho_nu, MeV^4\ta^3 n, MeV^3\n')
+        with open(op.join(folder, "rho_nu.txt"), 'a') as f2:
+                    f2.write('# a    rho_nu' + '\n')
+
+    # Output the distribution function and collision integrals distortion to file every 10 steps,
+    # first column is temperature
+    if universe.step % 10 == 0:
+        for particle in [neutrino_e, neutrino_mu, neutrino_tau, sterile]:
+            with open(op.join(folder, particle.name.replace(' ', '_') + ".distribution.txt"), 'a') as f:
+                f.write('{a:e}\t{T:e}\t'.format(a=universe.params.a, T=universe.params.T/UNITS.MeV))
+                f.write('\t'.join(['{:e}'.format(x) for x in particle._distribution]) + '\n')
+
+            with open(op.join(folder, particle.name.replace(' ', '_') + ".rho.txt"), 'a') as f:
+                f.write(
+                    '{a:e}\t{t:e}\t{T:e}\t{aT:e}\t{rho:e}\t{n:e}\n'.format(
+                        a=universe.params.a,
+                        t=universe.params.t / UNITS.s,
+                        T=universe.params.T/UNITS.MeV,
+                        aT=universe.params.aT/UNITS.MeV,
+                        rho=particle.energy_density/(UNITS.MeV)**4,
+                        n=universe.params.a**3 * particle.density/(UNITS.MeV)**3
+                    )
+                )
+        with open(op.join(folder, "rho_nu.txt"), 'a') as f:
+            f.write(
+                '{:e}'.format(universe.params.a) + '\t' +
+                '{:e}'.format(sum(
+                    particle.energy_density / UNITS.MeV**4
+                    for particle in [neutrino_e, neutrino_mu]
+                )) + '\n')
+
+
+universe.step_monitor = step_monitor
+
 universe.evolve(T_interactions_freeze_out, export=False)
+# sterile._distribution *= 0
 universe.interactions = tuple()
 universe.evolve(T_final)
 

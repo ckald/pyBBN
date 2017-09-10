@@ -318,8 +318,9 @@ class Universe(object):
                 self.kawano_data.columns[0]: self.params.t,
                 self.kawano_data.columns[1]: self.params.x,
                 self.kawano_data.columns[2]: self.params.T,
-                self.kawano_data.columns[3]: (self.params.T - self.data['T'][-2])
-                / (self.params.t - self.data['t'][-2]),
+                self.kawano_data.columns[3]:
+                    (self.data['T'][-1] - self.data['T'][-2])
+                    / (self.data['t'][-1] - self.data['t'][-2]),
                 self.kawano_data.columns[4]: self.params.rho,
                 self.kawano_data.columns[5]: self.params.H
             }
