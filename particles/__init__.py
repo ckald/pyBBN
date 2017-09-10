@@ -80,7 +80,7 @@ class AbstractParticle(PicklableObject):
 
     def __str__(self):
         """ String-like representation of particle species it's regime and parameters """
-        return "%s (%s, %s)\nn = %s MeV^3, rho = %s MeV^4\n" % (
+        return "{} ({}, {})\nn = {:e} MeV^3, rho = {:e} MeV^4\n".format(
             self.name,
             "eq" if self.in_equilibrium else "non-eq",
             self.regime.name,
@@ -192,10 +192,11 @@ class DistributionParticle(AbstractParticle):
         self.params = params
         self.T = params.T
         self.aT = params.aT
-        self.populate_methods()
 
         self.update()
         self.init_distribution()
+
+        self.populate_methods()
 
     def set_grid(self, grid):
         self.grid = grid
