@@ -215,6 +215,7 @@ class Universe(object):
                          parallelization.poolmap(particle, 'calculate_collision_integral',
                                                  particle.grid.TEMPLATE))
                     )
+            """
                 for particle, result in parallelization.orders:
                     with (utils.benchmark(lambda: "δf/f ({}) = {}".format(particle.symbol,
                           particle.collision_integral * self.params.h / particle._distribution),
@@ -224,6 +225,18 @@ class Universe(object):
                 for particle in particles:
                     with (utils.benchmark(lambda: "δf/f ({}) = {}".format(particle.symbol,
                           particle.collision_integral * self.params.h / particle._distribution),
+                          self.log_throttler.output)):
+                        particle.collision_integral = particle.integrate_collisions()
+            """
+                for particle, result in parallelization.orders:
+                    with (utils.benchmark(lambda: "I ({}) = {}".format(particle.symbol,
+                          particle.collision_integral),
+                          self.log_throttler.output)):
+                        particle.collision_integral = numpy.array(result.get(1000))
+            else:
+                for particle in particles:
+                    with (utils.benchmark(lambda: "I ({}) = {}".format(particle.symbol,
+                          particle.collision_integral),
                           self.log_throttler.output)):
                         particle.collision_integral = particle.integrate_collisions()
 
