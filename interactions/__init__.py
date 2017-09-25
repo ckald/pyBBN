@@ -2,7 +2,6 @@
 import copy
 import itertools
 from collections import namedtuple, Counter
-from common.utils import PicklableObject
 from interactions.four_particle import FourParticleM
 
 
@@ -21,7 +20,7 @@ from interactions.four_particle import FourParticleM
 IntegralItem = namedtuple('IntegralItem', ['side', 'specie', 'antiparticle', 'index', 'crossed'])
 
 
-class Interaction(PicklableObject):
+class Interaction:
 
     """
     ## Interaction
@@ -218,7 +217,7 @@ class CrossGeneratingInteraction(Interaction):
         ))
 
 
-class IntegralDeduplicator(PicklableObject):
+class IntegralDeduplicator:
 
     integrals = None
 

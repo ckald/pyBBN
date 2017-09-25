@@ -8,7 +8,7 @@ import shutil
 from datetime import timedelta
 
 import environment
-from common import UNITS, Params, integrators, parallelization, utils
+from common import UNITS, Params, integrators, utils
 
 import kawano
 
@@ -65,11 +65,6 @@ class Universe(object):
             if os.path.exists(folder):
                 shutil.rmtree(folder)
             self.init_log(folder=folder)
-
-        # Controls parallelization of the collision integrals calculations
-        self.PARALLELIZE = int(utils.getenv("PARALLELIZE", 0))
-        if self.PARALLELIZE:
-            parallelization.init_pool(self.PARALLELIZE)
 
         self.fraction = 0
 
@@ -207,25 +202,10 @@ class Universe(object):
         particles = [particle for particle in self.particles if particle.collision_integrals]
 
         with utils.printoptions(precision=3, linewidth=100):
-            if self.PARALLELIZE:
-                parallelization.orders = []
-                for particle in particles:
-                    parallelization.orders.append(
-                        (particle,
-                         parallelization.poolmap(particle, 'calculate_collision_integral',
-                                                 particle.grid.TEMPLATE))
-                    )
-                for particle, result in parallelization.orders:
-                    with (utils.benchmark(lambda: "δf/f ({}) = {}".format(particle.symbol,
-                          particle.collision_integral * self.params.h / particle._distribution),
-                          self.log_throttler.output)):
-                        particle.collision_integral = numpy.array(result.get(1000))
-            else:
-                for particle in particles:
-                    with (utils.benchmark(lambda: "δf/f ({}) = {}".format(particle.symbol,
-                          particle.collision_integral * self.params.h / particle._distribution),
-                          self.log_throttler.output)):
-                        particle.collision_integral = particle.integrate_collisions()
+            for particle in particles:
+                with (utils.benchmark(lambda: "δf/f ({})".format(particle.symbol),
+                      self.log_throttler.output)):
+                    particle.collision_integral = particle.integrate_collisions()
 
     def update_distributions(self):
         """ ### 4. Update particles distributions """

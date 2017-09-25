@@ -4,31 +4,7 @@ import time
 import codecs
 import contextlib
 import numpy
-import traceback
-import functools
 from collections import deque
-
-
-class PicklableObject(object):
-
-    _saveable_fields = None
-
-    def __getstate__(self):
-        if getattr(self, '__slots__', None):
-            return {key: getattr(self, key) for key in self.__slots__}
-        if self._saveable_fields:
-            return {key: value for key, value in self.__dict__.items()
-                    if key in self._saveable_fields}
-        return self.__dict__
-
-    def __setstate__(self, data):
-        if getattr(self, '__slots__', None):
-            [setattr(self, key, value) for key, value in data.items()]
-        else:
-            if self._saveable_fields:
-                data = {key: value for key, value in data.items()
-                        if key in self._saveable_fields}
-            self.__dict__.update(data)
 
 
 class Logger(object):
@@ -144,17 +120,6 @@ def ensure_dir(*chunks):
     if not os.path.exists(dir):
         os.makedirs(dir)
     return dir
-
-
-def trace_unhandled_exceptions(func):
-    @functools.wraps(func)
-    def wrapped_func(*args, **kwargs):
-        try:
-            return func(*args, **kwargs)
-        except Exception:
-            print('Exception in ' + func.__name__)
-            traceback.print_exc()
-    return wrapped_func
 
 
 class Dynamic2DArray(object):

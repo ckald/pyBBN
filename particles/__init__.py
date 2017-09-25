@@ -12,7 +12,7 @@ import numpy
 import environment
 from common import GRID, UNITS, statistics as STATISTICS
 from common.integrators import adams_moulton_solver, implicit_euler
-from common.utils import PicklableObject, trace_unhandled_exceptions, Dynamic2DArray, DynamicRecArray
+from common.utils import Dynamic2DArray, DynamicRecArray
 
 from particles import DustParticle, RadiationParticle, IntermediateParticle, NonEqParticle
 # from interactions.four_particle.integral import distribution_interpolation
@@ -39,7 +39,7 @@ class REGIMES(dict):
     NONEQ = NonEqParticle
 
 
-class AbstractParticle(PicklableObject):
+class AbstractParticle:
 
     _defaults = {
         'mass': 0 * UNITS.eV,
@@ -176,17 +176,6 @@ class DistributionParticle(AbstractParticle):
         particle `decoupling_temperature`
     """
 
-    _saveable_fields = [
-        'name', 'symbol',
-        'mass', 'decoupling_temperature',
-        'dof', 'eta', 'equilibrium_distribution_function',
-        'data',
-        '_distribution',
-        'collision_integral', 'collision_integrals',
-        'T', 'aT', 'params',
-        'grid'
-    ]
-
     def set_params(self, params):
         """ Set internal parameters using arguments or default values """
         self.params = params
@@ -255,7 +244,6 @@ class DistributionParticle(AbstractParticle):
         return numpy.vectorize(self.calculate_collision_integral,
                                otypes=[numpy.float_])(self.grid.TEMPLATE)
 
-    @trace_unhandled_exceptions
     def calculate_collision_integral(self, p0):
         """ ### Particle collisions integration """
 
