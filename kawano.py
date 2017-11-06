@@ -60,10 +60,10 @@ def run(data_folder, input="s4.dat", output="kawano_output.dat"):
 @numpy.vectorize
 def _rate1(y):
     """ n + ν_e ⟶  e + p """
-    E_e = q*a + y
-    if E_e < m_e*a:
+    E_e = q * a + y
+    if E_e < m_e * a:
         return 0.
-    y_e = numpy.sqrt(E_e**2 - (m_e*a)**2)
+    y_e = numpy.sqrt(E_e**2 - (m_e * a)**2)
     return (y**2 * y_e * E_e
             * (1. - particles.electron.distribution(y_e)) * particles.neutrino.distribution(y))
 
@@ -71,10 +71,10 @@ def _rate1(y):
 @numpy.vectorize
 def _rate2(y):
     """ e + p ⟶  n + ν_e """
-    E_e = q*a + y
-    if E_e < m_e*a:
+    E_e = q * a + y
+    if E_e < m_e * a:
         return 0.
-    y_e = numpy.sqrt(E_e**2 - (m_e*a)**2)
+    y_e = numpy.sqrt(E_e**2 - (m_e * a)**2)
     return (y**2 * y_e * E_e
             * particles.electron.distribution(y_e) * (1. - particles.neutrino.distribution(y)))
 
@@ -82,10 +82,10 @@ def _rate2(y):
 @numpy.vectorize
 def _rate3(y):
     """ n ⟶  e + ν_e' + p """
-    E_e = q*a - y
-    if E_e < m_e*a:
+    E_e = q * a - y
+    if E_e < m_e * a:
         return 0.
-    y_e = numpy.sqrt(E_e**2 - (m_e*a)**2)
+    y_e = numpy.sqrt(E_e**2 - (m_e * a)**2)
     return (y**2 * y_e * E_e
             * (1. - particles.electron.distribution(y_e))
             * (1. - particles.neutrino.distribution(y)))
@@ -94,10 +94,10 @@ def _rate3(y):
 @numpy.vectorize
 def _rate4(y):
     """ e + ν_e' + p ⟶  n """
-    E_e = q*a - y
-    if E_e < m_e*a:
+    E_e = q * a - y
+    if E_e < m_e * a:
         return 0.
-    y_e = numpy.sqrt(E_e**2 - (m_e*a)**2)
+    y_e = numpy.sqrt(E_e**2 - (m_e * a)**2)
     return (y**2 * y_e * E_e
             * particles.electron.distribution(y_e) * particles.neutrino.distribution(y))
 
@@ -105,10 +105,10 @@ def _rate4(y):
 @numpy.vectorize
 def _rate5(y):
     """ n + e' ⟶  ν_e' + p """
-    E_e = -q*a + y
-    if E_e < m_e*a:
+    E_e = -q * a + y
+    if E_e < m_e * a:
         return 0.
-    y_e = numpy.sqrt(E_e**2 - (m_e*a)**2)
+    y_e = numpy.sqrt(E_e**2 - (m_e * a)**2)
     return (y**2 * y_e * E_e
             * particles.electron.distribution(y_e) * (1. - particles.neutrino.distribution(y)))
 
@@ -116,10 +116,10 @@ def _rate5(y):
 @numpy.vectorize
 def _rate6(y):
     """ ν_e' + p ⟶  n + e' """
-    E_e = -q*a + y
-    if E_e < m_e*a:
+    E_e = -q * a + y
+    if E_e < m_e * a:
         return 0.
-    y_e = numpy.sqrt(E_e**2 - (m_e*a)**2)
+    y_e = numpy.sqrt(E_e**2 - (m_e * a)**2)
 
     return (y**2 * y_e * E_e
             * (1. - particles.electron.distribution(y_e)) * particles.neutrino.distribution(y))
@@ -135,11 +135,11 @@ def baryonic_rates(_a):
     for integrand, bounds in [
             (_rate1, (grid.MIN_MOMENTUM, grid.MAX_MOMENTUM)),
             (_rate2, (grid.MIN_MOMENTUM, grid.MAX_MOMENTUM)),
-            (_rate3, (grid.MIN_MOMENTUM, (q - m_e)*a)),
-            (_rate4, (grid.MIN_MOMENTUM, (q - m_e)*a)),
-            (_rate5, ((q + m_e)*a, grid.MAX_MOMENTUM)),
-            (_rate6, ((q + m_e)*a, grid.MAX_MOMENTUM))]:
-
+            (_rate3, (grid.MIN_MOMENTUM, (q - m_e) * a)),
+            (_rate4, (grid.MIN_MOMENTUM, (q - m_e) * a)),
+            (_rate5, ((q + m_e) * a, grid.MAX_MOMENTUM)),
+            (_rate6, ((q + m_e) * a, grid.MAX_MOMENTUM))
+    ]:
         if bounds[0] < bounds[1]:
             data.append(CONST.rate_normalization / a**5
                         * integrate_1D(integrand, bounds=bounds)[0])
@@ -157,9 +157,9 @@ heading = [
     ["t", 's', UNITS.s],
     ["x", 'MeV', UNITS.MeV],
     ["Tg", '10^9K', UNITS.K9],
-    ["dTg/dt", '10^9K/s', UNITS.K9/UNITS.s],
+    ["dTg/dt", '10^9K/s', UNITS.K9 / UNITS.s],
     ["rho_tot", 'g/cm^3', UNITS.g_cm3],
-    ["H", '1/s', 1/UNITS.s],
+    ["H", '1/s', 1 / UNITS.s],
     ["n nue->p e", 'MeV^5', UNITS.MeV**5],
     ["p e->n nue", 'MeV^5', UNITS.MeV**5],
     ["n->p e nue", 'MeV^5', UNITS.MeV**5],
