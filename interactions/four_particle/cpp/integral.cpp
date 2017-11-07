@@ -50,8 +50,8 @@ double energy(double y, double mass=0) {
 }
 
 
-int binary_find(const std::vector<double> &grid, unsigned int size, double x) {
-    unsigned int head = 0, tail = size - 1;
+int binary_find(const std::vector<dbl> &grid, dbl x) {
+    unsigned int head = 0, tail = grid.size() - 1;
     unsigned int middle;
 
     while (tail - head > 1) {
@@ -65,7 +65,7 @@ int binary_find(const std::vector<double> &grid, unsigned int size, double x) {
         }
     }
 
-    if (grid[tail] == x) {
+    if (grid[tail] <= x) {
         return tail;
     }
     return head;
