@@ -9,33 +9,34 @@
 
 namespace py = pybind11;
 using namespace pybind11::literals;
-typedef py::array_t<double> npdouble;
+typedef double dbl;
+typedef py::array_t<dbl> npdbl;
 
 
 struct M_t {
-    M_t(std::array<int, 4> order, double K1, double K2)
+    M_t(std::array<int, 4> order, dbl K1, dbl K2)
         : order(order), K1(K1), K2(K2) {}
     std::array<int, 4> order;
-    double K1;
-    double K2;
+    dbl K1;
+    dbl K2;
 };
 
 struct grid_t {
-    grid_t(std::vector<double> grid, std::vector<double> distribution, int size)
+    grid_t(std::vector<dbl> grid, std::vector<dbl> distribution, int size)
         : grid(grid), distribution(distribution), size(size) {}
-    std::vector<double> grid;
-    std::vector<double> distribution;
+    std::vector<dbl> grid;
+    std::vector<dbl> distribution;
     int size;
 };
 
 struct particle_t {
-    particle_t(int eta, double m, grid_t grid, int in_equilibrium, double aT)
+    particle_t(int eta, dbl m, grid_t grid, int in_equilibrium, dbl aT)
         : eta(eta), m(m), grid(grid), in_equilibrium(in_equilibrium), aT(aT) {}
     int eta;
-    double m;
+    dbl m;
     grid_t grid;
     int in_equilibrium;
-    double aT;
+    dbl aT;
 };
 
 struct reaction_t {
@@ -44,7 +45,7 @@ struct reaction_t {
     int side;
 };
 
-double energy(double y, double mass=0) {
+dbl energy(dbl y, dbl mass=0) {
     return sqrt(y*y + mass*mass);
 }
 
@@ -71,14 +72,14 @@ int binary_find(const std::vector<dbl> &grid, dbl x) {
 }
 
 
-double distribution_interpolation(const std::vector<double> &grid,
-                                  const std::vector<double> &distribution,
-                                  double p, double m=0, int eta=1) {
+dbl distribution_interpolation(const std::vector<dbl> &grid,
+                               const std::vector<dbl> &distribution,
+                               dbl p, dbl m=0, int eta=1) {
 
-    double p_low(-1), p_high(-1);
+    dbl p_low(-1), p_high(-1);
     unsigned int i(0), i_low(0), i_high(0);
 
-    i = binary_find(grid, grid.size(), p);
+    i = binary_find(grid, p);
     if (grid[i] == p) {
         return distribution[i];
     }
@@ -91,7 +92,7 @@ double distribution_interpolation(const std::vector<double> &grid,
     i_high = i + 1;
     p_high = grid[i_high];
 
-    double E_p, E_low, E_high, g_high, g_low, g;
+    dbl E_p, E_low, E_high, g_high, g_low, g;
 
     // === Exponential interpolation ===
     E_p = energy(p, m);
@@ -133,7 +134,7 @@ double distribution_interpolation(const std::vector<double> &grid,
 }
 
 
-double D1(double q1, double q2, double q3, double q4) {
+dbl D1(dbl q1, dbl q2, dbl q3, dbl q4) {
     /* Dimensionality: energy
 
         \begin{align}
@@ -162,7 +163,7 @@ double D1(double q1, double q2, double q3, double q4) {
     return q2;
 }
 
-double D2(double q1, double q2, double q3, double q4) {
+dbl D2(dbl q1, dbl q2, dbl q3, dbl q4) {
     /* Dimensionality: pow(energy, 3)
 
         \begin{align}
@@ -183,7 +184,7 @@ double D2(double q1, double q2, double q3, double q4) {
 
     if (q1 + q2 >= q3 + q4) {
         if (q1 + q4 >= q2 + q3) {
-            double a = q1 - q2;
+            dbl a = q1 - q2;
             return (
                 a * (pow(a, 2) - 3. * (pow(q3, 2) + pow(q4, 2)))
                 + 2. * (pow(q3, 3) + pow(q4, 3))
@@ -197,7 +198,7 @@ double D2(double q1, double q2, double q3, double q4) {
             return q2 * (3. * (pow(q3, 2) + pow(q4, 2) - pow(q1, 2)) - pow(q2, 2)) / 6.;
         }
         else {
-            double a = q1 + q2;
+            dbl a = q1 + q2;
             return (
                 a * (3. * (pow(q3, 2) + pow(q4, 2)) - pow(a, 2))
                 + 2. * (pow(q4, 3) - pow(q3, 3))
@@ -207,7 +208,7 @@ double D2(double q1, double q2, double q3, double q4) {
 }
 
 
-double D3(double q1, double q2, double q3, double q4) {
+dbl D3(dbl q1, dbl q2, dbl q3, dbl q4) {
     /* Dimensionality: pow(energy, 5)
 
         \begin{align}
@@ -259,8 +260,8 @@ double D3(double q1, double q2, double q3, double q4) {
 }
 
 
-double D(const std::array<double, 4> &p, const std::array<double, 4> &E, const std::array<double, 4> &m,
-         double K1, double K2,
+dbl D(const std::array<dbl, 4> &p, const std::array<dbl, 4> &E, const std::array<dbl, 4> &m,
+         dbl K1, dbl K2,
          const std::array<int, 4> &order, const std::array<int, 4> &sides) {
     /* Dimensionality: energy */
 
@@ -273,7 +274,7 @@ double D(const std::array<double, 4> &p, const std::array<double, 4> &E, const s
     sksl = sides[k] * sides[l];
     sisjsksl = sides[i] * sides[j] * sides[k] * sides[l];
 
-    double result = 0.;
+    dbl result = 0.;
 
     if (K1 != 0.) {
         result += K1 * (E[0]*E[1]*E[2]*E[3] * D1(p[0], p[1], p[2], p[3]) + sisjsksl * D3(p[0], p[1], p[2], p[3]));
@@ -290,7 +291,7 @@ double D(const std::array<double, 4> &p, const std::array<double, 4> &E, const s
 }
 
 
-double Db1(double q2, double q3, double q4) {
+dbl Db1(dbl q2, dbl q3, dbl q4) {
     if ((q2 + q3 > q4) && (q2 + q4 > q3) && (q3 + q4 > q2)) {
         return 1.;
     }
@@ -298,15 +299,15 @@ double Db1(double q2, double q3, double q4) {
 }
 
 
-double Db2(double q2, double q3, double q4) {
+dbl Db2(dbl q2, dbl q3, dbl q4) {
     if ((q2 + q3 > q4) && (q2 + q4 > q3) && (q3 + q4 > q2)) {
         return 0.5 * (pow(q3, 2) + pow(q4, 2) - pow(q2, 2));
     }
     return 0.;
 }
 
-double Db(const std::array<double, 4> &p, const std::array<double, 4> &E, const std::array<double, 4> &m,
-          double K1, double K2,
+dbl Db(const std::array<dbl, 4> &p, const std::array<dbl, 4> &E, const std::array<dbl, 4> &m,
+          dbl K1, dbl K2,
           const std::array<int, 4> &order, const std::array<int, 4> &sides) {
     /* Dimensionality: energy */
 
@@ -319,7 +320,7 @@ double Db(const std::array<double, 4> &p, const std::array<double, 4> &E, const 
     sisj = sides[i] * sides[j];
     sksl = sides[k] * sides[l];
 
-    double result(0.), subresult(0.);
+    dbl result(0.), subresult(0.);
 
     if (K1 != 0.) {
         subresult = E[1]*E[2]*E[3] * Db1(p[1], p[2], p[3]);
@@ -362,7 +363,7 @@ double Db(const std::array<double, 4> &p, const std::array<double, 4> &E, const 
     \end{align}
 */
 
-double F_A(const std::vector<reaction_t> &reaction, const std::array<double, 4> &f, int skip_index=-1) {
+dbl F_A(const std::vector<reaction_t> &reaction, const std::array<dbl, 4> &f, int skip_index=-1) {
     /*
     Forward reaction distribution functional term
 
@@ -373,7 +374,7 @@ double F_A(const std::vector<reaction_t> &reaction, const std::array<double, 4> 
     :param skip_index: Particle to skip in the expression
     */
 
-    double temp(-1.);
+    dbl temp(-1.);
 
     for (int i = 0; i < 4; ++i) {
         if (i != skip_index) {
@@ -391,7 +392,7 @@ double F_A(const std::vector<reaction_t> &reaction, const std::array<double, 4> 
     return temp;
 }
 
-double F_B(const std::vector<reaction_t> &reaction, const std::array<double, 4> &f, int skip_index=-1) {
+dbl F_B(const std::vector<reaction_t> &reaction, const std::array<dbl, 4> &f, int skip_index=-1) {
     /*
     Backward reaction distribution functional term
 
@@ -402,7 +403,7 @@ double F_B(const std::vector<reaction_t> &reaction, const std::array<double, 4> 
     :param skip_index: Particle to skip in the expression
     */
 
-    double temp(1.);
+    dbl temp(1.);
 
     for (int i = 0; i < 4; ++i) {
         if (i != skip_index) {
@@ -439,24 +440,24 @@ double F_B(const std::vector<reaction_t> &reaction, const std::array<double, 4> 
 $^{(i)}$ in $\mathcal{F}^{(i)}$ means that the distribution function $f_i$ was omitted in the\
 corresponding expression. $\pm_j$ represents the $\eta$ value of the particle $j$.
 */
-double F_f(const std::vector<reaction_t> &reaction, const std::array<double, 4> &f) {
+dbl F_f(const std::vector<reaction_t> &reaction, const std::array<dbl, 4> &f) {
     /* Variable part of the distribution functional */
     return F_A(reaction, f, 0) - reaction[0].specie.eta * F_B(reaction, f, 0);
 }
 
-double F_1(const std::vector<reaction_t> &reaction, const std::array<double, 4> &f) {
+dbl F_1(const std::vector<reaction_t> &reaction, const std::array<dbl, 4> &f) {
     /* Constant part of the distribution functional */
     return F_B(reaction, f, 0);
 }
 
 
-double in_bounds(const std::array<double, 4> p, const std::array<double, 4> E, const std::array<double, 4> m) {
+dbl in_bounds(const std::array<dbl, 4> p, const std::array<dbl, 4> E, const std::array<dbl, 4> m) {
     /* $D$-functions involved in the interactions imply a cut-off region for the collision\
         integrand. In the general case of arbitrary particle masses, this is a set of \
         irrational inequalities that can hardly be solved (at least, Wolfram Mathematica does\
         not succeed in this). To avoid excessive computations, it is convenient to do an early\
         `return 0` when the particles kinematics lay out of the cut-off region */
-    double q1, q2, q3, q4;
+    dbl q1, q2, q3, q4;
     q1 = p[0];
     q2 = p[1];
     q3 = p[2];
@@ -468,8 +469,9 @@ double in_bounds(const std::array<double, 4> p, const std::array<double, 4> E, c
     return (E[3] >= m[3] && q1 <= q2 + q3 + q4 && q3 <= q1 + q2 + q4);
 }
 
-std::pair<npdouble, npdouble> integrand(
-    double p0, npdouble &p1_buffer, npdouble &p2_buffer,
+
+std::pair<npdbl, npdbl> integrand(
+    dbl p0, npdbl &p1_buffer, npdbl &p2_buffer,
     const std::vector<reaction_t> &reaction, const std::vector<M_t> &Ms
 ) {
     /*
@@ -611,13 +613,13 @@ PYBIND11_MODULE(integral, m) {
           "reaction"_a, "Ms"_a);
 
     py::class_<M_t>(m, "M_t")
-        .def(py::init<std::array<int, 4>, double, double>(),
+        .def(py::init<std::array<int, 4>, dbl, dbl>(),
              "order"_a, "K1"_a=0., "K2"_a=0.);
     py::class_<grid_t>(m, "grid_t")
-        .def(py::init<std::vector<double>, std::vector<double>, int>(),
+        .def(py::init<std::vector<dbl>, std::vector<dbl>, int>(),
              "grid"_a, "distribution"_a, "size"_a);
     py::class_<particle_t>(m, "particle_t")
-        .def(py::init<int, double, grid_t, int, double>(),
+        .def(py::init<int, dbl, grid_t, int, dbl>(),
              "eta"_a, "m"_a, "grid"_a, "in_equilibrium"_a, "aT"_a);
     py::class_<reaction_t>(m, "reaction_t")
         .def(py::init<particle_t, int>(),
