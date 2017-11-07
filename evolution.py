@@ -203,7 +203,7 @@ class Universe(object):
 
         with utils.printoptions(precision=3, linewidth=100):
             for particle in particles:
-                with (utils.benchmark(lambda: "δf/f ({})".format(particle.symbol),
+                with (utils.benchmark(lambda: "δf/f ({}) = {}".format(particle.symbol, particle.collision_integral / particle._distribution * self.params.h),
                       self.log_throttler.output)):
                     particle.collision_integral = particle.integrate_collisions()
 
