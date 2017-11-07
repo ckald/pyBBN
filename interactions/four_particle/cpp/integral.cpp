@@ -587,11 +587,9 @@ PYBIND11_MODULE(integral, m) {
     m.def("distribution_interpolation", &distribution_interpolation,
           "Exponential interpolation of distribution function",
           "grid"_a, "distribution"_a,
-          "p"_a, "m"_a=0, "eta"_a=1,
-          py::arg().noconvert());
+          "p"_a, "m"_a=0, "eta"_a=1);
     m.def("binary_find", &binary_find,
-          "grid"_a, "x"_a,
-          py::arg().noconvert());
+          "grid"_a, "x"_a);
 
     m.def("D1", &D1);
     m.def("D2", &D2);
@@ -604,8 +602,7 @@ PYBIND11_MODULE(integral, m) {
           "K1"_a, "K2"_a, "order"_a, "sides"_a);
     m.def("integrand", &integrand,
           "p0"_a, "p1s"_a, "p2s"_a,
-          "reaction"_a, "Ms"_a,
-          py::arg().noconvert());
+          "reaction"_a, "Ms"_a);
 
     py::class_<M_t>(m, "M_t")
         .def(py::init<std::array<int, 4>, dbl, dbl>(),
