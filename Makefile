@@ -9,5 +9,4 @@ clean:
 	cd interactions/four_particle/cpp && rm -rf *.o *.so *.c *.so.DSYM
 
 test:
-	pip3 install -U nose
 	python3 -m "nose" tests/unit
