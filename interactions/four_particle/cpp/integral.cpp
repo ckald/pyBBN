@@ -483,8 +483,8 @@ std::pair<npdbl, npdbl> integrand(
     }
     size_t length = p1s.size();
 
-    auto integrands_1_buffer = npdouble(length),
-         integrands_f_buffer = npdouble(length);
+    auto integrands_1_buffer = npdbl(length),
+         integrands_f_buffer = npdbl(length);
 
     auto integrands_1 = integrands_1_buffer.mutable_unchecked<1>(),
          integrands_f = integrands_f_buffer.mutable_unchecked<1>();
