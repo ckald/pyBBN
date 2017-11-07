@@ -79,23 +79,19 @@ dbl distribution_interpolation(const std::vector<dbl> &grid,
                                const std::vector<dbl> &distribution,
                                dbl p, dbl m=0, int eta=1) {
 
-    dbl p_low, p_high;
-    unsigned int i_low, i_high;
-
-    std::tie(i_low, i_high) = binary_find(grid, p);
-    if(i_low == i_high) {
-        return distribution[i_low];
+    unsigned int i_lo, i_hi;
+    std::tie(i_lo, i_hi) = binary_find(grid, p);
+    if(i_lo == i_hi) {
+        return distribution[i_lo];
     }
 
-    p_low = grid[i_low];
-    p_high = grid[i_high];
-
-    dbl E_p, E_low, E_high, g_high, g_low, g;
+    dbl p_lo = grid[i_lo],
+        p_hi = grid[i_hi];
 
     // === Exponential interpolation ===
-    E_p = energy(p, m);
-    E_low = energy(p_low, m);
-    E_high = energy(p_high, m);
+    dbl E_p  = energy(p, m),
+        E_lo = energy(p_lo, m),
+        E_hi = energy(p_hi, m);
 
     /*
     \begin{equation}
@@ -104,24 +100,24 @@ dbl distribution_interpolation(const std::vector<dbl> &grid,
     \end{equation}
     */
 
-    g_high = distribution[i_high];
-    g_low = distribution[i_low];
+    dbl g_hi = distribution[i_hi],
+        g_lo = distribution[i_lo];
 
-    g_high = (1. / g_high - eta);
-    if (g_high > 0) {
-        g_high = log(g_high);
+    g_hi = (1. / g_hi - eta);
+    if (g_hi > 0) {
+        g_hi = log(g_hi);
     } else {
         return 0.;
     }
 
-    g_low = (1. / g_low - eta);
-    if (g_low > 0) {
-        g_low = log(g_low);
+    g_lo = (1. / g_lo - eta);
+    if (g_lo > 0) {
+        g_lo = log(g_lo);
     } else {
         return 0.;
     }
 
-    g = ((E_p - E_low) * g_high + (E_high - E_p) * g_low) / (E_high - E_low);
+    dbl g = ((E_p - E_lo) * g_hi + (E_hi - E_p) * g_lo) / (E_hi - E_lo);
 
     g = 1. / (exp(g) + eta);
     if (isnan(g)) {
