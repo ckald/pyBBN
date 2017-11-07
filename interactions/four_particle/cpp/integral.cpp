@@ -485,15 +485,16 @@ std::pair<npdbl, npdbl> integrand(
     if (p1s.shape(0) != p2s.shape(0)) {
         throw std::runtime_error("p1s and p2s must be of the same size!");
     }
-    size_t length = p1s.size();
+    size_t p1_length = p1s.size(),
+           p2_length = p2s.size();
 
-    auto integrands_1_buffer = npdouble(length),
-         integrands_f_buffer = npdouble(length);
+    auto integrands_1_buffer = npdbl(p1_length * p2_length),
+         integrands_f_buffer = npdbl(p1_length * p2_length);
 
     auto integrands_1 = integrands_1_buffer.mutable_unchecked<1>(),
          integrands_f = integrands_f_buffer.mutable_unchecked<1>();
 
-    std::array<double, 4> m;
+    std::array<dbl, 4> m;
     std::array<int, 4> sides;
 
     for (int i = 0; i < 4; ++i) {
@@ -501,88 +502,85 @@ std::pair<npdbl, npdbl> integrand(
         m[i] = reaction[i].specie.m;
     }
 
-    #pragma omp parallel for default(none) shared(length, p0, p1s, p2s, m, sides, Ms, reaction, integrands_1, integrands_f)
-    for (size_t i = 0; i < length; ++i) {
-        double p1 = p1s(i),
-               p2 = p2s(i);
+    #pragma omp parallel for default(none) shared(p1_length, p2_length, p0, p1s, p2s, m, sides, Ms, reaction, integrands_1, integrands_f)
+    for (size_t p1i = 0; p1i < p1_length; ++p1i) {
+        for (size_t p2i = 0; p2i < p2_length; ++p2i) {
+            dbl p1 = p1s(p1i),
+                p2 = p2s(p2i);
 
-        integrands_1(i) = 0.;
-        integrands_f(i) = 0.;
+            size_t i = p1i + p2i * p1_length;
 
-        if (p2 > p0 + p1) { continue; }
+            integrands_1(i) = 0.;
+            integrands_f(i) = 0.;
 
-        std::array<double, 4> p, E;
-        p[0] = p0;
-        p[1] = p1;
-        p[2] = p2;
-        p[3] = 0.;
-        E[3] = 0.;
-        for (int j = 0; j < 3; ++j) {
-            E[j] = energy(p[j], m[j]);
-            E[3] += sides[j] * E[j];
-        }
+            if (p2 > p0 + p1) { continue; }
 
-        E[3] *= -sides[3];
-
-        if (E[3] < m[3]) { continue; }
-
-        p[3] = sqrt(pow(E[3], 2) - pow(m[3], 2));
-
-        if (!in_bounds(p, E, m)) { continue; }
-
-        double temp = 1.;
-
-        // Avoid rounding errors and division by zero
-        for (int k = 1; k < 3; ++k) {
-            if (m[k] != 0.) {
-                temp *= p[k] / E[k];
+            std::array<dbl, 4> p, E;
+            p[0] = p0;
+            p[1] = p1;
+            p[2] = p2;
+            p[3] = 0.;
+            E[3] = 0.;
+            for (int j = 0; j < 3; ++j) {
+                E[j] = energy(p[j], m[j]);
+                E[3] += sides[j] * E[j];
             }
-        }
 
-        if (temp == 0.) { continue; }
+            E[3] *= -sides[3];
 
-        double ds = 0.;
-        if (p[0] != 0.) {
-            for (const M_t &M : Ms) {
-                ds += D(p, E, m, M.K1, M.K2, M.order, sides);
-            }
-            ds /= p[0] * E[0];
-        } else {
-            for (const M_t &M : Ms) {
-                ds += Db(p, E, m, M.K1, M.K2, M.order, sides);
-            }
-        }
-        temp *= ds;
+            if (E[3] < m[3]) { continue; }
 
-        if (temp == 0.) { continue; }
+            p[3] = sqrt(pow(E[3], 2) - pow(m[3], 2));
 
-        std::array<double, 4> f;
-        // The distribution function of the main particle is not required here
-        f[0] = -1;
-        for (int k = 1; k < 4; ++k) {
-            if (reaction[k].specie.in_equilibrium) {
-                errno = 0;
-                f[k] = 1. / (
-                    exp(energy(p[k], reaction[k].specie.m) / reaction[k].specie.aT)
-                    + reaction[k].specie.eta
-                );
-                if (errno == ERANGE) {
-                    printf("exp = %f overflows\n", f[k]);
-                    f[k] = 0.;
+            if (!in_bounds(p, E, m)) { continue; }
+
+            dbl temp = 1.;
+
+            // Avoid rounding errors and division by zero
+            for (int k = 1; k < 3; ++k) {
+                if (m[k] != 0.) {
+                    temp *= p[k] / E[k];
                 }
-
-            } else {
-                f[k] = distribution_interpolation(
-                    reaction[k].specie.grid.grid,
-                    reaction[k].specie.grid.distribution,
-                    p[k], reaction[k].specie.m, reaction[k].specie.eta
-                );
             }
+
+            if (temp == 0.) { continue; }
+
+            dbl ds = 0.;
+            if (p[0] != 0.) {
+                for (const M_t &M : Ms) {
+                    ds += D(p, E, m, M.K1, M.K2, M.order, sides);
+                }
+                ds /= p[0] * E[0];
+            } else {
+                for (const M_t &M : Ms) {
+                    ds += Db(p, E, m, M.K1, M.K2, M.order, sides);
+                }
+            }
+            temp *= ds;
+
+            if (temp == 0.) { continue; }
+
+            std::array<dbl, 4> f;
+            // The distribution function of the main particle is not required here
+            f[0] = -1;
+            for (int k = 1; k < 4; ++k) {
+                if (reaction[k].specie.in_equilibrium) {
+                    f[k] = 1. / (
+                        exp(energy(p[k], reaction[k].specie.m) / reaction[k].specie.aT)
+                        + reaction[k].specie.eta
+                    );
+                } else {
+                    f[k] = distribution_interpolation(
+                        reaction[k].specie.grid.grid,
+                        reaction[k].specie.grid.distribution,
+                        p[k], reaction[k].specie.m, reaction[k].specie.eta
+                    );
+                }
+            }
+
+            integrands_1(i) = temp * F_1(reaction, f);
+            integrands_f(i) = temp * F_f(reaction, f);
         }
-
-        integrands_1(i) = temp * F_1(reaction, f);
-        integrands_f(i) = temp * F_f(reaction, f);
-
     }
 
     return std::make_pair(integrands_1_buffer, integrands_f_buffer);

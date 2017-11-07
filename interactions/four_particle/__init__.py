@@ -124,24 +124,16 @@ class FourParticleIntegral(BoltzmannIntegral):
             self.cMs = [M_t(list(M.order), M.K1, M.K2) for M in self.Ms]
 
         def prepared_integrand(p1, p2):
-            integrand_1, integrand_f = integrand(p0, p1.ravel(), p2.ravel(),
-                                                 self.creaction, self.cMs)
-            return numpy.reshape(integrand_1, p1.shape), numpy.reshape(integrand_f, p1.shape)
+            integrand_1, integrand_f = integrand(p0, p1, p2, self.creaction, self.cMs)
+            return numpy.reshape(integrand_1, p1.shape + p2.shape), numpy.reshape(integrand_f, p1.shape + p2.shape)
 
         params = self.particle.params
 
         constant = (params.m / params.x)**5 / 64. / numpy.pi**3
 
-        if environment.get('SIMPSONS_INTEGRATION'):
-            integral_1, integral_f = paired_integrators.integrate_2D_simpsons(
-                prepared_integrand(*numpy.meshgrid(self.grids[0].TEMPLATE, self.grids[1].TEMPLATE)),
-                bounds=bounds,
-                grids=[self.grids[0].TEMPLATE, self.grids[1].TEMPLATE]
-            )
-        else:
-            integral_1, integral_f = paired_integrators.integrate_2D(
-                prepared_integrand,
-                bounds=bounds
-            )
+        integral_1, integral_f = paired_integrators.integrate_2D(
+            prepared_integrand,
+            bounds=bounds
+        )
 
         return constant * integral_1, constant * integral_f
