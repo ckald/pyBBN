@@ -50,15 +50,13 @@ dbl energy(dbl y, dbl mass=0) {
 }
 
 
-int binary_find(const std::vector<dbl> &grid, dbl x) {
-    unsigned int head = 0, tail = grid.size() - 1;
+std::pair<unsigned int, unsigned int> binary_find(const std::vector<dbl> &grid, dbl x) {
+    unsigned int head(0), tail(grid.size() - 1);
     unsigned int middle;
 
     while (tail - head > 1) {
         middle = (tail + head) / 2;
-        if (grid[middle] == x) {
-            return middle;
-        } else if (grid[middle] > x) {
+        if (grid[middle] > x) {
             tail = middle;
         } else {
             head = middle;
@@ -66,9 +64,14 @@ int binary_find(const std::vector<dbl> &grid, dbl x) {
     }
 
     if (grid[tail] <= x) {
-        return tail;
+        return std::make_pair(tail, tail);
     }
-    return head;
+
+    if (grid[head] >= x) {
+        return std::make_pair(head, head);
+    }
+
+    return std::make_pair(head, tail);
 }
 
 
@@ -76,20 +79,15 @@ dbl distribution_interpolation(const std::vector<dbl> &grid,
                                const std::vector<dbl> &distribution,
                                dbl p, dbl m=0, int eta=1) {
 
-    dbl p_low(-1), p_high(-1);
-    unsigned int i(0), i_low(0), i_high(0);
+    dbl p_low, p_high;
+    unsigned int i_low, i_high;
 
-    i = binary_find(grid, p);
-    if (grid[i] == p) {
-        return distribution[i];
+    std::tie(i_low, i_high) = binary_find(grid, p);
+    if(i_low == i_high) {
+        return distribution[i_low];
     }
 
-    // Determine the closest grid points
-
-    i_low = i;
     p_low = grid[i_low];
-
-    i_high = i + 1;
     p_high = grid[i_high];
 
     dbl E_p, E_low, E_high, g_high, g_low, g;

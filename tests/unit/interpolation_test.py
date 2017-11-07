@@ -47,21 +47,22 @@ def binary_search_test():
 
     # Test a basic case
     haystack = numpy.array(range(100), dtype=numpy.float_)
-    assert binary_find(haystack, 50.) == 50  # (head=50, tail=50)
+    assert binary_find(haystack, 50.) == (50, 50)  # (head=50, tail=50)
 
     # Test a case with odd len
     haystack = numpy.array(range(99), dtype=numpy.float_)
-    assert binary_find(haystack, 50.) == 50  # (50, 50)
+    assert binary_find(haystack, 50.) == (50, 50)  # (50, 50)
 
     # Range test case
-    assert binary_find(haystack, 3.1) == 3  # (3, 4)
-    assert binary_find(haystack, 97.9) == 97  # (97, 98)
-    assert binary_find(haystack, 0.1) == 0  # (0, 1)
+    assert binary_find(haystack, 3.1) == (3, 4)  # (3, 4)
+    assert binary_find(haystack, 97.9) == (97, 98)  # (97, 98)
+    assert binary_find(haystack, 0.1) == (0, 1)  # (0, 1)
 
     # Test the case with needle outside the haystack range
-    assert binary_find(haystack, -1.) == 0  # (0, 0)
-    assert binary_find(haystack, 990.) == 98  # (98, 98)
+    print(binary_find(haystack, -1.))
+    assert binary_find(haystack, -1.) == (0, 0)  # (0, 0)
+    assert binary_find(haystack, 990.) == (98, 98)  # (98, 98)
 
     # Corner cases
-    assert binary_find(haystack, 0.) == 0  # (0, 0)
-    assert binary_find(haystack, 98.) == 98  # (98, 98)
+    assert binary_find(haystack, 0.) == (0, 0)  # (0, 0)
+    assert binary_find(haystack, 98.) == (98, 98)  # (98, 98)
