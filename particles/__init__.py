@@ -331,4 +331,17 @@ class DistributionParticle(AbstractParticle):
         return self._distribution
 
 
+class AdaptiveDistributionParticle(DistributionParticle):
+    energy_limit = numpy.inf
+
+    def integrate_collisions(self):
+        collision_integral = self.grid.TEMPLATE.copy()
+        for ix, p0 in enumerate(self.grid.TEMPLATE):
+            if p0 < self.energy_limit * self.params.a:
+                collision_integral[ix] = self.calculate_collision_integral(p0)
+            else:
+                collision_integral[ix] = 0
+        return collision_integral
+
+
 Particle = DistributionParticle
