@@ -2,7 +2,6 @@
 #include <cmath>
 #include <array>
 #include <vector>
-#include <errno.h>
 
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
@@ -111,36 +110,21 @@ double distribution_interpolation(const std::vector<double> &grid,
 
     g_high = (1. / g_high - eta);
     if (g_high > 0) {
-        errno = 0;
         g_high = log(g_high);
-        if (errno == ERANGE) {
-            printf("log = %f overflows\n", g_high);
-            return 0.;
-        }
     } else {
         return 0.;
     }
 
     g_low = (1. / g_low - eta);
     if (g_low > 0) {
-        errno = 0;
         g_low = log(g_low);
-        if (errno == ERANGE) {
-            printf("log = %f overflows\n", g_low);
-            return 0.;
-        }
     } else {
         return 0.;
     }
 
     g = ((E_p - E_low) * g_high + (E_high - E_p) * g_low) / (E_high - E_low);
 
-    errno = 0;
     g = 1. / (exp(g) + eta);
-    if (errno == ERANGE) {
-        printf("exp = %f overflows\n", g);
-        return 0.;
-    }
     if (isnan(g)) {
         return 0.;
     }
