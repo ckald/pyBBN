@@ -48,21 +48,40 @@ def binary_search_test():
     # Test a basic case
     haystack = numpy.array(range(100), dtype=numpy.float_)
     assert binary_find(haystack, 50.) == (50, 50)  # (head=50, tail=50)
+    assert binary_find(haystack, 49.) == (49, 49)
+
+     # Range test case
+    assert binary_find(haystack, 3.1) == (3, 4)
+    assert binary_find(haystack, 4.2) == (4, 5)
+    assert binary_find(haystack, 96.5) == (96, 97)
+    assert binary_find(haystack, 97.9) == (97, 98)
+    assert binary_find(haystack, 0.1) == (0, 1)
+
+    # Test the case with needle outside the haystack range
+    assert binary_find(haystack, -1.) == (0, 0)
+    assert binary_find(haystack, 990.) == (99, 99)
+
+    # Corner cases
+    assert binary_find(haystack, 0.) == (0, 0)
+    assert binary_find(haystack, 98.) == (98, 98)
+
 
     # Test a case with odd len
     haystack = numpy.array(range(99), dtype=numpy.float_)
-    assert binary_find(haystack, 50.) == (50, 50)  # (50, 50)
+    assert binary_find(haystack, 50.) == (50, 50)
+    assert binary_find(haystack, 49.) == (49, 49)
 
     # Range test case
-    assert binary_find(haystack, 3.1) == (3, 4)  # (3, 4)
-    assert binary_find(haystack, 97.9) == (97, 98)  # (97, 98)
-    assert binary_find(haystack, 0.1) == (0, 1)  # (0, 1)
+    assert binary_find(haystack, 3.1) == (3, 4)
+    assert binary_find(haystack, 4.2) == (4, 5)
+    assert binary_find(haystack, 96.5) == (96, 97)
+    assert binary_find(haystack, 97.9) == (97, 98)
+    assert binary_find(haystack, 0.1) == (0, 1)
 
     # Test the case with needle outside the haystack range
-    print(binary_find(haystack, -1.))
-    assert binary_find(haystack, -1.) == (0, 0)  # (0, 0)
-    assert binary_find(haystack, 990.) == (98, 98)  # (98, 98)
+    assert binary_find(haystack, -1.) == (0, 0)
+    assert binary_find(haystack, 990.) == (98, 98)
 
     # Corner cases
-    assert binary_find(haystack, 0.) == (0, 0)  # (0, 0)
-    assert binary_find(haystack, 98.) == (98, 98)  # (98, 98)
+    assert binary_find(haystack, 0.) == (0, 0)
+    assert binary_find(haystack, 98.) == (98, 98)
