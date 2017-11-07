@@ -1,7 +1,7 @@
 import numpy
 from scipy.integrate import simps
 
-from common.integrators.gauss_legendre import points, weights, grid
+from common.integrators.gauss_legendre import weights, grid
 
 
 def integrate_2D_simpsons(integrands, bounds, grids):
@@ -39,7 +39,7 @@ def remap_interval(fs, x, y, bounds):
 
 def double_gaussian(fs, a, b, g, h):
 
-    x, y = points, points
+    x, y = grid
     mesh_1, mesh_f = remap_interval(fs, x, y, bounds=(a, b, g, h))
     integral_1 = numpy.dot(numpy.transpose(weights), numpy.dot(mesh_1, weights))
     integral_f = numpy.dot(numpy.transpose(weights), numpy.dot(mesh_f, weights))
