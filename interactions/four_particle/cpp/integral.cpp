@@ -611,7 +611,7 @@ PYBIND11_MODULE(integral, m) {
           "grid"_a, "distribution"_a,
           "p"_a, "m"_a=0, "eta"_a=1);
     m.def("binary_find", &binary_find,
-          "grid"_a, "size"_a, "x"_a);
+          "grid"_a, "x"_a);
 
     m.def("D1", &D1);
     m.def("D2", &D2);
