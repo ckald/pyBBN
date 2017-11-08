@@ -63,7 +63,7 @@ std::pair<unsigned int, unsigned int> binary_find(const std::vector<dbl> &grid, 
         }
     }
 
-    if (grid[tail] <= x) {
+    if (grid[tail] == x) {
         return std::make_pair(tail, tail);
     }
 
