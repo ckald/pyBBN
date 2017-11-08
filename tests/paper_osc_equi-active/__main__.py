@@ -110,7 +110,7 @@ def step_monitor(universe):
                     particle.grid.TEMPLATE / UNITS.MeV
                 ]) + '\n')
             with open(op.join(folder, particle.name.replace(' ', '_') + ".rho.txt"), 'a') as f3:
-                f3.write('## a\tT, MeV\taT, MeV\trho_nu, MeV^4\ta^3 n, MeV^3\n')
+                f3.write('## a\tt, s\tT, MeV\taT, MeV\trho_nu, MeV^4\ta^3 n, MeV^3\n')
         with open(op.join(folder, "rho_nu.txt"), 'a') as f2:
                     f2.write('# a    rho_nu' + '\n')
 
