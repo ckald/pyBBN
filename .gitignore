@@ -12,3 +12,5 @@ interactions/four_particle/*.cpp
 *.so.DSYM
 .coverage
 .cache
++slurm-*.out
++slurm-*.err
