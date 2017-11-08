@@ -108,7 +108,8 @@ class Universe(object):
             self.params.update(self.total_energy_density(), self.total_entropy())
         self.save_params()
 
-        interrupted = False
+        # TODO: `Interrupted` resulted in unexpectedly interrupted simulations
+        # interrupted = False
         while self.params.T > T_final:
             try:
                 self.log()
@@ -121,12 +122,12 @@ class Universe(object):
             except KeyboardInterrupt:
                 print("Keyboard interrupt!")
                 break
-        else:
-            interrupted = True
-            print("Simulation was interrupted.")
+        # else:
+        #     interrupted = True
+        #     print("Simulation was interrupted.")
 
         self.log()
-        if export and not interrupted:
+        if export:  # and not interrupted:
             self.export()
 
         return self.data
