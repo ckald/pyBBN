@@ -5,7 +5,8 @@ from array import array
 import environment
 from common.integrators import paired as paired_integrators
 from interactions.boltzmann import BoltzmannIntegral
-from interactions.four_particle.integral import integrand
+# from interactions.four_particle.integral import integrand
+from interactions.four_particle.cpp.integral import integrand, M_t, grid_t, particle_t, reaction_t
 
 
 class FourParticleM(object):
@@ -77,11 +78,11 @@ class FourParticleM(object):
 
 class FourParticleIntegral(BoltzmannIntegral):
 
+    creaction = None
+    cMs = None
+
     def __init__(self, **kwargs):
         super(FourParticleIntegral, self).__init__(**kwargs)
-
-        if self.grids is None:
-            self.grids = tuple([self.reaction[1].specie.grid, self.reaction[2].specie.grid])
 
     def initialize(self):
         """
@@ -91,6 +92,12 @@ class FourParticleIntegral(BoltzmannIntegral):
         if params.T > self.decoupling_temperature and not self.particle.in_equilibrium:
             self.particle.collision_integrals.append(self)
 
+        if self.grids is None:
+            self.grids = tuple([self.reaction[1].specie.grid, self.reaction[2].specie.grid])
+
+        self.creaction = None
+        self.cMs = None
+
     def integrate(self, p0, bounds=None):
         if bounds is None:
             bounds = (
@@ -98,31 +105,30 @@ class FourParticleIntegral(BoltzmannIntegral):
                 (lambda p1: self.grids[1].MIN_MOMENTUM, lambda p1: self.grids[1].MAX_MOMENTUM)
             )
 
-        cMs = [
-            {'order': array('i', M.order), 'K1': M.K1, 'K2': M.K2}
-            for M in self.Ms
-        ]
-
-        creaction = [
-            {
-                'specie': {
-                    'm': particle.specie.conformal_mass,
-                    'grid': {
-                        'grid': particle.specie.grid.TEMPLATE,
-                        'distribution': particle.specie._distribution,
-                        'size': particle.specie.grid.MOMENTUM_SAMPLES
-                    },
-                    'eta': particle.specie.eta,
-                    'in_equilibrium': int(particle.specie.in_equilibrium),
-                    'aT': particle.specie.aT
-                },
-                'side': particle.side
-            }
-            for particle in self.reaction
-        ]
+        if not self.creaction:
+            self.creaction = [
+                reaction_t(
+                    specie=particle_t(
+                        m=particle.specie.conformal_mass,
+                        grid=grid_t(
+                            grid=particle.specie.grid.TEMPLATE,
+                            distribution=particle.specie._distribution,
+                            size=particle.specie.grid.MOMENTUM_SAMPLES
+                        ),
+                        eta=int(particle.specie.eta),
+                        in_equilibrium=int(particle.specie.in_equilibrium),
+                        aT=particle.specie.aT
+                    ),
+                    side=particle.side
+                )
+                for particle in self.reaction
+            ]
+        if not self.cMs:
+            self.cMs = [M_t(list(M.order), M.K1, M.K2) for M in self.Ms]
 
         def prepared_integrand(p1, p2):
-            integrand_1, integrand_f = integrand(p0, p1.ravel(), p2.ravel(), p1.size, creaction, cMs)
+            integrand_1, integrand_f = integrand(p0, p1.ravel(), p2.ravel(),
+                                                 self.creaction, self.cMs)
             return numpy.reshape(integrand_1, p1.shape), numpy.reshape(integrand_f, p1.shape)
 
         params = self.particle.params

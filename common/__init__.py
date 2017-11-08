@@ -17,7 +17,7 @@ class UNITS(object):
         As we use natural units in the project, all units from `numericalunits` except energy units
         are useless. Here some useful units are defined in terms of `GeV`s. """
 
-    use_numericalunits = True
+    use_numericalunits = False
     eV = nu.eV if use_numericalunits else 1e-9
 
     @classmethod
@@ -265,7 +265,7 @@ class HeuristicGrid(object):
         self.BOUNDS = (self.MIN_MOMENTUM, self.MAX_MOMENTUM)
 
 
-GRID = LogSpacedGrid()
+GRID = LinearSpacedGrid()
 
 
 def theta(f):

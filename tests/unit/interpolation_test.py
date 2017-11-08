@@ -3,7 +3,8 @@ import numpy
 from common import UNITS
 from particles import Particle
 from library.SM import particles as SMP
-from interactions.four_particle.integral import binary_search
+from interactions.four_particle.cpp.integral import binary_find
+
 
 from . import setup, with_setup_args
 
@@ -46,22 +47,41 @@ def binary_search_test():
 
     # Test a basic case
     haystack = numpy.array(range(100), dtype=numpy.float_)
-    length = len(haystack)
-    assert binary_search(haystack, length, 50.) == 50  # (51, 51)
+    assert binary_find(haystack, 50.) == (50, 50)  # (head=50, tail=50)
+    assert binary_find(haystack, 49.) == (49, 49)
+
+     # Range test case
+    assert binary_find(haystack, 3.1) == (3, 4)
+    assert binary_find(haystack, 4.2) == (4, 5)
+    assert binary_find(haystack, 96.5) == (96, 97)
+    assert binary_find(haystack, 97.9) == (97, 98)
+    assert binary_find(haystack, 0.1) == (0, 1)
+
+    # Test the case with needle outside the haystack range
+    assert binary_find(haystack, -1.) == (0, 0)
+    assert binary_find(haystack, 990.) == (99, 99)
+
+    # Corner cases
+    assert binary_find(haystack, 0.) == (0, 0)
+    assert binary_find(haystack, 98.) == (98, 98)
+
 
     # Test a case with odd len
     haystack = numpy.array(range(99), dtype=numpy.float_)
-    assert binary_search(haystack, length, 50.) == 50  # (51, 51)
+    assert binary_find(haystack, 50.) == (50, 50)
+    assert binary_find(haystack, 49.) == (49, 49)
 
     # Range test case
-    assert binary_search(haystack, length, 3.1) == 3  # (4, 5)
-    assert binary_search(haystack, length, 97.9) == 97  # (98, 99)
-    assert binary_search(haystack, length, 0.1) == 0  # (1, 2)
+    assert binary_find(haystack, 3.1) == (3, 4)
+    assert binary_find(haystack, 4.2) == (4, 5)
+    assert binary_find(haystack, 96.5) == (96, 97)
+    assert binary_find(haystack, 97.9) == (97, 98)
+    assert binary_find(haystack, 0.1) == (0, 1)
 
     # Test the case with needle outside the haystack range
-    assert binary_search(haystack, length, -1.) == 0  # (1, 1)
-    assert binary_search(haystack, length, 99.) == 98  # (99, 99)
+    assert binary_find(haystack, -1.) == (0, 0)
+    assert binary_find(haystack, 990.) == (98, 98)
 
     # Corner cases
-    assert binary_search(haystack, length, 0.) == 0  # (1, 1)
-    assert binary_search(haystack, length, 98.) == 98  # (99, 99)
+    assert binary_find(haystack, 0.) == (0, 0)
+    assert binary_find(haystack, 98.) == (98, 98)

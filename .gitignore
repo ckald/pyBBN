@@ -9,5 +9,6 @@ interactions/four_particle/*.c
 interactions/four_particle/*.cpp
 *.o
 *.so
+*.so.DSYM
 .coverage
 .cache

@@ -62,6 +62,8 @@ neutrino_mu = Particle(**SMP.leptons.neutrino_mu)
 neutrino_tau = Particle(**SMP.leptons.neutrino_tau)
 sterile = Particle(**NuP.dirac_sterile_neutrino(mass))
 
+from common import LogSpacedGrid
+linear_grid = LogSpacedGrid()
 
 sterile.decoupling_temperature = T_initial
 for neutrino in [neutrino_e, neutrino_mu, neutrino_tau]:

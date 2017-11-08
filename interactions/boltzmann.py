@@ -1,18 +1,13 @@
 # -*- coding: utf-8 -*-
 import numpy
 from common import integrators
-from common.utils import PicklableObject
 
 
-class BoltzmannIntegral(PicklableObject):
+class BoltzmannIntegral:
 
     """ ## Integral
         Representation of the concrete collision integral for a specific particle \
         `Integral.reaction[0]` """
-
-    _saveable_fields = [
-        'particle', 'reaction', 'sides', 'decoupling_temperature', 'constant', 'Ms', 'grids',
-    ]
 
     reaction = None  # All particles involved
     sides = None
