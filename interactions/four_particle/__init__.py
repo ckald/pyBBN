@@ -95,6 +95,9 @@ class FourParticleIntegral(BoltzmannIntegral):
         if self.grids is None:
             self.grids = tuple([self.reaction[1].specie.grid, self.reaction[2].specie.grid])
 
+        self.creaction = None
+        self.cMs = None
+
     def integrate(self, p0, bounds=None):
         if bounds is None:
             bounds = (
