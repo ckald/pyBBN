@@ -18,7 +18,7 @@ def free_non_equilibrium_test(params, universe):
     universe.calculate_collisions()
 
     assert all(photon.collision_integral == 0), "Equilibrium particle integral is non-zero"
-    assert all(numpy.abs(neutrino_e.collision_integral * params.dx) < eps), "Integral do not cancel"
+    assert all(numpy.abs(neutrino_e.collision_integral * params.h) < eps), "Integral do not cancel"
     assert all(neutrino_mu.collision_integral == 0), "Free particle integral is non-zero"
 
     universe.update_distributions()
@@ -29,3 +29,23 @@ def free_non_equilibrium_test(params, universe):
         "Interacting particle distribution changed"
     assert all(neutrino_mu._distribution == neutrino_mu_distribution),\
         "Free particle distribution changed"
+
+
+@with_setup_args(non_equilibium_setup)
+def unit_non_equilibrium_test(params, universe):
+    params.update(universe.total_energy_density(), universe.total_entropy())
+    eps = 1e-14
+    photon, neutrino_e, neutrino_mu = universe.particles
+
+    neutrino_e_distribution = neutrino_e._distribution
+
+    universe.update_particles()
+    universe.init_interactions()
+
+    integral = neutrino_e.collision_integrals[0]
+    A, B = numpy.vectorize(integral.integrate)(neutrino_e.grid.TEMPLATE)
+    collision_integral = (A + neutrino_e._distribution * B) / params.H
+
+    universe.calculate_collisions()
+
+    assert numpy.allclose(collision_integral - neutrino_e.collision_integral, 0)
