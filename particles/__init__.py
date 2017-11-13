@@ -264,13 +264,13 @@ class DistributionParticle(AbstractParticle):
             A /= self.params.x
             B /= self.params.x
 
-        order = min(len(self.data['collision_integral']) + 1, 5)
-        index = numpy.searchsorted(self.grid.TEMPLATE, p0)
-        fs = []
-        if order > 1:
-            fs = list(self.data['collision_integral'][-order+1:, index])
-
         if environment.get('ADAMS_MOULTON_DISTRIBUTION_CORRECTION'):
+            order = min(len(self.data['collision_integral']) + 1, 5)
+            index = numpy.searchsorted(self.grid.TEMPLATE, p0)
+            fs = []
+            if order > 1:
+                fs = list(self.data['collision_integral'][-order+1:, index])
+
             prediction = adams_moulton_solver(y=self.distribution(p0), fs=fs,
                                               A=A, B=B, h=self.params.h, order=order)
         else:
