@@ -2,7 +2,6 @@ all: clean compile test
 
 compile: compile3
 
-
 compile3:
 	cd interactions/four_particle/cpp && c++ -fopenmp -O3 -shared -std=c++11 -fPIC -I pybind11/include `python3.5-config --cflags --ldflags` integral.cpp -o integral.so
 
