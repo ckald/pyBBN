@@ -117,7 +117,7 @@ class FourParticleIntegral(BoltzmannIntegral):
                         ),
                         eta=int(particle.specie.eta),
                         in_equilibrium=int(particle.specie.in_equilibrium),
-                        aT=particle.specie.aT
+                        T=particle.specie.aT
                     ),
                     side=particle.side
                 )

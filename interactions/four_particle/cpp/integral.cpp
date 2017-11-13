@@ -30,13 +30,13 @@ struct grid_t {
 };
 
 struct particle_t {
-    particle_t(int eta, dbl m, grid_t grid, int in_equilibrium, dbl aT)
-        : eta(eta), m(m), grid(grid), in_equilibrium(in_equilibrium), aT(aT) {}
+    particle_t(int eta, dbl m, grid_t grid, int in_equilibrium, dbl T)
+        : eta(eta), m(m), grid(grid), in_equilibrium(in_equilibrium), T(T) {}
     int eta;
     dbl m;
     grid_t grid;
     int in_equilibrium;
-    dbl aT;
+    dbl T;
 };
 
 struct reaction_t {
@@ -50,9 +50,16 @@ dbl energy(dbl y, dbl mass=0) {
 }
 
 
-std::pair<unsigned int, unsigned int> binary_find(const std::vector<dbl> &grid, dbl x) {
-    unsigned int head(0), tail(grid.size() - 1);
-    unsigned int middle;
+std::pair<int, int> binary_find(const std::vector<dbl> &grid, dbl x) {
+    int head(0), tail(grid.size() - 1);
+    int middle;
+
+    if (grid[tail] < x) {
+        return std::make_pair(tail, -1);
+    }
+    if (grid[head] > x) {
+        return std::make_pair(-1, head);
+    }
 
     while (tail - head > 1) {
         middle = (tail + head) / 2;
@@ -67,7 +74,7 @@ std::pair<unsigned int, unsigned int> binary_find(const std::vector<dbl> &grid, 
         return std::make_pair(tail, tail);
     }
 
-    if (grid[head] >= x) {
+    if (grid[head] == x) {
         return std::make_pair(head, head);
     }
 
@@ -77,10 +84,19 @@ std::pair<unsigned int, unsigned int> binary_find(const std::vector<dbl> &grid, 
 
 dbl distribution_interpolation(const std::vector<dbl> &grid,
                                const std::vector<dbl> &distribution,
-                               dbl p, dbl m=0, int eta=1) {
+                               dbl p, dbl m=0, int eta=1, dbl T=1.) {
 
-    unsigned int i_lo, i_hi;
+    int i_lo, i_hi;
     std::tie(i_lo, i_hi) = binary_find(grid, p);
+    if(i_lo == -1) {
+        throw std::runtime_error("Input momentum is too small for the given grid");
+    }
+
+    if(i_hi == -1) {
+        return distribution[grid.size()-1]
+            * exp((energy(grid[grid.size() -1], m) - energy(p, m)) / T);
+    }
+
     if(i_lo == i_hi) {
         return distribution[i_lo];
     }
@@ -559,7 +575,7 @@ std::pair<npdbl, npdbl> integrand(
             if (reaction[k].specie.in_equilibrium) {
                 errno = 0;
                 f[k] = 1. / (
-                    exp(energy(p[k], reaction[k].specie.m) / reaction[k].specie.aT)
+                    exp(energy(p[k], reaction[k].specie.m) / reaction[k].specie.T)
                     + reaction[k].specie.eta
                 );
                 if (errno == ERANGE) {
@@ -571,7 +587,8 @@ std::pair<npdbl, npdbl> integrand(
                 f[k] = distribution_interpolation(
                     reaction[k].specie.grid.grid,
                     reaction[k].specie.grid.distribution,
-                    p[k], reaction[k].specie.m, reaction[k].specie.eta
+                    p[k], reaction[k].specie.m, reaction[k].specie.eta,
+                    reaction[k].specie.T
                 );
             }
         }
@@ -589,7 +606,7 @@ PYBIND11_MODULE(integral, m) {
     m.def("distribution_interpolation", &distribution_interpolation,
           "Exponential interpolation of distribution function",
           "grid"_a, "distribution"_a,
-          "p"_a, "m"_a=0, "eta"_a=1);
+          "p"_a, "m"_a=0, "eta"_a=1, "T"_a=1.);
     m.def("binary_find", &binary_find,
           "grid"_a, "x"_a);
 
@@ -614,7 +631,7 @@ PYBIND11_MODULE(integral, m) {
              "grid"_a, "distribution"_a, "size"_a);
     py::class_<particle_t>(m, "particle_t")
         .def(py::init<int, dbl, grid_t, int, dbl>(),
-             "eta"_a, "m"_a, "grid"_a, "in_equilibrium"_a, "aT"_a);
+             "eta"_a, "m"_a, "grid"_a, "in_equilibrium"_a, "T"_a);
     py::class_<reaction_t>(m, "reaction_t")
         .def(py::init<particle_t, int>(),
              "specie"_a, "side"_a);
