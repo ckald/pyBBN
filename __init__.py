@@ -7,6 +7,15 @@
 
         git clone --recursive https://github.com/ckald/pyBBN.git
 
+ 1. Tip: Install Python 3.5 to make compilation and running of code go smooth
+         If Python 3.5 is not set as default interpreter, use
+    
+         python3.5 -m pip install -r requirements.txt     
+
+         to install all necessary modules
+
+    Otherwise, continue with the next few steps
+
  1. Install dependencies using favorite OS package manager and \
     [pip](https://pypi.python.org/pypi/pip) \
     (usually preinstalled on Linux and Mac OS X along with the standard CPython 2.7+ interpreter)
@@ -33,10 +42,10 @@
 To run some script in the context of the code, one should temporarily alter the `PYTHONPATH`\
 environment variable:
 
-    PYTHONPATH=. python3 some_script.py
+    PYTHONPATH=. python3.5 some_script.py
 
 For example, to run the cosmic neutrino background temperature test:
 
-    PYTHONPATH=. python3 tests/cosmic_neutrino_temperature
+    PYTHONPATH=. python3.5 tests/cosmic_neutrino_temperature
 
 """
