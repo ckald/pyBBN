@@ -7,14 +7,9 @@
 
         git clone --recursive https://github.com/ckald/pyBBN.git
 
- 1. Tip: Install Python 3.5 to make compilation and running of code go smooth
-         If Python 3.5 is not set as default interpreter, use
-    
-         python3.5 -m pip install -r requirements.txt     
 
-         to install all necessary modules
-
-    Otherwise, continue with the next few steps
+ 1. Tip: Use Python 3.5+ to make compilation and running of code go smooth   
+             
 
  1. Install dependencies using favorite OS package manager and \
     [pip](https://pypi.python.org/pypi/pip) \
@@ -25,6 +20,10 @@
 
 ```
     sudo pip3 install -r requirements.txt
+           
+                    or (for Python 3.5)
+
+    python3.5 -m pip install -r requirements.txt
 ```
 
  1. Compile modified KAWANO nucleosynthesis code and run unit tests
