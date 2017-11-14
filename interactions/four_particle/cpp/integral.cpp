@@ -26,7 +26,6 @@ struct grid_t {
         : grid(grid), distribution(distribution), size(size) {}
     std::vector<dbl> grid;
     std::vector<dbl> distribution;
-    int size;
 };
 
 struct particle_t {
@@ -627,8 +626,8 @@ PYBIND11_MODULE(integral, m) {
         .def(py::init<std::array<int, 4>, dbl, dbl>(),
              "order"_a, "K1"_a=0., "K2"_a=0.);
     py::class_<grid_t>(m, "grid_t")
-        .def(py::init<std::vector<dbl>, std::vector<dbl>, int>(),
-             "grid"_a, "distribution"_a, "size"_a);
+        .def(py::init<std::vector<dbl>, std::vector<dbl>>(),
+             "grid"_a, "distribution"_a);
     py::class_<particle_t>(m, "particle_t")
         .def(py::init<int, dbl, grid_t, int, dbl>(),
              "eta"_a, "m"_a, "grid"_a, "in_equilibrium"_a, "T"_a);

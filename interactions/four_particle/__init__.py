@@ -112,8 +112,7 @@ class FourParticleIntegral(BoltzmannIntegral):
                         m=particle.specie.conformal_mass,
                         grid=grid_t(
                             grid=particle.specie.grid.TEMPLATE,
-                            distribution=particle.specie._distribution,
-                            size=particle.specie.grid.MOMENTUM_SAMPLES
+                            distribution=particle.specie._distribution
                         ),
                         eta=int(particle.specie.eta),
                         in_equilibrium=int(particle.specie.in_equilibrium),
