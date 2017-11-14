@@ -59,7 +59,7 @@ def binary_search_test():
 
     # Test the case with needle outside the haystack range
     assert binary_find(haystack, -1.) == (0, 0)
-    assert binary_find(haystack, 99.) == (99, 99)
+    assert binary_find(haystack, 990.) == (99, 99)
 
     # Corner cases
     assert binary_find(haystack, 0.) == (0, 0)
@@ -80,7 +80,7 @@ def binary_search_test():
 
     # Test the case with needle outside the haystack range
     assert binary_find(haystack, -1.) == (0, 0)
-    assert binary_find(haystack, 98.) == (98, 98)
+    assert binary_find(haystack, 990.) == (98, 98)
 
     # Corner cases
     assert binary_find(haystack, 0.) == (0, 0)
