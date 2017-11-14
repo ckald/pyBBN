@@ -299,15 +299,14 @@ class DistributionParticle(AbstractParticle):
         """
 
         p = abs(p)
-        if self.in_equilibrium:
-            return self.equilibrium_distribution(p)
 
         return distribution_interpolation(
             self.grid.TEMPLATE,
             self._distribution,
             p, self.conformal_mass,
             int(self.eta),
-            self.aT
+            self.aT,
+            self.in_equilibrium
         )
 
     def equilibrium_distribution(self, y=None, aT=None):

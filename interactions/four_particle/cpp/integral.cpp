@@ -83,7 +83,15 @@ std::pair<int, int> binary_find(const std::vector<dbl> &grid, dbl x) {
 
 dbl distribution_interpolation(const std::vector<dbl> &grid,
                                const std::vector<dbl> &distribution,
-                               dbl p, dbl m=0, int eta=1, dbl T=1.) {
+                               dbl p, dbl m=0., int eta=1, dbl T=1.,
+                               bool in_equilibrium=false) {
+
+    if (in_equilibrium) {
+        return 1. / (
+           exp(energy(p, m) / T)
+           + eta
+       );
+    }
 
     int i_lo, i_hi;
     std::tie(i_lo, i_hi) = binary_find(grid, p);
@@ -567,29 +575,17 @@ std::pair<npdbl, npdbl> integrand(
 
         if (temp == 0.) { continue; }
 
-        std::array<double, 4> f;
+        std::array<dbl, 4> f;
         // The distribution function of the main particle is not required here
         f[0] = -1;
         for (int k = 1; k < 4; ++k) {
-            if (reaction[k].specie.in_equilibrium) {
-                errno = 0;
-                f[k] = 1. / (
-                    exp(energy(p[k], reaction[k].specie.m) / reaction[k].specie.T)
-                    + reaction[k].specie.eta
-                );
-                if (errno == ERANGE) {
-                    printf("exp = %f overflows\n", f[k]);
-                    f[k] = 0.;
-                }
-
-            } else {
-                f[k] = distribution_interpolation(
-                    reaction[k].specie.grid.grid,
-                    reaction[k].specie.grid.distribution,
-                    p[k], reaction[k].specie.m, reaction[k].specie.eta,
-                    reaction[k].specie.T
-                );
-            }
+            const particle_t &specie = reaction[k].specie;
+            f[k] = distribution_interpolation(
+                specie.grid.grid, specie.grid.distribution,
+                p[k],
+                specie.m, specie.eta,
+                specie.T, specie.in_equilibrium
+            );
         }
 
         integrands_1(i) = temp * F_1(reaction, f);
@@ -605,7 +601,7 @@ PYBIND11_MODULE(integral, m) {
     m.def("distribution_interpolation", &distribution_interpolation,
           "Exponential interpolation of distribution function",
           "grid"_a, "distribution"_a,
-          "p"_a, "m"_a=0, "eta"_a=1, "T"_a=1.);
+          "p"_a, "m"_a=0, "eta"_a=1, "T"_a=1., "in_equilibrium"_a=false);
     m.def("binary_find", &binary_find,
           "grid"_a, "x"_a);
 
