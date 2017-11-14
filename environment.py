@@ -31,10 +31,6 @@ defaults = {
     # The fraction $\gamma = m/T$ at which the equilibrium particle switch
     'REGIME_SWITCHING_FACTOR': 1e3,
 
-    # Maximum momentum used in integration of massive equilibrium particle
-    # contribution to temperature
-    'TEMPERATURE_INTEGRAL_MAX_MOMENTUM_MEV': 200,
-
     # Use Simpson's rule for computation of collision integrals instead of Gaussian quadrature
     'SIMPSONS_INTEGRATION': False,
 
