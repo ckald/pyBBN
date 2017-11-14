@@ -72,7 +72,7 @@ sterile = Particle(**NuP.dirac_sterile_neutrino(mass), grid=sterile_grid)
 
 sterile.decoupling_temperature = T_initial
 for neutrino in [neutrino_e, neutrino_mu, neutrino_tau]:
-    neutrino.decoupling_temperature = 10 * UNITS.MeV
+    neutrino.decoupling_temperature = 5 * UNITS.MeV
 
 universe.add_particles([
     photon,
