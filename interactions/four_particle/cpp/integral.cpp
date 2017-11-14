@@ -9,7 +9,7 @@
 
 namespace py = pybind11;
 using namespace pybind11::literals;
-typedef double dbl;
+typedef long double dbl;
 typedef py::array_t<dbl> npdbl;
 
 
@@ -22,8 +22,8 @@ struct M_t {
 };
 
 struct grid_t {
-    grid_t(std::vector<dbl> grid, std::vector<dbl> distribution, int size)
-        : grid(grid), distribution(distribution), size(size) {}
+    grid_t(std::vector<dbl> grid, std::vector<dbl> distribution)
+        : grid(grid), distribution(distribution) {}
     std::vector<dbl> grid;
     std::vector<dbl> distribution;
 };
@@ -512,7 +512,7 @@ std::pair<npdbl, npdbl> integrand(
     auto integrands_1 = integrands_1_buffer.mutable_unchecked<1>(),
          integrands_f = integrands_f_buffer.mutable_unchecked<1>();
 
-    std::array<double, 4> m;
+    std::array<dbl, 4> m;
     std::array<int, 4> sides;
 
     for (int i = 0; i < 4; ++i) {
@@ -522,15 +522,15 @@ std::pair<npdbl, npdbl> integrand(
 
     #pragma omp parallel for default(none) shared(length, p0, p1s, p2s, m, sides, Ms, reaction, integrands_1, integrands_f)
     for (size_t i = 0; i < length; ++i) {
-        double p1 = p1s(i),
-               p2 = p2s(i);
+        dbl p1 = p1s(i),
+            p2 = p2s(i);
 
         integrands_1(i) = 0.;
         integrands_f(i) = 0.;
 
         if (p2 > p0 + p1) { continue; }
 
-        std::array<double, 4> p, E;
+        std::array<dbl, 4> p, E;
         p[0] = p0;
         p[1] = p1;
         p[2] = p2;
@@ -549,7 +549,7 @@ std::pair<npdbl, npdbl> integrand(
 
         if (!in_bounds(p, E, m)) { continue; }
 
-        double temp = 1.;
+        dbl temp = 1.;
 
         // Avoid rounding errors and division by zero
         for (int k = 1; k < 3; ++k) {
@@ -560,7 +560,7 @@ std::pair<npdbl, npdbl> integrand(
 
         if (temp == 0.) { continue; }
 
-        double ds = 0.;
+        dbl ds = 0.;
         if (p[0] != 0.) {
             for (const M_t &M : Ms) {
                 ds += D(p, E, m, M.K1, M.K2, M.order, sides);
@@ -621,12 +621,15 @@ PYBIND11_MODULE(integral, m) {
     py::class_<M_t>(m, "M_t")
         .def(py::init<std::array<int, 4>, dbl, dbl>(),
              "order"_a, "K1"_a=0., "K2"_a=0.);
+
     py::class_<grid_t>(m, "grid_t")
         .def(py::init<std::vector<dbl>, std::vector<dbl>>(),
              "grid"_a, "distribution"_a);
+
     py::class_<particle_t>(m, "particle_t")
         .def(py::init<int, dbl, grid_t, int, dbl>(),
              "eta"_a, "m"_a, "grid"_a, "in_equilibrium"_a, "T"_a);
+
     py::class_<reaction_t>(m, "reaction_t")
         .def(py::init<particle_t, int>(),
              "specie"_a, "side"_a);
