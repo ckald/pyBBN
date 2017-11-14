@@ -131,7 +131,7 @@ class Universe(object):
         if export:  # and not interrupted:
             self.export()
 
-#        return self.data
+        return self.data
 
     def export(self):
         print("\n\n" + "#"*33 + " Final states " + "#"*33 + "\n")
