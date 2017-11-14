@@ -29,7 +29,7 @@ parser.add_argument('--mass', required=True)
 parser.add_argument('--theta', required=True)
 parser.add_argument('--tau', required=True)
 parser.add_argument('--Tdec', default=100)
-parser.add_argument('--Twashout', default=0.005)
+parser.add_argument('--Twashout', default=0.1)
 parser.add_argument('--comment', default='')
 args = parser.parse_args()
 
@@ -146,7 +146,7 @@ def step_monitor(universe):
 
 universe.step_monitor = step_monitor
 
-universe.evolve(T_interactions_freeze_out, export=False)
+universe.evolve(T_washout, export=False)
 sterile._distribution *= 0
 universe.interactions = tuple()
 universe.evolve(T_final)
