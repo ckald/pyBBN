@@ -4,7 +4,7 @@ import os
 defaults = {
     # Whether the code should use a fixed order Gauss-Legendre quadrature
     # or adaptive NumPy method `quad` (based on QUADPACK library)
-    'FIXED_ORDER_1D_QUADRATURE': True,
+    'FIXED_ORDER_1D_QUADRATURE': False,
 
     # The order of the Gauss-Legendre quadrature used by the code for momentum-space integrations
     'GAUSS_LEGENDRE_ORDER': 30,
