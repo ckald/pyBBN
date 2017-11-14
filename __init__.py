@@ -38,7 +38,7 @@
 
 ## Usage
 
-To run some script in the context of the code, one should temporarily alter the `PYTHONPATH`\
+To run some script in the context of the code using, for example, Python 3.5, one should temporarily alter the `PYTHONPATH`\
 environment variable:
 
     PYTHONPATH=. python3.5 some_script.py
