@@ -59,14 +59,15 @@ universe = Universe(params=params, folder=folder)
 photon = Particle(**SMP.photon)
 electron = Particle(**SMP.leptons.electron)
 muon = Particle(**SMP.leptons.muon)
-neutrino_e = Particle(**SMP.leptons.neutrino_e)
-neutrino_mu = Particle(**SMP.leptons.neutrino_mu)
-neutrino_tau = Particle(**SMP.leptons.neutrino_tau)
 
-from common import LogSpacedGrid
-linear_grid = LogSpacedGrid(MOMENTUM_SAMPLES=51, MAX_MOMENTUM=20*UNITS.MeV)
+from common import LogSpacedGrid, LinearSpacedGrid
+sterile_grid = LogSpacedGrid(MOMENTUM_SAMPLES=51, MAX_MOMENTUM=20*UNITS.MeV)
+active_grid = LinearSpacedGrid(MOMENTUM_SAMPLES=201, MAX_MOMENTUM=mass/T_washout*1.5*UNITS.MeV)
 
-sterile = Particle(**NuP.dirac_sterile_neutrino(mass), grid=linear_grid)
+neutrino_e = Particle(**SMP.leptons.neutrino_e, grid=active_grid)
+neutrino_mu = Particle(**SMP.leptons.neutrino_mu, grid=active_grid)
+neutrino_tau = Particle(**SMP.leptons.neutrino_tau, grid=active_grid)
+sterile = Particle(**NuP.dirac_sterile_neutrino(mass), grid=sterile_grid)
 
 
 sterile.decoupling_temperature = T_initial
