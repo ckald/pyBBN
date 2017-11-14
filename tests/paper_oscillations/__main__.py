@@ -29,6 +29,7 @@ parser.add_argument('--mass', required=True)
 parser.add_argument('--theta', required=True)
 parser.add_argument('--tau', required=True)
 parser.add_argument('--Tdec', default=100)
+parser.add_argument('--Twashout', default=0.005)
 parser.add_argument('--comment', default='')
 args = parser.parse_args()
 
@@ -36,18 +37,19 @@ mass = float(args.mass) * UNITS.MeV
 theta = float(args.theta)
 lifetime = float(args.tau) * UNITS.s
 Tdec = float(args.Tdec) * UNITS.MeV
+T_washout = float(args.Twashout) * UNITS.MeV
 
 folder = utils.ensure_dir(
     op.split(__file__)[0],
     'output',
-    "mass={:e}_theta={:e}_Tdec={:e}_tau={:e}".format(
-        mass / UNITS.MeV, theta, Tdec / UNITS.MeV, lifetime / UNITS.s
+    "mass={:e}_tau={:e}_theta={:e}_Tdec={:e}_Twashout={:e}".format(
+        mass / UNITS.MeV,lifetime / UNITS.s,theta, Tdec / UNITS.MeV,
+        T_washout / UNITS.MeV
     ) + args.comment
 )
 
 
 T_initial = Tdec
-T_interactions_freeze_out = 0.005 * UNITS.MeV
 T_final = 0.0008 * UNITS.MeV
 params = Params(T=T_initial,
                 dy=0.003125)
@@ -112,7 +114,7 @@ def step_monitor(universe):
             with open(op.join(folder, particle.name.replace(' ', '_') + ".rho.txt"), 'a') as f3:
                 f3.write('## a\tT, MeV\taT, MeV\trho_nu, MeV^4\ta^3 n, MeV^3\n')
         with open(op.join(folder, "rho_nu.txt"), 'a') as f2:
-                    f2.write('# a    rho_nu' + '\n')
+            f2.write('# a    rho_nu' + '\n')
 
     # Output the distribution function and collision integrals distortion to file every 10 steps,
     # first column is temperature
@@ -145,7 +147,7 @@ def step_monitor(universe):
 universe.step_monitor = step_monitor
 
 universe.evolve(T_interactions_freeze_out, export=False)
-# sterile._distribution *= 0
+sterile._distribution *= 0
 universe.interactions = tuple()
 universe.evolve(T_final)
 
