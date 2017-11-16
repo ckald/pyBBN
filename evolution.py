@@ -92,9 +92,10 @@ class Universe(object):
         long before then BBN. Then most particle species are in the thermodynamical equilibrium.
 
         """
-
+        print("\n\n" + "#"*32 + " Initial states " + "#"*32 + "\n")
         for particle in self.particles:
             print(particle)
+        print("\n\n" + "#"*34 + " Log output " + "#"*34 + "\n")
 
         for interaction in self.interactions:
             print(interaction)
@@ -104,7 +105,7 @@ class Universe(object):
             self.params.init_time(self.total_energy_density())
 
         if self.params.rho is None:
-            self.update_particles()
+#            self.update_particles()
             self.params.update(self.total_energy_density(), self.total_entropy())
         self.save_params()
 
@@ -120,7 +121,7 @@ class Universe(object):
                     with open(os.path.join(self.folder, "evolution.txt"), "wb") as f:
                         self.data.savetxt(f)
             except KeyboardInterrupt:
-                print("Keyboard interrupt!")
+                print("\nKeyboard interrupt!")
                 break
         # else:
         #     interrupted = True
@@ -133,8 +134,10 @@ class Universe(object):
         return self.data
 
     def export(self):
+        print("\n\n" + "#"*33 + " Final states " + "#"*33 + "\n")
         for particle in self.particles:
             print(particle)
+        print("\n") 
 
         if self.folder:
             if self.kawano:
@@ -168,7 +171,6 @@ class Universe(object):
             self.params.aT += self.fraction * self.params.h
 
         self.params.x += self.params.dx
-
         self.params.update(self.total_energy_density(), self.total_entropy())
 
         self.log_throttler.update()
