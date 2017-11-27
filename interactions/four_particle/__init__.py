@@ -1,12 +1,10 @@
 # -*- coding: utf-8 -*-
 import numpy
-from array import array
 
 import environment
-from common.integrators import paired as paired_integrators
+from common import UNITS
 from interactions.boltzmann import BoltzmannIntegral
-# from interactions.four_particle.integral import integrand
-from interactions.four_particle.cpp.integral import integrand, M_t, grid_t, particle_t, reaction_t
+from interactions.four_particle.cpp.integral import integration, M_t, grid_t, particle_t, reaction_t
 
 
 class FourParticleM(object):
@@ -98,12 +96,15 @@ class FourParticleIntegral(BoltzmannIntegral):
         self.creaction = None
         self.cMs = None
 
-    def integrate(self, p0, bounds=None):
+    def integrate(self, p0, stepsize=None, bounds=None):
         if bounds is None:
             bounds = (
-                self.grids[0].BOUNDS,
-                (lambda p1: self.grids[1].MIN_MOMENTUM, lambda p1: self.grids[1].MAX_MOMENTUM)
+                *self.grids[0].BOUNDS,
+                *self.grids[1].BOUNDS
             )
+
+        if stepsize is None:
+            stepsize = self.particle.params.h
 
         if not self.creaction:
             self.creaction = [
@@ -122,28 +123,12 @@ class FourParticleIntegral(BoltzmannIntegral):
                 )
                 for particle in self.reaction
             ]
-        if not self.cMs:
-            self.cMs = [M_t(list(M.order), M.K1, M.K2) for M in self.Ms]
-
-        def prepared_integrand(p1, p2):
-            integrand_1, integrand_f = integrand(p0, p1.ravel(), p2.ravel(),
-                                                 self.creaction, self.cMs)
-            return numpy.reshape(integrand_1, p1.shape), numpy.reshape(integrand_f, p1.shape)
 
         params = self.particle.params
+        constant = (params.m / params.x)**5 / 64. / numpy.pi**3 / params.H
+        if not environment.get('LOGARITHMIC_TIMESTEP'):
+            constant /= params.x
+        self.cMs = [M_t(list(M.order), M.K1 * constant, M.K2 * constant) for M in self.Ms]
 
-        constant = (params.m / params.x)**5 / 64. / numpy.pi**3
-
-        if environment.get('SIMPSONS_INTEGRATION'):
-            integral_1, integral_f = paired_integrators.integrate_2D_simpsons(
-                prepared_integrand(*numpy.meshgrid(self.grids[0].TEMPLATE, self.grids[1].TEMPLATE)),
-                bounds=bounds,
-                grids=[self.grids[0].TEMPLATE, self.grids[1].TEMPLATE]
-            )
-        else:
-            integral_1, integral_f = paired_integrators.integrate_2D(
-                prepared_integrand,
-                bounds=bounds
-            )
-
-        return constant * integral_1, constant * integral_f
+        fullstack = numpy.array(integration(p0, *bounds, self.creaction, self.cMs, stepsize))
+        return fullstack
