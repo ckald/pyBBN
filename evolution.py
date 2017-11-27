@@ -2,7 +2,6 @@
 
 import os
 import sys
-import numpy
 import time
 import shutil
 from datetime import timedelta
@@ -121,6 +120,7 @@ class Universe(object):
                         self.data.savetxt(f)
             except KeyboardInterrupt:
                 print("Keyboard interrupt!")
+                sys.exit(1)
                 break
         # else:
         #     interrupted = True
