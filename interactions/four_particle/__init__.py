@@ -100,7 +100,7 @@ class FourParticleIntegral(BoltzmannIntegral):
         self.creaction = None
         self.cMs = None
 
-    def integrate(self, p0, bounds=None):
+    def integrate(self, ps, bounds=None):
         if bounds is None:
             bounds = (
                 self.grids[0].BOUNDS,
@@ -128,7 +128,7 @@ class FourParticleIntegral(BoltzmannIntegral):
             self.cMs = [M_t(list(M.order), M.K1, M.K2) for M in self.Ms]
 
         def prepared_integrand(p1, p2):
-            integrand_1, integrand_f = integrand(p0, p1.ravel(), p2.ravel(),
+            integrand_1, integrand_f = integrand(ps, p1.ravel(), p2.ravel(),
                                                  self.creaction, self.cMs)
             return numpy.reshape(integrand_1, p1.shape), numpy.reshape(integrand_f, p1.shape)
 
