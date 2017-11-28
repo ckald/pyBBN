@@ -96,7 +96,7 @@ class FourParticleIntegral(BoltzmannIntegral):
         self.creaction = None
         self.cMs = None
 
-    def integrate(self, p0, stepsize=None, bounds=None):
+    def integrate(self, ps, stepsize=None, bounds=None):
         if bounds is None:
             bounds = (
                 *self.grids[0].BOUNDS,
@@ -130,5 +130,5 @@ class FourParticleIntegral(BoltzmannIntegral):
             constant /= params.x
         self.cMs = [M_t(list(M.order), M.K1 * constant, M.K2 * constant) for M in self.Ms]
 
-        fullstack = numpy.array(integration(p0, *bounds, self.creaction, self.cMs, stepsize))
+        fullstack = numpy.array(integration(ps, *bounds, self.creaction, self.cMs, stepsize))
         return fullstack
