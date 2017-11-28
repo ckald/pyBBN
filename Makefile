@@ -1,4 +1,4 @@
-COMPILER ?= gcc
+COMPILER ?= c++
 PYTHON ?= python3
 
 all: clean compile test
