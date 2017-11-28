@@ -1,3 +1,6 @@
+COMPILER ?= c++
+PYTHON ?= python3
+
 all: clean compile test
 
 compile: compile3
