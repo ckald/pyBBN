@@ -32,7 +32,7 @@ class WeakM(FourParticleM):
             ret += "K1=32 G_F^2 {: .2e} ".format(self.K1 / self.const)
         if self.K2:
             ret += "K2=32 G_F^2 {: .2e} ".format(self.K2 / self.const)
-        return ret + "{}".format(self.order)
+        return ret + self.order_format()
 
 
 class particles(object):

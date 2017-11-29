@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 import numpy
-from array import array
 
 import environment
 from common.integrators import paired as paired_integrators
@@ -62,7 +61,10 @@ class FourParticleM(object):
             ret += "K1={: .2e} ".format(self.K1)
         if self.K2:
             ret += "K2={: .2e} ".format(self.K2)
-        return ret + "{}".format(self.order)
+        return ret + self.order_format()
+
+    def order_format(self):
+        return "{}".format(tuple(o + 1 for o in self.order))
 
     def apply_order(self, order, reaction):
         self.order = order
