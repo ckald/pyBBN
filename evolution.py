@@ -185,6 +185,26 @@ class Universe(object):
             update precalculated variables like energy density and pressure. """
         for particle in self.particles:
             particle.update()
+            if particle.mass > 0 and not particle.in_equilibrium and len(particle.data['params']) > 3:
+                from particles.IntermediateParticle import density
+                from particles.NonEqParticle import inverse_gamma_factor
+                gamma = inverse_gamma_factor(particle)
+                eq_density = density(particle)
+
+                decay_rate = -(
+                    (particle.density - particle.data['params']['density'][-2])
+                    / (self.data['t'][-1] - self.data['t'][-2]) / particle.density
+                    + 3 * self.params.H
+                ) / gamma * particle.density
+
+                print("{}: Γ ={: .3e} MeV, τ ={: .3e} s, n/n_eq ={: .3e}, Y = n/S ={: .3e}, <m/E>/n ={: .3e}".format(
+                    particle.symbol,
+                    decay_rate / UNITS.MeV,
+                    1 / decay_rate / UNITS.s,
+                    particle.density / eq_density if eq_density > 0 else numpy.inf,
+                    particle.density * self.params.a**3 / self.params.S,
+                    gamma / particle.density
+                ))
 
     def init_interactions(self):
         """ ### 2. Initialize non-equilibrium interactions
