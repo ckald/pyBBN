@@ -91,7 +91,7 @@ class FourParticleIntegral(BoltzmannIntegral):
         Initialize collision integral constants and save them to the first involved particle
         """
         params = self.particle.params
-        if params.T > self.decoupling_temperature and not self.particle.in_equilibrium:
+        if params.T > self.washout_temperature and not self.particle.in_equilibrium:
             self.particle.collision_integrals.append(self)
 
         if self.grids is None:

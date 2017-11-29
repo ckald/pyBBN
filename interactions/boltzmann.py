@@ -28,7 +28,7 @@ class BoltzmannIntegral:
     """
 
     # Temperature when the typical interaction time exceeds the Hubble expansion time
-    decoupling_temperature = 0.
+    washout_temperature = 0.
     constant = 0.
 
     """ Four-particle interactions of the interest can all be rewritten in a form

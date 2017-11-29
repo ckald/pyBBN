@@ -63,14 +63,14 @@ class CrossGeneratingInteraction(Interaction):
     particles = None  # All particles involved
 
     # Temperature when the typical interaction time exceeds the Hubble expansion time
-    decoupling_temperature = 0.
+    washout_temperature = 0.
 
     # Matrix elements of the interaction
     Ms = None
 
     def __init__(self, name=None,
                  particles=None, antiparticles=None, Ms=None,
-                 integral_type=None, decoupling_temperature=0):
+                 integral_type=None, washout_temperature=0):
         """ Create an `Integral` object for all particle species involved in the interaction.
 
             Precise expressions for all integrals can be derived by permuting all particle-related\
@@ -88,7 +88,7 @@ class CrossGeneratingInteraction(Interaction):
         self.antiparticles = antiparticles
         self.Ms = Ms
         self.integral_type = integral_type
-        self.decoupling_temperature = decoupling_temperature
+        self.washout_temperature = washout_temperature
 
         self.integrals = []
 
@@ -212,7 +212,7 @@ class CrossGeneratingInteraction(Interaction):
         self.integrals.append(self.integral_type(
             particle=particle,
             reaction=reaction,
-            decoupling_temperature=self.decoupling_temperature,
+            washout_temperature=self.washout_temperature,
             Ms=particle_Ms,
         ))
 
