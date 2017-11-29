@@ -60,7 +60,10 @@ class FourParticleM(object):
             ret += "K1={: .2e} ".format(self.K1)
         if self.K2:
             ret += "K2={: .2e} ".format(self.K2)
-        return ret + "{}".format(self.order)
+        return ret + self.order_format()
+
+    def order_format(self):
+        return "{}".format(tuple(o + 1 for o in self.order))
 
     def apply_order(self, order, reaction):
         self.order = order
@@ -87,7 +90,7 @@ class FourParticleIntegral(BoltzmannIntegral):
         Initialize collision integral constants and save them to the first involved particle
         """
         params = self.particle.params
-        if params.T > self.decoupling_temperature and not self.particle.in_equilibrium:
+        if params.T > self.washout_temperature and not self.particle.in_equilibrium:
             self.particle.collision_integrals.append(self)
 
         if self.grids is None:

@@ -75,6 +75,20 @@ def entropy(particle):
     return numpy.vectorize(integrand, otypes=[numpy.float_])
 
 
+@lambda_integrate()
+def inverse_gamma_factor(particle):
+    """ ## Average gamma factor of the distribution """
+
+    def integrand(p):
+        if particle.mass == 0:
+            return 0.
+
+        return (particle.dof / 2 / numpy.pi**2 * p**2 / particle.params.a**3
+                * particle.distribution(p) * particle.conformal_mass / particle.conformal_energy(p))
+
+    return numpy.vectorize(integrand, otypes=[numpy.float_])
+
+
 """ ## Master equation terms """
 
 """ ### Numerator

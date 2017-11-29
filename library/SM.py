@@ -32,7 +32,7 @@ class WeakM(FourParticleM):
             ret += "K1=32 G_F^2 {: .2e} ".format(self.K1 / self.const)
         if self.K2:
             ret += "K2=32 G_F^2 {: .2e} ".format(self.K2 / self.const)
-        return ret + "{}".format(self.order)
+        return ret + self.order_format()
 
 
 class particles(object):
@@ -263,7 +263,7 @@ class interactions(object):
             name="Neutrino species scattering",
             particles=((neutrino_a, neutrino_b), (neutrino_a, neutrino_b)),
             antiparticles=((False, False), (False, False)),
-            decoupling_temperature=0 * UNITS.MeV,
+            washout_temperature=0 * UNITS.MeV,
             Ms=(WeakM(K1=1., order=(0, 1, 2, 3)),),
             integral_type=FourParticleIntegral
         )
@@ -289,7 +289,7 @@ class interactions(object):
             name="Neutrino pair annihilation into lepton pair",
             particles=((neutrino, neutrino), (lepton, lepton)),
             antiparticles=((False, True), (False, True)),
-            decoupling_temperature=0 * UNITS.MeV,
+            washout_temperature=0 * UNITS.MeV,
             Ms=(
                 WeakM(K1=4 * g_L**2, order=(0, 3, 1, 2)),
                 WeakM(K1=4 * CONST.g_R**2, order=(0, 2, 1, 3)),
@@ -323,7 +323,7 @@ class interactions(object):
             name="Baryons interaction",
             particles=((neutron,), (proton, electron, neutrino)),
             antiparticles=((False,), (False, False, True)),
-            decoupling_temperature=0 * UNITS.MeV,
+            washout_temperature=0 * UNITS.MeV,
             Ms=(WeakM(K1=2. * particles.quarks.CKM[(1, 1)]**2, order=(0, 1, 2, 3)),),
             integral_type=FourParticleIntegral
         )

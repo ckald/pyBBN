@@ -14,6 +14,28 @@ from interactions.four_particle import FourParticleIntegral
 from library.SM import WeakM, particles as SM_particles
 
 
+class SterileM(WeakM):
+
+    """ ## Sterile interactions matrix element
+        Sterile processes usually include a common factor of $32 θ^2 G_F^2$ """
+
+    def __init__(self, theta=1., *args, **kwargs):
+        super(SterileM, self).__init__(*args, **kwargs)
+
+        self.theta = theta
+        self.K1 *= self.theta**2
+        self.K2 *= self.theta**2
+
+    def __str__(self):
+        """ String-like representation of the matrix element """
+        ret = ""
+        if self.K1:
+            ret += "K1=32 θ^2 G_F^2 {: .3e} ".format(self.K1 / self.const / self.theta**2)
+        if self.K2:
+            ret += "K2=32 θ^2 G_F^2 {: .3e} ".format(self.K2 / self.const / self.theta**2)
+        return ret + self.order_format() + " θ ={: .3e}".format(self.theta)
+
+
 class particles(object):
     @staticmethod
     def sterile_neutrino(mass=33.9 * UNITS.MeV):
@@ -56,7 +78,7 @@ class interactions(object):
             name="Sterile-active neutrino scattering",
             particles=((sterile, active_b), (active_a, active_b)),
             antiparticles=((False, False), (False, False)),
-            Ms=(WeakM(K1=theta**2 * K1, order=(0, 1, 2, 3)), ),
+            Ms=(SterileM(theta=theta, K1=K1, order=(0, 1, 2, 3)), ),
             integral_type=FourParticleIntegral
         )
 
@@ -73,9 +95,9 @@ class interactions(object):
             particles=((sterile, active), (lepton, lepton)),
             antiparticles=((False, True), (True, False)),
             Ms=(
-                WeakM(K1=4. * g_L**2 * theta**2, order=(0, 3, 1, 2)),
-                WeakM(K1=4. * CONST.g_R**2 * theta**2, order=(0, 2, 1, 3)),
-                WeakM(K2=4. * CONST.g_R * g_L * theta**2, order=(2, 3, 0, 1))
+                SterileM(theta=theta, K1=4. * g_L**2, order=(0, 3, 1, 2)),
+                SterileM(theta=theta, K1=4. * CONST.g_R**2, order=(0, 2, 1, 3)),
+                SterileM(theta=theta, K2=4. * CONST.g_R * g_L, order=(2, 3, 0, 1))
             ),
             integral_type=FourParticleIntegral
         )
@@ -158,9 +180,9 @@ class interactions(object):
             particles=((sterile, active), (quark, quark)),
             antiparticles=((False, True), (False, True)),
             Ms=(
-                WeakM(K1=32./9. * g_R * theta**2, order=(0, 3, 1, 2)),
-                WeakM(K1=2./9. * x**2 * theta**2, order=(0, 2, 1, 3)),
-                WeakM(K2=16./9. * g_R * x * theta**2, order=(0, 1, 2, 3)),
+                SterileM(theta=theta, K1=32. / 9. * g_R, order=(0, 3, 1, 2)),
+                SterileM(theta=theta, K1=2. / 9. * x**2, order=(0, 2, 1, 3)),
+                SterileM(theta=theta, K2=16. / 9. * g_R * x, order=(0, 1, 2, 3)),
             ),
             integral_type=FourParticleIntegral
         )
@@ -179,8 +201,8 @@ class interactions(object):
             particles=((sterile, lepton), (up, down)),
             antiparticles=((False, True), (False, True)),
             Ms=(
-                WeakM(K1=.5 * CKM**2 * theta**2, order=(0, 2, 1, 3)),
-                WeakM(K1=.5 * CKM**2 * theta**2, order=(0, 3, 1, 2)),
+                SterileM(theta=theta, K1=.5 * CKM**2, order=(0, 2, 1, 3)),
+                SterileM(theta=theta, K1=.5 * CKM**2, order=(0, 3, 1, 2)),
             ),
             integral_type=FourParticleIntegral
         )
