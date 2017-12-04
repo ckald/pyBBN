@@ -131,8 +131,8 @@ def Int(particle, y_power=2):
     else:
         legendre = particle.dof / 2. / numpy.pi**2 * integrators.integrate_1D(
             lambda y: (
-                y**y_power * numpy.exp(-particle.conformal_energy(y) / particle.params.aT)
-                / (numpy.exp(-particle.conformal_energy(y) / particle.params.aT) + particle.eta)**2
+                y**y_power * numpy.exp(particle.conformal_energy(y) / particle.params.aT)
+                / (numpy.exp(particle.conformal_energy(y) / particle.params.aT) + particle.eta)**2
             ),
             (particle.grid.MIN_MOMENTUM, particle.grid.MAX_MOMENTUM)
         )[0]
