@@ -121,18 +121,18 @@ def Int(particle, y_power=2):
         mat = particle.conformal_mass / aT
 
         laguerre = (
-            particle.dof / 2. / numpy.pi**2 * aT**(y_power+1) * numpy.exp(-mat)
+            particle.dof / 2. / numpy.pi**2 * aT**(y_power + 1) * numpy.exp(-mat)
             * gauss_laguerre.integrate_1D(lambda eps: (
-                (eps+mat) * (eps * (eps + 2. * mat))**((y_power-1.)/2.)
-                / (numpy.exp(-eps-mat) + particle.eta)**2
+                (eps + mat) * (eps * (eps + 2. * mat))**((y_power - 1.) / 2.)
+                / (numpy.exp(-eps - mat) + particle.eta)**2
             ))[0]
         )
         return laguerre
     else:
         legendre = particle.dof / 2. / numpy.pi**2 * integrators.integrate_1D(
             lambda y: (
-                y**y_power * numpy.exp(-particle.conformal_energy(y) / particle.params.aT)
-                / (numpy.exp(-particle.conformal_energy(y) / particle.params.aT) + particle.eta)**2
+                y**y_power * numpy.exp(particle.conformal_energy(y) / particle.params.aT)
+                / (numpy.exp(particle.conformal_energy(y) / particle.params.aT) + particle.eta)**2
             ),
             (particle.grid.MIN_MOMENTUM, particle.grid.MAX_MOMENTUM)
         )[0]
