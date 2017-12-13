@@ -143,7 +143,7 @@ class Params(object):
             \end{equation}
         """
         if environment.get('LOGARITHMIC_TIMESTEP'):
-            self.dx = self.x * (numpy.exp(self.dy) - 1.)
+            self.dx = self.x * self.dy
         self.rho = rho
         self.S = S
         self.H = numpy.sqrt(8./3. * numpy.pi * rho) / CONST.M_p
