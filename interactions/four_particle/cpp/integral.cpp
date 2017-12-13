@@ -463,14 +463,25 @@ dbl integrand_2nd_integration(
         reaction_type += reactant.side;
     }
 
-    if (reaction_type == -2) {
-        return 0;
+    if (reaction_type == 0) {
+        h = (
+            pow(energy(p0, reaction[0].specie.m)
+                + energy(p1, reaction[1].specie.m)
+                - reaction[3].specie.m, 2)
+            - pow(reaction[2].specie.m, 2)
+        );
+        if (h <= 0) {
+            h = 0;
+        } else {
+            h = sqrt(h);
+        }
     }
-
-    if (reaction_type == 2) {
+    else if (reaction_type == 2) {
         dbl Ea = energy(p0, reaction[0].specie.m);
+        g = std::max(Ea - energy(p1, reaction[1].specie.m), 0.);
         h = pow(reaction[0].specie.m, 2) / 2. / (Ea - p0);
-        g = std::max(Ea - energy(p1, reaction[1].specie.m) - p1, 0.);
+        // g = 0;
+        // h = Ea - energy(p1, reaction[1].specie.m);
     }
 
     gsl_function F;
@@ -490,7 +501,7 @@ dbl integrand_2nd_integration(
     F.function = &integrand_1st_integration;
 
     gsl_integration_workspace *w = gsl_integration_workspace_alloc(params.subdivisions);
-    status = gsl_integration_qag(&F, g, h, params.abseps, params.releps, params.subdivisions, GSL_INTEG_GAUSS31, w, &result, &error);
+    status = gsl_integration_qag(&F, g, h, params.abseps, params.releps, params.subdivisions, GSL_INTEG_GAUSS61, w, &result, &error);
     if (status) {
         printf("1st integration result: %e ± %e. %i intervals. %s\n", result, error, (int) w->size, gsl_strerror(status));
     }
@@ -516,27 +527,27 @@ std::vector<dbl> integration(
         reaction_type += reactant.side;
     }
 
-    if (reaction_type == -2) {
-        return integral;
-    }
-
     #pragma omp parallel for default(none) shared(ps, Ms, reaction, a, b, g, h, integral, stepsize, reaction_type)
     for (size_t i = 0; i < ps.size(); ++i) {
         dbl p0 = ps[i];
 
         dbl ai(a), bi(b), gi(g), hi(h);
         if (reaction_type == 0) {
-            ai = pow(reaction[2].specie.m + reaction[3].specie.m - energy(p0, reaction[0].specie.m), 2)
-                 - pow(reaction[1].specie.m, 2);
+            ai = (pow(reaction[2].specie.m
+                      + reaction[3].specie.m
+                      - energy(p0, reaction[0].specie.m), 2)
+                  - pow(reaction[1].specie.m, 2));
             if (ai <= 0) {
                 ai = 0;
             } else {
                 ai = sqrt(ai);
             }
         }
-        if (reaction_type == 2) {
+        else if (reaction_type == 2) {
             dbl Ea = energy(p0, reaction[0].specie.m);
+            ai = 0;
             bi = pow(reaction[0].specie.m, 2) / 2. / (Ea - p0);
+            // bi = Ea;
         }
 
         dbl result, error;
@@ -559,13 +570,13 @@ std::vector<dbl> integration(
             p0, 0., 0.,
             &reaction, &Ms,
             ai, bi, gi, hi,
-            -1, releps, abseps,
+            0, releps, abseps,
             subdivisions
         };
         F.params = &params;
 
         gsl_integration_workspace *w = gsl_integration_workspace_alloc(subdivisions);
-        status = gsl_integration_qag(&F, ai, bi, abseps, releps, subdivisions, GSL_INTEG_GAUSS31, w, &result, &error);
+        status = gsl_integration_qag(&F, ai, bi, abseps, releps, subdivisions, GSL_INTEG_GAUSS61, w, &result, &error);
         if (status) {
             printf("2nd integration_1 result: %e ± %e. %i intervals. %s\n", result, error, (int) w->size, gsl_strerror(status));
             throw std::runtime_error("Integrator failed to reach required accuracy");
@@ -573,23 +584,23 @@ std::vector<dbl> integration(
         gsl_integration_workspace_free(w);
         integral[i] += result;
 
-        // params = {
-        //     p0, 0., 0.,
-        //     &reaction, &Ms,
-        //     ai, bi, gi, hi,
-        //     1, releps, abseps,
-        //     subdivisions
-        // };
-        // F.params = &params;
+        params = {
+            p0, 0., 0.,
+            &reaction, &Ms,
+            ai, bi, gi, hi,
+            1, releps, abseps,
+            subdivisions
+        };
+        F.params = &params;
 
-        // w = gsl_integration_workspace_alloc(subdivisions);
-        // status = gsl_integration_qag(&F, ai, bi, abseps, releps, subdivisions, GSL_INTEG_GAUSS31, w, &result, &error);
-        // if (status) {
-        //     printf("2nd integration_f result: %e ± %e. %i intervals. %s\n", result, error, (int) w->size, gsl_strerror(status));
-        //     throw std::runtime_error("Integrator failed to reach required accuracy");
-        // }
-        // gsl_integration_workspace_free(w);
-        // integral[i] += result;
+        w = gsl_integration_workspace_alloc(subdivisions);
+        status = gsl_integration_qag(&F, ai, bi, abseps, releps, subdivisions, GSL_INTEG_GAUSS61, w, &result, &error);
+        if (status) {
+            printf("2nd integration_f result: %e ± %e. %i intervals. %s\n", result, error, (int) w->size, gsl_strerror(status));
+            throw std::runtime_error("Integrator failed to reach required accuracy");
+        }
+        gsl_integration_workspace_free(w);
+        integral[i] += result;
     }
 
     return integral;
