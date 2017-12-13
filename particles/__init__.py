@@ -69,6 +69,9 @@ class AbstractParticle:
             'distribution': Dynamic2DArray(self.grid.TEMPLATE),
             'collision_integral': Dynamic2DArray(self.grid.TEMPLATE),
             'params': DynamicRecArray([
+                ['a', '', 1],
+                ['t', 's', UNITS.s],
+                ['T', 'MeV', UNITS.MeV],
                 ['density', 'MeV^3', UNITS.MeV**3],
                 ['energy_density', 'MeV^4', UNITS.MeV**4]
             ])
@@ -216,6 +219,9 @@ class DistributionParticle(AbstractParticle):
         self.populate_methods()
 
         self.data['params'].append({
+            'a': self.params.a,
+            't': self.params.t,
+            'T': self.params.T,
             'density': self.density,
             'energy_density': self.energy_density
         })
