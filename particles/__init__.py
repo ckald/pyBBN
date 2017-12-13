@@ -227,7 +227,8 @@ class DistributionParticle(AbstractParticle):
         })
 
         if force_print or self.regime != oldregime or self.in_equilibrium != oldeq:
-            print(self)
+            print("\n"+ "\t" * 2 + "%s decoupled at T_dec = %.2f MeV \n" % 
+                (self.name, self.decoupling_temperature / UNITS.MeV) + ("\t" * 2 + "-" * 50))
 
     def update_distribution(self):
         """ Apply collision integral to modify the distribution function """
