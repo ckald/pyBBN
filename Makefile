@@ -1,8 +1,4 @@
-<<<<<<< HEAD
 COMPILER ?= c++
-=======
-COMPILER ?= gcc
->>>>>>> 259ef64... Add a compiler flag
 PYTHON ?= python3
 
 all: clean compile test
