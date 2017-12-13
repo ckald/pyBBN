@@ -103,18 +103,3 @@ class BoltzmannIntegral:
     def integrand(self, *args, **kwargs):
         """ Collision integral interior. """
         raise NotImplementedError()
-
-    """ ### Integration region bounds methods """
-
-    def in_bounds(self, p, E=None, m=None):
-        raise NotImplementedError()
-
-    def bounds(self, p0):
-        """ Coarse integration region based on the `self.particle.grid` points.
-            Assumes that integration region is connected. """
-        points = []
-        for p1 in self.particle.grid.TEMPLATE:
-            points.append((p1, self.lower_bound(p0, p1),))
-            points.append((p1, self.upper_bound(p0, p1),))
-
-        return points
