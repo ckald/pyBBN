@@ -4,7 +4,11 @@ in the case of elastic processes only.
 """
 
 import os
+import sys
 import numpy as np
+from collections import Counter
+
+sys.path.insert(0, "/".join(os.path.dirname(os.path.abspath(__file__)).split("/")[:-2]))
 
 from particles import Particle
 from library.SM import particles as SMP, interactions as SMI
@@ -37,17 +41,22 @@ interactions_pre = (
 	SMI.neutrino_interactions(leptons=[electron], neutrinos=[neutrino_e, neutrino_mu, neutrino_tau])
 )
 
-# for-loop below gets rid of non-elastic processes.
-# For some reason operators as del/remove/pop don't work properly here. This is the only way I managed to make it work.
-# And yes, I know, it looks terrible.
-for x in interactions_pre:
-    for n, y in enumerate(x.integrals):        
-        if (y.reaction[0].specie.symbol != y.reaction[2].specie.symbol and y.reaction[0].specie.symbol != y.reaction[3].specie.symbol): 
-            x.integrals[n] = []
-    for y in x.integrals:
-        if y == []:
-            x.integrals.remove([])
-            x.integrals.remove([])
+integrals = [[] for n in range(len(interactions_pre))]
+
+for num, interaction in enumerate(interactions_pre):
+    for integral in interaction.integrals:   
+        left_species = Counter(item.specie for item in integral.reaction if item.side == -1)
+        right_species = Counter(item.specie for item in integral.reaction if item.side == 1)
+  
+        if left_species == right_species:
+            integrals[num].append(integral)
+
+for num, interaction in enumerate(interactions_pre):
+    if integrals[num] != []:
+        interaction.integrals = integrals[num]
+    else:    
+        interaction.integrals = [0]
+        
 
 universe.interactions += interactions_pre
 
