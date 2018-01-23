@@ -111,14 +111,14 @@ class FourParticleIntegral(BoltzmannIntegral):
             self.creaction = [
                 reaction_t(
                     specie=particle_t(
-                        m=particle.specie.conformal_mass,
+                        m=particle.specie.mass,
                         grid=grid_t(
                             grid=particle.specie.grid.TEMPLATE,
                             distribution=particle.specie._distribution
                         ),
                         eta=int(particle.specie.eta),
                         in_equilibrium=int(particle.specie.in_equilibrium),
-                        T=particle.specie.aT
+                        T=particle.specie.T
                     ),
                     side=particle.side
                 )
@@ -134,7 +134,7 @@ class FourParticleIntegral(BoltzmannIntegral):
 
         params = self.particle.params
 
-        constant = (params.m / params.x)**5 / 64. / numpy.pi**3
+        constant = 1 / 64. / numpy.pi**3 # Got rid of M^5/x^5 for decay test
 
         if environment.get('SIMPSONS_INTEGRATION'):
             integral_1, integral_f = paired_integrators.integrate_2D_simpsons(
