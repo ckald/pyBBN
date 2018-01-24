@@ -317,9 +317,9 @@ class DistributionParticle(AbstractParticle):
         return distribution_interpolation(
             self.grid.TEMPLATE,
             self._distribution,
-            p, self.conformal_mass,
+            p, self.mass,
             int(self.eta),
-            self.aT,
+            self.T,
             self.in_equilibrium
         )
 

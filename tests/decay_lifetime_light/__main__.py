@@ -85,7 +85,7 @@ interaction.integrals = [integral for integral in interaction.integrals
 universe.interactions += (interaction, )
 
 
-
+#"""
 def step_monitor(universe):
     import numpy
     for particle in universe.particles:
@@ -94,11 +94,13 @@ def step_monitor(universe):
             momenta = particle.grid.TEMPLATE 
             density = particle.density
             density_c = particle.density * particle.params.a**3 
-            integrand = (particle.collision_integral * particle.params.H * particle.energy(particle.grid.TEMPLATE/particle.params.a) / particle.mass / particle._distribution)
+            integrand = (particle.collision_integral * particle.params.H * particle.energy(particle.grid.TEMPLATE) / particle.mass / particle._distribution)
             decay_rate = -integrand
 
             with open(os.path.join(folder, particle.name.replace(' ', '_') + ".decay_rate2.txt"), 'a') as f1:
                 f1.write('{:e}'.format(particle.params.T / UNITS.MeV) + '\t' + '\t'.join(['{:e}'.format(x) for x in decay_rate / UNITS.MeV]) + '\n')
+
+#"""
 
 
 ###### NEGLECT THE REST ########
