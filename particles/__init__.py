@@ -227,7 +227,7 @@ class DistributionParticle(AbstractParticle):
         })
 
         if force_print or self.regime != oldregime or self.in_equilibrium != oldeq:
-            print("\n"+ "\t" * 2 + "%s decoupled at T_dec = %.2f MeV \n" % 
+            print("\n"+ "\t" * 2 + "%s decoupled at T_dec = %.2f MeV \n" %
                 (self.name, self.decoupling_temperature / UNITS.MeV) + ("\t" * 2 + "-" * 50))
 
     def update_distribution(self):
@@ -266,11 +266,8 @@ class DistributionParticle(AbstractParticle):
             As.append(A)
             Bs.append(B)
 
-        A = sum(As) / self.params.H
-        B = sum(Bs) / self.params.H
-        if not environment.get('LOGARITHMIC_TIMESTEP'):
-            A /= self.params.x
-            B /= self.params.x
+        A = sum(As)
+        B = sum(Bs)
 
         if environment.get('ADAMS_MOULTON_DISTRIBUTION_CORRECTION'):
             order = min(len(self.data['collision_integral']) + 1, 5)
