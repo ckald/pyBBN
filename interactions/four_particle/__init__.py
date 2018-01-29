@@ -134,7 +134,9 @@ class FourParticleIntegral(BoltzmannIntegral):
 
         params = self.particle.params
 
-        constant = (params.m / params.x)**5 / 64. / numpy.pi**3
+        constant = (params.m / params.x)**5 / 64. / numpy.pi**3 / params.H
+        if not environment.get('LOGARITHMIC_TIMESTEP'):
+            constant /= self.params.x
 
         if environment.get('SIMPSONS_INTEGRATION'):
             integral_1, integral_f = paired_integrators.integrate_2D_simpsons(
