@@ -38,7 +38,7 @@ universe = Universe(params=params, folder=folder)
 
 photon = Particle(**SMP.photon)
 
-#electron = Particle(**SMP.leptons.electron)
+electron = Particle(**SMP.leptons.electron)
 
 neutrino_e = Particle(**SMP.leptons.neutrino_e)
 neutrino_mu = Particle(**SMP.leptons.neutrino_mu)
@@ -49,12 +49,12 @@ for neutrino in [neutrino_e, neutrino_mu, neutrino_tau]:
 
 
 sterile = Particle(**NuP.dirac_sterile_neutrino(mass))
-sterile.decoupling_temperature = T_initial
+sterile.decoupling_temperature = T_initial*0.8
 
 universe.add_particles([
     photon,
 
-#    electron,
+    electron,
 
     neutrino_e,
     neutrino_mu,
@@ -70,19 +70,40 @@ thetas = defaultdict(float, {
 interaction = NuI.sterile_leptons_interactions(
     thetas=thetas, sterile=sterile,
     neutrinos=[neutrino_e, neutrino_mu, neutrino_tau],
-    leptons=[]
-#    leptons=[electron]
-)[0]
+#    leptons=[]
+    leptons=[electron]
+)
 
 
 def reaction_type(reaction):
     return sum(reactant.side for reactant in reaction)
 
-interaction.integrals = [integral for integral in interaction.integrals
-                         if reaction_type(integral.reaction) in [2]]
+for inter in interaction:
+    inter.integrals = [integral for integral in inter.integrals
+                             if reaction_type(integral.reaction) in [2]]
 
 
-universe.interactions += (interaction, )
+universe.interactions += (interaction)
+
+
+"""
+def step_monitor(universe):
+    import numpy
+    for particle in universe.particles:
+        data = particle.data['params']
+        if particle.mass > 0 and not particle.in_equilibrium:
+            momenta = particle.grid.TEMPLATE 
+            density = particle.density
+            density_c = particle.density * particle.params.a**3 
+            AA = simps(momenta**2 * particle.collision_integral, momenta)
+            BB = simps(momenta**2 * particle._distribution / particle.energy(particle.params.a * momenta), momenta) 
+            integrand = (AA * particle.params.H)  / (particle.mass * BB)
+            decay_rate = -integrand
+            print(decay_rate)
+            with open(os.path.join(folder, particle.name.replace(' ', '_') + ".decay_rate6.txt"), 'a') as f1:
+                f1.write('{:e}'.format(particle.params.T / UNITS.MeV) + '\t' + '{:e}'.format(decay_rate / UNITS.MeV) + '\n')
+
+"""
 
 
 #"""
@@ -97,7 +118,7 @@ def step_monitor(universe):
             integrand = (particle.collision_integral * particle.params.H * particle.energy(particle.grid.TEMPLATE) / particle.mass / particle._distribution)
             decay_rate = -integrand
 
-            with open(os.path.join(folder, particle.name.replace(' ', '_') + ".decay_rate2.txt"), 'a') as f1:
+            with open(os.path.join(folder, particle.name.replace(' ', '_') + ".decay_rate6.txt"), 'a') as f1:
                 f1.write('{:e}'.format(particle.params.T / UNITS.MeV) + '\t' + '\t'.join(['{:e}'.format(x) for x in decay_rate / UNITS.MeV]) + '\n')
 
 #"""

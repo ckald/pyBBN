@@ -134,7 +134,7 @@ class FourParticleIntegral(BoltzmannIntegral):
 
         params = self.particle.params
 
-        constant = 1 / 64. / numpy.pi**3 # Got rid of M^5/x^5 for decay test
+        constant = (params.m/params.x)**0 / 64. / numpy.pi**3 # Got rid of m^5/x^5 for decay test
 
         if environment.get('SIMPSONS_INTEGRATION'):
             integral_1, integral_f = paired_integrators.integrate_2D_simpsons(

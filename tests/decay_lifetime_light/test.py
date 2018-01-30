@@ -44,7 +44,7 @@ folder = os.path.join(os.path.split(__file__)[0], 'output')
 #row = 1900
 Dolgov_value = 1.27031e-21 # MeV^-1
 
-names = ["Sterile_neutrino_(Dirac).decay_rate2.txt"]
+names = ["Sterile_neutrino_(Dirac).decay_rate6.txt"]
 
 #T_dec = (np.loadtxt(folder + "/" + "evolution.txt", unpack=True)[1])[0:length]
 parameters = np.arange(0.4, 20.4, 0.4)
@@ -77,6 +77,7 @@ plt.ylabel(r"$\Gamma_{CM, code} / \Gamma_{CM, Dolgov}$", fontsize=16)
 #plt.ylabel(r"$\Gamma_{CM}$ [MeV]", fontsize=16)
 plt.title("Ratio between decay rate calculated by code and theoretical one")
 #plt.semilogy()
+
 #plt.ticklabel_format(style='sci', axis='y', scilimits=(0,0))
 plt.semilogx()
 plt.gca().invert_xaxis()
