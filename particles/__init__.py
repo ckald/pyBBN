@@ -255,8 +255,8 @@ class DistributionParticle(AbstractParticle):
     def calculate_collision_integral(self, p0):
         """ ### Particle collisions integration """
 
-        if not self.collision_integrals:
-            return 0
+      #  if not self.collision_integrals:
+      #      return 0
 
         As = []
         Bs = []
