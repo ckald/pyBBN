@@ -197,7 +197,7 @@ corresponding expression. $\pm_j$ represents the $\eta$ value of the particle $j
 */
 dbl F_f(const std::vector<reaction_t> &reaction, const std::array<dbl, 4> &f) {
     /* Variable part of the distribution functional */
-    return F_A(reaction, f, 0); //- reaction[0].specie.eta * F_B(reaction, f, 0); // For the decay test
+    return -1;//F_A(reaction, f, 0); //- reaction[0].specie.eta * F_B(reaction, f, 0); // For the decay test
 }
 
 dbl F_1(const std::vector<reaction_t> &reaction, const std::array<dbl, 4> &f) {
@@ -232,7 +232,7 @@ std::pair<npdbl, npdbl> integrand(
     /*
     Collision integral interior.
     */
-
+//    if (p0 < 0.0005 and p0 > 0.0003) {std::cout << "\n\n";}
     auto p1s = p1_buffer.unchecked<1>(),
          p2s = p2_buffer.unchecked<1>();
 
@@ -281,9 +281,11 @@ std::pair<npdbl, npdbl> integrand(
 
         E[3] *= -sides[3];
 
-        if (E[3] < m[3]) { continue; }
+        if (E[3] < m[3]) {continue;}
 
         p[3] = sqrt(pow(E[3], 2) - pow(m[3], 2));
+
+//        if (p0 > 0.0003 and p0 < 0.0005) {std::cout << E[0] << "\t" << p[0] << "\t" << p[1] << "\t" << p[2] << "\t" << p[3] << "\n";}
 
         if (!in_bounds(p, E, m)) { continue; }
 
@@ -299,6 +301,9 @@ std::pair<npdbl, npdbl> integrand(
         if (temp == 0.) { continue; }
 
         dbl ds = 0.;
+
+
+//        if (p0 > 0.0003 and p0 < 0.0005) {std::cout << E[0] << "\t" << p[0] << "\t" << p[1] << "\t" << p[2] << "\t" << p[3] << "\n";}
         if (p[0] != 0.) {
             for (const M_t &M : Ms) {
                 ds += D(p, E, m, M.K1, M.K2, M.order, sides);
@@ -310,7 +315,7 @@ std::pair<npdbl, npdbl> integrand(
             }
         }
         temp *= ds;
-        
+
         if (temp == 0.) { continue; }
 
         std::array<dbl, 4> f;
@@ -325,7 +330,7 @@ std::pair<npdbl, npdbl> integrand(
                 specie.T, specie.in_equilibrium
             );
         }
-
+//        if (p0 < 0.0005 and p0 > 0.0003) {std::cout << ds << "\n";}
         integrands_1(i) = temp * F_1(reaction, f);
         integrands_f(i) = temp * F_f(reaction, f);
     }

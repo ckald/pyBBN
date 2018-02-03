@@ -111,14 +111,14 @@ class FourParticleIntegral(BoltzmannIntegral):
             self.creaction = [
                 reaction_t(
                     specie=particle_t(
-                        m=particle.specie.mass,
+                        m=particle.specie.conformal_mass,
                         grid=grid_t(
                             grid=particle.specie.grid.TEMPLATE,
                             distribution=particle.specie._distribution
                         ),
                         eta=int(particle.specie.eta),
                         in_equilibrium=int(particle.specie.in_equilibrium),
-                        T=particle.specie.T
+                        T=particle.specie.aT
                     ),
                     side=particle.side
                 )
@@ -128,13 +128,18 @@ class FourParticleIntegral(BoltzmannIntegral):
             self.cMs = [M_t(list(M.order), M.K1, M.K2) for M in self.Ms]
 
         def prepared_integrand(p1, p2):
+            p1 = p1 * params.a
+            p2 = p2 * params.a
             integrand_1, integrand_f = integrand(ps, p1.ravel(), p2.ravel(),
                                                  self.creaction, self.cMs)
             return numpy.reshape(integrand_1, p1.shape), numpy.reshape(integrand_f, p1.shape)
 
         params = self.particle.params
 
-        constant = (params.m/params.x)**0 / 64. / numpy.pi**3 # Got rid of m^5/x^5 for decay test
+        constant = (params.m / params.x)**3 / 64. / numpy.pi**3 / params.H # Reason why not (m/x)^5 is because (m/x)^2 gets cancelled from dp_2 dp_3
+
+        if not environment.get('LOGARITHMIC_TIMESTEP'):
+            constant /= self.params.x
 
         if environment.get('SIMPSONS_INTEGRATION'):
             integral_1, integral_f = paired_integrators.integrate_2D_simpsons(

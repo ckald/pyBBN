@@ -204,7 +204,7 @@ class DistributionParticle(AbstractParticle):
         oldeq = self.in_equilibrium
 
         # Update particle internal params only while it is in equilibrium
-        if self.in_equilibrium:
+        if self.in_equilibrium or self.in_equilibrium != oldeq:
             # Particle species has temperature only when it is in equilibrium
             self.aT = self.params.aT
 
@@ -227,7 +227,7 @@ class DistributionParticle(AbstractParticle):
         })
 
         if force_print or self.regime != oldregime or self.in_equilibrium != oldeq:
-            print("\n"+ "\t" * 2 + "%s decoupled at T_dec = %.2f MeV \n" % 
+            print("\n"+ "\t" * 2 + "%s decoupled at T_dec = %.2f MeV \n" %
                 (self.name, self.decoupling_temperature / UNITS.MeV) + ("\t" * 2 + "-" * 50))
 
     def update_distribution(self):
@@ -247,7 +247,6 @@ class DistributionParticle(AbstractParticle):
         self.data['collision_integral'].append(self.collision_integral)
         self.data['distribution'].append(self._distribution)
 
-
     def integrate_collisions(self):
         return numpy.vectorize(self.calculate_collision_integral,
                                otypes=[numpy.float_])(self.grid.TEMPLATE)
@@ -255,8 +254,8 @@ class DistributionParticle(AbstractParticle):
     def calculate_collision_integral(self, p0):
         """ ### Particle collisions integration """
 
-      #  if not self.collision_integrals:
-      #      return 0
+        if not self.collision_integrals:
+            return 0
 
         As = []
         Bs = []
@@ -266,11 +265,8 @@ class DistributionParticle(AbstractParticle):
             As.append(A)
             Bs.append(B)
 
-        A = sum(As) / self.params.H
-        B = sum(Bs) / self.params.H
-        if not environment.get('LOGARITHMIC_TIMESTEP'):
-            A /= self.params.x
-            B /= self.params.x
+        A = sum(As)
+        B = sum(Bs)
 
         if environment.get('ADAMS_MOULTON_DISTRIBUTION_CORRECTION'):
             order = min(len(self.data['collision_integral']) + 1, 5)
@@ -288,7 +284,7 @@ class DistributionParticle(AbstractParticle):
         # To ensure that total_integral =  0 when A = B = 0. In previous cases total_integral
         # would be constant, even if A = B = 0
         if (A + B) == 0:
-            total_integral = 0  
+            total_integral = 0
         else:
             total_integral = (prediction - self.distribution(p0)) / self.params.h
 
@@ -317,9 +313,9 @@ class DistributionParticle(AbstractParticle):
         return distribution_interpolation(
             self.grid.TEMPLATE,
             self._distribution,
-            p, self.mass,
+            p, self.conformal_mass,
             int(self.eta),
-            self.T,
+            self.aT,
             self.in_equilibrium
         )
 
