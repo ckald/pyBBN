@@ -90,8 +90,8 @@ class FourParticleIntegral(BoltzmannIntegral):
         """
         Initialize collision integral constants and save them to the first involved particle
         """
-        params = self.particle.params
-        if params.T > self.washout_temperature and not self.particle.in_equilibrium:
+        self.par = self.particle.params
+        if self.par.T > self.washout_temperature and not self.particle.in_equilibrium:
             self.particle.collision_integrals.append(self)
 
         if self.grids is None:
@@ -102,10 +102,11 @@ class FourParticleIntegral(BoltzmannIntegral):
 
     def integrate(self, ps, bounds=None):
         if bounds is None:
+            bounds_p1 = tuple(b1 * self.par.a for b1 in self.grids[0].BOUNDS)
             bounds = (
-                self.grids[0].BOUNDS,
-                (lambda p1: self.grids[1].MIN_MOMENTUM, lambda p1: self.grids[1].MAX_MOMENTUM)
-            )
+                bounds_p1,
+                (lambda p2: self.grids[1].MIN_MOMENTUM * self.par.a, lambda p2: self.grids[1].MAX_MOMENTUM * self.par.a)
+            ) # Why do we need the lambda here?
 
         if not self.creaction:
             self.creaction = [
@@ -128,23 +129,19 @@ class FourParticleIntegral(BoltzmannIntegral):
             self.cMs = [M_t(list(M.order), M.K1, M.K2) for M in self.Ms]
 
         def prepared_integrand(p1, p2):
-            p1 = p1 * params.a
-            p2 = p2 * params.a
             integrand_1, integrand_f = integrand(ps, p1.ravel(), p2.ravel(),
                                                  self.creaction, self.cMs)
             return numpy.reshape(integrand_1, p1.shape), numpy.reshape(integrand_f, p1.shape)
 
-        params = self.particle.params
 
-        constant = (params.m / params.x)**3 / 64. / numpy.pi**3 / params.H # Reason why not (m/x)^5 is because (m/x)^2 gets cancelled from dp_2 dp_3
+        constant = (self.par.m / self.par.x)**5 / 64. / numpy.pi**3 / self.par.H
 
         if not environment.get('LOGARITHMIC_TIMESTEP'):
-            constant /= self.params.x
+            constant /= self.par.x
 
         if environment.get('SIMPSONS_INTEGRATION'):
             integral_1, integral_f = paired_integrators.integrate_2D_simpsons(
                 prepared_integrand(*numpy.meshgrid(self.grids[0].TEMPLATE, self.grids[1].TEMPLATE)),
-                bounds=bounds,
                 grids=[self.grids[0].TEMPLATE, self.grids[1].TEMPLATE]
             )
         else:

@@ -29,7 +29,7 @@ folder = utils.ensure_dir(
     + args.comment
 )
 
-T_initial = 50. * UNITS.MeV
+T_initial = 20. * UNITS.MeV
 T_final = 0.0008 * UNITS.MeV
 params = Params(T=T_initial,
                 dy=0.003125)
@@ -39,7 +39,7 @@ universe = Universe(params=params, folder=folder)
 
 from common import LinearSpacedGrid
 linear_grid = LogSpacedGrid(MOMENTUM_SAMPLES=51, MAX_MOMENTUM=20*UNITS.MeV)
-linear_grid_s = LinearSpacedGrid(MOMENTUM_SAMPLES=51, MAX_MOMENTUM=0.01*UNITS.MeV)
+linear_grid_s = LinearSpacedGrid(MOMENTUM_SAMPLES=51, MAX_MOMENTUM=0.1*UNITS.MeV)
 
 
 photon = Particle(**SMP.photon)
@@ -122,9 +122,9 @@ def step_monitor(universe):
             momenta = particle.grid.TEMPLATE 
             density = particle.density
             density_c = particle.density * particle.params.a**3 
-            integrand = (particle.collision_integral * particle.params.H * particle.conformal_energy(particle.grid.TEMPLATE) / particle.mass /particle.params.a / particle._distribution)
+            integrand = (particle.collision_integral * particle.params.H * particle.conformal_energy(particle.grid.TEMPLATE) / particle.mass / particle.params.a / particle._distribution)
             decay_rate = -integrand
-            print(decay_rate)
+            print(decay_rate / UNITS.MeV / 1.27031e-21) 
             with open(os.path.join(folder, particle.name.replace(' ', '_') + ".decay_rate6.txt"), 'a') as f1:
                 f1.write('{:e}'.format(particle.params.T / UNITS.MeV) + '\t' + '{:e}'.format(particle.params.a) + '\t' + '\t'.join(['{:e}'.format(x) for x in decay_rate / UNITS.MeV]) + '\n')
 
