@@ -8,8 +8,8 @@
 #include <pybind11/stl.h>
 #include <pybind11/numpy.h>
 
-#include <gsl/gsl_errno.h>
-#include <gsl/gsl_integration.h>
+//#include <gsl/gsl_errno.h>
+//#include <gsl/gsl_integration.h>
 
 namespace py = pybind11;
 using namespace pybind11::literals;
@@ -59,7 +59,7 @@ dbl distribution_interpolation(const std::vector<dbl> &grid,
                                dbl p, dbl m, int eta, dbl T,
                                bool in_equilibrium);
 
-
+/*
 dbl D1(dbl q1, dbl q2, dbl q3, dbl q4);
 dbl D2(dbl q1, dbl q2, dbl q3, dbl q4);
 dbl D3(dbl q1, dbl q2, dbl q3, dbl q4);
@@ -67,7 +67,7 @@ dbl D3(dbl q1, dbl q2, dbl q3, dbl q4);
 dbl D(const std::array<dbl, 4> &p, const std::array<dbl, 4> &E, const std::array<dbl, 4> &m,
       dbl K1, dbl K2,
       const std::array<int, 4> &order, const std::array<int, 4> &sides);
-
+*/
 
 dbl Db1(dbl q2, dbl q3, dbl q4);
 dbl Db2(dbl q2, dbl q3, dbl q4);

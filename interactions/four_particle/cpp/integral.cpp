@@ -232,7 +232,7 @@ std::pair<npdbl, npdbl> integrand(
     /*
     Collision integral interior.
     */
-//    if (p0 < 0.0005 and p0 > 0.0003) {std::cout << "\n\n";}
+
     auto p1s = p1_buffer.unchecked<1>(),
          p2s = p2_buffer.unchecked<1>();
 
@@ -285,8 +285,6 @@ std::pair<npdbl, npdbl> integrand(
 
         p[3] = sqrt(pow(E[3], 2) - pow(m[3], 2));
 
-//        if (p0 > 0.0003 and p0 < 0.0005) {std::cout << E[0] << "\t" << p[0] << "\t" << p[1] << "\t" << p[2] << "\t" << p[3] << "\n";}
-
         if (!in_bounds(p, E, m)) { continue; }
 
         dbl temp = 1.;
@@ -302,19 +300,20 @@ std::pair<npdbl, npdbl> integrand(
 
         dbl ds = 0.;
 
-
-//        if (p0 > 0.0003 and p0 < 0.0005) {std::cout << E[0] << "\t" << p[0] << "\t" << p[1] << "\t" << p[2] << "\t" << p[3] << "\n";}
-        if (p[0] != 0.) {
+/*        if (p[0] != 0.) {
             for (const M_t &M : Ms) {
                 ds += D(p, E, m, M.K1, M.K2, M.order, sides);
             }
             ds /= p[0] * E[0];
         } else {
-            for (const M_t &M : Ms) {
-                ds += Db(p, E, m, M.K1, M.K2, M.order, sides);
-            }
+
         }
-        temp *= ds;
+*/
+        for (const M_t &M : Ms) {
+            ds += Db(p, E, m, M.K1, M.K2, M.order, sides);
+        }
+
+        temp *= ds;        
 
         if (temp == 0.) { continue; }
 
@@ -330,7 +329,7 @@ std::pair<npdbl, npdbl> integrand(
                 specie.T, specie.in_equilibrium
             );
         }
-//        if (p0 < 0.0005 and p0 > 0.0003) {std::cout << ds << "\n";}
+
         integrands_1(i) = temp * F_1(reaction, f);
         integrands_f(i) = temp * F_f(reaction, f);
     }
@@ -347,12 +346,12 @@ PYBIND11_MODULE(integral, m) {
     m.def("binary_find", &binary_find,
           "grid"_a, "x"_a);
 
-    m.def("D1", &D1);
+/*    m.def("D1", &D1);
     m.def("D2", &D2);
     m.def("D3", &D3);
     m.def("D", &D,
           "p"_a, "E"_a, "m"_a,
-          "K1"_a, "K2"_a, "order"_a, "sides"_a);
+          "K1"_a, "K2"_a, "order"_a, "sides"_a);*/
     m.def("Db", &Db,
           "p"_a, "E"_a, "m"_a,
           "K1"_a, "K2"_a, "order"_a, "sides"_a);
