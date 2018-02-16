@@ -2,9 +2,20 @@ import numpy
 from scipy.integrate import simps
 
 from common.integrators.gauss_legendre import weights, grid
+from common.integrators import gaussian 
+
+def integrate_1D_simpsons(integrands, grid):
+    integral_1 = simps(integrands[0], grid)
+    integral_f = simps(integrands[1], grid)
+    return integral_1, integral_f
 
 
-def integrate_2D_simpsons(integrands, bounds, grids):
+def integrate_1D(integrands, bounds):
+    integral_1, integral_f = gaussian(integrands, bounds[0], bounds[1])
+    return integral_1, integral_f
+
+
+def integrate_2D_simpsons(integrands, grids):
     integral_1 = simps(simps(integrands[0], grids[0]), grids[1])
     integral_f = simps(simps(integrands[1], grids[0]), grids[1])
     return integral_1, integral_f
@@ -16,7 +27,6 @@ def integrate_2D(integrands, bounds):
         bounds[0][0], bounds[0][1],
         bounds[1][0], bounds[1][1]
     )
-
     return integrals
 
 
