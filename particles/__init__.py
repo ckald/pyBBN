@@ -248,10 +248,55 @@ class DistributionParticle(AbstractParticle):
         self.data['distribution'].append(self._distribution)
 
     def integrate_collisions(self):
-        return self.calculate_collision_integral(0)
+        return numpy.vectorize(self.calculate_collision_integral,
+                               otypes=[numpy.float_])(self.grid.TEMPLATE)
 
     def calculate_collision_integral(self, p0):
         """ ### Particle collisions integration """
+
+        if not self.collision_integrals:
+            return 0
+
+        As = []
+        Bs = []
+
+        for integral in self.collision_integrals:
+            A, B = integral.integrate(p0)
+            As.append(A)
+            Bs.append(B)
+
+        A = sum(As)
+        B = sum(Bs)
+
+        if environment.get('ADAMS_MOULTON_DISTRIBUTION_CORRECTION'):
+            order = min(len(self.data['collision_integral']) + 1, 5)
+            index = numpy.searchsorted(self.grid.TEMPLATE, p0)
+            fs = []
+            if order > 1:
+                fs = list(self.data['collision_integral'][-order+1:, index])
+
+            prediction = adams_moulton_solver(y=self.distribution(p0), fs=fs,
+                                              A=A, B=B, h=self.params.h, order=order)
+        else:
+            prediction = implicit_euler(y=self.distribution(p0), t=None,
+                                        A=A, B=B, h=self.params.h)
+
+        # To ensure that total_integral =  0 when A = B = 0. In previous cases total_integral
+        # would be constant, even if A = B = 0
+        if (A + B) == 0:
+            total_integral = 0
+        else:
+            total_integral = (prediction - self.distribution(p0)) / self.params.h
+
+        return total_integral
+
+    # In case Lorentz invariance of collision integral will be used
+    """ 
+    def integrate_collisions(self):
+        return self.calculate_collision_integral(0)
+
+    def calculate_collision_integral(self, p0):
+        ### Particle collisions integration
 
         if not self.collision_integrals:
             return 0
@@ -293,7 +338,7 @@ class DistributionParticle(AbstractParticle):
                 total_integral[num] = (prediction - self.distribution(p)) / self.params.h
 
         return total_integral
-
+    """
     def distribution(self, p):
         """
         ## Distribution function interpolation

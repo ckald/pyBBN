@@ -4,8 +4,8 @@ int Sgn(double lam) {
   return (lam > 0) - (lam < 0);
 }
 
-/*
-dbl D1(dbl q1, dbl q2, dbl q3, dbl q4) {*/
+
+dbl D1(dbl q1, dbl q2, dbl q3, dbl q4) {
     /* Dimensionality: energy
 
         \begin{align}
@@ -13,11 +13,11 @@ dbl D1(dbl q1, dbl q2, dbl q3, dbl q4) {*/
             sin(p_i \lambda) sin(p_j \lambda) sin(p_k \lambda) sin(p_l \lambda)
         \end{align}
     */
-/*
+
     if (q1 < q2) { std::swap(q1, q2); }
     if (q3 < q4) { std::swap(q3, q4); }
 
-    if ((q1 > q2 + q3 + q4) || (q3 > q2 + q1 + q4)) {
+    if ((q1 > q2 + q3 + q4) or (q3 > q2 + q1 + q4)) {
         return 0.;
     }
 
@@ -33,9 +33,12 @@ dbl D1(dbl q1, dbl q2, dbl q3, dbl q4) {*/
     }
     return q2;
 }
-*/
+
+
 /*
 dbl D1(dbl q1, dbl q2, dbl q3, dbl q4) {
+
+    // Full analytic expression (for testing)
 
     dbl y1, y2, y3, y4;
     dbl Val;
@@ -58,10 +61,10 @@ dbl D1(dbl q1, dbl q2, dbl q3, dbl q4) {
 
     Val = 0.25 * (2*y4 - std::abs(y1-y2-y3+y4) + std::abs(-y1+y2+y3+y4));
     return Val;
-}
-*/
-/*
-dbl D2(dbl q1, dbl q2, dbl q3, dbl q4) {*/
+}*/
+
+
+dbl D2(dbl q1, dbl q2, dbl q3, dbl q4) {
     /* Dimensionality: pow(energy, 3)
 
         \begin{align}
@@ -72,7 +75,7 @@ dbl D2(dbl q1, dbl q2, dbl q3, dbl q4) {*/
             \left[ cos(p_l \lambda) - \frac{sin(p_l \lambda)}{p_l \lambda} \right]
         \end{align}
     */
-/*
+
     if (q1 < q2) { std::swap(q1, q2); }
     if (q3 < q4) { std::swap(q3, q4); }
 
@@ -104,10 +107,12 @@ dbl D2(dbl q1, dbl q2, dbl q3, dbl q4) {*/
         }
     }
 }
-*/
+
 
 /*
 dbl D2(dbl q1, dbl q2, dbl q3, dbl q4) {
+
+    // Full analytic expression (for testing)
 
     if (q1 < q2) { std::swap(q1, q2); }
     if (q3 < q4) { std::swap(q3, q4); }
@@ -124,7 +129,7 @@ dbl D2(dbl q1, dbl q2, dbl q3, dbl q4) {
     return Val;
 }
 */
-/*
+
 dbl D3(dbl q1, dbl q2, dbl q3, dbl q4) {
     // Dimensionality: pow(energy, 5)
 
@@ -141,7 +146,7 @@ dbl D3(dbl q1, dbl q2, dbl q3, dbl q4) {
     if (q1 < q2) { std::swap(q1, q2); }
     if (q3 < q4) { std::swap(q3, q4); }
 
-    if ((q1 > q2 + q3 + q4) || (q3 > q2 + q1 + q4)) {
+    if ((q1 > q2 + q3 + q4) or (q3 > q2 + q1 + q4)) {
         return 0.;
     }
 
@@ -175,8 +180,8 @@ dbl D3(dbl q1, dbl q2, dbl q3, dbl q4) {
         }
     }
 }
-*/
-/*
+
+
 dbl D(const std::array<dbl, 4> &p, const std::array<dbl, 4> &E, const std::array<dbl, 4> &m,
          dbl K1, dbl K2,
          const std::array<int, 4> &order, const std::array<int, 4> &sides) {
@@ -205,7 +210,7 @@ dbl D(const std::array<dbl, 4> &p, const std::array<dbl, 4> &E, const std::array
     }
     return result;
 }
-*/
+
 
 dbl Db1(dbl q2, dbl q3, dbl q4) {
 

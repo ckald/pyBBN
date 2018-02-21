@@ -197,12 +197,12 @@ corresponding expression. $\pm_j$ represents the $\eta$ value of the particle $j
 */
 dbl F_f(const std::vector<reaction_t> &reaction, const std::array<dbl, 4> &f) {
     /* Variable part of the distribution functional */
-    return -1;//F_A(reaction, f, 0); //- reaction[0].specie.eta * F_B(reaction, f, 0); // For the decay test
+    return -1;//F_A(reaction, f, 0)- reaction[0].specie.eta * F_B(reaction, f, 0); // For the decay test
 }
 
 dbl F_1(const std::vector<reaction_t> &reaction, const std::array<dbl, 4> &f) {
     /* Constant part of the distribution functional */
-    return 0; //F_B(reaction, f, 0); // For the decay test
+    return 0;//F_B(reaction, f, 0); // For the decay test
 }
 
 
@@ -232,7 +232,7 @@ std::pair<npdbl, npdbl> integrand(
     /*
     Collision integral interior.
     */
-
+//    std::cout<<"\n";
     auto p1s = p1_buffer.unchecked<1>(),
          p2s = p2_buffer.unchecked<1>();
 
@@ -266,7 +266,9 @@ std::pair<npdbl, npdbl> integrand(
         integrands_1(i) = 0.;
         integrands_f(i) = 0.;
 
-        if (p2 > p0 + p1) { continue; }
+        if (sides[0] * sides[1] == -1){
+            if (p2 > p0 + p1) { continue; } // Only relevant for 2 <--> 2 interactions
+        }
 
         std::array<dbl, 4> p, E;
         p[0] = p0;
@@ -284,7 +286,7 @@ std::pair<npdbl, npdbl> integrand(
         if (E[3] < m[3]) {continue;}
 
         p[3] = sqrt(pow(E[3], 2) - pow(m[3], 2));
-
+//        std::cout<<p[0]<< "\t"  << p[1]<< "\t"  << p[2]<< "\t"  << p[3]<< "\t"  << E[0]<< "\t"  << E[1]<< "\t" << E[2]<< "\t"  << E[3]<< "\t" << m[0] << "\t" << i << "\n";
         if (!in_bounds(p, E, m)) { continue; }
 
         dbl temp = 1.;
@@ -300,17 +302,15 @@ std::pair<npdbl, npdbl> integrand(
 
         dbl ds = 0.;
 
-/*        if (p[0] != 0.) {
+        if (p[0] != 0.) {
             for (const M_t &M : Ms) {
                 ds += D(p, E, m, M.K1, M.K2, M.order, sides);
             }
             ds /= p[0] * E[0];
         } else {
-
-        }
-*/
-        for (const M_t &M : Ms) {
-            ds += Db(p, E, m, M.K1, M.K2, M.order, sides);
+            for (const M_t &M : Ms) {
+                ds += Db(p, E, m, M.K1, M.K2, M.order, sides);
+            }
         }
 
         temp *= ds;        
@@ -346,12 +346,12 @@ PYBIND11_MODULE(integral, m) {
     m.def("binary_find", &binary_find,
           "grid"_a, "x"_a);
 
-/*    m.def("D1", &D1);
+    m.def("D1", &D1);
     m.def("D2", &D2);
     m.def("D3", &D3);
     m.def("D", &D,
           "p"_a, "E"_a, "m"_a,
-          "K1"_a, "K2"_a, "order"_a, "sides"_a);*/
+          "K1"_a, "K2"_a, "order"_a, "sides"_a);
     m.def("Db", &Db,
           "p"_a, "E"_a, "m"_a,
           "K1"_a, "K2"_a, "order"_a, "sides"_a);
