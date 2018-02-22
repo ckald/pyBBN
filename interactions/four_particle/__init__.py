@@ -103,11 +103,24 @@ class FourParticleIntegral(BoltzmannIntegral):
     def integrate(self, ps, bounds=None):
         params = self.particle.params
 
+        reaction_type = sum(specie.side for specie in self.reaction)
+
         if bounds is None:
-            bounds = (
-                self.grids[0].BOUNDS,
-                (lambda p1: self.grids[1].MIN_MOMENTUM, lambda p1: self.grids[1].MAX_MOMENTUM)
-            )
+            if reaction_type == 2:
+                max_momentum = self.particle.conformal_mass**2 / 2. / (self.particle.conformal_energy(ps) - ps)
+                bounds = (
+                    (self.grids[0].MIN_MOMENTUM, max_momentum),
+                    (lambda p2: numpy.maximum(0,
+                        self.particle.conformal_energy(ps)
+                        - self.reaction[1].specie.conformal_energy(p2)
+                        - max_momentum
+                     ), lambda p2: max_momentum)
+                )
+            else:
+                bounds = (
+                    (self.grids[0].MIN_MOMENTUM, self.grids[0].MAX_MOMENTUM),
+                    (lambda p2: self.grids[1].MIN_MOMENTUM, lambda p2: self.grids[1].MAX_MOMENTUM)
+                )
 
         if not self.creaction:
             self.creaction = [
