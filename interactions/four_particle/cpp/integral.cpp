@@ -197,12 +197,14 @@ corresponding expression. $\pm_j$ represents the $\eta$ value of the particle $j
 */
 dbl F_f(const std::vector<reaction_t> &reaction, const std::array<dbl, 4> &f) {
     /* Variable part of the distribution functional */
-    return F_A(reaction, f, 0); //- reaction[0].specie.eta * F_B(reaction, f, 0); // For the decay test
+    return -1; // For the decay test
+    // return F_A(reaction, f, 0) - reaction[0].specie.eta * F_B(reaction, f, 0);
 }
 
 dbl F_1(const std::vector<reaction_t> &reaction, const std::array<dbl, 4> &f) {
     /* Constant part of the distribution functional */
-    return 0; //F_B(reaction, f, 0); // For the decay test
+    return 0; // For the decay test
+    // return F_B(reaction, f, 0);
 }
 
 
@@ -232,7 +234,6 @@ std::pair<npdbl, npdbl> integrand(
     /*
     Collision integral interior.
     */
-
     auto p1s = p1_buffer.unchecked<1>(),
          p2s = p2_buffer.unchecked<1>();
 
@@ -258,7 +259,7 @@ std::pair<npdbl, npdbl> integrand(
         m[i] = reaction[i].specie.m;
     }
 
-    #pragma omp parallel for default(none) shared(std::cout, length, p0, p1s, p2s, m, sides, Ms, reaction, integrands_1, integrands_f)
+    #pragma omp parallel for default(none) shared(length, p0, p1s, p2s, m, sides, Ms, reaction, integrands_1, integrands_f)
     for (size_t i = 0; i < length; ++i) {
         dbl p1 = p1s(i),
             p2 = p2s(i);
@@ -281,7 +282,7 @@ std::pair<npdbl, npdbl> integrand(
 
         E[3] *= -sides[3];
 
-        if (E[3] < m[3]) { continue; }
+        if (E[3] < m[3]) {continue;}
 
         p[3] = sqrt(pow(E[3], 2) - pow(m[3], 2));
 
@@ -299,6 +300,7 @@ std::pair<npdbl, npdbl> integrand(
         if (temp == 0.) { continue; }
 
         dbl ds = 0.;
+
         if (p[0] != 0.) {
             for (const M_t &M : Ms) {
                 ds += D(p, E, m, M.K1, M.K2, M.order, sides);
@@ -310,7 +312,7 @@ std::pair<npdbl, npdbl> integrand(
             }
         }
         temp *= ds;
-        
+
         if (temp == 0.) { continue; }
 
         std::array<dbl, 4> f;
@@ -325,7 +327,6 @@ std::pair<npdbl, npdbl> integrand(
                 specie.T, specie.in_equilibrium
             );
         }
-
         integrands_1(i) = temp * F_1(reaction, f);
         integrands_f(i) = temp * F_f(reaction, f);
     }

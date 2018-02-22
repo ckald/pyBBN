@@ -7,7 +7,7 @@ defaults = {
     'FIXED_ORDER_1D_QUADRATURE': False,
 
     # The order of the Gauss-Legendre quadrature used by the code for momentum-space integrations
-    'GAUSS_LEGENDRE_ORDER': 30,
+    'GAUSS_LEGENDRE_ORDER': 40,
     # The order of the Gauss-Laguerre quadrature used by the code for momentum-space integrations
     'GAUSS_LAGUERRE_ORDER': 100,
 

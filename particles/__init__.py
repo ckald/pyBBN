@@ -204,7 +204,7 @@ class DistributionParticle(AbstractParticle):
         oldeq = self.in_equilibrium
 
         # Update particle internal params only while it is in equilibrium
-        if self.in_equilibrium:
+        if self.in_equilibrium or self.in_equilibrium != oldeq:
             # Particle species has temperature only when it is in equilibrium
             self.aT = self.params.aT
 
@@ -247,7 +247,6 @@ class DistributionParticle(AbstractParticle):
         self.data['collision_integral'].append(self.collision_integral)
         self.data['distribution'].append(self._distribution)
 
-
     def integrate_collisions(self):
         return numpy.vectorize(self.calculate_collision_integral,
                                otypes=[numpy.float_])(self.grid.TEMPLATE)
@@ -255,8 +254,8 @@ class DistributionParticle(AbstractParticle):
     def calculate_collision_integral(self, p0):
         """ ### Particle collisions integration """
 
-      #  if not self.collision_integrals:
-      #      return 0
+        if not self.collision_integrals:
+            return 0
 
         As = []
         Bs = []
@@ -285,7 +284,7 @@ class DistributionParticle(AbstractParticle):
         # To ensure that total_integral =  0 when A = B = 0. In previous cases total_integral
         # would be constant, even if A = B = 0
         if (A + B) == 0:
-            total_integral = 0  
+            total_integral = 0
         else:
             total_integral = (prediction - self.distribution(p0)) / self.params.h
 
@@ -314,9 +313,9 @@ class DistributionParticle(AbstractParticle):
         return distribution_interpolation(
             self.grid.TEMPLATE,
             self._distribution,
-            p, self.mass,
+            p, self.conformal_mass,
             int(self.eta),
-            self.T,
+            self.aT,
             self.in_equilibrium
         )
 

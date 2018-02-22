@@ -101,6 +101,8 @@ class FourParticleIntegral(BoltzmannIntegral):
         self.cMs = None
 
     def integrate(self, ps, bounds=None):
+        params = self.particle.params
+
         if bounds is None:
             bounds = (
                 self.grids[0].BOUNDS,
@@ -111,14 +113,14 @@ class FourParticleIntegral(BoltzmannIntegral):
             self.creaction = [
                 reaction_t(
                     specie=particle_t(
-                        m=particle.specie.mass,
+                        m=particle.specie.conformal_mass,
                         grid=grid_t(
                             grid=particle.specie.grid.TEMPLATE,
                             distribution=particle.specie._distribution
                         ),
                         eta=int(particle.specie.eta),
                         in_equilibrium=int(particle.specie.in_equilibrium),
-                        T=particle.specie.T
+                        T=particle.specie.aT
                     ),
                     side=particle.side
                 )
@@ -132,17 +134,14 @@ class FourParticleIntegral(BoltzmannIntegral):
                                                  self.creaction, self.cMs)
             return numpy.reshape(integrand_1, p1.shape), numpy.reshape(integrand_f, p1.shape)
 
-        params = self.particle.params
+        constant = (params.m / params.x)**5 / 64. / numpy.pi**3 / params.H
 
-        # constant = (params.m / params.x)**5 / 64. / numpy.pi**3 / params.H
-        constant = 1. / 64. / numpy.pi**3 / params.H  # Got rid of M^5/x^5 for decay test
         if not environment.get('LOGARITHMIC_TIMESTEP'):
-            constant /= self.params.x
+            constant /= params.x
 
         if environment.get('SIMPSONS_INTEGRATION'):
             integral_1, integral_f = paired_integrators.integrate_2D_simpsons(
                 prepared_integrand(*numpy.meshgrid(self.grids[0].TEMPLATE, self.grids[1].TEMPLATE)),
-                bounds=bounds,
                 grids=[self.grids[0].TEMPLATE, self.grids[1].TEMPLATE]
             )
         else:
