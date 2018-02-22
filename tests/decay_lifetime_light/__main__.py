@@ -40,7 +40,6 @@ from common import LinearSpacedGrid
 linear_grid = LogSpacedGrid(MOMENTUM_SAMPLES=51, MAX_MOMENTUM=20 * UNITS.MeV)
 linear_grid_s = LinearSpacedGrid(MOMENTUM_SAMPLES=51, MAX_MOMENTUM=20 * UNITS.MeV)
 
-
 photon = Particle(**SMP.photon)
 
 electron = Particle(**SMP.leptons.electron, grid=linear_grid)
@@ -52,8 +51,7 @@ neutrino_tau = Particle(**SMP.leptons.neutrino_tau, grid=linear_grid)
 for neutrino in [neutrino_e, neutrino_mu, neutrino_tau]:
     neutrino.decoupling_temperature = 0 * UNITS.MeV
 
-
-sterile = Particle(**NuP.dirac_sterile_neutrino(mass), **{'grid': linear_grid_s})
+sterile = Particle(**NuP.dirac_sterile_neutrino(mass), grid=linear_grid_s)
 sterile.decoupling_temperature = T_initial
 
 universe.add_particles([
@@ -75,7 +73,7 @@ thetas = defaultdict(float, {
 interaction = NuI.sterile_leptons_interactions(
     thetas=thetas, sterile=sterile,
     neutrinos=[neutrino_e, neutrino_mu, neutrino_tau],
-#    leptons=[]
+    # leptons=[]
     leptons=[electron]
 )
 
@@ -95,12 +93,15 @@ universe.interactions += (interaction)
 def step_monitor(universe):
     for particle in universe.particles:
         if particle.mass > 0 and not particle.in_equilibrium:
-            decay_rate = -(particle.collision_integral * particle.params.H
-                         / (particle.conformal_energy(particle.grid.TEMPLATE) / particle.conformal_mass)
-                         / particle._distribution)
-            print(particle.symbol, (decay_rate / UNITS.MeV / 1.27031e-21).mean())
+            something = particle.conformal_energy(particle.grid.TEMPLATE) / particle.conformal_mass
+            integrand = (particle.collision_integral * particle.params.H * something / particle._distribution)
+            decay_rate = -integrand
+            print(decay_rate / UNITS.MeV / 1.27031e-21)
             with open(os.path.join(folder, particle.name.replace(' ', '_') + ".decay_rate6.txt"), 'a') as f1:
-                f1.write('{:e}'.format(particle.params.T / UNITS.MeV) + '\t' + '{:e}'.format(particle.params.a) + '\t' + '\t'.join(['{:e}'.format(x) for x in decay_rate / UNITS.MeV]) + '\n')
+                f1.write('{:e}'.format(particle.params.T / UNITS.MeV) + '\t'
+                         + '{:e}'.format(particle.params.a) + '\t'
+                         + '\t'.join(['{:e}'.format(x / UNITS.MeV) for x in decay_rate]) + '\n')
+
 
 universe.step_monitor = step_monitor
 
