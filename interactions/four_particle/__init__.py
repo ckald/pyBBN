@@ -90,8 +90,7 @@ class FourParticleIntegral(BoltzmannIntegral):
         """
         Initialize collision integral constants and save them to the first involved particle
         """
-        self.par = self.particle.params
-        if self.par.T > self.washout_temperature and not self.particle.in_equilibrium:
+        if self.particle.params.T > self.washout_temperature and not self.particle.in_equilibrium:
             self.particle.collision_integrals.append(self)
 
         if self.grids is None:
@@ -147,18 +146,10 @@ class FourParticleIntegral(BoltzmannIntegral):
                                                  self.creaction, self.cMs)
             return numpy.reshape(integrand_1, p1.shape), numpy.reshape(integrand_f, p1.shape)
 
-<<<<<<< HEAD
         constant = (params.m / params.x)**5 / 64. / numpy.pi**3 / params.H
 
         if not environment.get('LOGARITHMIC_TIMESTEP'):
             constant /= params.x
-=======
-
-        constant = (self.par.m / self.par.x)**5 / 64. / numpy.pi**3 / self.par.H
-
-        if not environment.get('LOGARITHMIC_TIMESTEP'):
-            constant /= self.par.x
->>>>>>> 96b7da464eaba25988dfed2a0b7dae6e5f2fc908
 
         if environment.get('SIMPSONS_INTEGRATION'):
             integral_1, integral_f = paired_integrators.integrate_2D_simpsons(
