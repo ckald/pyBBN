@@ -197,14 +197,22 @@ corresponding expression. $\pm_j$ represents the $\eta$ value of the particle $j
 */
 dbl F_f(const std::vector<reaction_t> &reaction, const std::array<dbl, 4> &f) {
     /* Variable part of the distribution functional */
-    return -1; // For the decay test
-    // return F_A(reaction, f, 0) - reaction[0].specie.eta * F_B(reaction, f, 0);
+    return F_A(reaction, f, 0) - reaction[0].specie.eta * F_B(reaction, f, 0);
 }
 
 dbl F_1(const std::vector<reaction_t> &reaction, const std::array<dbl, 4> &f) {
     /* Constant part of the distribution functional */
-    return 0; // For the decay test
-    // return F_B(reaction, f, 0);
+    return F_B(reaction, f, 0);
+}
+
+dbl F_f_vacuum_decay(const std::vector<reaction_t> &reaction, const std::array<dbl, 4> &f) {
+    /* Variable part of the distribution functional */
+    return -1;
+}
+
+dbl F_1_vacuum_decay(const std::vector<reaction_t> &reaction, const std::array<dbl, 4> &f) {
+    /* Constant part of the distribution functional */
+    return 0;
 }
 
 
@@ -229,7 +237,8 @@ dbl in_bounds(const std::array<dbl, 4> p, const std::array<dbl, 4> E, const std:
 
 std::pair<npdbl, npdbl> integrand(
     dbl p0, npdbl &p1_buffer, npdbl &p2_buffer,
-    const std::vector<reaction_t> &reaction, const std::vector<M_t> &Ms
+    const std::vector<reaction_t> &reaction, const std::vector<M_t> &Ms,
+    const bool vacuum_decay_approximation=false
 ) {
     /*
     Collision integral interior.
@@ -331,8 +340,13 @@ std::pair<npdbl, npdbl> integrand(
             );
         }
 
-        integrands_1(i) = temp * F_1(reaction, f);
-        integrands_f(i) = temp * F_f(reaction, f);
+        if (vacuum_decay_approximation) {
+            integrands_1(i) = temp * F_1_vacuum_decay(reaction, f);
+            integrands_f(i) = temp * F_f_vacuum_decay(reaction, f);
+        } else {
+            integrands_1(i) = temp * F_1(reaction, f);
+            integrands_f(i) = temp * F_f(reaction, f);
+        }
     }
 
     return std::make_pair(integrands_1_buffer, integrands_f_buffer);
@@ -358,7 +372,8 @@ PYBIND11_MODULE(integral, m) {
           "K1"_a, "K2"_a, "order"_a, "sides"_a);
     m.def("integrand", &integrand,
           "p0"_a, "p1s"_a, "p2s"_a,
-          "reaction"_a, "Ms"_a);
+          "reaction"_a, "Ms"_a,
+          "vacuum_decay_approximation"_a=false);
 
     py::class_<M_t>(m, "M_t")
         .def(py::init<std::array<int, 4>, dbl, dbl>(),
