@@ -85,17 +85,16 @@ class interactions(object):
         )
 
     @staticmethod
-    def sterile_active_to_leptons(theta=1., g_L=CONST.g_R+0.5, sterile=None,
-                                  active=None, lepton1=None, lepton2=None, Type=None):
+    def sterile_active_to_leptons_NC(theta=1., g_L=CONST.g_R+0.5, sterile=None,
+                                  active=None, lepton=None):
         """ \begin{align}
                 N_S + \overline{\nu_{\alpha}} \to l^+ + l^-
             \end{align}
         """
 
-        if Type == "neutral":
-            return CrossGeneratingInteraction(
+        return CrossGeneratingInteraction(
                 name="Sterile decay into neutrino and leptons pair",
-                particles=((sterile, active), (lepton1, lepton2)),
+                particles=((sterile, active), (lepton, lepton)),
                 antiparticles=((False, True), (True, False)),
                 Ms=(
                     SterileM(theta=theta, K1=4. * g_L**2, order=(0, 2, 1, 3)),
@@ -105,8 +104,15 @@ class interactions(object):
                 integral_type=FourParticleIntegral
             )
 
-        else:
-            return CrossGeneratingInteraction(
+    @staticmethod
+    def sterile_active_to_leptons_CC(theta=1., sterile=None,
+                                  active=None, lepton1=None, lepton2=None):
+        """ \begin{align}
+                N_S + \overline{\nu_{\alpha}} \to l1^+ + l2^-
+            \end{align}
+        """
+
+        return CrossGeneratingInteraction(
                 name="Sterile decay into neutrino and leptons",
                 particles=((sterile, active), (lepton2, lepton1)),
                 antiparticles=((False, True), (True, False)),
@@ -138,28 +144,24 @@ class interactions(object):
             for neutrino in neutrinos:
                 if thetas[neutrino.flavour]:
                     g_L = g_R + 0.5 if lepton.flavour == neutrino.flavour else g_R - 0.5
-                    inters.append(cls.sterile_active_to_leptons(
+                    inters.append(cls.sterile_active_to_leptons_NC(
                         theta=thetas[neutrino.flavour],
                         g_L=g_L,
                         sterile=sterile,
                         active=neutrino,
-                        lepton1=lepton,
-                        lepton2=lepton,
-                        Type="neutral"
+                        lepton=lepton
                     )) # Weak current
 
-                other_lepton = [par for par in leptons if par != lepton][0]
-                if thetas[lepton.flavour] and neutrino.flavour == other_lepton.flavour:
-                    g_L = g_R + 0.5 if lepton.flavour == neutrino.flavour else g_R - 0.5
-                    inters.append(cls.sterile_active_to_leptons(
-                        theta=thetas[lepton.flavour],
-                        g_L=g_L,
-                        sterile=sterile,
-                        active=neutrino,
-                        lepton1=lepton,
-                        lepton2=other_lepton,
-                        Type="charged"
-                    )) # Charged current
+                if len(leptons) > 1:
+                    other_lepton = [par for par in leptons if par != lepton][0]
+                    if thetas[lepton.flavour] and neutrino.flavour == other_lepton.flavour:
+                        inters.append(cls.sterile_active_to_leptons_CC(
+                            theta=thetas[lepton.flavour],
+                            sterile=sterile,
+                            active=neutrino,
+                            lepton1=lepton,
+                            lepton2=other_lepton
+                        )) # Charged current
         return inters
 
     # ## Quark interactions
