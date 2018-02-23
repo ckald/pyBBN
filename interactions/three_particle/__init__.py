@@ -92,7 +92,7 @@ class ThreeParticleIntegral(BoltzmannIntegral):
             integral_1, integral_f = prepared_integrand(numpy.zeros(len(self.grids.TEMPLATE)))
             integral_1 = integral_1[0]
             integral_f = integral_f[0]
-"""
+
         else:
             constant = self.par.x / self.par.m / 32. / numpy.pi / self.par.H
 
@@ -106,9 +106,8 @@ class ThreeParticleIntegral(BoltzmannIntegral):
                     prepared_integrand,
                     bounds=bounds
                 )
-"""
+
         if not environment.get('LOGARITHMIC_TIMESTEP'):
             constant /= self.par.x
 
         return constant * integral_1, constant * integral_f
-

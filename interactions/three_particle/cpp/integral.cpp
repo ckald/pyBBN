@@ -233,9 +233,6 @@ int in_bounds(const std::array<dbl, 3> p, const std::array<dbl, 3> E, const std:
     q2 = mom[1];
     q3 = mom[2];
 
-//    std::cout << Sgn(q1-q2+q3) << "\n";
-//    std::cout << bool(q1 + q2 >= q3) << "\t" << bool(q1 + q3 >= q2) << "\t" << bool(q2 + q3 >= q1) << "\n\n";
-
     return (Sgn(q1+q2-q3) + Sgn(q1-q2+q3) - Sgn(q1-q2-q3) - Sgn(q1+q2+q3));
 }
 
@@ -312,7 +309,7 @@ std::pair<npdbl, npdbl> integrand_3(
 
         return std::make_pair(integrands_1_buffer, integrands_f_buffer);
     }
-/*
+
     else {
         #pragma omp parallel for default(none) shared(std::cout, length, p0, p1s, m, sides, Ms, reaction, integrands_1, integrands_f)
         for (size_t i = 0; i < length; ++i) {
@@ -372,7 +369,7 @@ std::pair<npdbl, npdbl> integrand_3(
 
         }
         return std::make_pair(integrands_1_buffer, integrands_f_buffer);
-    }*/
+    }
 }
 
 
