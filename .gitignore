@@ -3,10 +3,6 @@
 docs/*
 build/*
 tests/*/output/*
-particles/interpolation/*.c
-particles/interpolation/*.cpp
-interactions/four_particle/*.c
-interactions/four_particle/*.cpp
 *.o
 *.so
 *.so.DSYM
