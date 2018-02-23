@@ -106,7 +106,7 @@ def adams_moulton_solver(y, fs, A, B, h, order=None):
 
 
 def integrate_1D(integrand, bounds):
-    if environment.get('FIXED_ORDER_1D_QUADRATURE'):
+    if not environment.get('FIXED_ORDER_1D_QUADRATURE'):
         integral, error = integrate.quad(
             integrand,
             bounds[0], bounds[1]
