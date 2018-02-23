@@ -118,7 +118,7 @@ dbl D2(dbl q1, dbl q2, dbl q3, dbl q4) {
     if (q3 < q4) { std::swap(q3, q4); }
     dbl Val;
 
-    Val = (24. * q1 * q2 * q4 + 24. * q2 * q3 * q4 + pow(std::abs(q1+q2-q3-q4),3) + pow(std::abs(q1-q2-q3+q4),3) 
+    Val = (24. * q1 * q2 * q4 + 24. * q2 * q3 * q4 + pow(std::abs(q1+q2-q3-q4),3) + pow(std::abs(q1-q2-q3+q4),3)
             - pow(std::abs(q1+q2-q3+q4),3) + 6.*q3*q4*(4*q2+std::abs(q1+q2-q3-q4)-std::abs(q1-q2-q3+q4)+std::abs(q1+q2-q3+q4)-std::abs(-q1+q2+q3+q4))
             -pow(std::abs(-q1+q2+q3+q4),3) - 3.*q4*(pow(-q1+q2+q3+q4,2)*Sgn(q1-q2-q3-q4)-pow(q1+q2-q3-q4,2)*Sgn(q1+q2-q3-q4)-pow(q1-q2+q3-q4,2)*Sgn(q1-q2+q3-q4)
             +pow(q1+q2+q3-q4,2)*Sgn(q1+q2+q3-q4)+pow(q1-q2-q3+q4,2)*Sgn(q1-q2-q3+q4)-pow(q1+q2-q3+q4,2)*Sgn(q1+q2-q3+q4)-pow(q1-q2+q3+q4,2)*Sgn(q1-q2+q3+q4)
@@ -131,17 +131,17 @@ dbl D2(dbl q1, dbl q2, dbl q3, dbl q4) {
 */
 
 dbl D3(dbl q1, dbl q2, dbl q3, dbl q4) {
-    // Dimensionality: pow(energy, 5)
+    /* Dimensionality: pow(energy, 5)
 
-    //    \begin{align}
-    //        D_3(p_i, p_j, p_k, p_l) = s_i s_j s_k s_l \frac{4 p_i p_j p_k p_l}{\pi}
-    //        \int_0^\infty \frac{d \lambda}{\lambda^2} \\\\
-    //         \left[ cos(p_i \lambda) - \frac{sin(p_i \lambda)}{p_i \lambda} \right]
-    //         \left[ cos(p_j \lambda) - \frac{sin(p_j \lambda)}{p_j \lambda} \right] \\\\
-    //         \left[ cos(p_k \lambda) - \frac{sin(p_k \lambda)}{p_k \lambda} \right]
-    //        \left[ cos(p_l \lambda) - \frac{sin(p_l \lambda)}{p_l \lambda} \right]
-    //    \end{align}
-    
+        \begin{align}
+            D_3(p_i, p_j, p_k, p_l) = s_i s_j s_k s_l \frac{4 p_i p_j p_k p_l}{\pi}
+            \int_0^\infty \frac{d \lambda}{\lambda^2} \\\\
+             \left[ cos(p_i \lambda) - \frac{sin(p_i \lambda)}{p_i \lambda} \right]
+             \left[ cos(p_j \lambda) - \frac{sin(p_j \lambda)}{p_j \lambda} \right] \\\\
+             \left[ cos(p_k \lambda) - \frac{sin(p_k \lambda)}{p_k \lambda} \right]
+            \left[ cos(p_l \lambda) - \frac{sin(p_l \lambda)}{p_l \lambda} \right]
+        \end{align}
+    */
 
     if (q1 < q2) { std::swap(q1, q2); }
     if (q3 < q4) { std::swap(q3, q4); }
@@ -185,7 +185,7 @@ dbl D3(dbl q1, dbl q2, dbl q3, dbl q4) {
 dbl D(const std::array<dbl, 4> &p, const std::array<dbl, 4> &E, const std::array<dbl, 4> &m,
          dbl K1, dbl K2,
          const std::array<int, 4> &order, const std::array<int, 4> &sides) {
-    // Dimensionality: energy 
+    // Dimensionality: energy
 
     int i, j, k, l, sisj, sksl, sisjsksl;
     i = order[0];
@@ -241,7 +241,7 @@ dbl Db2(dbl q2, dbl q3, dbl q4) {
 
     dbl Val;
     if (q3 < q4) {std::swap(q3, q4); }
-    
+
     Val = 0.25 * (-2 * q4 * (2 * (q2 + q3) - std::abs(q2 - q3 + q4) - std::abs(-q2 + q3 + q4))
                   -2 * q3 * (2 * q4 + std::abs(q2 - q3 + q4) - std::abs(-q2 + q3 + q4))
                   + pow(-q2 + q3 + q4, 2) * Sgn(q2 - q3 - q4) - pow(q2 + q3 - q4, 2) * Sgn(q2 + q3 - q4)
