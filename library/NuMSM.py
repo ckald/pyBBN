@@ -95,8 +95,8 @@ class interactions(object):
             particles=((sterile, active), (lepton, lepton)),
             antiparticles=((False, True), (True, False)),
             Ms=(
-                SterileM(theta=theta, K1=4. * g_L**2, order=(0, 3, 1, 2)),
-                SterileM(theta=theta, K1=4. * CONST.g_R**2, order=(0, 2, 1, 3)),
+                SterileM(theta=theta, K1=4. * CONST.g_R**2, order=(0, 3, 1, 2)),
+                SterileM(theta=theta, K1=4. * g_L**2, order=(0, 2, 1, 3)),
                 SterileM(theta=theta, K2=4. * CONST.g_R * g_L, order=(2, 3, 0, 1))
             ),
             integral_type=FourParticleIntegral
@@ -223,12 +223,12 @@ class interactions(object):
                                                                active=neutrino,
                                                                meson=particle)
 
-                        if particle.type == "vector":     
+                        if particle.type == "vector":
                             inters += cls.neutral_vector_meson(theta=thetas[neutrino.flavour],
                                                                sterile=sterile,
                                                                active=neutrino,
                                                                meson=particle)
-                                                    
+
 
         for lepton in leptons:
             if thetas[lepton.flavour]:
@@ -239,8 +239,8 @@ class interactions(object):
                                                                sterile=sterile,
                                                                lepton=lepton,
                                                                meson=particle)
-                        
-                        if particle.type == "vector":     
+
+                        if particle.type == "vector":
                             inters += cls.charged_vector_meson(theta=thetas[neutrino.flavour],
                                                                sterile=sterile,
                                                                lepton=lepton,
@@ -305,7 +305,7 @@ class interactions(object):
                 particles=((sterile, ), (active, meson)),
                 antiparticles=antiparticles,
                 Ms=(ThreeParticleM(K=0.5 * (CONST.G_F * theta * meson.decay_constant)**2
-                                   * sterile.mass**4 * (1 - 2 * CONST.sin_theta_w_2)**2 
+                                   * sterile.mass**4 * (1 - 2 * CONST.sin_theta_w_2)**2
                                    * (1 + 2 * (meson.mass / sterile.mass)**2)
                                    * (1 - (meson.mass / sterile.mass)**2)), ),
                 integral_type=ThreeParticleIntegral
@@ -320,7 +320,7 @@ class interactions(object):
                 particles=((sterile, ), (active, meson)),
                 antiparticles=antiparticles,
                 Ms=(ThreeParticleM(K=8 * (CONST.G_F * theta * meson.decay_constant)**2
-                                   * sterile.mass**4 * (CONST.sin_theta_w_2 / 3)**2 
+                                   * sterile.mass**4 * (CONST.sin_theta_w_2 / 3)**2
                                    * (1 + 2 * (meson.mass / sterile.mass)**2)
                                    * (1 - (meson.mass / sterile.mass)**2)), ),
                 integral_type=ThreeParticleIntegral

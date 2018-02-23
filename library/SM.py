@@ -362,8 +362,8 @@ class interactions(object):
             antiparticles=((False, True), (False, True)),
             washout_temperature=0 * UNITS.MeV,
             Ms=(
-                WeakM(K1=4 * g_L**2, order=(0, 3, 1, 2)),
-                WeakM(K1=4 * CONST.g_R**2, order=(0, 2, 1, 3)),
+                WeakM(K1=4 * CONST.g_R**2, order=(0, 3, 1, 2)),
+                WeakM(K1=4 * g_L**2, order=(0, 2, 1, 3)),
                 WeakM(K2=4 * g_L * CONST.g_R, order=(2, 3, 0, 1)),
             ),
             integral_type=FourParticleIntegral
