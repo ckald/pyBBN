@@ -55,8 +55,12 @@ class CONST(object):
     sin_theta_w_2 = 0.2312
     g_R = sin_theta_w_2
     g_L = sin_theta_w_2 + 0.5
-    # Pion decay constant
-    f_pi = 130. * UNITS.MeV
+    # Decay constants
+    f_K = 155.6 * UNITS.MeV # kaon
+    f_eta_c = 335. * UNITS.MeV 
+    f_D = 212. * UNITS.MeV
+    f_Ds = 249. * UNITS.MeV
+    f_Ds_star = 315. * UNITS.MeV
     # Baryon-to-photon ratio
     eta = 6.1e-10
 
@@ -125,7 +129,7 @@ class Params(object):
 
         # Conformal scale factor step size during computations
         if environment.get('LOGARITHMIC_TIMESTEP'):
-            self.dx = self.x * (numpy.exp(self.dy) - 1.)
+            self.dx = self.x * self.dy #(numpy.exp(self.dy) - 1.)
             self.h = self.dy
         else:
             self.dy = None
@@ -153,7 +157,7 @@ class Params(object):
             / (7./8. * numpy.pi**2 / 15. * (self.T / 1.401)**4)
         )
 
-        old_a = self.a
+        self.old_a = self.a
         """ Physical scale factor and temperature for convenience """
         self.a = self.x / self.m
         self.T = self.aT / self.a
@@ -171,7 +175,7 @@ class Params(object):
             \end{equation}
         """
         # dt = (self.a / old_a - 1) / self.H
-        dt = (1 - old_a / self.a) / self.H
+        dt = (1 - self.old_a / self.a) / self.H
         # dt = self.dx / self.x / self.H
         self.t += dt
 
@@ -244,7 +248,7 @@ class LogSpacedGrid(object):
 
 class HeuristicGrid(object):
 
-    def __init__(self, M, tau, aT=1*UNITS.MeV, b=20, c=5):
+    def __init__(self, M, tau, aT=1*UNITS.MeV, b=0.8, c=200):
         H = 0.5 / UNITS.s  # such that at T=1 <=> t=1
         a_max = numpy.sqrt(2 * H * b * tau)
         T_max = aT / a_max

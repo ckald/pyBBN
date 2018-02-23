@@ -113,17 +113,17 @@ dbl distribution_interpolation(const std::vector<dbl> &grid,
 /* ### Naive form
 
     \begin{align}
-        \mathcal{F} &= (1 \pm f_1)(1 \pm f_2) f_3 f_4 - f_1 f_2 (1 \pm f_3) (1 \pm f_4)
+        \mathcal{F} &= (1 \pm f_1)(1 \pm f_2) f_3 - f_1 f_2 (1 \pm f_3)
         \\\\ &= \mathcal{F}_B + \mathcal{F}_A
     \end{align}
 */
 
-dbl F_A(const std::vector<reaction_t> &reaction, const std::array<dbl, 4> &f, int skip_index=-1) {
+dbl F_A(const std::vector<reaction_t3> &reaction, const std::array<dbl, 3> &f, int skip_index=-1) {
     /*
     Forward reaction distribution functional term
 
     \begin{equation}
-        \mathcal{F}_A = - f_1 f_2 (1 \pm f_3) (1 \pm f_4)
+        \mathcal{F}_A = - f_1 f_2 (1 \pm f_3)
     \end{equation}
 
     :param skip_index: Particle to skip in the expression
@@ -131,7 +131,7 @@ dbl F_A(const std::vector<reaction_t> &reaction, const std::array<dbl, 4> &f, in
 
     dbl temp(-1.);
 
-    for (int i = 0; i < 4; ++i) {
+    for (int i = 0; i < 3; ++i) {
         if (i != skip_index) {
             if (f[i] < 0) {
                 throw std::runtime_error("Negative value of distribution function");
@@ -147,12 +147,12 @@ dbl F_A(const std::vector<reaction_t> &reaction, const std::array<dbl, 4> &f, in
     return temp;
 }
 
-dbl F_B(const std::vector<reaction_t> &reaction, const std::array<dbl, 4> &f, int skip_index=-1) {
+dbl F_B(const std::vector<reaction_t3> &reaction, const std::array<dbl, 3> &f, int skip_index=-1) {
     /*
     Backward reaction distribution functional term
 
     \begin{equation}
-        \mathcal{F}_B = f_3 f_4 (1 \pm f_1) (1 \pm f_2)
+        \mathcal{F}_B = f_3 (1 \pm f_1) (1 \pm f_2)
     \end{equation}
 
     :param skip_index: Particle to skip in the expression
@@ -160,7 +160,7 @@ dbl F_B(const std::vector<reaction_t> &reaction, const std::array<dbl, 4> &f, in
 
     dbl temp(1.);
 
-    for (int i = 0; i < 4; ++i) {
+    for (int i = 0; i < 3; ++i) {
         if (i != skip_index) {
             if (f[i] < 0) {
                 throw std::runtime_error("Negative value of distribution function");
@@ -180,12 +180,12 @@ dbl F_B(const std::vector<reaction_t> &reaction, const std::array<dbl, 4> &f, in
 ### Linearized in $\, f_1$ form
 
 \begin{equation}
-    \mathcal{F}(f) = f_3 f_4 (1 \pm f_1) (1 \pm f_2) - f_1 f_2 (1 \pm f_3) (1 \pm f_4)
+    \mathcal{F}(f) = f_3 (1 \pm f_1) (1 \pm f_2) - f_1 f_2 (1 \pm f_3)
 \end{equation}
 
 \begin{equation}
-    \mathcal{F}(f) = f_1 (\mp f_3 f_4 (1 \pm f_2) - f_2 (1 \pm f_3) (1 \pm f_4)) \
-    + f_3 f_4 (1 \pm f_2)
+    \mathcal{F}(f) = f_1 (\mp f_3 (1 \pm f_2) - f_2 (1 \pm f_3) \
+    + f_3 (1 \pm f_2)
 \end{equation}
 
 \begin{equation}
@@ -195,54 +195,64 @@ dbl F_B(const std::vector<reaction_t> &reaction, const std::array<dbl, 4> &f, in
 $^{(i)}$ in $\mathcal{F}^{(i)}$ means that the distribution function $f_i$ was omitted in the\
 corresponding expression. $\pm_j$ represents the $\eta$ value of the particle $j$.
 */
-dbl F_f(const std::vector<reaction_t> &reaction, const std::array<dbl, 4> &f) {
+dbl F_f(const std::vector<reaction_t3> &reaction, const std::array<dbl, 3> &f) {
     /* Variable part of the distribution functional */
-    return -1; // For the decay test
-    // return F_A(reaction, f, 0) - reaction[0].specie.eta * F_B(reaction, f, 0);
+    return -1;//F_A(reaction, f, 0); //- reaction[0].specie.eta * F_B(reaction, f, 0); // For the decay test
 }
 
-dbl F_1(const std::vector<reaction_t> &reaction, const std::array<dbl, 4> &f) {
+dbl F_1(const std::vector<reaction_t3> &reaction, const std::array<dbl, 3> &f) {
     /* Constant part of the distribution functional */
-    return 0; // For the decay test
-    // return F_B(reaction, f, 0);
+    return 0; //F_B(reaction, f, 0); // For the decay test
 }
 
+int Sgn(double lam) {
+  return (lam > 0) - (lam < 0);
+}
 
-dbl in_bounds(const std::array<dbl, 4> p, const std::array<dbl, 4> E, const std::array<dbl, 4> m) {
+int in_bounds(const std::array<dbl, 3> p, const std::array<dbl, 3> E, const std::array<dbl, 3> m) {
     /* $D$-functions involved in the interactions imply a cut-off region for the collision\
         integrand. In the general case of arbitrary particle masses, this is a set of \
         irrational inequalities that can hardly be solved (at least, Wolfram Mathematica does\
         not succeed in this). To avoid excessive computations, it is convenient to do an early\
         `return 0` when the particles kinematics lay out of the cut-off region */
-    dbl q1, q2, q3, q4;
-    q1 = p[0];
-    q2 = p[1];
-    q3 = p[2];
-    q4 = p[3];
+    dbl q1, q2, q3;
 
-    if (q1 < q2) { std::swap(q1, q2); }
-    if (q3 < q4) { std::swap(q3, q4); }
+    std::array<dbl, 3> mom = p;
 
-    return (E[3] >= m[3] && q1 <= q2 + q3 + q4 && q3 <= q1 + q2 + q4);
+    for (int i=0; i<3; i++) {
+        for (int j=i; j<3; j++) {
+            if (mom[j] > mom[i]) {
+                dbl tmp = mom[i];
+                mom[i] = mom[j];
+                mom[j] = tmp;
+            }
+        }
+    }
+
+    q1 = mom[0];
+    q2 = mom[1];
+    q3 = mom[2];
+
+//    std::cout << Sgn(q1-q2+q3) << "\n";
+//    std::cout << bool(q1 + q2 >= q3) << "\t" << bool(q1 + q3 >= q2) << "\t" << bool(q2 + q3 >= q1) << "\n\n";
+
+    return (Sgn(q1+q2-q3) + Sgn(q1-q2+q3) - Sgn(q1-q2-q3) - Sgn(q1+q2+q3));
 }
 
 
-std::pair<npdbl, npdbl> integrand(
-    dbl p0, npdbl &p1_buffer, npdbl &p2_buffer,
-    const std::vector<reaction_t> &reaction, const std::vector<M_t> &Ms
+std::pair<npdbl, npdbl> integrand_3(
+    dbl p0, npdbl &p1_buffer, dbl Ms,
+    const std::vector<reaction_t3> &reaction
 ) {
     /*
     Collision integral interior.
     */
-    auto p1s = p1_buffer.unchecked<1>(),
-         p2s = p2_buffer.unchecked<1>();
+    auto p1s = p1_buffer.unchecked<1>();
 
-    if (p1s.ndim() != 1 || p2s.ndim() != 1) {
-        throw std::runtime_error("p1s and p2s must be 1-dimensional");
+    if (p1s.ndim() != 1) {
+        throw std::runtime_error("p1s must be 1-dimensional");
     }
-    if (p1s.shape(0) != p2s.shape(0)) {
-        throw std::runtime_error("p1s and p2s must be of the same size!");
-    }
+
     size_t length = p1s.size();
 
     auto integrands_1_buffer = npdbl(length),
@@ -251,78 +261,44 @@ std::pair<npdbl, npdbl> integrand(
     auto integrands_1 = integrands_1_buffer.mutable_unchecked<1>(),
          integrands_f = integrands_f_buffer.mutable_unchecked<1>();
 
-    std::array<dbl, 4> m;
-    std::array<int, 4> sides;
+    std::array<dbl, 3> m;
+    std::array<int, 3> sides;
 
-    for (int i = 0; i < 4; ++i) {
+    for (int i = 0; i < 3; ++i) {
         sides[i] = reaction[i].side;
         m[i] = reaction[i].specie.m;
     }
 
-    #pragma omp parallel for default(none) shared(length, p0, p1s, p2s, m, sides, Ms, reaction, integrands_1, integrands_f)
-    for (size_t i = 0; i < length; ++i) {
-        dbl p1 = p1s(i),
-            p2 = p2s(i);
+    if (p0 == 0) {
 
-        integrands_1(i) = 0.;
-        integrands_f(i) = 0.;
+        std::array<dbl, 3> p, E;
 
-        if (sides[0] * sides[1] == -1){
-            if (p2 > p0 + p1) { continue; } // Only relevant for 2 <--> 2 interactions
-        }
-
-        std::array<dbl, 4> p, E;
         p[0] = p0;
-        p[1] = p1;
-        p[2] = p2;
-        p[3] = 0.;
-        E[3] = 0.;
-        for (int j = 0; j < 3; ++j) {
+        p[1] = sqrt(pow(pow(m[0],2) - pow(m[1],2) - pow(m[2],2), 2) - 4. * pow(m[1],2) * pow(m[2],2)) / (2. * m[0]);
+        p[2] = 0.;
+        E[2] = 0.;
+        for (int j = 0; j < 2; ++j) {
             E[j] = energy(p[j], m[j]);
-            E[3] += sides[j] * E[j];
+            E[2] += sides[j] * E[j];
         }
 
-        E[3] *= -sides[3];
+        E[2] *= -sides[2];
 
-        if (E[3] < m[3]) {continue;}
+        if (E[2] < m[2]) {return std::make_pair(p1_buffer, p1_buffer); } // Don't really need this
 
-        p[3] = sqrt(pow(E[3], 2) - pow(m[3], 2));
-
-        if (!in_bounds(p, E, m)) { continue; }
+        p[2] = sqrt(pow(E[2], 2) - pow(m[2], 2));
 
         dbl temp = 1.;
 
-        // Avoid rounding errors and division by zero
-        for (int k = 1; k < 3; ++k) {
-            if (m[k] != 0.) {
-                temp *= p[k] / E[k];
-            }
-        }
+        temp *= p[1] * Ms;
 
-        if (temp == 0.) { continue; }
+        if (temp == 0.) {return std::make_pair(p1_buffer, p1_buffer); }
 
-        dbl ds = 0.;
-
-        if (p[0] != 0.) {
-            for (const M_t &M : Ms) {
-                ds += D(p, E, m, M.K1, M.K2, M.order, sides);
-            }
-            ds /= p[0] * E[0];
-        } else {
-            for (const M_t &M : Ms) {
-                ds += Db(p, E, m, M.K1, M.K2, M.order, sides);
-            }
-        }
-
-        temp *= ds;
-
-        if (temp == 0.) { continue; }
-
-        std::array<dbl, 4> f;
+        std::array<dbl, 3> f;
         // The distribution function of the main particle is not required here
         f[0] = -1;
-        for (int k = 1; k < 4; ++k) {
-            const particle_t &specie = reaction[k].specie;
+        for (int k = 1; k < 3; ++k) {
+            const particle_t3 &specie = reaction[k].specie;
             f[k] = distribution_interpolation(
                 specie.grid.grid, specie.grid.distribution,
                 p[k],
@@ -331,11 +307,72 @@ std::pair<npdbl, npdbl> integrand(
             );
         }
 
-        integrands_1(i) = temp * F_1(reaction, f);
-        integrands_f(i) = temp * F_f(reaction, f);
-    }
+        integrands_1(0) = temp * F_1(reaction, f);
+        integrands_f(0) = temp * F_f(reaction, f);
 
-    return std::make_pair(integrands_1_buffer, integrands_f_buffer);
+        return std::make_pair(integrands_1_buffer, integrands_f_buffer);
+    }
+/*
+    else {
+        #pragma omp parallel for default(none) shared(std::cout, length, p0, p1s, m, sides, Ms, reaction, integrands_1, integrands_f)
+        for (size_t i = 0; i < length; ++i) {
+            dbl p1 = p1s(i);
+
+            integrands_1(i) = 0.;
+            integrands_f(i) = 0.;
+
+            std::array<dbl, 3> p, E;
+            p[0] = p0;
+            p[1] = p1;
+            p[2] = 0.;
+            E[2] = 0.;
+            for (int j = 0; j < 2; ++j) {
+                E[j] = energy(p[j], m[j]);
+                E[2] += sides[j] * E[j];
+            }
+
+            E[2] *= -sides[2];
+
+            if (E[2] < m[2]) {continue; }
+
+            p[2] = sqrt(pow(E[2], 2) - pow(m[2], 2));
+
+            dbl temp = 1.;
+
+            temp *= in_bounds(p, E, m);
+
+            if (temp == 0. ) {continue; }
+
+//            std::cout << p[0] << "\t" << p[1]  << "\t"  << p[2]  << "\t"  << E[0] << "\t" << E[1] << "\t" << E[2] << "\t" << m[2] << "\t" << in_bounds(p, E, m) << "\n";
+
+            // Avoid rounding errors and division by zero
+            if (m[1] != 0.) { temp *= p[1] / E[1]; }
+
+            if (temp == 0.) {continue; }
+
+            temp *= Ms / p[0] / E[0];
+
+            if (temp == 0.) {continue; } // Can get rid of this later
+
+            std::array<dbl, 3> f;
+            // The distribution function of the main particle is not required here
+            f[0] = -1;
+            for (int k = 1; k < 3; ++k) {
+                const particle_t3 &specie = reaction[k].specie;
+                f[k] = distribution_interpolation(
+                    specie.grid.grid, specie.grid.distribution,
+                    p[k],
+                    specie.m, specie.eta,
+                    specie.T, specie.in_equilibrium
+                );
+            }
+
+            integrands_1(i) = temp * F_1(reaction, f);
+            integrands_f(i) = temp * F_f(reaction, f);
+
+        }
+        return std::make_pair(integrands_1_buffer, integrands_f_buffer);
+    }*/
 }
 
 
@@ -347,32 +384,19 @@ PYBIND11_MODULE(integral, m) {
     m.def("binary_find", &binary_find,
           "grid"_a, "x"_a);
 
-    m.def("D1", &D1);
-    m.def("D2", &D2);
-    m.def("D3", &D3);
-    m.def("D", &D,
-          "p"_a, "E"_a, "m"_a,
-          "K1"_a, "K2"_a, "order"_a, "sides"_a);
-    m.def("Db", &Db,
-          "p"_a, "E"_a, "m"_a,
-          "K1"_a, "K2"_a, "order"_a, "sides"_a);
-    m.def("integrand", &integrand,
-          "p0"_a, "p1s"_a, "p2s"_a,
-          "reaction"_a, "Ms"_a);
+    m.def("integrand_3", &integrand_3,
+          "p0"_a, "p1s"_a, "Ms"_a,
+          "reaction"_a);
 
-    py::class_<M_t>(m, "M_t")
-        .def(py::init<std::array<int, 4>, dbl, dbl>(),
-             "order"_a, "K1"_a=0., "K2"_a=0.);
-
-    py::class_<grid_t>(m, "grid_t")
+    py::class_<grid_t3>(m, "grid_t3")
         .def(py::init<std::vector<dbl>, std::vector<dbl>>(),
              "grid"_a, "distribution"_a);
 
-    py::class_<particle_t>(m, "particle_t")
-        .def(py::init<int, dbl, grid_t, int, dbl>(),
+    py::class_<particle_t3>(m, "particle_t3")
+        .def(py::init<int, dbl, grid_t3, int, dbl>(),
              "eta"_a, "m"_a, "grid"_a, "in_equilibrium"_a, "T"_a);
 
-    py::class_<reaction_t>(m, "reaction_t")
-        .def(py::init<particle_t, int>(),
+    py::class_<reaction_t3>(m, "reaction_t3")
+        .def(py::init<particle_t3, int>(),
              "specie"_a, "side"_a);
 }
