@@ -106,20 +106,76 @@ class FourParticleIntegral(BoltzmannIntegral):
 
         if bounds is None:
             if reaction_type == 2:
-                max_momentum = self.particle.conformal_mass**2 / 2. / (self.particle.conformal_energy(ps) - ps)
-                bounds = (
-                    (self.grids[0].MIN_MOMENTUM, max_momentum),
-                    (lambda p2: numpy.maximum(0,
-                                              self.particle.conformal_energy(ps)
-                                              - self.reaction[1].specie.conformal_energy(p2)
-                                              - max_momentum),
-                     lambda p2: max_momentum)
-                )
+                if ps == 0:
+                    y1_max = numpy.sqrt(
+                        (self.particle.conformal_mass - self.reaction[2].specie.conformal_mass - self.reaction[3].specie.conformal_mass)**2
+                        - self.reaction[1].specie.conformal_mass**2
+                    )
+                    y2_min_1 = params.a * numpy.sqrt(
+                        (((self.particle.mass - self.reaction[1].specie.mass)**2 - self.reaction[2].specie.mass**2
+                        - self.reaction[3].specie.mass**2)**2 - 4 * (self.reaction[2].specie.mass * self.reaction[3].specie.mass)**2
+                        ) / (4 * (self.particle.mass - self.reaction[1].specie.mass)**2)
+                    )
+                    y2_min_2 = params.a * numpy.sqrt(
+                        (((self.particle.mass - self.reaction[2].specie.mass)**2 - self.reaction[1].specie.mass**2
+                        - self.reaction[3].specie.mass**2)**2 - 4 * (self.reaction[1].specie.mass * self.reaction[3].specie.mass)**2
+                        ) / (4 * (self.particle.mass - self.reaction[2].specie.mass)**2)
+                    )
+                    bounds = (
+                        (0, y1_max),
+                        (lambda p2: numpy.maximum(y2_min_1 - (y2_min_1 / y2_min_2) * p2, 0),
+                        lambda p2: numpy.sqrt(
+                                        (self.particle.conformal_mass - self.reaction[3].specie.conformal_mass
+                                        - self.reaction[1].specie.conformal_energy(p2))**2 - self.reaction[2].specie.conformal_mass**2
+                                    )
+                        )
+                    )
+
+                else:
+                    y1_max = numpy.sqrt(
+                        (self.particle.conformal_energy(ps) - self.reaction[2].specie.conformal_mass
+                        - self.reaction[3].specie.conformal_mass)**2 - self.reaction[1].specie.conformal_mass**2
+                    )
+                    bounds = (
+                        (self.grids[0].MIN_MOMENTUM, y1_max),
+                        (lambda p2: 0,
+                        lambda p2: numpy.sqrt(
+                                        (self.particle.conformal_energy(ps) - self.reaction[1].specie.conformal_energy(p2)
+                                        - self.reaction[3].specie.conformal_mass)**2
+                                        - self.reaction[2].specie.conformal_mass**2
+                                    )
+                        )
+                    )
+
             else:
-                bounds = (
-                    (self.grids[0].MIN_MOMENTUM, self.grids[0].MAX_MOMENTUM),
-                    (lambda p2: self.grids[1].MIN_MOMENTUM, lambda p2: self.grids[1].MAX_MOMENTUM)
-                )
+                if ps == 0:
+                    y2_min = params.a * numpy.sqrt(
+                        (((self.particle.mass + self.reaction[1].specie.mass)**2 - self.reaction[2].specie.mass**2
+                        - self.reaction[3].specie.mass**2)**2- 4 * (self.reaction[2].specie.mass * self.reaction[3].specie.mass)**2
+                        ) / (4 * (self.particle.mass + self.reaction[1].specie.mass)**2)
+                    )
+                    bounds = (
+                        (self.grids[0].MIN_MOMENTUM, self.grids[0].MAX_MOMENTUM),
+                        (lambda p2: y2_min,
+                        lambda p2: numpy.sqrt(
+                                        (self.particle.conformal_mass - self.reaction[3].specie.conformal_mass
+                                        + self.reaction[1].specie.conformal_energy(p2))**2
+                                        - self.reaction[2].specie.conformal_mass**2
+                                    )
+                        )
+                    )
+
+                else:
+                    bounds = (
+                        (self.grids[0].MIN_MOMENTUM, self.grids[0].MAX_MOMENTUM),
+                        (lambda p2: 0,
+                        lambda p2: numpy.sqrt(
+                                        (self.particle.conformal_energy(ps) + self.reaction[1].specie.conformal_energy(p2)
+                                        - self.reaction[3].specie.conformal_mass)**2
+                                        - self.reaction[2].specie.conformal_mass**2
+                                    )
+                        )
+                    )
 
         if not self.creaction:
             self.creaction = [
@@ -153,8 +209,8 @@ class FourParticleIntegral(BoltzmannIntegral):
 
         if environment.get('SIMPSONS_INTEGRATION'):
             integral_1, integral_f = paired_integrators.integrate_2D_simpsons(
-                prepared_integrand(*numpy.meshgrid(self.grids[0].TEMPLATE, self.grids[1].TEMPLATE)),
-                grids=[self.grids[0].TEMPLATE, self.grids[1].TEMPLATE]
+                prepared_integrand(*numpy.meshgrid(self.grids[0].TEMPLATE*params.a, self.grids[1].TEMPLATE*params.a)),
+                grids=[self.grids[0].TEMPLATE*params.a, self.grids[1].TEMPLATE*params.a]
             )
         else:
             integral_1, integral_f = paired_integrators.integrate_2D(
