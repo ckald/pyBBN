@@ -98,6 +98,8 @@ class Universe(object):
 
         for interaction in self.interactions:
             print(interaction)
+        print("\n")
+
 
         # TODO: test if changing updating particles beforehand changes the computed time
         if init_time:

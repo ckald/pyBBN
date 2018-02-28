@@ -3,7 +3,7 @@ import numpy
 from common import integrators
 
 
-class BoltzmannIntegral:
+class BoltzmannIntegral(object):
 
     """ ## Integral
         Representation of the concrete collision integral for a specific particle \

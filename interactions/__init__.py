@@ -145,9 +145,10 @@ class CrossGeneratingInteraction(Interaction):
         #     self.permutations(tuple(reversed(self.particles)), tuple(reversed(self.antiparticles)))
         # )
 
-        if any(specie.majorana for specie in itertools.chain.from_iterable(self.particles)):
-            raise NotImplementedError("CrossGeneratingInteraction is not suitable"
-                                      " for Majorana particles")
+#        for specie in itertools.chain.from_iterable(self.particles):
+#            if specie.majorana and specie.side == -1:
+#                raise NotImplementedError("CrossGeneratingInteraction is not suitable"
+#                                          " for Majorana particles")
 
         # if any(specie.majorana for specie in itertools.chain.from_iterable(self.particles)):
         #     print "There is Majorana!"
