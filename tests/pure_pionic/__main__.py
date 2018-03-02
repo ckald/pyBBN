@@ -18,20 +18,20 @@ from common import UNITS, Params, utils, HeuristicGrid
 
 
 parser = argparse.ArgumentParser(description='Run simulation for given mass and mixing angle')
-parser.add_argument('--mass', required=True)
-parser.add_argument('--theta', required=True)
-parser.add_argument('--tau', required=True)
+parser.add_argument('--mass', default=150)#required=True)
+parser.add_argument('--theta', default=0.0001)#required=True)
+#parser.add_argument('--tau', required=True)
 parser.add_argument('--comment', default='')
 args = parser.parse_args()
 
 mass = float(args.mass) * UNITS.MeV
 theta = float(args.theta)
-lifetime = float(args.tau) * UNITS.s
+#lifetime = float(args.tau) * UNITS.s
 
 folder = utils.ensure_dir(
     os.path.split(__file__)[0],
     'output',
-    "mass={:e}_tau={:e}_theta={:e}".format(mass / UNITS.MeV, lifetime / UNITS.s, theta)
+    "mass={:e}_theta={:e}".format(mass / UNITS.MeV, theta)#, lifetime / UNITS.s)
     + args.comment
 )
 
@@ -59,7 +59,7 @@ charged_pion = Particle(**SMP.hadrons.charged_pion)
 sterile = Particle(**NuP.dirac_sterile_neutrino(mass))
 
 
-grid = HeuristicGrid(mass, lifetime)
+grid = HeuristicGrid(mass, 1)
 
 sterile.decoupling_temperature = T_initial
 for neutrino in [neutrino_e, neutrino_mu, neutrino_tau]:
@@ -88,26 +88,27 @@ thetas = defaultdict(float, {
     'electron': theta,
 })
 
+
 universe.interactions += (
-    SMI.neutrino_interactions(
-        leptons=[electron, muon],
-        neutrinos=[neutrino_e, neutrino_mu, neutrino_tau]
-    )
+#    SMI.neutrino_interactions(
+#        leptons=[electron, muon],
+#        neutrinos=[neutrino_e, neutrino_mu, neutrino_tau]
+#    )
     # + NuI.sterile_leptons_interactions(
     #     thetas=thetas, sterile=sterile,
     #     neutrinos=[neutrino_e, neutrino_mu, neutrino_tau],
     #     leptons=[electron, muon, tau]
     # )
-    + NuI.sterile_hadrons_interactions(
-        thetas=thetas, sterile=sterile,
-        neutrinos=[neutrino_e, neutrino_mu, neutrino_tau],
-        leptons=[electron, muon, tau],
-        hadrons=[neutral_pion, charged_pion]
+    NuI.sterile_hadrons_interactions(
+        thetas = thetas, sterile=sterile,
+        neutrinos = [neutrino_e, neutrino_mu, neutrino_tau],
+        leptons = [electron, muon, tau],
+        mesons = [neutral_pion, charged_pion],
     )
 )
 
-universe.init_kawano(electron=electron, neutrino=neutrino_e)
-universe.init_oscillations(SMP.leptons.oscillations_map(), (neutrino_e, neutrino_mu, neutrino_tau))
+#universe.init_kawano(electron=electron, neutrino=neutrino_e)
+#universe.init_oscillations(SMP.leptons.oscillations_map(), (neutrino_e, neutrino_mu, neutrino_tau))
 
 universe.evolve(T_final)
 

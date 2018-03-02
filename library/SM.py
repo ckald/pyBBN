@@ -5,6 +5,7 @@
 
 from __future__ import division
 
+import numpy as np
 import itertools
 from math import sin, cos
 
@@ -73,7 +74,9 @@ class particles(object):
             'mass': 134.98 * UNITS.MeV,
             'dof': 1,
             'majorana': True,
-            'Q': 0
+            'Q': 0,
+            'decay_constant': 130. / np.sqrt(2) * UNITS.MeV,
+            'type': 'scalar'
         }
         charged_pion = {
             'name': 'Charged pion',
@@ -82,7 +85,75 @@ class particles(object):
             'mass': 139.57 * UNITS.MeV,
             'dof': 2,
             'majorana': False,
-            'Q': -1
+            'Q': -1,
+            'decay_constant': 130. * UNITS.MeV,
+            'type': 'scalar'
+        }
+        neutral_rho = {
+            'name': 'Neutral rho',
+            'symbol': 'ρ0',
+            'statistics': STATISTICS.BOSON,
+            'mass': 775.49 * UNITS.MeV,
+            'dof': 3,
+            'majorana': True,
+            'Q': 0,
+            'decay_constant': 209. * UNITS.MeV,
+            'type': 'vector'
+        }
+        charged_rho = {
+            'name': 'Charged rho',
+            'symbol': 'ρ',
+            'statistics': STATISTICS.BOSON,
+            'mass': 775.11 * UNITS.MeV,
+            'dof': 3,
+            'majorana': False,
+            'Q': -1,
+            'decay_constant': 209. * UNITS.MeV,
+            'type': 'vector'
+        }
+        eta = {
+            'name': 'Eta',
+            'symbol': 'η',
+            'statistics': STATISTICS.BOSON,
+            'mass': 547.86 * UNITS.MeV,
+            'dof': 1,
+            'majorana': True,
+            'Q': 0,
+            'decay_constant': 156. * UNITS.MeV,
+            'type': 'scalar'
+        }
+        eta_prime = {
+            'name': 'Eta prime',
+            'symbol': 'η*',
+            'statistics': STATISTICS.BOSON,
+            'mass': 957.78 * UNITS.MeV,
+            'dof': 1,
+            'majorana': True,
+            'Q': 0,
+            'decay_constant': 152. * UNITS.MeV,
+            'type': 'scalar'
+        }
+        omega = {
+            'name': 'Omega',
+            'symbol': 'ω',
+            'statistics': STATISTICS.BOSON,
+            'mass': 782.65 * UNITS.MeV,
+            'dof': 3,
+            'majorana': True,
+            'Q': 0,
+            'decay_constant': 195. * UNITS.MeV,
+            'type': 'vector'
+        }
+        phi = {
+            'name': 'Phi',
+            'symbol': 'ϕ',
+            'statistics': STATISTICS.BOSON,
+            'mass': 1019.46 * UNITS.MeV,
+            'dof': 3,
+            'majorana': True,
+            'Q': 0,
+            'decay_constant': 229. * UNITS.MeV,
+            'type': 'vector'
         }
 
     class leptons(object):
@@ -291,8 +362,8 @@ class interactions(object):
             antiparticles=((False, True), (False, True)),
             washout_temperature=0 * UNITS.MeV,
             Ms=(
-                WeakM(K1=4 * g_L**2, order=(0, 3, 1, 2)),
-                WeakM(K1=4 * CONST.g_R**2, order=(0, 2, 1, 3)),
+                WeakM(K1=4 * CONST.g_R**2, order=(0, 3, 1, 2)),
+                WeakM(K1=4 * g_L**2, order=(0, 2, 1, 3)),
                 WeakM(K2=4 * g_L * CONST.g_R, order=(2, 3, 0, 1)),
             ),
             integral_type=FourParticleIntegral

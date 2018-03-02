@@ -50,6 +50,6 @@ print ("a scaling discrepancy is: {:.2f}%"
                / numpy.sqrt(last_t / initial_t)))
 
 print ("""
-    Cosmic photon background temperature is {:.3f} times bigger than cosmic neutrinos temperature.
-    Relative error is {:.3f} %""".format(universe.params.aT / UNITS.MeV,
+Cosmic photon background temperature is {:.3f} times bigger than cosmic neutrinos temperature.
+Relative error is {:.3f} %\n""".format(universe.params.aT / UNITS.MeV,
                                          (universe.params.aT / UNITS.MeV - 1.401) / 1.401 * 100))

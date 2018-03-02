@@ -86,50 +86,56 @@ class FourParticleIntegral(BoltzmannIntegral):
         """
         Initialize collision integral constants and save them to the first involved particle
         """
-        params = self.particle.params
-        if params.T > self.washout_temperature and not self.particle.in_equilibrium:
+        if self.particle.params.T > self.washout_temperature and not self.particle.in_equilibrium:
             self.particle.collision_integrals.append(self)
 
         if self.grids is None:
             self.grids = tuple([self.reaction[1].specie.grid, self.reaction[2].specie.grid])
 
-    def integrate(self, ps, stepsize=None, bounds=None):
-        if bounds is None:
-            bounds = (
-                self.grids[0].MIN_MOMENTUM / self.reaction[1].specie.aT,
-                self.grids[0].MAX_MOMENTUM / self.reaction[1].specie.aT,
-                self.grids[1].MIN_MOMENTUM / self.reaction[2].specie.aT,
-                self.grids[1].MAX_MOMENTUM / self.reaction[2].specie.aT
-            )
+        self.creaction = None
+        self.cMs = None
 
+    def integrate(self, ps, stepsize=None, bounds=None):
         params = self.particle.params
 
-        if stepsize is None:
-            stepsize = self.particle.params.h
-
-        reaction = [
-            reaction_t(
-                specie=particle_t(
-                    m=particle.specie.conformal_mass / params.aT,
-                    grid=grid_t(
-                        grid=particle.specie.grid.TEMPLATE / params.aT,
-                        distribution=particle.specie._distribution
-                    ),
-                    eta=int(particle.specie.eta),
-                    in_equilibrium=int(particle.specie.in_equilibrium),
-                    T=particle.specie.aT / params.aT
-                ),
-                side=particle.side
+        if bounds is None:
+            bounds = (
+                self.grids[0].MIN_MOMENTUM / params.aT,
+                self.grids[0].MAX_MOMENTUM / params.aT,
+                self.grids[1].MIN_MOMENTUM / params.aT,
+                self.grids[1].MAX_MOMENTUM / params.aT
             )
-            for particle in self.reaction
-        ]
 
+        if stepsize is None:
+            stepsize = self.particle.params.h * params.aT
+
+        if not self.creaction:
+            self.creaction = [
+                reaction_t(
+                    specie=particle_t(
+                        m=particle.specie.conformal_mass / params.aT,
+                        grid=grid_t(
+                            grid=particle.specie.grid.TEMPLATE / params.aT,
+                            distribution=particle.specie._distribution
+                        ),
+                        eta=int(particle.specie.eta),
+                        in_equilibrium=int(particle.specie.in_equilibrium),
+                        T=particle.specie.aT / params.aT
+                    ),
+                    side=particle.side
+                )
+                for particle in self.reaction
+            ]
+
+        # constant = (params.m / params.x)**5 / 64. / numpy.pi**3 / params.H
         constant = (params.aT / params.a)**5 / 64. / numpy.pi**3 / params.H
         if not environment.get('LOGARITHMIC_TIMESTEP'):
             constant /= params.x
-        Ms = [M_t(list(M.order), M.K1 * constant, M.K2 * constant) for M in self.Ms]
+
+        if not self.cMs:
+            self.cMs = [M_t(list(M.order), M.K1, M.K2) for M in self.Ms]
 
         ps = ps / params.aT
-        fullstack = numpy.array(integration(ps, *bounds, reaction, Ms, stepsize))
+        fullstack = numpy.array(integration(ps, *bounds, self.creaction, self.cMs, stepsize))
         # print(self, "\t", fullstack * self.particle.params.h / self.particle._distribution)
-        return fullstack
+        return fullstack * constant

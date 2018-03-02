@@ -205,6 +205,16 @@ dbl F_1(const std::vector<reaction_t> &reaction, const std::array<dbl, 4> &f) {
     return F_B(reaction, f, 0);
 }
 
+dbl F_f_vacuum_decay(const std::vector<reaction_t> &reaction, const std::array<dbl, 4> &f) {
+    /* Variable part of the distribution functional */
+    return -1;
+}
+
+dbl F_1_vacuum_decay(const std::vector<reaction_t> &reaction, const std::array<dbl, 4> &f) {
+    /* Constant part of the distribution functional */
+    return 0;
+}
+
 
 dbl in_bounds(const std::array<dbl, 4> p, const std::array<dbl, 4> E, const std::array<dbl, 4> m) {
     /* $D$-functions involved in the interactions imply a cut-off region for the collision\
@@ -222,116 +232,6 @@ dbl in_bounds(const std::array<dbl, 4> p, const std::array<dbl, 4> E, const std:
     if (q3 < q4) { std::swap(q3, q4); }
 
     return (E[3] >= m[3] && q1 <= q2 + q3 + q4 && q3 <= q1 + q2 + q4);
-}
-
-
-std::pair<npdbl, npdbl> integrand(
-    dbl p0, npdbl &p1_buffer, npdbl &p2_buffer,
-    const std::vector<reaction_t> &reaction, const std::vector<M_t> &Ms
-) {
-    /*
-    Collision integral interior.
-    */
-
-    auto p1s = p1_buffer.unchecked<1>(),
-         p2s = p2_buffer.unchecked<1>();
-
-    if (p1s.ndim() != 1 || p2s.ndim() != 1) {
-        throw std::runtime_error("p1s and p2s must be 1-dimensional");
-    }
-    if (p1s.shape(0) != p2s.shape(0)) {
-        throw std::runtime_error("p1s and p2s must be of the same size!");
-    }
-    size_t length = p1s.size();
-
-    auto integrands_1_buffer = npdbl(length),
-         integrands_f_buffer = npdbl(length);
-
-    auto integrands_1 = integrands_1_buffer.mutable_unchecked<1>(),
-         integrands_f = integrands_f_buffer.mutable_unchecked<1>();
-
-    std::array<dbl, 4> m;
-    std::array<int, 4> sides;
-
-    for (int i = 0; i < 4; ++i) {
-        sides[i] = reaction[i].side;
-        m[i] = reaction[i].specie.m;
-    }
-
-    #pragma omp parallel for default(none) shared(length, p0, p1s, p2s, m, sides, Ms, reaction, integrands_1, integrands_f)
-    for (size_t i = 0; i < length; ++i) {
-        dbl p1 = p1s(i),
-            p2 = p2s(i);
-
-        integrands_1(i) = 0.;
-        integrands_f(i) = 0.;
-
-        if (p2 > p0 + p1) { continue; }
-
-        std::array<dbl, 4> p, E;
-        p[0] = p0;
-        p[1] = p1;
-        p[2] = p2;
-        p[3] = 0.;
-        E[3] = 0.;
-        for (int j = 0; j < 3; ++j) {
-            E[j] = energy(p[j], m[j]);
-            E[3] += sides[j] * E[j];
-        }
-
-        E[3] *= -sides[3];
-
-        if (E[3] < m[3]) { continue; }
-
-        p[3] = sqrt(pow(E[3], 2) - pow(m[3], 2));
-
-        if (!in_bounds(p, E, m)) { continue; }
-
-        dbl temp = 1.;
-
-        // Avoid rounding errors and division by zero
-        for (int k = 1; k < 3; ++k) {
-            if (m[k] != 0.) {
-                temp *= p[k] / E[k];
-            }
-        }
-
-        if (temp == 0.) { continue; }
-
-        dbl ds = 0.;
-        if (p[0] != 0.) {
-            for (const M_t &M : Ms) {
-                ds += D(p, E, m, M.K1, M.K2, M.order, sides);
-            }
-            ds /= p[0] * E[0];
-        } else {
-            for (const M_t &M : Ms) {
-                ds += Db(p, E, m, M.K1, M.K2, M.order, sides);
-            }
-        }
-        temp *= ds;
-
-        if (temp == 0.) { continue; }
-
-        std::array<dbl, 4> f;
-        // The distribution function of the main particle is not required here
-        f[0] = -1;
-        for (int k = 1; k < 4; ++k) {
-            const particle_t &specie = reaction[k].specie;
-            f[k] = distribution_interpolation(
-                specie.grid.grid, specie.grid.distribution,
-                p[k],
-                specie.m, specie.eta,
-                specie.T, specie.in_equilibrium
-            );
-        }
-
-        integrands_1(i) = temp * F_1(reaction, f);
-        integrands_f(i) = temp * F_f(reaction, f);
-
-    }
-
-    return std::make_pair(integrands_1_buffer, integrands_f_buffer);
 }
 
 
@@ -353,8 +253,6 @@ dbl integrand_full(
         sides[i] = reaction[i].side;
         m[i] = reaction[i].specie.m;
     }
-
-    if (p2 > p0 + p1) { return integrand; }
 
     std::array<dbl, 4> p, E;
     p[0] = p0;
@@ -387,6 +285,7 @@ dbl integrand_full(
     if (temp == 0.) { return integrand; }
 
     dbl ds = 0.;
+
     if (p[0] != 0.) {
         for (const M_t &M : Ms) {
             ds += D(p, E, m, M.K1, M.K2, M.order, sides);
@@ -414,8 +313,20 @@ dbl integrand_full(
 
     if (kind == 0) {
         return temp * F_1(reaction, f);
-    } else if (kind == 1) {
+    }
+    if (kind == 1) {
         return temp * f[0] * F_f(reaction, f);
+    }
+
+    if (kind == 2) {
+        return temp * F_1_vacuum_decay(reaction, f);
+    }
+    if (kind == 3) {
+        return temp * f[0] * F_f_vacuum_decay(reaction, f);
+    }
+
+    if (kind == 4) {
+        return temp * (F_1_vacuum_decay(reaction, f) + f[0] * F_f_vacuum_decay(reaction, f));
     }
 
     return temp * (F_1(reaction, f) + f[0] * F_f(reaction, f));
@@ -438,6 +349,94 @@ struct integration_params {
     size_t subdivisions;
 };
 
+
+
+// Trapezoidal
+
+dbl trapezium(std::function<dbl(dbl)> f, dbl a, dbl b, size_t n,
+              std::map<dbl, dbl> *cache=NULL) {
+    std::function<dbl(dbl)> F;
+    if (cache) {
+        F = [&cache, f](dbl x) -> dbl {
+            std::map<dbl, dbl>::iterator it = cache->find(x);
+            if (it != cache->end()) {
+                return it->second;
+            }
+            dbl res = f(x);
+            cache->insert(std::pair<dbl, dbl>(x, res));
+            return res;
+        };
+    } else {
+        F = f;
+    }
+
+    dbl h = (b - a) / (n - 1);
+    dbl result = (F(a) + F(b)) / 2;
+    for (size_t i = 1; i < n - 1; ++i) {
+        result += F(a + h * i);
+    }
+    return h * result;
+}
+
+
+std::pair<dbl, dbl> adaptive_trapezium_helper(std::function<dbl(dbl)> f, dbl a, dbl b, dbl epsabs, dbl epsrel, size_t limit, size_t n=1, std::map<dbl, dbl> *cache=NULL) {
+    dbl coarse = trapezium(f, a, b, 8, cache);
+    dbl fine = trapezium(f, a, b, 15, cache);
+    dbl error = fine - coarse;
+    // printf("%e ± %e (%e)\n", fine, error, coarse);
+
+    if (fabs(error) <= epsabs || fabs(error / fine) <= epsrel || n >= limit)
+    {
+        if (n >= limit) {
+            printf("adaptive_trapezium did not converge\n");
+        }
+        return std::make_pair(fine, error);
+    }
+
+    dbl left_result, left_error;
+    dbl right_result, right_error;
+
+    std::tie(left_result, left_error) = adaptive_trapezium_helper(f, a, (a+b)/2, epsabs, epsrel, limit, n+1, cache);
+    std::tie(right_result, right_error) = adaptive_trapezium_helper(f, (a+b)/2, b, epsabs, epsrel, limit, n+1, cache);
+    // printf("%e ± %e\n", left_result + right_result, left_error + right_error);
+    return std::pair<dbl, dbl>(left_result + right_result, left_error + right_error);
+}
+
+
+dbl adaptive_trapezium(std::function<dbl(dbl)> f, dbl a, dbl b, dbl &result, dbl &error, dbl epsabs, dbl epsrel, size_t limit) {
+    std::map<dbl, dbl> cache;
+    std::tie(result, error) = adaptive_trapezium_helper(f, a, b, epsabs, epsrel, limit, 1, &cache);
+    // printf("%e ± %e\n", result, error);
+    // cache.clear();
+    return result;
+}
+
+
+dbl nonadaptive_trapezium(std::function<dbl(dbl)> f, dbl a, dbl b, dbl &result, dbl &error, dbl epsabs, dbl epsrel, size_t limit) {
+    size_t n = 10;
+    std::map<dbl, dbl> cache;
+
+    dbl old_result = trapezium(f, a, b, n, &cache);
+    bool converged = false;
+    while (2 * n - 1 <= limit) {
+        n += n - 1;
+        result = trapezium(f, a, b, n, &cache);
+        error = result - old_result;
+        converged = fabs(error) <= epsabs || fabs(error / result) <= epsrel;
+
+        if (converged) {
+            break;
+        }
+        old_result = result;
+    }
+
+    if (converged) {
+        return 0;
+    }
+    return n;
+}
+
+
 // Adaptive Gauss-Kronrod
 
 dbl integrand_1st_integration(
@@ -448,6 +447,22 @@ dbl integrand_1st_integration(
     dbl p1 = params.p1;
     return integrand_full(p0, p1, p2, *params.reaction, *params.Ms, params.kind);
 }
+
+
+dbl y2_min(const std::vector<reaction_t> reaction,
+           int i=0, int j=1, int k=2, int l=3) {
+    return sqrt(
+        (
+            pow(
+                pow(reaction[i].specie.m - reaction[j].specie.m, 2)
+                - pow(reaction[k].specie.m, 2)
+                - pow(reaction[l].specie.m, 2)
+            , 2)
+            - 4 * pow(reaction[k].specie.m * reaction[l].specie.m, 2)
+        ) / (4 * pow(reaction[i].specie.m - reaction[j].specie.m, 2))
+    );
+}
+
 
 dbl integrand_2nd_integration(
     dbl p1, void *p
@@ -463,37 +478,47 @@ dbl integrand_2nd_integration(
         reaction_type += reactant.side;
     }
 
-    if (reaction_type == 0) {
-        h = (
-            pow(energy(p0, reaction[0].specie.m)
-                + energy(p1, reaction[1].specie.m)
-                - reaction[3].specie.m, 2)
+    if (reaction_type == 2) {
+        if (p0 == 0) {
+            dbl y2_min_1 = y2_min(reaction, 0, 1, 2, 3);
+            dbl y2_min_2 = y2_min(reaction, 0, 2, 1, 3);
+
+            g = std::max(y2_min_1 - p1 * (y2_min_1 / y2_min_2), 0.);
+        } else {
+            g = 0;
+        }
+
+        h = sqrt(
+            pow(
+                energy(p0, reaction[0].specie.m)
+                - energy(p1, reaction[1].specie.m)
+                - reaction[3].specie.m
+            , 2)
             - pow(reaction[2].specie.m, 2)
         );
-        if (h <= 0) {
-            h = 0;
-        } else {
-            h = sqrt(h);
-        }
-    }
-    else if (reaction_type == 2) {
-        dbl Ea = energy(p0, reaction[0].specie.m);
-        g = std::max(Ea - energy(p1, reaction[1].specie.m), 0.);
-        h = pow(reaction[0].specie.m, 2) / 2. / (Ea - p0);
-        // g = 0;
-        // h = Ea - energy(p1, reaction[1].specie.m);
     }
 
     gsl_function F;
-    struct integration_params new_params = {
-        params.p0, p1, 0.,
-        params.reaction, params.Ms,
-        params.a, params.b, g, h,
-        params.kind, params.releps, params.abseps,
-        params.subdivisions
-    };
-    F.params = &new_params;
+    // struct integration_params new_params = {
+    //     params.p0, p1, 0.,
+    //     params.reaction, params.Ms,
+    //     params.a, params.b, g, h,
+    //     params.kind, params.releps, params.abseps,
+    //     params.subdivisions
+    // };
+    params.p1 = p1;
+    params.g = g;
+    params.h = h;
+    F.params = &params;
 
+//     auto f = [params](dbl x) -> dbl {return integrand_1st_integration(x, &params);};
+// // dbl nonadaptive_trapezium(std::function<dbl(dbl)> f, dbl a, dbl b, dbl &result, dbl &error, dbl epsabs, dbl epsrel, size_t limit) {
+
+//     dbl result(0.), error(0.);
+//     // nonadaptive_trapezium(f, g, h, result, error, 1e-2, 1e-12, 100);
+//     adaptive_trapezium(f, g, h, result, error, 1e-2, 1e-12, 10);
+
+    // return result;
     gsl_set_error_handler_off();
 
     dbl result, error;
@@ -501,12 +526,12 @@ dbl integrand_2nd_integration(
     F.function = &integrand_1st_integration;
 
     gsl_integration_workspace *w = gsl_integration_workspace_alloc(params.subdivisions);
-    status = gsl_integration_qag(&F, g, h, params.abseps, params.releps, params.subdivisions, GSL_INTEG_GAUSS61, w, &result, &error);
+    status = gsl_integration_qags(&F, g, h, params.abseps, params.releps, params.subdivisions, w, &result, &error);
+    // status = gsl_integration_qag(&F, g, h, params.abseps, params.releps, params.subdivisions, GSL_INTEG_GAUSS15, w, &result, &error);
     if (status) {
-        printf("1st integration result: %e ± %e. %i intervals. %s\n", result, error, (int) w->size, gsl_strerror(status));
+        printf("(p0=%e, p1=%e) 1st integration result: %e ± %e. %i intervals. %s\n", params.p0, p1, result, error, (int) w->size, gsl_strerror(status));
     }
     gsl_integration_workspace_free(w);
-
 
     return result;
 }
@@ -532,22 +557,12 @@ std::vector<dbl> integration(
         dbl p0 = ps[i];
 
         dbl ai(a), bi(b), gi(g), hi(h);
-        if (reaction_type == 0) {
-            ai = (pow(reaction[2].specie.m
-                      + reaction[3].specie.m
-                      - energy(p0, reaction[0].specie.m), 2)
-                  - pow(reaction[1].specie.m, 2));
-            if (ai <= 0) {
-                ai = 0;
-            } else {
-                ai = sqrt(ai);
-            }
-        }
-        else if (reaction_type == 2) {
-            dbl Ea = energy(p0, reaction[0].specie.m);
-            ai = 0;
-            bi = pow(reaction[0].specie.m, 2) / 2. / (Ea - p0);
-            // bi = Ea;
+
+        if (reaction_type == 2) {
+            bi = sqrt(
+                pow(energy(p0, reaction[0].specie.m) - reaction[2].specie.m - reaction[3].specie.m, 2)
+                - pow(reaction[1].specie.m, 2)
+            );
         }
 
         dbl result, error;
@@ -561,22 +576,24 @@ std::vector<dbl> integration(
             reaction[0].specie.m, reaction[0].specie.eta,
             reaction[0].specie.T, reaction[0].specie.in_equilibrium
         );
-        dbl releps = 1e-3;
+        dbl releps = 1e-2;
         // dbl abseps = 1e-10;
-        dbl abseps = f / stepsize * releps;
+        dbl abseps = std::max(f / stepsize * releps, 1e-15);
 
         size_t subdivisions = 100;
         struct integration_params params = {
             p0, 0., 0.,
             &reaction, &Ms,
             ai, bi, gi, hi,
-            0, releps, abseps,
+            4, releps, abseps,
             subdivisions
         };
         F.params = &params;
 
+        gsl_set_error_handler_off();
         gsl_integration_workspace *w = gsl_integration_workspace_alloc(subdivisions);
-        status = gsl_integration_qag(&F, ai, bi, abseps, releps, subdivisions, GSL_INTEG_GAUSS61, w, &result, &error);
+        // status = gsl_integration_qags(&F, ai, bi, abseps, releps, subdivisions, w, &result, &error);
+        status = gsl_integration_qag(&F, ai, bi, abseps, releps, subdivisions, GSL_INTEG_GAUSS15, w, &result, &error);
         if (status) {
             printf("2nd integration_1 result: %e ± %e. %i intervals. %s\n", result, error, (int) w->size, gsl_strerror(status));
             throw std::runtime_error("Integrator failed to reach required accuracy");
@@ -584,23 +601,23 @@ std::vector<dbl> integration(
         gsl_integration_workspace_free(w);
         integral[i] += result;
 
-        params = {
-            p0, 0., 0.,
-            &reaction, &Ms,
-            ai, bi, gi, hi,
-            1, releps, abseps,
-            subdivisions
-        };
-        F.params = &params;
+        // params = {
+        //     p0, 0., 0.,
+        //     &reaction, &Ms,
+        //     ai, bi, gi, hi,
+        //     3, releps, abseps,
+        //     subdivisions
+        // };
+        // F.params = &params;
 
-        w = gsl_integration_workspace_alloc(subdivisions);
-        status = gsl_integration_qag(&F, ai, bi, abseps, releps, subdivisions, GSL_INTEG_GAUSS61, w, &result, &error);
-        if (status) {
-            printf("2nd integration_f result: %e ± %e. %i intervals. %s\n", result, error, (int) w->size, gsl_strerror(status));
-            throw std::runtime_error("Integrator failed to reach required accuracy");
-        }
-        gsl_integration_workspace_free(w);
-        integral[i] += result;
+        // w = gsl_integration_workspace_alloc(subdivisions);
+        // status = gsl_integration_qag(&F, ai, bi, abseps, releps, subdivisions, GSL_INTEG_GAUSS15, w, &result, &error);
+        // if (status) {
+        //     printf("2nd integration_f result: %e ± %e. %i intervals. %s\n", result, error, (int) w->size, gsl_strerror(status));
+        //     throw std::runtime_error("Integrator failed to reach required accuracy");
+        // }
+        // gsl_integration_workspace_free(w);
+        // integral[i] += result;
     }
 
     return integral;
@@ -628,10 +645,6 @@ PYBIND11_MODULE(integral, m) {
     m.def("Db", &Db,
           "p"_a, "E"_a, "m"_a,
           "K1"_a, "K2"_a, "order"_a, "sides"_a);
-    m.def("integrand", &integrand,
-          "p0"_a, "p1s"_a, "p2s"_a,
-          "reaction"_a, "Ms"_a);
-
 
     m.def("integration", &integration,
           "ps"_a, "a"_a, "b"_a, "g"_a, "h"_a,

@@ -40,7 +40,10 @@ def unit_non_equilibrium_test(params, universe):
     universe.init_interactions()
 
     integral = neutrino_e.collision_integrals[0]
+
     collision_integral = integral.integrate(neutrino_e.grid.TEMPLATE)
+    # A, B = numpy.vectorize(integral.integrate)(neutrino_e.grid.TEMPLATE)
+    # collision_integral = (A + neutrino_e._distribution * B)
 
     universe.calculate_collisions()
 

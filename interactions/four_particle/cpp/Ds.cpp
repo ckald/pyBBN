@@ -1,6 +1,11 @@
 #include "integral.h"
 
 
+int Sgn(double lam) {
+  return (lam > 0) - (lam < 0);
+}
+
+
 dbl D1(dbl q1, dbl q2, dbl q3, dbl q4) {
     /* Dimensionality: energy
 
@@ -29,6 +34,36 @@ dbl D1(dbl q1, dbl q2, dbl q3, dbl q4) {
     }
     return q2;
 }
+
+
+/*
+dbl D1(dbl q1, dbl q2, dbl q3, dbl q4) {
+
+    // Full analytic expression (for testing)
+
+    dbl y1, y2, y3, y4;
+    dbl result;
+    std::array<dbl, 4> mom = {q1, q2, q3, q4};
+
+    for (int i=0; i<4; i++) {
+        for (int j=i; j<4; j++) {
+            if (mom[j] > mom[i]) {
+                dbl tmp = mom[i];
+                mom[i] = mom[j];
+                mom[j] = tmp;
+            }
+        }
+    }
+
+    y1 = mom[0];
+    y2 = mom[1];
+    y3 = mom[2];
+    y4 = mom[3];
+
+    result = 0.25 * (2*y4 - std::abs(y1-y2-y3+y4) + std::abs(-y1+y2+y3+y4));
+    return result;
+}*/
+
 
 dbl D2(dbl q1, dbl q2, dbl q3, dbl q4) {
     /* Dimensionality: pow(energy, 3)
@@ -73,6 +108,28 @@ dbl D2(dbl q1, dbl q2, dbl q3, dbl q4) {
         }
     }
 }
+
+
+/*
+dbl D2(dbl q1, dbl q2, dbl q3, dbl q4) {
+
+    // Full analytic expression (for testing)
+
+    if (q1 < q2) { std::swap(q1, q2); }
+    if (q3 < q4) { std::swap(q3, q4); }
+    dbl result;
+
+    result = (24. * q1 * q2 * q4 + 24. * q2 * q3 * q4 + pow(std::abs(q1+q2-q3-q4),3) + pow(std::abs(q1-q2-q3+q4),3)
+            - pow(std::abs(q1+q2-q3+q4),3) + 6.*q3*q4*(4*q2+std::abs(q1+q2-q3-q4)-std::abs(q1-q2-q3+q4)+std::abs(q1+q2-q3+q4)-std::abs(-q1+q2+q3+q4))
+            -pow(std::abs(-q1+q2+q3+q4),3) - 3.*q4*(pow(-q1+q2+q3+q4,2)*Sgn(q1-q2-q3-q4)-pow(q1+q2-q3-q4,2)*Sgn(q1+q2-q3-q4)-pow(q1-q2+q3-q4,2)*Sgn(q1-q2+q3-q4)
+            +pow(q1+q2+q3-q4,2)*Sgn(q1+q2+q3-q4)+pow(q1-q2-q3+q4,2)*Sgn(q1-q2-q3+q4)-pow(q1+q2-q3+q4,2)*Sgn(q1+q2-q3+q4)-pow(q1-q2+q3+q4,2)*Sgn(q1-q2+q3+q4)
+            +pow(q1+q2+q3+q4,2)*Sgn(q1+q2+q3+q4)) - 3.*q3*(pow(-q1+q2+q3+q4,2)*Sgn(q1-q2-q3-q4)-pow(q1+q2-q3-q4,2)*Sgn(q1+q2-q3-q4)+pow(q1-q2+q3-q4,2)*Sgn(q1-q2+q3-q4)
+            -pow(q1+q2+q3-q4,2)*Sgn(q1+q2+q3-q4)-pow(q1-q2-q3+q4,2)*Sgn(q1-q2-q3+q4)+pow(q1+q2-q3+q4,2)*Sgn(q1+q2-q3+q4)-pow(q1-q2+q3+q4,2)*Sgn(q1-q2+q3+q4)
+            +pow(q1+q2+q3+q4,2)*Sgn(q1+q2+q3+q4)))/ 24.;
+
+    return result;
+}
+*/
 
 
 dbl D3(dbl q1, dbl q2, dbl q3, dbl q4) {
@@ -159,24 +216,42 @@ dbl D(const std::array<dbl, 4> &p, const std::array<dbl, 4> &E, const std::array
 
 
 dbl Db1(dbl q2, dbl q3, dbl q4) {
-    if ((q2 + q3 > q4) && (q2 + q4 > q3) && (q3 + q4 > q2)) {
-        return 1.;
-    }
-    return 0.;
+
+    dbl y1, y2, y3;
+    dbl result;
+    std::array<dbl, 3> mom = {q2, q3, q4};
+
+    std::sort(mom.begin(), mom.end(), std::greater<dbl>());
+
+    y1 = mom[0];
+    y2 = mom[1];
+    y3 = mom[2];
+
+    result = 0.5 * (Sgn(y1 + y2 - y3) + Sgn(y1 - y2 + y3) - Sgn(y1 - y2 - y3) - Sgn(y1 + y2 + y3));
+    return result;
 }
 
 
 dbl Db2(dbl q2, dbl q3, dbl q4) {
-    if ((q2 + q3 > q4) && (q2 + q4 > q3) && (q3 + q4 > q2)) {
-        return 0.5 * (pow(q3, 2) + pow(q4, 2) - pow(q2, 2));
-    }
-    return 0.;
+
+    dbl result;
+    if (q3 < q4) { std::swap(q3, q4); }
+
+    result = 0.25 * (-2 * q4 * (2 * (q2 + q3) - std::abs(q2 - q3 + q4) - std::abs(-q2 + q3 + q4))
+                  -2 * q3 * (2 * q4 + std::abs(q2 - q3 + q4) - std::abs(-q2 + q3 + q4))
+                  + pow(-q2 + q3 + q4, 2) * Sgn(q2 - q3 - q4) - pow(q2 + q3 - q4, 2) * Sgn(q2 + q3 - q4)
+                  - pow(q2 - q3 + q4, 2) * Sgn(q2 - q3 + q4) + pow(q2 + q3 + q4, 2) * 1
+                  + 2 * q3 * q4 * (Sgn(q2 - q3 - q4) + Sgn(q2 + q3 - q4) + Sgn(q2 - q3 + q4) + 1)
+          );
+
+    return result;
 }
+
 
 dbl Db(const std::array<dbl, 4> &p, const std::array<dbl, 4> &E, const std::array<dbl, 4> &m,
           dbl K1, dbl K2,
           const std::array<int, 4> &order, const std::array<int, 4> &sides) {
-    /* Dimensionality: energy */
+    // Dimensionality: energy
 
     int i, j, k, l, sisj, sksl;
     i = order[0];
@@ -187,29 +262,29 @@ dbl Db(const std::array<dbl, 4> &p, const std::array<dbl, 4> &E, const std::arra
     sisj = sides[i] * sides[j];
     sksl = sides[k] * sides[l];
 
-    dbl result(0.), subresult(0.);
+    dbl result(0.);
 
     if (K1 != 0.) {
-        subresult = E[1]*E[2]*E[3] * Db1(p[1], p[2], p[3]);
+        dbl subresult = E[1]*E[2]*E[3] * Db1(p[1], p[2], p[3]);
 
         if (i * j == 0.) {
-            subresult += sisj * E[i+j] * Db2(p[i+j], p[k], p[l]);
+            subresult += sksl * E[i+j] * Db2(p[i+j], p[k], p[l]);
         }
         else if (k * l == 0.) {
-            subresult += sksl * E[k+l] * Db2(p[i], p[j], p[k+l]);
+            subresult += sisj * E[k+l] * Db2(p[k+l], p[i], p[j]);
         }
 
         result += K1 * subresult;
     }
 
     if (K2 != 0.) {
-        subresult = 0.;
+        dbl subresult = 0.;
 
         if (i * j == 0.) {
             subresult += m[i+j] * (E[k] * E[l] * Db1(p[1], p[2], p[3]) + sksl * Db2(p[i+j], p[k], p[l]));
         }
         else if (k * l == 0.) {
-            subresult += m[i] * m[j] * m[k+l] * Db1(p[1], p[2], p[3]);
+            subresult += m[i] * m[j] * E[k+l] * Db1(p[1], p[2], p[3]);
         }
 
         result += K2 * subresult;

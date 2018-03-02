@@ -6,7 +6,7 @@ import os
 from collections import defaultdict
 
 from particles import Particle
-from library.SM import particles as SMP, interactions as SMI
+from library.SM import particles as SMP
 from library.NuMSM import particles as NuP, interactions as NuI
 from evolution import Universe
 from common import UNITS, Params, utils, LogSpacedGrid
@@ -28,6 +28,7 @@ folder = utils.ensure_dir(
     + args.comment
 )
 
+
 T_initial = 50. * UNITS.MeV
 T_final = 0.0008 * UNITS.MeV
 params = Params(T=T_initial,
@@ -35,26 +36,29 @@ params = Params(T=T_initial,
 
 universe = Universe(params=params, folder=folder)
 
+
+from common import LinearSpacedGrid
+linear_grid = LogSpacedGrid(MOMENTUM_SAMPLES=51, MAX_MOMENTUM=100 * UNITS.MeV)
+linear_grid_s = LinearSpacedGrid(MOMENTUM_SAMPLES=51, MAX_MOMENTUM=20 * UNITS.MeV)
+
 photon = Particle(**SMP.photon)
 
-# electron = Particle(**SMP.leptons.electron)
+electron = Particle(**SMP.leptons.electron, grid=linear_grid)
 
-neutrino_e = Particle(**SMP.leptons.neutrino_e)
-neutrino_mu = Particle(**SMP.leptons.neutrino_mu)
-neutrino_tau = Particle(**SMP.leptons.neutrino_tau)
+neutrino_e = Particle(**SMP.leptons.neutrino_e, grid=linear_grid)
+neutrino_mu = Particle(**SMP.leptons.neutrino_mu, grid=linear_grid)
+neutrino_tau = Particle(**SMP.leptons.neutrino_tau, grid=linear_grid)
 
 for neutrino in [neutrino_e, neutrino_mu, neutrino_tau]:
     neutrino.decoupling_temperature = 0 * UNITS.MeV
 
-
-sterile = Particle(**NuP.dirac_sterile_neutrino(mass))
+sterile = Particle(**NuP.dirac_sterile_neutrino(mass), grid=linear_grid_s)
 sterile.decoupling_temperature = T_initial
-
 
 universe.add_particles([
     photon,
 
-    # electron,
+    electron,
 
     neutrino_e,
     neutrino_mu,
@@ -70,44 +74,36 @@ thetas = defaultdict(float, {
 interaction = NuI.sterile_leptons_interactions(
     thetas=thetas, sterile=sterile,
     neutrinos=[neutrino_e, neutrino_mu, neutrino_tau],
-    leptons=[]
-    # leptons=[electron]
-)[0]
+    # leptons=[]
+    leptons=[electron]
+)
 
 
 def reaction_type(reaction):
     return sum(reactant.side for reactant in reaction)
 
 
-interaction.integrals = [integral for integral in interaction.integrals
-                         if reaction_type(integral.reaction) in [-2, 2]]
+for inter in interaction:
+    inter.integrals = [integral for integral in inter.integrals
+                       if reaction_type(integral.reaction) == 2]
 
-universe.interactions += (
-    interaction,
-)
+
+universe.interactions += (interaction)
 
 
 def step_monitor(universe):
-    import numpy
-
     for particle in universe.particles:
-        data = particle.data['params']
-        if particle.mass > 0 and not particle.in_equilibrium and len(particle.data['params']) > 3:
-            decay_rate = -(
-                (numpy.log(data['density'][-1]) - numpy.log(data['density'][-2]))
-                / (data['t'][-1] - data['t'][-2])
-                + 3 * universe.params.H
-            )
-
-            print("{}: Γ ={: .3e} MeV, τ ={: .3e} s, Y = n/S ={: .3e}".format(
-                particle.symbol,
-                decay_rate / UNITS.MeV,
-                1 / decay_rate / UNITS.s,
-                particle.density * universe.params.a**3 / universe.params.S
-            ))
+        if particle.mass > 0 and not particle.in_equilibrium:
+            something = particle.conformal_energy(particle.grid.TEMPLATE) / particle.conformal_mass
+            integrand = (particle.collision_integral * particle.params.H * something / particle._distribution)
+            decay_rate = -integrand
+            print(1 / decay_rate.mean() / UNITS.s, decay_rate / UNITS.MeV / 1.10562e-21 / 2, particle.density * universe.params.a**3 / universe.params.S)
+            with open(os.path.join(folder, particle.name.replace(' ', '_') + ".decay_rate6.txt"), 'a') as f1:
+                f1.write('{:e}'.format(particle.params.T / UNITS.MeV) + '\t'
+                         + '{:e}'.format(particle.params.a) + '\t'
+                         + '\t'.join(['{:e}'.format(x / UNITS.MeV) for x in decay_rate]) + '\n')
 
 
 universe.step_monitor = step_monitor
-
 
 universe.evolve(T_final)

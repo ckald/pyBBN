@@ -38,8 +38,8 @@ universe.evolve(T_final)
 initial_aT = universe.data['aT'][0]
 print ("a * T is not conserved: {}"
        .format(any([initial_aT != value for value in universe.data['aT']])))
-initial_a = universe.data['a'][len(universe.data)/2]
-initial_t = universe.data['t'][len(universe.data)/2] / UNITS.s
+initial_a = universe.data['a'][int(len(universe.data)/2)]
+initial_t = universe.data['t'][int(len(universe.data)/2)] / UNITS.s
 last_a = universe.data['a'][-1]
 last_t = universe.data['t'][-1] / UNITS.s
 
@@ -48,6 +48,6 @@ print ("a scaling discrepancy is: {:.2f}%"
                / numpy.sqrt(last_t / initial_t)))
 
 print ("""
-    Cosmic photon background temperature is {:.3f} times bigger than cosmic neutrinos temperature.
-    Relative error is {:.3f} %""".format(universe.params.aT / UNITS.MeV,
+Cosmic photon background temperature is {:.3f} times bigger than cosmic neutrinos temperature.
+Relative error is {:.3f} %""".format(universe.params.aT / UNITS.MeV,
                                          (universe.params.aT / UNITS.MeV - 1.401) / 1.401 * 100))

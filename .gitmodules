@@ -4,3 +4,6 @@
 [submodule "interactions/four_particle/cpp/pybind11"]
 	path = interactions/four_particle/cpp/pybind11
 	url = https://github.com/pybind/pybind11
+[submodule "interactions/three_particle/cpp/pybind11"]
+	path = interactions/three_particle/cpp/pybind11
+	url = https://github.com/pybind/pybind11
