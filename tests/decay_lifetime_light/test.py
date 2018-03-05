@@ -5,7 +5,7 @@ from matplotlib import pyplot as plt
 import matplotlib
 
 folder = os.path.join(os.path.split(__file__)[0], 'output')
-Dolgov_value = 1.27031e-21  # MeV
+Dolgov_value = 1.10562e-21 * 2  # MeV
 
 names = ["Sterile_neutrino_(Dirac).decay_rate6.txt"]
 

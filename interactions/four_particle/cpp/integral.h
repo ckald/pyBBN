@@ -8,8 +8,9 @@
 #include <pybind11/stl.h>
 #include <pybind11/numpy.h>
 
-//#include <gsl/gsl_errno.h>
-//#include <gsl/gsl_integration.h>
+#include <gsl/gsl_errno.h>
+#include <gsl/gsl_integration.h>
+
 
 namespace py = pybind11;
 using namespace pybind11::literals;

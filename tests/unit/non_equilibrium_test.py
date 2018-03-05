@@ -34,17 +34,16 @@ def free_non_equilibrium_test(params, universe):
 @with_setup_args(non_equilibium_setup)
 def unit_non_equilibrium_test(params, universe):
     params.update(universe.total_energy_density(), universe.total_entropy())
-    eps = 1e-14
     photon, neutrino_e, neutrino_mu = universe.particles
-
-    neutrino_e_distribution = neutrino_e._distribution
 
     universe.update_particles()
     universe.init_interactions()
 
     integral = neutrino_e.collision_integrals[0]
-    A, B = numpy.vectorize(integral.integrate)(neutrino_e.grid.TEMPLATE)
-    collision_integral = (A + neutrino_e._distribution * B)
+
+    collision_integral = integral.integrate(neutrino_e.grid.TEMPLATE)
+    # A, B = numpy.vectorize(integral.integrate)(neutrino_e.grid.TEMPLATE)
+    # collision_integral = (A + neutrino_e._distribution * B)
 
     universe.calculate_collisions()
 
