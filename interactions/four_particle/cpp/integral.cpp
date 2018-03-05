@@ -237,7 +237,7 @@ dbl in_bounds(const std::array<dbl, 4> p, const std::array<dbl, 4> E, const std:
 
 dbl integrand_full(
     dbl p0, dbl p1, dbl p2,
-    const std::vector<reaction_t> reaction, const std::vector<M_t> Ms,
+    const std::vector<reaction_t> &reaction, const std::vector<M_t> &Ms,
     int kind
 ) {
     /*
@@ -357,7 +357,7 @@ dbl integrand_1st_integration(
     return integrand_full(p0, p1, p2, *params.reaction, *params.Ms, params.kind);
 }
 
-dbl p2_min_dec(const std::vector<reaction_t> reaction,
+dbl p2_min_dec(const std::vector<reaction_t> &reaction,
            int i=0, int j=1, int k=2, int l=3) {
     return sqrt(
         (
@@ -371,7 +371,7 @@ dbl p2_min_dec(const std::vector<reaction_t> reaction,
     );
 }
 
-dbl p2_max_dec(const std::vector<reaction_t> reaction,
+dbl p2_max_dec(const std::vector<reaction_t> &reaction,
             dbl p0, dbl p1) {
     return sqrt(
             pow(
@@ -383,7 +383,7 @@ dbl p2_max_dec(const std::vector<reaction_t> reaction,
         );
 }
 
-dbl p2_min_scat(const std::vector<reaction_t> reaction, dbl p0, dbl p1) {
+dbl p2_min_scat(const std::vector<reaction_t> &reaction, dbl p0, dbl p1) {
     dbl m0 = reaction[0].specie.m;
     dbl m1 = reaction[1].specie.m;
     dbl m2 = reaction[2].specie.m;
@@ -423,7 +423,7 @@ dbl p2_min_scat(const std::vector<reaction_t> reaction, dbl p0, dbl p1) {
     return 0.;
 }
 
-dbl p2_max_scat(const std::vector<reaction_t> reaction, dbl p0, dbl p1) {
+dbl p2_max_scat(const std::vector<reaction_t> &reaction, dbl p0, dbl p1) {
     dbl m0 = reaction[0].specie.m;
     dbl m1 = reaction[1].specie.m;
     dbl m2 = reaction[2].specie.m;
