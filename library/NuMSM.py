@@ -5,9 +5,7 @@
 
 from __future__ import division
 
-import numpy as np
 import itertools
-from collections import Counter
 
 from common import UNITS, CONST, statistics as STATISTICS
 from interactions import CrossGeneratingInteraction
@@ -68,7 +66,7 @@ class interactions(object):
 
     @staticmethod
     def sterile_active_scattering(theta=1., sterile=None, active_a=None,
-                                active_b=None, kind=None):
+                                 active_b=None, kind=None):
         """ \begin{align}
                 N_S + \nu_{\beta} &\to \nu_{\alpha} + \nu_{\beta}
             \end{align}
@@ -88,43 +86,43 @@ class interactions(object):
 
     @staticmethod
     def sterile_active_to_leptons_NC(theta=1., g_L=CONST.g_R+0.5, sterile=None,
-                                  active=None, lepton=None, kind=None):
+                                     active=None, lepton=None, kind=None):
         """ \begin{align}
                 N_S + \overline{\nu_{\alpha}} \to l^+ + l^-
             \end{align}
         """
 
         return CrossGeneratingInteraction(
-                name="Sterile decay into neutrino and leptons pair",
-                particles=((sterile, active), (lepton, lepton)),
-                antiparticles=((False, True), (True, False)),
-                Ms=(
-                    SterileM(theta=theta, K1=4. * g_L**2, order=(0, 2, 1, 3)),
-                    SterileM(theta=theta, K1=4. * CONST.g_R**2, order=(0, 3, 1, 2)),
-                    SterileM(theta=theta, K2=4. * CONST.g_R * g_L, order=(2, 3, 0, 1))
-                ),
-                integral_type=FourParticleIntegral,
-                kind=kind
-            )
+            name="Sterile decay into neutrino and leptons pair",
+            particles=((sterile, active), (lepton, lepton)),
+            antiparticles=((False, True), (True, False)),
+            Ms=(
+                SterileM(theta=theta, K1=4. * g_L**2, order=(0, 2, 1, 3)),
+                SterileM(theta=theta, K1=4. * CONST.g_R**2, order=(0, 3, 1, 2)),
+                SterileM(theta=theta, K2=4. * CONST.g_R * g_L, order=(2, 3, 0, 1))
+            ),
+            integral_type=FourParticleIntegral,
+            kind=kind
+        )
 
     @staticmethod
     def sterile_active_to_leptons_CC(theta=1., sterile=None,
-                                  active=None, lepton1=None, lepton2=None, kind=None):
+                                     active=None, lepton1=None, lepton2=None, kind=None):
         """ \begin{align}
                 N_S + \overline{\nu_{\alpha}} \to l1^+ + l2^-
             \end{align}
         """
 
         return CrossGeneratingInteraction(
-                name="Sterile decay into neutrino and leptons",
-                particles=((sterile, active), (lepton2, lepton1)),
-                antiparticles=((False, True), (True, False)),
-                Ms=(
-                    SterileM(theta=theta, K1=4., order=(0, 2, 1, 3)),
-                ),
-                integral_type=FourParticleIntegral,
-                kind=kind
-            )
+            name="Sterile decay into neutrino and leptons",
+            particles=((sterile, active), (lepton2, lepton1)),
+            antiparticles=((False, True), (True, False)),
+            Ms=(
+                SterileM(theta=theta, K1=4., order=(0, 2, 1, 3)),
+            ),
+            integral_type=FourParticleIntegral,
+            kind=kind
+        )
 
     @classmethod
     def sterile_leptons_interactions(cls, thetas=None, sterile=None,
@@ -149,6 +147,7 @@ class interactions(object):
             for neutrino in neutrinos:
                 if thetas[neutrino.flavour]:
                     g_L = g_R + 0.5 if lepton.flavour == neutrino.flavour else g_R - 0.5
+                    # Neutral current
                     inters.append(cls.sterile_active_to_leptons_NC(
                         theta=thetas[neutrino.flavour],
                         g_L=g_L,
@@ -156,11 +155,12 @@ class interactions(object):
                         active=neutrino,
                         lepton=lepton,
                         kind=kind
-                    )) # Weak current
+                    ))
 
                 if len(leptons) > 1:
                     other_lepton = [par for par in leptons if par != lepton][0]
                     if thetas[lepton.flavour] and neutrino.flavour == other_lepton.flavour:
+                        # Charged current
                         inters.append(cls.sterile_active_to_leptons_CC(
                             theta=thetas[lepton.flavour],
                             sterile=sterile,
@@ -168,7 +168,7 @@ class interactions(object):
                             lepton1=lepton,
                             lepton2=other_lepton,
                             kind=kind
-                        )) # Charged current
+                        ))
         return inters
 
     # ## Quark interactions
@@ -266,7 +266,6 @@ class interactions(object):
                                                                active=neutrino,
                                                                meson=particle)
 
-
         for lepton in leptons:
             if thetas[lepton.flavour]:
                 for particle in mesons:
@@ -291,13 +290,13 @@ class interactions(object):
                 N \to \nu + meson
             \end{align}
         """
-        print(theta)
         return [CrossGeneratingInteraction(
             name="Sterile neutrino decay to neutral scalar meson and neutrino",
             particles=((sterile, ), (active, meson)),
             antiparticles=antiparticles,
-            Ms=(ThreeParticleM(K=(CONST.G_F * theta * meson.decay_constant)**2
-                               * sterile.mass**4 * (1 - (meson.mass / sterile.mass)**2)), ),
+            Ms=(
+                ThreeParticleM(K=(CONST.G_F * theta * meson.decay_constant)**2
+                                  * sterile.mass**4 * (1 - (meson.mass / sterile.mass)**2)), ),
             integral_type=ThreeParticleIntegral
         ) for antiparticles in [
             ((False, ), (False, False)),
@@ -392,13 +391,3 @@ class interactions(object):
             ((False, ), (False, True)),
             ((True, ), (True, False))
         ]]
-
-    @classmethod
-    def interactions_decay_products(cls, interactions=None):
-
-        species = Counter()
-#        for inter in interactions:
-#            for integral in inter.integrals:
-#                species.update(Counter(item.specie.symbol for item in integral.reaction if item.side == 1))
-
-
