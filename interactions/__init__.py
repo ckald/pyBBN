@@ -70,7 +70,7 @@ class CrossGeneratingInteraction(Interaction):
 
     def __init__(self, name=None,
                  particles=None, antiparticles=None, Ms=None,
-                 integral_type=None, washout_temperature=0, kind=None):
+                 integral_type=None, washout_temperature=0, kind=0):
         """ Create an `Integral` object for all particle species involved in the interaction.
 
             Precise expressions for all integrals can be derived by permuting all particle-related\
@@ -90,9 +90,11 @@ class CrossGeneratingInteraction(Interaction):
         self.integral_type = integral_type
         self.washout_temperature = washout_temperature
 
-        if kind not in [0,1,2,3,4,5] or not isinstance(kind, int):
+        if not (kind is None or kind in [0, 1, 2, 3, 4, 5]):
             raise ValueError("Variable 'kind' out of range or non-integer")
         else:
+            if kind is None:
+                kind = 0
             self.kind = kind
 
         self.integrals = []
