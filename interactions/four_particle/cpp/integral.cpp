@@ -205,12 +205,12 @@ dbl F_1(const std::vector<reaction_t> &reaction, const std::array<dbl, 4> &f) {
     return F_B(reaction, f, 0);
 }
 
-dbl F_f_vacuum_decay(const std::vector<reaction_t> &reaction, const std::array<dbl, 4> &f) {
+dbl F_f_vacuum_decay() {
     /* Variable part of the distribution functional */
     return -1;
 }
 
-dbl F_1_vacuum_decay(const std::vector<reaction_t> &reaction, const std::array<dbl, 4> &f) {
+dbl F_1_vacuum_decay() {
     /* Constant part of the distribution functional */
     return 0;
 }
@@ -295,6 +295,7 @@ dbl integrand_full(
         for (const M_t &M : Ms) {
             ds += Db(p, E, m, M.K1, M.K2, M.order, sides);
         }
+        ds /= m[0];
     }
     temp *= ds;
 
@@ -311,22 +312,20 @@ dbl integrand_full(
         );
     }
 
-    if (kind == 0) {
+    if (kind == 1) {
         return temp * F_1(reaction, f);
     }
-    if (kind == 1) {
+    if (kind == 2) {
         return temp * f[0] * F_f(reaction, f);
     }
-
-    if (kind == 2) {
-        return temp * F_1_vacuum_decay(reaction, f);
-    }
     if (kind == 3) {
-        return temp * f[0] * F_f_vacuum_decay(reaction, f);
+        return temp * F_1_vacuum_decay();
     }
-
     if (kind == 4) {
-        return temp * (F_1_vacuum_decay(reaction, f) + f[0] * F_f_vacuum_decay(reaction, f));
+        return temp * f[0] * F_f_vacuum_decay();
+    }
+    if (kind == 5) {
+        return temp * (F_1_vacuum_decay() + f[0] * F_f_vacuum_decay());
     }
 
     return temp * (F_1(reaction, f) + f[0] * F_f(reaction, f));
@@ -339,10 +338,10 @@ struct integration_params {
     dbl p2;
     const std::vector<reaction_t> *reaction;
     const std::vector<M_t> *Ms;
-    dbl a;
-    dbl b;
-    dbl g;
-    dbl h;
+    dbl low_1;
+    dbl up_1;
+    dbl low_2;
+    dbl up_2;
     int kind;
     dbl releps;
     dbl abseps;
@@ -350,95 +349,7 @@ struct integration_params {
 };
 
 
-
-// Trapezoidal
-
-dbl trapezium(std::function<dbl(dbl)> f, dbl a, dbl b, size_t n,
-              std::map<dbl, dbl> *cache=NULL) {
-    std::function<dbl(dbl)> F;
-    if (cache) {
-        F = [&cache, f](dbl x) -> dbl {
-            std::map<dbl, dbl>::iterator it = cache->find(x);
-            if (it != cache->end()) {
-                return it->second;
-            }
-            dbl res = f(x);
-            cache->insert(std::pair<dbl, dbl>(x, res));
-            return res;
-        };
-    } else {
-        F = f;
-    }
-
-    dbl h = (b - a) / (n - 1);
-    dbl result = (F(a) + F(b)) / 2;
-    for (size_t i = 1; i < n - 1; ++i) {
-        result += F(a + h * i);
-    }
-    return h * result;
-}
-
-
-std::pair<dbl, dbl> adaptive_trapezium_helper(std::function<dbl(dbl)> f, dbl a, dbl b, dbl epsabs, dbl epsrel, size_t limit, size_t n=1, std::map<dbl, dbl> *cache=NULL) {
-    dbl coarse = trapezium(f, a, b, 8, cache);
-    dbl fine = trapezium(f, a, b, 15, cache);
-    dbl error = fine - coarse;
-    // printf("%e ± %e (%e)\n", fine, error, coarse);
-
-    if (fabs(error) <= epsabs || fabs(error / fine) <= epsrel || n >= limit)
-    {
-        if (n >= limit) {
-            printf("adaptive_trapezium did not converge\n");
-        }
-        return std::make_pair(fine, error);
-    }
-
-    dbl left_result, left_error;
-    dbl right_result, right_error;
-
-    std::tie(left_result, left_error) = adaptive_trapezium_helper(f, a, (a+b)/2, epsabs, epsrel, limit, n+1, cache);
-    std::tie(right_result, right_error) = adaptive_trapezium_helper(f, (a+b)/2, b, epsabs, epsrel, limit, n+1, cache);
-    // printf("%e ± %e\n", left_result + right_result, left_error + right_error);
-    return std::pair<dbl, dbl>(left_result + right_result, left_error + right_error);
-}
-
-
-dbl adaptive_trapezium(std::function<dbl(dbl)> f, dbl a, dbl b, dbl &result, dbl &error, dbl epsabs, dbl epsrel, size_t limit) {
-    std::map<dbl, dbl> cache;
-    std::tie(result, error) = adaptive_trapezium_helper(f, a, b, epsabs, epsrel, limit, 1, &cache);
-    // printf("%e ± %e\n", result, error);
-    // cache.clear();
-    return result;
-}
-
-
-dbl nonadaptive_trapezium(std::function<dbl(dbl)> f, dbl a, dbl b, dbl &result, dbl &error, dbl epsabs, dbl epsrel, size_t limit) {
-    size_t n = 10;
-    std::map<dbl, dbl> cache;
-
-    dbl old_result = trapezium(f, a, b, n, &cache);
-    bool converged = false;
-    while (2 * n - 1 <= limit) {
-        n += n - 1;
-        result = trapezium(f, a, b, n, &cache);
-        error = result - old_result;
-        converged = fabs(error) <= epsabs || fabs(error / result) <= epsrel;
-
-        if (converged) {
-            break;
-        }
-        old_result = result;
-    }
-
-    if (converged) {
-        return 0;
-    }
-    return n;
-}
-
-
 // Adaptive Gauss-Kronrod
-
 dbl integrand_1st_integration(
     dbl p2, void *p
 ) {
@@ -448,8 +359,7 @@ dbl integrand_1st_integration(
     return integrand_full(p0, p1, p2, *params.reaction, *params.Ms, params.kind);
 }
 
-
-dbl y2_min(const std::vector<reaction_t> reaction,
+dbl y2_min_dec(const std::vector<reaction_t> reaction,
            int i=0, int j=1, int k=2, int l=3) {
     return sqrt(
         (
@@ -463,13 +373,108 @@ dbl y2_min(const std::vector<reaction_t> reaction,
     );
 }
 
+dbl y2_max_dec(const std::vector<reaction_t> reaction,
+            dbl p0, dbl p1) {
+    return sqrt(
+            pow(
+                energy(p0, reaction[0].specie.m)
+                - energy(p1, reaction[1].specie.m)
+                - reaction[3].specie.m
+            , 2)
+            - pow(reaction[2].specie.m, 2)
+        );
+}
+
+dbl y2_min_scat(const std::vector<reaction_t> reaction, dbl p0, dbl p1) {
+    dbl m0 = reaction[0].specie.m;
+    dbl m1 = reaction[1].specie.m;
+    dbl m2 = reaction[2].specie.m;
+    dbl m3 = reaction[3].specie.m;
+
+    if (p0 != 0){
+        return 0.;
+    }
+
+    if (m0 != 0) {
+        dbl temp1 = m0 + sqrt(pow(m1,2) + pow(p1,2));
+        dbl temp2 = pow(m3,2) + pow(p1,2);
+        dbl temp3 = ((temp2 - pow(temp1,2) - pow(m2,2)) * p1
+                    + sqrt(
+                        pow(temp1,2) * (pow(temp1,4) + pow(temp2,2)
+                        + (4 * pow(p1,2) - 2 * temp2 + pow(m2,2)) * pow(m2,2)
+                        - 2 * pow(temp1,2) * (temp2 + pow(m2,2)))
+                    )) / (2 * (pow(temp1,2) - pow(p1,2)));
+
+        return std::max(temp3, 0.);
+    }
+
+    if (m1 != 0) {
+        dbl temp1 = (-p1 * (pow(m1,2) + pow(m2,2) - pow(m3,2))
+                    + sqrt(
+                        (pow(p1,2) + pow(m1,2)) * (pow(m1,4)
+                        + pow(pow(m2,2)-pow(m3,2),2) - 2 * pow(m1,2)
+                        * (pow(m2,2) + pow(m3,2)))
+                        )
+                    ) / (2 * pow(m1,2));
+
+        dbl temp2 = -temp1;
+
+        return std::max(temp1, temp2);
+    }
+
+    return 0.;
+}
+
+dbl y2_max_scat(const std::vector<reaction_t> reaction, dbl p0, dbl p1) {
+    dbl m0 = reaction[0].specie.m;
+    dbl m1 = reaction[1].specie.m;
+    dbl m2 = reaction[2].specie.m;
+    dbl m3 = reaction[3].specie.m;
+
+    if (p0 != 0) {
+        return sqrt(
+                pow(
+                    energy(p0, reaction[0].specie.m)
+                    + energy(p1, reaction[1].specie.m)
+                    - reaction[3].specie.m
+                , 2)
+                - pow(reaction[2].specie.m, 2)
+            );
+    }
+
+    if (m0 != 0) {
+        dbl temp1 = m0 + sqrt(pow(m1,2) + pow(p1,2));
+        dbl temp2 = pow(m3,2) + pow(p1,2);
+        dbl temp3 = ((-temp2 + pow(temp1,2) + pow(m2,2)) * p1
+                    + sqrt(
+                        pow(temp1,2) * (pow(temp1,4) + pow(temp2,2)
+                        + (4 * pow(p1,2) - 2 * temp2 + pow(m2,2)) * pow(m2,2)
+                        - 2 * pow(temp1,2) * (temp2 + pow(m2,2)))
+                    )) / (2 * (pow(temp1,2) - pow(p1,2)));
+
+        return std::max(temp3, 0.);
+    }
+
+    if (m1 != 0) {
+        return (p1 * (pow(m1,2) + pow(m2,2) - pow(m3,2))
+                    + sqrt(
+                        (pow(p1,2) + pow(m1,2)) * (pow(m1,4)
+                        + pow(pow(m2,2)-pow(m3,2),2) - 2 * pow(m1,2)
+                        * (pow(m2,2) + pow(m3,2)))
+                        )
+                    ) / (2 * pow(m1,2));
+    }
+
+    return p1;
+}
+
 
 dbl integrand_2nd_integration(
     dbl p1, void *p
 ) {
     struct integration_params &params = *(struct integration_params *) p;
-    dbl g = params.g;
-    dbl h = params.h;
+    dbl low_2 = params.low_2;
+    dbl up_2 = params.up_2;
     dbl p0 = params.p0;
     auto reaction = *params.reaction;
 
@@ -480,43 +485,31 @@ dbl integrand_2nd_integration(
 
     if (reaction_type == 2) {
         if (p0 == 0) {
-            dbl y2_min_1 = y2_min(reaction, 0, 1, 2, 3);
-            dbl y2_min_2 = y2_min(reaction, 0, 2, 1, 3);
+            dbl y2_min_1 = y2_min_dec(reaction, 0, 1, 2, 3);
+            dbl y2_min_2 = y2_min_dec(reaction, 0, 2, 1, 3);
 
-            g = std::max(y2_min_1 - p1 * (y2_min_1 / y2_min_2), 0.);
-        } else {
-            g = 0;
+            low_2 = std::max(y2_min_1 - p1 * (y2_min_1 / y2_min_2), 0.);
         }
 
-        h = sqrt(
-            pow(
-                energy(p0, reaction[0].specie.m)
-                - energy(p1, reaction[1].specie.m)
-                - reaction[3].specie.m
-            , 2)
-            - pow(reaction[2].specie.m, 2)
-        );
+        else {
+            low_2 = 0;
+        }
+
+        up_2 = y2_max_dec(reaction, p0, p1);
+    }
+
+    else {
+        low_2 = y2_min_scat(reaction, p0, p1);
+        up_2 = y2_max_scat(reaction, p0, p1);
+
     }
 
     gsl_function F;
-    // struct integration_params new_params = {
-    //     params.p0, p1, 0.,
-    //     params.reaction, params.Ms,
-    //     params.a, params.b, g, h,
-    //     params.kind, params.releps, params.abseps,
-    //     params.subdivisions
-    // };
     params.p1 = p1;
-    params.g = g;
-    params.h = h;
+    params.low_2 = low_2;
+    params.up_2 = up_2;
     F.params = &params;
 
-//     auto f = [params](dbl x) -> dbl {return integrand_1st_integration(x, &params);};
-// // dbl nonadaptive_trapezium(std::function<dbl(dbl)> f, dbl a, dbl b, dbl &result, dbl &error, dbl epsabs, dbl epsrel, size_t limit) {
-
-//     dbl result(0.), error(0.);
-//     // nonadaptive_trapezium(f, g, h, result, error, 1e-2, 1e-12, 100);
-//     adaptive_trapezium(f, g, h, result, error, 1e-2, 1e-12, 10);
 
     // return result;
     gsl_set_error_handler_off();
@@ -526,7 +519,7 @@ dbl integrand_2nd_integration(
     F.function = &integrand_1st_integration;
 
     gsl_integration_workspace *w = gsl_integration_workspace_alloc(params.subdivisions);
-    status = gsl_integration_qags(&F, g, h, params.abseps, params.releps, params.subdivisions, w, &result, &error);
+    status = gsl_integration_qags(&F, low_2, up_2, params.abseps, params.releps, params.subdivisions, w, &result, &error);
     // status = gsl_integration_qag(&F, g, h, params.abseps, params.releps, params.subdivisions, GSL_INTEG_GAUSS15, w, &result, &error);
     if (status) {
         printf("(p0=%e, p1=%e) 1st integration result: %e ± %e. %i intervals. %s\n", params.p0, p1, result, error, (int) w->size, gsl_strerror(status));
@@ -538,10 +531,10 @@ dbl integrand_2nd_integration(
 
 
 std::vector<dbl> integration(
-    std::vector<dbl> ps, dbl a, dbl b, dbl g, dbl h,
+    std::vector<dbl> ps, dbl min_1, dbl max_1, dbl min_2, dbl max_2,
     const std::vector<reaction_t> &reaction,
     const std::vector<M_t> &Ms,
-    dbl stepsize
+    dbl stepsize, int kind=0
 ) {
 
     std::vector<dbl> integral(ps.size(), 0.);
@@ -552,17 +545,25 @@ std::vector<dbl> integration(
         reaction_type += reactant.side;
     }
 
-    #pragma omp parallel for default(none) shared(ps, Ms, reaction, a, b, g, h, integral, stepsize, reaction_type)
+    #pragma omp parallel for default(none) shared(ps, Ms, reaction, min_1, max_1, min_2, max_2, integral, stepsize, kind, reaction_type)
     for (size_t i = 0; i < ps.size(); ++i) {
         dbl p0 = ps[i];
 
-        dbl ai(a), bi(b), gi(g), hi(h);
+        dbl low_1(min_1), up_1(max_1), low_2(min_1), up_2(max_1);
 
         if (reaction_type == 2) {
-            bi = sqrt(
+            dbl max = sqrt(
                 pow(energy(p0, reaction[0].specie.m) - reaction[2].specie.m - reaction[3].specie.m, 2)
                 - pow(reaction[1].specie.m, 2)
             );
+            up_1 = std::min(up_1, max);
+        }
+        if (reaction_type == 0) {
+            dbl min = pow(reaction[2].specie.m + reaction[3].specie.m - energy(p0, reaction[0].specie.m), 2)
+                    - pow(reaction[1].specie.m, 2);
+            if (min > 0) {
+                low_1 = std::max(low_1, sqrt(min));
+            }
         }
 
         dbl result, error;
@@ -576,16 +577,17 @@ std::vector<dbl> integration(
             reaction[0].specie.m, reaction[0].specie.eta,
             reaction[0].specie.T, reaction[0].specie.in_equilibrium
         );
+
         dbl releps = 1e-2;
-        // dbl abseps = 1e-10;
+        //dbl abseps = 1e-10;
         dbl abseps = std::max(f / stepsize * releps, 1e-15);
 
         size_t subdivisions = 100;
         struct integration_params params = {
             p0, 0., 0.,
             &reaction, &Ms,
-            ai, bi, gi, hi,
-            4, releps, abseps,
+            low_1, up_1, low_2, up_2,
+            kind, releps, abseps,
             subdivisions
         };
         F.params = &params;
@@ -593,7 +595,8 @@ std::vector<dbl> integration(
         gsl_set_error_handler_off();
         gsl_integration_workspace *w = gsl_integration_workspace_alloc(subdivisions);
         // status = gsl_integration_qags(&F, ai, bi, abseps, releps, subdivisions, w, &result, &error);
-        status = gsl_integration_qag(&F, ai, bi, abseps, releps, subdivisions, GSL_INTEG_GAUSS15, w, &result, &error);
+        status = gsl_integration_qag(&F, low_1, up_2, abseps, releps, subdivisions, GSL_INTEG_GAUSS15, w, &result, &error);
+
         if (status) {
             printf("2nd integration_1 result: %e ± %e. %i intervals. %s\n", result, error, (int) w->size, gsl_strerror(status));
             throw std::runtime_error("Integrator failed to reach required accuracy");
@@ -647,8 +650,8 @@ PYBIND11_MODULE(integral, m) {
           "K1"_a, "K2"_a, "order"_a, "sides"_a);
 
     m.def("integration", &integration,
-          "ps"_a, "a"_a, "b"_a, "g"_a, "h"_a,
-          "reaction"_a, "Ms"_a, "stepsize"_a);
+          "ps"_a, "min_1"_a, "max_1"_a, "min_2"_a, "max_2"_a,
+          "reaction"_a, "Ms"_a, "stepsize"_a, "kind"_a);
 
     py::class_<M_t>(m, "M_t")
         .def(py::init<std::array<int, 4>, dbl, dbl>(),

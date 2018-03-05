@@ -67,7 +67,8 @@ class particles(object):
 class interactions(object):
 
     @staticmethod
-    def sterile_active_scattering(theta=1., sterile=None, active_a=None, active_b=None):
+    def sterile_active_scattering(theta=1., sterile=None, active_a=None,
+                                active_b=None, kind=None):
         """ \begin{align}
                 N_S + \nu_{\beta} &\to \nu_{\alpha} + \nu_{\beta}
             \end{align}
@@ -81,12 +82,13 @@ class interactions(object):
             particles=((sterile, active_b), (active_a, active_b)),
             antiparticles=((False, False), (False, False)),
             Ms=(SterileM(theta=theta, K1=K1, order=(0, 1, 2, 3)), ),
-            integral_type=FourParticleIntegral
+            integral_type=FourParticleIntegral,
+            kind=kind
         )
 
     @staticmethod
     def sterile_active_to_leptons_NC(theta=1., g_L=CONST.g_R+0.5, sterile=None,
-                                  active=None, lepton=None):
+                                  active=None, lepton=None, kind=None):
         """ \begin{align}
                 N_S + \overline{\nu_{\alpha}} \to l^+ + l^-
             \end{align}
@@ -101,12 +103,13 @@ class interactions(object):
                     SterileM(theta=theta, K1=4. * CONST.g_R**2, order=(0, 3, 1, 2)),
                     SterileM(theta=theta, K2=4. * CONST.g_R * g_L, order=(2, 3, 0, 1))
                 ),
-                integral_type=FourParticleIntegral
+                integral_type=FourParticleIntegral,
+                kind=kind
             )
 
     @staticmethod
     def sterile_active_to_leptons_CC(theta=1., sterile=None,
-                                  active=None, lepton1=None, lepton2=None):
+                                  active=None, lepton1=None, lepton2=None, kind=None):
         """ \begin{align}
                 N_S + \overline{\nu_{\alpha}} \to l1^+ + l2^-
             \end{align}
@@ -119,12 +122,13 @@ class interactions(object):
                 Ms=(
                     SterileM(theta=theta, K1=4., order=(0, 2, 1, 3)),
                 ),
-                integral_type=FourParticleIntegral
+                integral_type=FourParticleIntegral,
+                kind=kind
             )
 
     @classmethod
     def sterile_leptons_interactions(cls, thetas=None, sterile=None,
-                                     neutrinos=None, leptons=None):
+                                     neutrinos=None, leptons=None, kind=None):
 
         g_R = CONST.g_R
         inters = []
@@ -136,7 +140,8 @@ class interactions(object):
                     theta=thetas[neutrino_a.flavour],
                     sterile=sterile,
                     active_a=neutrino_a,
-                    active_b=neutrino_b
+                    active_b=neutrino_b,
+                    kind=kind
                 ))
 
         # Interactions of neutrinos and leptons
@@ -149,7 +154,8 @@ class interactions(object):
                         g_L=g_L,
                         sterile=sterile,
                         active=neutrino,
-                        lepton=lepton
+                        lepton=lepton,
+                        kind=kind
                     )) # Weak current
 
                 if len(leptons) > 1:
@@ -160,7 +166,8 @@ class interactions(object):
                             sterile=sterile,
                             active=neutrino,
                             lepton1=lepton,
-                            lepton2=other_lepton
+                            lepton2=other_lepton,
+                            kind=kind
                         )) # Charged current
         return inters
 
@@ -253,12 +260,12 @@ class interactions(object):
                                                                active=neutrino,
                                                                meson=particle)
 
-                        if particle.type == "vector":     
+                        if particle.type == "vector":
                             inters += cls.neutral_vector_meson(theta=thetas[neutrino.flavour],
                                                                sterile=sterile,
                                                                active=neutrino,
                                                                meson=particle)
-                                                    
+
 
         for lepton in leptons:
             if thetas[lepton.flavour]:
@@ -269,8 +276,8 @@ class interactions(object):
                                                                sterile=sterile,
                                                                lepton=lepton,
                                                                meson=particle)
-                        
-                        if particle.type == "vector":     
+
+                        if particle.type == "vector":
                             inters += cls.charged_vector_meson(theta=thetas[neutrino.flavour],
                                                                sterile=sterile,
                                                                lepton=lepton,
@@ -335,7 +342,7 @@ class interactions(object):
                 particles=((sterile, ), (active, meson)),
                 antiparticles=antiparticles,
                 Ms=(ThreeParticleM(K=0.5 * (CONST.G_F * theta * meson.decay_constant)**2
-                                   * sterile.mass**4 * (1 - 2 * CONST.sin_theta_w_2)**2 
+                                   * sterile.mass**4 * (1 - 2 * CONST.sin_theta_w_2)**2
                                    * (1 + 2 * (meson.mass / sterile.mass)**2)
                                    * (1 - (meson.mass / sterile.mass)**2)), ),
                 integral_type=ThreeParticleIntegral
@@ -350,7 +357,7 @@ class interactions(object):
                 particles=((sterile, ), (active, meson)),
                 antiparticles=antiparticles,
                 Ms=(ThreeParticleM(K=8 * (CONST.G_F * theta * meson.decay_constant)**2
-                                   * sterile.mass**4 * (CONST.sin_theta_w_2 / 3)**2 
+                                   * sterile.mass**4 * (CONST.sin_theta_w_2 / 3)**2
                                    * (1 + 2 * (meson.mass / sterile.mass)**2)
                                    * (1 - (meson.mass / sterile.mass)**2)), ),
                 integral_type=ThreeParticleIntegral

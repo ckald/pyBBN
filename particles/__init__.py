@@ -237,7 +237,9 @@ class DistributionParticle(AbstractParticle):
 
         assert numpy.all(numpy.isfinite(self.collision_integral))
 
+        self.old_distribution  = [self.distribution(item) for item in self.grid.TEMPLATE]
         self._distribution += self.collision_integral * self.params.h
+ #       print(old_distribution == self._distribution,"\n\n\n\n\n")
         # assert all(self._distribution >= 0), self._distribution
         self._distribution = numpy.maximum(self._distribution, 0)
         # self._distribution[self._distribution < 1e-25] = 0
@@ -259,7 +261,7 @@ class DistributionParticle(AbstractParticle):
         Is = []
 
         for integral in self.collision_integrals:
-            Is.append(integral.integrate(ps, stepsize=self.params.h))
+            Is.append(integral.integrate(ps, stepsize=self.params.h * self.aT))
 
         integral = sum(Is)
         return integral

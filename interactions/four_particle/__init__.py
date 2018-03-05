@@ -136,6 +136,6 @@ class FourParticleIntegral(BoltzmannIntegral):
             self.cMs = [M_t(list(M.order), M.K1, M.K2) for M in self.Ms]
 
         ps = ps / params.aT
-        fullstack = numpy.array(integration(ps, *bounds, self.creaction, self.cMs, stepsize))
+        fullstack = numpy.array(integration(ps, *bounds, self.creaction, self.cMs, stepsize, self.kind))
         # print(self, "\t", fullstack * self.particle.params.h / self.particle._distribution)
         return fullstack * constant

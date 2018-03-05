@@ -31,13 +31,13 @@ params = Params(T=5. * UNITS.MeV,
 
 universe = Universe(params=params, folder=folder)
 
+# Set linearly spaced grid for neutrinos (such that 3, 5 and 7 MeV are in the grid)
+
 photon = Particle(**SMP.photon)
 electron = Particle(**SMP.leptons.electron)
 
-# Set linearly spaced grid for neutrinos (such that 3, 5 and 7 MeV are in the grid)
 from common import LinearSpacedGrid
-linear_grid = LinearSpacedGrid(MOMENTUM_SAMPLES=51, MAX_MOMENTUM=20 * UNITS.MeV)
-
+linear_grid = LinearSpacedGrid(MOMENTUM_SAMPLES=51, MAX_MOMENTUM=50*UNITS.MeV)
 neutrino_e = Particle(**SMP.leptons.neutrino_e, grid=linear_grid)
 neutrino_mu = Particle(**SMP.leptons.neutrino_mu, grid=linear_grid)
 neutrino_mu.dof = 4
@@ -52,8 +52,20 @@ universe.add_particles([
     neutrino_mu
 ])
 
+# kind =
+# 0: I_coll = A + f_1 * B
+# 1: I_coll = A
+# 2: I_coll = f_1 * B
+# 3: I_coll = A_vacuum_decay
+# 4: I_coll = f_1 * B_vacuum_decay
+# 5: I_coll = A_vacuum_decay + f_1 * B_vacuum_decay
+kind = 1
+
 universe.interactions += (
-    SMI.neutrino_interactions(leptons=[electron], neutrinos=[neutrino_e, neutrino_mu])
+	SMI.neutrino_interactions(
+		leptons=[electron],
+		neutrinos=[neutrino_e, neutrino_mu],
+		kind=kind)
 )
 
 universe.init_kawano(electron=electron, neutrino=neutrino_e)
@@ -103,8 +115,8 @@ def step_monitor(universe):
 universe.step_monitor = step_monitor
 
 universe.evolve(T_interaction_freezeout, export=False)
-universe.interactions = tuple()
-universe.evolve(T_final)
+#universe.interactions = tuple()
+#universe.evolve(T_final)
 
 """
 ### Plots for comparison with articles

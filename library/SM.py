@@ -320,7 +320,7 @@ class interactions(object):
         in all tests for consistency. """
 
     @staticmethod
-    def neutrino_scattering(neutrino_a, neutrino_b):
+    def neutrino_scattering(neutrino_a, neutrino_b, kind=None):
         """ \begin{align}
                 \nu_\alpha + \nu_\beta &\to \nu_\alpha + \nu_\beta
             \end{align}
@@ -336,11 +336,12 @@ class interactions(object):
             antiparticles=((False, False), (False, False)),
             washout_temperature=0 * UNITS.MeV,
             Ms=(WeakM(K1=1., order=(0, 1, 2, 3)),),
-            integral_type=FourParticleIntegral
+            integral_type=FourParticleIntegral,
+            kind=kind
         )
 
     @staticmethod
-    def neutrinos_to_leptons(neutrino=None, lepton=None, g_L=CONST.g_R + 0.5):
+    def neutrinos_to_leptons(neutrino=None, lepton=None, g_L=CONST.g_R + 0.5, kind=None):
         """ \begin{align}
                 \nu_\alpha + \overline{\nu_\alpha} &\to e^- + e^+
             \end{align}
@@ -366,24 +367,25 @@ class interactions(object):
                 WeakM(K1=4 * g_L**2, order=(0, 2, 1, 3)),
                 WeakM(K2=4 * g_L * CONST.g_R, order=(2, 3, 0, 1)),
             ),
-            integral_type=FourParticleIntegral
+            integral_type=FourParticleIntegral,
+            kind=kind
         )
 
     @classmethod
-    def neutrino_interactions(cls, leptons=None, neutrinos=None):
+    def neutrino_interactions(cls, leptons=None, neutrinos=None, kind=None):
 
         g_R = CONST.g_R
         inters = []
 
         # Neutrinos scatterings
         for neutrino_a, neutrino_b in itertools.combinations_with_replacement(neutrinos, 2):
-            inters.append(cls.neutrino_scattering(neutrino_a, neutrino_b))
+            inters.append(cls.neutrino_scattering(neutrino_a, neutrino_b, kind))
 
         # Interactions of neutrinos and leptons
         for lepton in leptons:
             for neutrino in neutrinos:
                 g_L = g_R + 0.5 if lepton.flavour == neutrino.flavour else g_R - 0.5
-                inters.append(cls.neutrinos_to_leptons(g_L=g_L, lepton=lepton, neutrino=neutrino))
+                inters.append(cls.neutrinos_to_leptons(g_L=g_L, lepton=lepton, neutrino=neutrino, kind=kind))
 
         return inters
 
