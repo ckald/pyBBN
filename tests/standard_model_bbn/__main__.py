@@ -31,11 +31,10 @@ params = Params(T=5. * UNITS.MeV,
 
 universe = Universe(params=params, folder=folder)
 
-# Set linearly spaced grid for neutrinos (such that 3, 5 and 7 MeV are in the grid)
-
 photon = Particle(**SMP.photon)
 electron = Particle(**SMP.leptons.electron)
 
+# Set linearly spaced grid for neutrinos (such that 3, 5 and 7 MeV are in the grid)
 from common import LinearSpacedGrid
 linear_grid = LinearSpacedGrid(MOMENTUM_SAMPLES=51, MAX_MOMENTUM=50*UNITS.MeV)
 neutrino_e = Particle(**SMP.leptons.neutrino_e, grid=linear_grid)
@@ -52,20 +51,12 @@ universe.add_particles([
     neutrino_mu
 ])
 
-# kind =
-# 0: I_coll = A + f_1 * B
-# 1: I_coll = A
-# 2: I_coll = f_1 * B
-# 3: I_coll = A_vacuum_decay
-# 4: I_coll = f_1 * B_vacuum_decay
-# 5: I_coll = A_vacuum_decay + f_1 * B_vacuum_decay
-kind = 1
 
 universe.interactions += (
-	SMI.neutrino_interactions(
-		leptons=[electron],
-		neutrinos=[neutrino_e, neutrino_mu],
-		kind=kind)
+    SMI.neutrino_interactions(
+        leptons=[electron],
+        neutrinos=[neutrino_e, neutrino_mu]
+    )
 )
 
 universe.init_kawano(electron=electron, neutrino=neutrino_e)
@@ -79,15 +70,13 @@ def step_monitor(universe):
                 f.write('# First line is a grid of y; Starting from second line: first number is a, second is temperature, next is set of numbers is corresponding to f(y) on the grid' + '\n')
                 f.write('## a     T     ' + '\t'.join([
                     '{:e}'.format(x)
-                    for x in
-                    particle.grid.TEMPLATE / UNITS.MeV
+                    for x in particle.grid.TEMPLATE / UNITS.MeV
                 ]) + '\n')
             with open(os.path.join(folder, particle.name.replace(' ', '_') + ".collision_integrals.txt"), 'a') as f:
                 f.write('# First line is a grid of y; Starting from second line each line is a set of numbers is corresponding to Icoll(f) on the grid y with temperature equal to the T in .distribution.txt' + '\n')
                 f.write('##     ' + '\t'.join([
                     '{:e}'.format(x)
-                    for x in
-                    particle.grid.TEMPLATE / UNITS.MeV
+                    for x in particle.grid.TEMPLATE / UNITS.MeV
                 ]) + '\n')
             with open(os.path.join(folder, particle.name.replace(' ', '_') + ".rho.txt"), 'a') as f:
                 f.write('## a     T     aT    rho_nu' + '\n')
@@ -98,19 +87,23 @@ def step_monitor(universe):
     if universe.step % 10 == 0:
         for particle in [neutrino_e, neutrino_mu]:
             with open(os.path.join(folder, particle.name.replace(' ', '_') + ".distribution.txt"), 'a') as f:
-                f.write('{:e}'.format(universe.params.a) + '\t'+'{:e}'.format(universe.params.T/UNITS.MeV) + '\t')
-                f.write('\t'.join([
-                    '{:e}'.format(x)
-                    for x in particle._distribution
-                ]) + '\n')
+                f.write(
+                    '{:e}\t{:e}\t'.format(universe.params.a, universe.params.T / UNITS.MeV)
+                    + '\t'.join([
+                        '{:e}'.format(x)
+                        for x in particle._distribution
+                    ]) + '\n'
+                )
             with open(os.path.join(folder, particle.name.replace(' ', '_') + ".rho.txt"), 'a') as f:
-                f.write('{:e}'.format(universe.params.a) + '\t' + '{:e}'.format(universe.params.T/UNITS.MeV) + '\t' + '{:e}'.format(universe.params.aT/UNITS.MeV) + '\t' + '{:e}'.format(particle.energy_density/(UNITS.MeV)**4) + '\n')
+                f.write('{:e}\t{:e}\t{:e}\t{:e}\n'.format(
+                    universe.params.a, universe.params.T / UNITS.MeV,
+                    universe.params.aT / UNITS.MeV, particle.energy_density / UNITS.MeV**4
+                ))
         with open(os.path.join(folder, "rho_nu.txt"), 'a') as f:
-                    f.write('{:e}'.format(universe.params.a) + '\t' +\
-                        '{:e}'.format(sum(particle.energy_density/(UNITS.MeV)**4 for particle in [neutrino_e, neutrino_mu]))\
-                        + '\n')
-
-
+            f.write('{:e}\t{:e}\n'.format(
+                universe.params.a,
+                sum(p.energy_density for p in [neutrino_e, neutrino_mu]) / UNITS.MeV**4
+            ))
 
 universe.step_monitor = step_monitor
 
