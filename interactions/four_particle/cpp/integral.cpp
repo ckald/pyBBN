@@ -337,10 +337,10 @@ struct integration_params {
     dbl p2;
     const std::vector<reaction_t> *reaction;
     const std::vector<M_t> *Ms;
-    dbl low_1;
-    dbl up_1;
-    dbl low_2;
-    dbl up_2;
+    dbl min_1;
+    dbl max_1;
+    dbl min_2;
+    dbl max_2;
     int kind;
     dbl releps;
     dbl abseps;
@@ -348,7 +348,6 @@ struct integration_params {
 };
 
 
-// Adaptive Gauss-Kronrod
 dbl integrand_1st_integration(
     dbl p2, void *p
 ) {
@@ -358,7 +357,7 @@ dbl integrand_1st_integration(
     return integrand_full(p0, p1, p2, *params.reaction, *params.Ms, params.kind);
 }
 
-dbl y2_min_dec(const std::vector<reaction_t> reaction,
+dbl p2_min_dec(const std::vector<reaction_t> reaction,
            int i=0, int j=1, int k=2, int l=3) {
     return sqrt(
         (
@@ -372,7 +371,7 @@ dbl y2_min_dec(const std::vector<reaction_t> reaction,
     );
 }
 
-dbl y2_max_dec(const std::vector<reaction_t> reaction,
+dbl p2_max_dec(const std::vector<reaction_t> reaction,
             dbl p0, dbl p1) {
     return sqrt(
             pow(
@@ -384,7 +383,7 @@ dbl y2_max_dec(const std::vector<reaction_t> reaction,
         );
 }
 
-dbl y2_min_scat(const std::vector<reaction_t> reaction, dbl p0, dbl p1) {
+dbl p2_min_scat(const std::vector<reaction_t> reaction, dbl p0, dbl p1) {
     dbl m0 = reaction[0].specie.m;
     dbl m1 = reaction[1].specie.m;
     dbl m2 = reaction[2].specie.m;
@@ -424,7 +423,7 @@ dbl y2_min_scat(const std::vector<reaction_t> reaction, dbl p0, dbl p1) {
     return 0.;
 }
 
-dbl y2_max_scat(const std::vector<reaction_t> reaction, dbl p0, dbl p1) {
+dbl p2_max_scat(const std::vector<reaction_t> reaction, dbl p0, dbl p1) {
     dbl m0 = reaction[0].specie.m;
     dbl m1 = reaction[1].specie.m;
     dbl m2 = reaction[2].specie.m;
@@ -472,8 +471,8 @@ dbl integrand_2nd_integration(
     dbl p1, void *p
 ) {
     struct integration_params &params = *(struct integration_params *) p;
-    dbl low_2 = params.low_2;
-    dbl up_2 = params.up_2;
+    dbl min_2 = params.min_2;
+    dbl max_2 = params.max_2;
     dbl p0 = params.p0;
     auto reaction = *params.reaction;
 
@@ -484,29 +483,27 @@ dbl integrand_2nd_integration(
 
     if (reaction_type == 2) {
         if (p0 == 0) {
-            dbl y2_min_1 = y2_min_dec(reaction, 0, 1, 2, 3);
-            dbl y2_min_2 = y2_min_dec(reaction, 0, 2, 1, 3);
+            dbl p2_min_1 = p2_min_dec(reaction, 0, 1, 2, 3);
+            dbl p2_min_2 = p2_min_dec(reaction, 0, 2, 1, 3);
 
-            low_2 = std::max(y2_min_1 - p1 * (y2_min_1 / y2_min_2), 0.);
+            min_2 = std::max(p2_min_1 - p1 * (p2_min_1 / p2_min_2), 0.);
         }
-
         else {
-            low_2 = 0;
+            min_2 = 0;
         }
 
-        up_2 = y2_max_dec(reaction, p0, p1);
+        max_2 = p2_max_dec(reaction, p0, p1);
     }
 
-    else {
-        low_2 = y2_min_scat(reaction, p0, p1);
-        up_2 = y2_max_scat(reaction, p0, p1);
-
+    if (reaction_type == 0) {
+        min_2 = p2_min_scat(reaction, p0, p1);
+        max_2 = p2_max_scat(reaction, p0, p1);
     }
 
     gsl_function F;
     params.p1 = p1;
-    params.low_2 = low_2;
-    params.up_2 = up_2;
+    params.min_2 = min_2;
+    params.max_2 = max_2;
     F.params = &params;
 
 
@@ -518,7 +515,7 @@ dbl integrand_2nd_integration(
     F.function = &integrand_1st_integration;
 
     gsl_integration_workspace *w = gsl_integration_workspace_alloc(params.subdivisions);
-    status = gsl_integration_qags(&F, low_2, up_2, params.abseps, params.releps, params.subdivisions, w, &result, &error);
+    status = gsl_integration_qags(&F, min_2, max_2, params.abseps, params.releps, params.subdivisions, w, &result, &error);
     // status = gsl_integration_qag(&F, g, h, params.abseps, params.releps, params.subdivisions, GSL_INTEG_GAUSS15, w, &result, &error);
     if (status) {
         printf("(p0=%e, p1=%e) 1st integration result: %e ± %e. %i intervals. %s\n", params.p0, p1, result, error, (int) w->size, gsl_strerror(status));
@@ -544,24 +541,23 @@ std::vector<dbl> integration(
         reaction_type += reactant.side;
     }
 
-    #pragma omp parallel for default(none) shared(ps, Ms, reaction, min_1, max_1, min_2, max_2, integral, stepsize, kind, reaction_type)
+    // Note firstprivate() clause: those variables will be copied for each thread
+    #pragma omp parallel for default(none) shared(ps, Ms, reaction, integral, stepsize, kind, reaction_type) firstprivate(min_1, max_1, min_2, max_2)
     for (size_t i = 0; i < ps.size(); ++i) {
         dbl p0 = ps[i];
-
-        dbl low_1(min_1), up_1(max_1), low_2(min_1), up_2(max_1);
 
         if (reaction_type == 2) {
             dbl max = sqrt(
                 pow(energy(p0, reaction[0].specie.m) - reaction[2].specie.m - reaction[3].specie.m, 2)
                 - pow(reaction[1].specie.m, 2)
             );
-            up_1 = std::min(up_1, max);
+            max_1 = std::min(max_1, max);
         }
         if (reaction_type == 0) {
             dbl min = pow(reaction[2].specie.m + reaction[3].specie.m - energy(p0, reaction[0].specie.m), 2)
                     - pow(reaction[1].specie.m, 2);
             if (min > 0) {
-                low_1 = std::max(low_1, sqrt(min));
+                min_1 = std::max(min_1, sqrt(min));
             }
         }
 
@@ -585,7 +581,7 @@ std::vector<dbl> integration(
         struct integration_params params = {
             p0, 0., 0.,
             &reaction, &Ms,
-            low_1, up_1, low_2, up_2,
+            min_1, max_1, min_2, max_2,
             kind, releps, abseps,
             subdivisions
         };
@@ -594,7 +590,7 @@ std::vector<dbl> integration(
         gsl_set_error_handler_off();
         gsl_integration_workspace *w = gsl_integration_workspace_alloc(subdivisions);
         // status = gsl_integration_qags(&F, ai, bi, abseps, releps, subdivisions, w, &result, &error);
-        status = gsl_integration_qag(&F, low_1, up_2, abseps, releps, subdivisions, GSL_INTEG_GAUSS15, w, &result, &error);
+        status = gsl_integration_qag(&F, min_1, max_2, abseps, releps, subdivisions, GSL_INTEG_GAUSS15, w, &result, &error);
 
         if (status) {
             printf("2nd integration_1 result: %e ± %e. %i intervals. %s\n", result, error, (int) w->size, gsl_strerror(status));
