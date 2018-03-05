@@ -261,7 +261,7 @@ class DistributionParticle(AbstractParticle):
         Is = []
 
         for integral in self.collision_integrals:
-            Is.append(integral.integrate(ps, stepsize=self.params.h * self.aT))
+            Is.append(integral.integrate(ps, stepsize=self.params.h))
 
         integral = sum(Is)
         return integral

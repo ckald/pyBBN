@@ -107,7 +107,10 @@ class FourParticleIntegral(BoltzmannIntegral):
             )
 
         if stepsize is None:
-            stepsize = self.particle.params.h * params.aT
+            stepsize = params.h
+
+        if not environment.get('LOGARITHMIC_TIMESTEP'):
+            stepsize /= params.aT
 
         if not self.creaction:
             self.creaction = [
