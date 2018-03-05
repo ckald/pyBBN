@@ -33,7 +33,7 @@ universe = Universe(params=params, folder=folder)
 
 # Set linearly spaced grid for neutrinos (such that 3, 5 and 7 MeV are in the grid)
 from common import LinearSpacedGrid
-linear_grid = LinearSpacedGrid(MOMENTUM_SAMPLES=51, MAX_MOMENTUM=50*UNITS.MeV, MAX_MOMENTUM_INTEGRATION=50*UNITS.MeV)
+linear_grid = LinearSpacedGrid(MOMENTUM_SAMPLES=51, MAX_MOMENTUM=50*UNITS.MeV)
 
 photon = Particle(**SMP.photon)
 electron = Particle(**SMP.leptons.electron, **{'grid': linear_grid})

@@ -250,7 +250,7 @@ class DistributionParticle(AbstractParticle):
         self.data['distribution'].append(self._distribution)
 
     def integrate_collisions(self):
-        return self.calculate_collision_integral(self.grid.TEMPLATE_INTEGRATION)
+        return self.calculate_collision_integral(self.grid.TEMPLATE)
 
     def calculate_collision_integral(self, ps):
         """ ### Particle collisions integration """
