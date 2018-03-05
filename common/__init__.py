@@ -196,27 +196,16 @@ and errors).
 
 class LinearSpacedGrid(object):
 
-    def __init__(self, MOMENTUM_SAMPLES=None, MAX_MOMENTUM=None,
-                MIN_MOMENTUM_INTEGRATION=None, MAX_MOMENTUM_INTEGRATION=None):
+    def __init__(self, MOMENTUM_SAMPLES=None, MAX_MOMENTUM=None):
         if not MAX_MOMENTUM:
             MAX_MOMENTUM = environment.get('MAX_MOMENTUM_MEV') * UNITS.MeV
-        if not MAX_MOMENTUM_INTEGRATION or MAX_MOMENTUM_INTEGRATION > MAX_MOMENTUM:
-            MAX_MOMENTUM_INTEGRATION = MAX_MOMENTUM / 20. # Need to reconsider this
         if not MOMENTUM_SAMPLES:
             MOMENTUM_SAMPLES = environment.get('MOMENTUM_SAMPLES')
 
         self.MIN_MOMENTUM = 0
-        if not MIN_MOMENTUM_INTEGRATION:
-            MIN_MOMENTUM_INTEGRATION = self.MIN_MOMENTUM
-
-        self.MIN_MOMENTUM_INTEGRATION = MIN_MOMENTUM_INTEGRATION
-        self.MAX_MOMENTUM_INTEGRATION = MAX_MOMENTUM_INTEGRATION
         self.MAX_MOMENTUM = MAX_MOMENTUM
         self.BOUNDS = (self.MIN_MOMENTUM, self.MAX_MOMENTUM)
         self.MOMENTUM_SAMPLES = MOMENTUM_SAMPLES
-
-        if self.MIN_MOMENTUM >= self.MAX_MOMENTUM or self.MIN_MOMENTUM_INTEGRATION >= self.MAX_MOMENTUM_INTEGRATION:
-            raise ValueError("Invalid range of momenta")
 
         """
         Grid template can be copied when defining a new distribution function and is convenient to\
@@ -230,41 +219,28 @@ class LinearSpacedGrid(object):
         """
         self.TEMPLATE = numpy.linspace(self.MIN_MOMENTUM, self.MAX_MOMENTUM,
                                        num=self.MOMENTUM_SAMPLES, endpoint=True)
-        self.TEMPLATE_INTEGRATION = numpy.linspace(self.MIN_MOMENTUM_INTEGRATION, self.MAX_MOMENTUM_INTEGRATION,
-                                       num=self.MOMENTUM_SAMPLES, endpoint=True)
 
 
 class LogSpacedGrid(object):
 
-    def __init__(self, MOMENTUM_SAMPLES=None, MAX_MOMENTUM=None,
-                MIN_MOMENTUM_INTEGRATION=None, MAX_MOMENTUM_INTEGRATION=None):
+    def __init__(self, MOMENTUM_SAMPLES=None, MAX_MOMENTUM=None):
         if not MAX_MOMENTUM:
             MAX_MOMENTUM = environment.get('MAX_MOMENTUM_MEV') * UNITS.MeV
-        if not MAX_MOMENTUM_INTEGRATION or MAX_MOMENTUM_INTEGRATION > MAX_MOMENTUM:
-            MAX_MOMENTUM_INTEGRATION = MAX_MOMENTUM / 20. # Need to reconsider this
         if not MOMENTUM_SAMPLES:
             MOMENTUM_SAMPLES = environment.get('MOMENTUM_SAMPLES')
 
         self.MIN_MOMENTUM = 0
-        if not MIN_MOMENTUM_INTEGRATION:
-            self.MIN_MOMENTUM_INTEGRATION = self.MIN_MOMENTUM
-
-        self.MIN_MOMENTUM_INTEGRATION = MIN_MOMENTUM_INTEGRATION
-        self.MAX_MOMENTUM_INTEGRATION = MAX_MOMENTUM_INTEGRATION
         self.MAX_MOMENTUM = self.MIN_MOMENTUM + MAX_MOMENTUM
         self.BOUNDS = (self.MIN_MOMENTUM, self.MAX_MOMENTUM)
         self.MOMENTUM_SAMPLES = MOMENTUM_SAMPLES
 
-        if self.MIN_MOMENTUM >= self.MAX_MOMENTUM or self.MIN_MOMENTUM_INTEGRATION >= self.MAX_MOMENTUM_INTEGRATION:
-            raise ValueError("Invalid range of momenta")
+        self.TEMPLATE = self.generate_template()
 
-        self.TEMPLATE = self.generate_template(self.MIN_MOMENTUM, self.MAX_MOMENTUM)
-        self.TEMPLATE_INTEGRATION = self.generate_template(self.MIN_MOMENTUM_INTEGRATION, self.MAX_MOMENTUM_INTEGRATION)
-
-    def generate_template(self, MIN, MAX):
+    def generate_template(self):
         base = 1.2
         return (
-            MIN + (MAX - MIN)
+            self.MIN_MOMENTUM
+            + (self.MAX_MOMENTUM - self.MIN_MOMENTUM)
             * (base ** numpy.arange(0, self.MOMENTUM_SAMPLES, 1) - 1.)
             / (base ** (self.MOMENTUM_SAMPLES - 1.) - 1.)
         )
