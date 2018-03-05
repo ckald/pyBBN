@@ -295,7 +295,6 @@ dbl integrand_full(
         for (const M_t &M : Ms) {
             ds += Db(p, E, m, M.K1, M.K2, M.order, sides);
         }
-        ds /= m[0];
     }
     temp *= ds;
 

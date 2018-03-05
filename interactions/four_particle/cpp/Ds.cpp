@@ -274,7 +274,7 @@ dbl Db(const std::array<dbl, 4> &p, const std::array<dbl, 4> &E, const std::arra
             subresult += sisj * E[k+l] * Db2(p[k+l], p[i], p[j]);
         }
 
-        result += K1 * m[0] * subresult;
+        result += K1 * subresult;
     }
 
     if (K2 != 0.) {
@@ -287,7 +287,7 @@ dbl Db(const std::array<dbl, 4> &p, const std::array<dbl, 4> &E, const std::arra
             subresult += m[i] * m[j] * E[k+l] * Db1(p[1], p[2], p[3]);
         }
 
-        result += K2 * m[0] * subresult;
+        result += K2 * subresult;
     }
 
     return result;
