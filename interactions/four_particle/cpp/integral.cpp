@@ -489,7 +489,7 @@ dbl integrand_2nd_integration(
             min_2 = std::max(p2_min_1 - p1 * (p2_min_1 / p2_min_2), 0.);
         }
         else {
-            min_2 = 0;
+            min_2 = 0.;
         }
 
         max_2 = p2_max_dec(reaction, p0, p1);
@@ -499,6 +499,18 @@ dbl integrand_2nd_integration(
     //     min_2 = p2_min_scat(reaction, p0, p1);
     //     max_2 = p2_max_scat(reaction, p0, p1);
     // }
+
+    if (reaction_type == -2) {
+        min_2 = 0.;
+        max_2 = sqrt(
+            pow(
+                reaction[3].specie.m
+                - energy(p0, reaction[0].specie.m)
+                - energy(p1, reaction[1].specie.m)
+            , 2)
+            - pow(reaction[2].specie.m, 2)
+            );
+    }
 
     gsl_function F;
     params.p1 = p1;
@@ -560,6 +572,14 @@ std::vector<dbl> integration(
         //         min_1 = std::max(min_1, sqrt(min));
         //     }
         // }
+        if (reaction_type == -2) {
+            dbl max = reaction[3].specie.m - energy(p0, reaction[0].specie.m) - reaction[2].specie.m;
+            dbl max2 = pow(max, 2) - pow(reaction[1].specie.m, 2);
+            if (max < 0 || max2 < 0) {
+                continue;
+            }
+            max_1 = sqrt(max2);
+        }
 
         dbl result, error;
         size_t status;
