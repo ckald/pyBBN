@@ -57,7 +57,7 @@ class CONST(object):
     g_L = sin_theta_w_2 + 0.5
     # Decay constants
     f_K = 155.6 * UNITS.MeV # kaon
-    f_eta_c = 335. * UNITS.MeV 
+    f_eta_c = 335. * UNITS.MeV
     f_D = 212. * UNITS.MeV
     f_Ds = 249. * UNITS.MeV
     f_Ds_star = 315. * UNITS.MeV
@@ -157,7 +157,7 @@ class Params(object):
             / (7./8. * numpy.pi**2 / 15. * (self.T / 1.401)**4)
         )
 
-        self.old_a = self.a
+        old_a = self.a
         """ Physical scale factor and temperature for convenience """
         self.a = self.x / self.m
         self.T = self.aT / self.a
@@ -175,7 +175,7 @@ class Params(object):
             \end{equation}
         """
         # dt = (self.a / old_a - 1) / self.H
-        dt = (1 - self.old_a / self.a) / self.H
+        dt = (1 - old_a / self.a) / self.H
         # dt = self.dx / self.x / self.H
         self.t += dt
 
@@ -196,16 +196,27 @@ and errors).
 
 class LinearSpacedGrid(object):
 
-    def __init__(self, MOMENTUM_SAMPLES=None, MAX_MOMENTUM=None):
+    def __init__(self, MOMENTUM_SAMPLES=None, MAX_MOMENTUM=None,
+                MIN_MOMENTUM_INTEGRATION=None, MAX_MOMENTUM_INTEGRATION=None):
         if not MAX_MOMENTUM:
             MAX_MOMENTUM = environment.get('MAX_MOMENTUM_MEV') * UNITS.MeV
+        if not MAX_MOMENTUM_INTEGRATION or MAX_MOMENTUM_INTEGRATION > MAX_MOMENTUM:
+            MAX_MOMENTUM_INTEGRATION = MAX_MOMENTUM / 20. # Need to reconsider this
         if not MOMENTUM_SAMPLES:
             MOMENTUM_SAMPLES = environment.get('MOMENTUM_SAMPLES')
 
         self.MIN_MOMENTUM = 0
+        if not MIN_MOMENTUM_INTEGRATION:
+            MIN_MOMENTUM_INTEGRATION = self.MIN_MOMENTUM
+
+        self.MIN_MOMENTUM_INTEGRATION = MIN_MOMENTUM_INTEGRATION
+        self.MAX_MOMENTUM_INTEGRATION = MAX_MOMENTUM_INTEGRATION
         self.MAX_MOMENTUM = MAX_MOMENTUM
         self.BOUNDS = (self.MIN_MOMENTUM, self.MAX_MOMENTUM)
         self.MOMENTUM_SAMPLES = MOMENTUM_SAMPLES
+
+        if self.MIN_MOMENTUM >= self.MAX_MOMENTUM or self.MIN_MOMENTUM_INTEGRATION >= self.MAX_MOMENTUM_INTEGRATION:
+            raise ValueError("Invalid range of momenta")
 
         """
         Grid template can be copied when defining a new distribution function and is convenient to\
@@ -219,28 +230,41 @@ class LinearSpacedGrid(object):
         """
         self.TEMPLATE = numpy.linspace(self.MIN_MOMENTUM, self.MAX_MOMENTUM,
                                        num=self.MOMENTUM_SAMPLES, endpoint=True)
+        self.TEMPLATE_INTEGRATION = numpy.linspace(self.MIN_MOMENTUM_INTEGRATION, self.MAX_MOMENTUM_INTEGRATION,
+                                       num=self.MOMENTUM_SAMPLES, endpoint=True)
 
 
 class LogSpacedGrid(object):
 
-    def __init__(self, MOMENTUM_SAMPLES=None, MAX_MOMENTUM=None):
+    def __init__(self, MOMENTUM_SAMPLES=None, MAX_MOMENTUM=None,
+                MIN_MOMENTUM_INTEGRATION=None, MAX_MOMENTUM_INTEGRATION=None):
         if not MAX_MOMENTUM:
             MAX_MOMENTUM = environment.get('MAX_MOMENTUM_MEV') * UNITS.MeV
+        if not MAX_MOMENTUM_INTEGRATION or MAX_MOMENTUM_INTEGRATION > MAX_MOMENTUM:
+            MAX_MOMENTUM_INTEGRATION = MAX_MOMENTUM / 20. # Need to reconsider this
         if not MOMENTUM_SAMPLES:
             MOMENTUM_SAMPLES = environment.get('MOMENTUM_SAMPLES')
 
         self.MIN_MOMENTUM = 0
+        if not MIN_MOMENTUM_INTEGRATION:
+            self.MIN_MOMENTUM_INTEGRATION = self.MIN_MOMENTUM
+
+        self.MIN_MOMENTUM_INTEGRATION = MIN_MOMENTUM_INTEGRATION
+        self.MAX_MOMENTUM_INTEGRATION = MAX_MOMENTUM_INTEGRATION
         self.MAX_MOMENTUM = self.MIN_MOMENTUM + MAX_MOMENTUM
         self.BOUNDS = (self.MIN_MOMENTUM, self.MAX_MOMENTUM)
         self.MOMENTUM_SAMPLES = MOMENTUM_SAMPLES
 
-        self.TEMPLATE = self.generate_template()
+        if self.MIN_MOMENTUM >= self.MAX_MOMENTUM or self.MIN_MOMENTUM_INTEGRATION >= self.MAX_MOMENTUM_INTEGRATION:
+            raise ValueError("Invalid range of momenta")
 
-    def generate_template(self):
+        self.TEMPLATE = self.generate_template(self.MIN_MOMENTUM, self.MAX_MOMENTUM)
+        self.TEMPLATE_INTEGRATION = self.generate_template(self.MIN_MOMENTUM_INTEGRATION, self.MAX_MOMENTUM_INTEGRATION)
+
+    def generate_template(self, MIN, MAX):
         base = 1.2
         return (
-            self.MIN_MOMENTUM
-            + (self.MAX_MOMENTUM - self.MIN_MOMENTUM)
+            MIN + (MAX - MIN)
             * (base ** numpy.arange(0, self.MOMENTUM_SAMPLES, 1) - 1.)
             / (base ** (self.MOMENTUM_SAMPLES - 1.) - 1.)
         )

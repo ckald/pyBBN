@@ -2,10 +2,9 @@
 import numpy
 
 import environment
-from common.integrators import paired as paired_integrators
+from common import UNITS
 from interactions.boltzmann import BoltzmannIntegral
-# from interactions.four_particle.integral import integrand
-from interactions.four_particle.cpp.integral import integrand, M_t, grid_t, particle_t, reaction_t
+from interactions.four_particle.cpp.integral import integration, M_t, grid_t, particle_t, reaction_t
 
 
 class FourParticleM(object):
@@ -80,9 +79,6 @@ class FourParticleM(object):
 
 class FourParticleIntegral(BoltzmannIntegral):
 
-    creaction = None
-    cMs = None
-
     def __init__(self, **kwargs):
         super(FourParticleIntegral, self).__init__(**kwargs)
 
@@ -99,123 +95,47 @@ class FourParticleIntegral(BoltzmannIntegral):
         self.creaction = None
         self.cMs = None
 
-    def integrate(self, ps, bounds=None):
+    def integrate(self, ps, stepsize=None, bounds=None):
         params = self.particle.params
 
-        reaction_type = sum(specie.side for specie in self.reaction)
-
         if bounds is None:
-            if reaction_type == 2:
-                if ps == 0:
-                    y1_max = numpy.sqrt(
-                        (self.particle.conformal_mass - self.reaction[2].specie.conformal_mass - self.reaction[3].specie.conformal_mass)**2
-                        - self.reaction[1].specie.conformal_mass**2
-                    )
-                    y2_min_1 = params.a * numpy.sqrt(
-                        (((self.particle.mass - self.reaction[1].specie.mass)**2 - self.reaction[2].specie.mass**2
-                        - self.reaction[3].specie.mass**2)**2 - 4 * (self.reaction[2].specie.mass * self.reaction[3].specie.mass)**2
-                        ) / (4 * (self.particle.mass - self.reaction[1].specie.mass)**2)
-                    )
-                    y2_min_2 = params.a * numpy.sqrt(
-                        (((self.particle.mass - self.reaction[2].specie.mass)**2 - self.reaction[1].specie.mass**2
-                        - self.reaction[3].specie.mass**2)**2 - 4 * (self.reaction[1].specie.mass * self.reaction[3].specie.mass)**2
-                        ) / (4 * (self.particle.mass - self.reaction[2].specie.mass)**2)
-                    )
-                    bounds = (
-                        (0, y1_max),
-                        (lambda p2: numpy.maximum(y2_min_1 - (y2_min_1 / y2_min_2) * p2, 0),
-                        lambda p2: numpy.sqrt(
-                                        (self.particle.conformal_mass - self.reaction[3].specie.conformal_mass
-                                        - self.reaction[1].specie.conformal_energy(p2))**2 - self.reaction[2].specie.conformal_mass**2
-                                    )
-                        )
-                    )
+            bounds = (
+                self.grids[0].MIN_MOMENTUM_INTEGRATION / params.aT,
+                self.grids[0].MAX_MOMENTUM_INTEGRATION / params.aT,
+                self.grids[1].MIN_MOMENTUM_INTEGRATION / params.aT,
+                self.grids[1].MAX_MOMENTUM_INTEGRATION / params.aT
+            )
 
-                else:
-                    y1_max = numpy.sqrt(
-                        (self.particle.conformal_energy(ps) - self.reaction[2].specie.conformal_mass
-                        - self.reaction[3].specie.conformal_mass)**2 - self.reaction[1].specie.conformal_mass**2
-                    )
-                    bounds = (
-                        (self.grids[0].MIN_MOMENTUM, y1_max),
-                        (lambda p2: 0,
-                        lambda p2: numpy.sqrt(
-                                        (self.particle.conformal_energy(ps) - self.reaction[1].specie.conformal_energy(p2)
-                                        - self.reaction[3].specie.conformal_mass)**2
-                                        - self.reaction[2].specie.conformal_mass**2
-                                    )
-                        )
-                    )
-
-            else:
-                if ps == 0:
-                    y2_min = params.a * numpy.sqrt(
-                        (((self.particle.mass + self.reaction[1].specie.mass)**2 - self.reaction[2].specie.mass**2
-                        - self.reaction[3].specie.mass**2)**2- 4 * (self.reaction[2].specie.mass * self.reaction[3].specie.mass)**2
-                        ) / (4 * (self.particle.mass + self.reaction[1].specie.mass)**2)
-                    )
-                    bounds = (
-                        (self.grids[0].MIN_MOMENTUM, self.grids[0].MAX_MOMENTUM),
-                        (lambda p2: y2_min,
-                        lambda p2: numpy.sqrt(
-                                        (self.particle.conformal_mass - self.reaction[3].specie.conformal_mass
-                                        + self.reaction[1].specie.conformal_energy(p2))**2
-                                        - self.reaction[2].specie.conformal_mass**2
-                                    )
-                        )
-                    )
-
-                else:
-                    bounds = (
-                        (self.grids[0].MIN_MOMENTUM, self.grids[0].MAX_MOMENTUM),
-                        (lambda p2: 0,
-                        lambda p2: numpy.sqrt(
-                                        (self.particle.conformal_energy(ps) + self.reaction[1].specie.conformal_energy(p2)
-                                        - self.reaction[3].specie.conformal_mass)**2
-                                        - self.reaction[2].specie.conformal_mass**2
-                                    )
-                        )
-                    )
+        if stepsize is None:
+            stepsize = self.particle.params.h * params.aT
 
         if not self.creaction:
             self.creaction = [
                 reaction_t(
                     specie=particle_t(
-                        m=particle.specie.conformal_mass,
+                        m=particle.specie.conformal_mass / params.aT,
                         grid=grid_t(
-                            grid=particle.specie.grid.TEMPLATE,
+                            grid=particle.specie.grid.TEMPLATE / params.aT,
                             distribution=particle.specie._distribution
                         ),
                         eta=int(particle.specie.eta),
                         in_equilibrium=int(particle.specie.in_equilibrium),
-                        T=particle.specie.aT
+                        T=particle.specie.aT / params.aT
                     ),
                     side=particle.side
                 )
                 for particle in self.reaction
             ]
-        if not self.cMs:
-            self.cMs = [M_t(list(M.order), M.K1, M.K2) for M in self.Ms]
 
-        def prepared_integrand(p1, p2):
-            integrand_1, integrand_f = integrand(ps, p1.ravel(), p2.ravel(),
-                                                 self.creaction, self.cMs)
-            return numpy.reshape(integrand_1, p1.shape), numpy.reshape(integrand_f, p1.shape)
-
-        constant = (params.m / params.x)**5 / 64. / numpy.pi**3 / params.H
-
+        # constant = (params.m / params.x)**5 / 64. / numpy.pi**3 / params.H
+        constant = (params.aT / params.a)**5 / 64. / numpy.pi**3 / params.H
         if not environment.get('LOGARITHMIC_TIMESTEP'):
             constant /= params.x
 
-        if environment.get('SIMPSONS_INTEGRATION'):
-            integral_1, integral_f = paired_integrators.integrate_2D_simpsons(
-                prepared_integrand(*numpy.meshgrid(self.grids[0].TEMPLATE*params.a, self.grids[1].TEMPLATE*params.a)),
-                grids=[self.grids[0].TEMPLATE*params.a, self.grids[1].TEMPLATE*params.a]
-            )
-        else:
-            integral_1, integral_f = paired_integrators.integrate_2D(
-                prepared_integrand,
-                bounds=bounds
-            )
+        if not self.cMs:
+            self.cMs = [M_t(list(M.order), M.K1, M.K2) for M in self.Ms]
 
-        return constant * integral_1, constant * integral_f
+        ps = ps / params.aT
+        fullstack = numpy.array(integration(ps, *bounds, self.creaction, self.cMs, stepsize, self.kind))
+        # print(self, "\t", fullstack * self.particle.params.h / self.particle._distribution)
+        return fullstack * constant

@@ -1,5 +1,6 @@
 #include "integral.h"
 
+
 int Sgn(double lam) {
   return (lam > 0) - (lam < 0);
 }
@@ -17,7 +18,7 @@ dbl D1(dbl q1, dbl q2, dbl q3, dbl q4) {
     if (q1 < q2) { std::swap(q1, q2); }
     if (q3 < q4) { std::swap(q3, q4); }
 
-    if ((q1 > q2 + q3 + q4) or (q3 > q2 + q1 + q4)) {
+    if ((q1 > q2 + q3 + q4) || (q3 > q2 + q1 + q4)) {
         return 0.;
     }
 
@@ -41,7 +42,7 @@ dbl D1(dbl q1, dbl q2, dbl q3, dbl q4) {
     // Full analytic expression (for testing)
 
     dbl y1, y2, y3, y4;
-    dbl Val;
+    dbl result;
     std::array<dbl, 4> mom = {q1, q2, q3, q4};
 
     for (int i=0; i<4; i++) {
@@ -59,8 +60,8 @@ dbl D1(dbl q1, dbl q2, dbl q3, dbl q4) {
     y3 = mom[2];
     y4 = mom[3];
 
-    Val = 0.25 * (2*y4 - std::abs(y1-y2-y3+y4) + std::abs(-y1+y2+y3+y4));
-    return Val;
+    result = 0.25 * (2*y4 - std::abs(y1-y2-y3+y4) + std::abs(-y1+y2+y3+y4));
+    return result;
 }*/
 
 
@@ -79,7 +80,7 @@ dbl D2(dbl q1, dbl q2, dbl q3, dbl q4) {
     if (q1 < q2) { std::swap(q1, q2); }
     if (q3 < q4) { std::swap(q3, q4); }
 
-    if ((q1 > q2 + q3 + q4) or (q3 > q2 + q1 + q4)) {
+    if ((q1 > q2 + q3 + q4) || (q3 > q2 + q1 + q4)) {
         return 0.;
     }
 
@@ -116,9 +117,9 @@ dbl D2(dbl q1, dbl q2, dbl q3, dbl q4) {
 
     if (q1 < q2) { std::swap(q1, q2); }
     if (q3 < q4) { std::swap(q3, q4); }
-    dbl Val;
+    dbl result;
 
-    Val = (24. * q1 * q2 * q4 + 24. * q2 * q3 * q4 + pow(std::abs(q1+q2-q3-q4),3) + pow(std::abs(q1-q2-q3+q4),3)
+    result = (24. * q1 * q2 * q4 + 24. * q2 * q3 * q4 + pow(std::abs(q1+q2-q3-q4),3) + pow(std::abs(q1-q2-q3+q4),3)
             - pow(std::abs(q1+q2-q3+q4),3) + 6.*q3*q4*(4*q2+std::abs(q1+q2-q3-q4)-std::abs(q1-q2-q3+q4)+std::abs(q1+q2-q3+q4)-std::abs(-q1+q2+q3+q4))
             -pow(std::abs(-q1+q2+q3+q4),3) - 3.*q4*(pow(-q1+q2+q3+q4,2)*Sgn(q1-q2-q3-q4)-pow(q1+q2-q3-q4,2)*Sgn(q1+q2-q3-q4)-pow(q1-q2+q3-q4,2)*Sgn(q1-q2+q3-q4)
             +pow(q1+q2+q3-q4,2)*Sgn(q1+q2+q3-q4)+pow(q1-q2-q3+q4,2)*Sgn(q1-q2-q3+q4)-pow(q1+q2-q3+q4,2)*Sgn(q1+q2-q3+q4)-pow(q1-q2+q3+q4,2)*Sgn(q1-q2+q3+q4)
@@ -126,9 +127,10 @@ dbl D2(dbl q1, dbl q2, dbl q3, dbl q4) {
             -pow(q1+q2+q3-q4,2)*Sgn(q1+q2+q3-q4)-pow(q1-q2-q3+q4,2)*Sgn(q1-q2-q3+q4)+pow(q1+q2-q3+q4,2)*Sgn(q1+q2-q3+q4)-pow(q1-q2+q3+q4,2)*Sgn(q1-q2+q3+q4)
             +pow(q1+q2+q3+q4,2)*Sgn(q1+q2+q3+q4)))/ 24.;
 
-    return Val;
+    return result;
 }
 */
+
 
 dbl D3(dbl q1, dbl q2, dbl q3, dbl q4) {
     /* Dimensionality: pow(energy, 5)
@@ -146,7 +148,7 @@ dbl D3(dbl q1, dbl q2, dbl q3, dbl q4) {
     if (q1 < q2) { std::swap(q1, q2); }
     if (q3 < q4) { std::swap(q3, q4); }
 
-    if ((q1 > q2 + q3 + q4) or (q3 > q2 + q1 + q4)) {
+    if ((q1 > q2 + q3 + q4) || (q3 > q2 + q1 + q4)) {
         return 0.;
     }
 
@@ -185,7 +187,7 @@ dbl D3(dbl q1, dbl q2, dbl q3, dbl q4) {
 dbl D(const std::array<dbl, 4> &p, const std::array<dbl, 4> &E, const std::array<dbl, 4> &m,
          dbl K1, dbl K2,
          const std::array<int, 4> &order, const std::array<int, 4> &sides) {
-    // Dimensionality: energy
+    /* Dimensionality: energy */
 
     int i, j, k, l, sisj, sksl, sisjsksl;
     i = order[0];
@@ -199,15 +201,16 @@ dbl D(const std::array<dbl, 4> &p, const std::array<dbl, 4> &E, const std::array
     dbl result = 0.;
 
     if (K1 != 0.) {
-        result += K1 * (E[0] * E[1] * E[2] * E[3] * D1(p[0], p[1], p[2], p[3]) + sisjsksl * D3(p[0], p[1], p[2], p[3]));
+        result += K1 * (E[0]*E[1]*E[2]*E[3] * D1(p[0], p[1], p[2], p[3]) + sisjsksl * D3(p[0], p[1], p[2], p[3]));
 
-        result += K1 * (E[i] * E[j] * sksl * D2(p[i], p[j], p[k], p[l])
-                        + E[k] * E[l] * sisj * D2(p[k], p[l], p[i], p[j]));
+        result += K1 * (E[i]*E[j] * sksl * D2(p[i], p[j], p[k], p[l])
+                        + E[k]*E[l] * sisj * D2(p[k], p[l], p[i], p[j]));
     }
 
     if (K2 != 0.) {
-        result += K2 * m[i] * m[j] * (E[k] * E[l] * D1(p[0], p[1], p[2], p[3]) + sksl * D2(p[i], p[j], p[k], p[l]));
+        result += K2 * m[i]*m[j] * (E[k]*E[l] * D1(p[0], p[1], p[2], p[3]) + sksl * D2(p[i], p[j], p[k], p[l]));
     }
+
     return result;
 }
 
@@ -215,7 +218,7 @@ dbl D(const std::array<dbl, 4> &p, const std::array<dbl, 4> &E, const std::array
 dbl Db1(dbl q2, dbl q3, dbl q4) {
 
     dbl y1, y2, y3;
-    dbl Val;
+    dbl result;
     std::array<dbl, 3> mom = {q2, q3, q4};
 
     std::sort(mom.begin(), mom.end(), std::greater<dbl>());
@@ -224,24 +227,24 @@ dbl Db1(dbl q2, dbl q3, dbl q4) {
     y2 = mom[1];
     y3 = mom[2];
 
-    Val = 0.5 * (Sgn(y1 + y2 - y3) + Sgn(y1 - y2 + y3) - Sgn(y1 - y2 - y3) - Sgn(y1 + y2 + y3));
-    return Val;
+    result = 0.5 * (Sgn(y1 + y2 - y3) + Sgn(y1 - y2 + y3) - Sgn(y1 - y2 - y3) - Sgn(y1 + y2 + y3));
+    return result;
 }
 
 
 dbl Db2(dbl q2, dbl q3, dbl q4) {
 
-    dbl Val;
-    if (q3 < q4) {std::swap(q3, q4); }
+    dbl result;
+    if (q3 < q4) { std::swap(q3, q4); }
 
-    Val = 0.25 * (-2 * q4 * (2 * (q2 + q3) - std::abs(q2 - q3 + q4) - std::abs(-q2 + q3 + q4))
+    result = 0.25 * (-2 * q4 * (2 * (q2 + q3) - std::abs(q2 - q3 + q4) - std::abs(-q2 + q3 + q4))
                   -2 * q3 * (2 * q4 + std::abs(q2 - q3 + q4) - std::abs(-q2 + q3 + q4))
                   + pow(-q2 + q3 + q4, 2) * Sgn(q2 - q3 - q4) - pow(q2 + q3 - q4, 2) * Sgn(q2 + q3 - q4)
                   - pow(q2 - q3 + q4, 2) * Sgn(q2 - q3 + q4) + pow(q2 + q3 + q4, 2) * 1
                   + 2 * q3 * q4 * (Sgn(q2 - q3 - q4) + Sgn(q2 + q3 - q4) + Sgn(q2 - q3 + q4) + 1)
           );
 
-    return Val;
+    return result;
 }
 
 
@@ -250,19 +253,19 @@ dbl Db(const std::array<dbl, 4> &p, const std::array<dbl, 4> &E, const std::arra
           const std::array<int, 4> &order, const std::array<int, 4> &sides) {
     // Dimensionality: energy
 
-    int i, j, k, l, sksl, sisj;
+    int i, j, k, l, sisj, sksl;
     i = order[0];
     j = order[1];
     k = order[2];
     l = order[3];
-   // std::cout << i<<j<<k<<l << "\n";
-    sksl = sides[k] * sides[l];
-    sisj = sides[i] * sides[j];
 
-    dbl result(0.), subresult(0.);
+    sisj = sides[i] * sides[j];
+    sksl = sides[k] * sides[l];
+
+    dbl result(0.);
 
     if (K1 != 0.) {
-        subresult = E[1]*E[2]*E[3] * Db1(p[1], p[2], p[3]);
+        dbl subresult = E[1]*E[2]*E[3] * Db1(p[1], p[2], p[3]);
 
         if (i * j == 0.) {
             subresult += sksl * E[i+j] * Db2(p[i+j], p[k], p[l]);
@@ -271,11 +274,11 @@ dbl Db(const std::array<dbl, 4> &p, const std::array<dbl, 4> &E, const std::arra
             subresult += sisj * E[k+l] * Db2(p[k+l], p[i], p[j]);
         }
 
-        result += K1 * m[0] * subresult;
+        result += K1 * subresult;
     }
 
     if (K2 != 0.) {
-        subresult = 0.;
+        dbl subresult = 0.;
 
         if (i * j == 0.) {
             subresult += m[i+j] * (E[k] * E[l] * Db1(p[1], p[2], p[3]) + sksl * Db2(p[i+j], p[k], p[l]));
@@ -284,7 +287,7 @@ dbl Db(const std::array<dbl, 4> &p, const std::array<dbl, 4> &E, const std::arra
             subresult += m[i] * m[j] * E[k+l] * Db1(p[1], p[2], p[3]);
         }
 
-        result += K2 * m[0] * subresult;
+        result += K2 * subresult;
     }
 
     return result;
