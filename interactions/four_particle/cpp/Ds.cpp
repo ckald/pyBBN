@@ -201,14 +201,14 @@ dbl D(const std::array<dbl, 4> &p, const std::array<dbl, 4> &E, const std::array
     dbl result = 0.;
 
     if (K1 != 0.) {
-        result += K1 * (E[0]*E[1]*E[2]*E[3] * D1(p[0], p[1], p[2], p[3]) + sisjsksl * D3(p[0], p[1], p[2], p[3]));
+        result += K1 * (E[0] * E[1] * E[2] * E[3] * D1(p[0], p[1], p[2], p[3]) + sisjsksl * D3(p[0], p[1], p[2], p[3]));
 
-        result += K1 * (E[i]*E[j] * sksl * D2(p[i], p[j], p[k], p[l])
-                        + E[k]*E[l] * sisj * D2(p[k], p[l], p[i], p[j]));
+        result += K1 * (E[i] * E[j] * sksl * D2(p[i], p[j], p[k], p[l])
+                        + E[k] * E[l] * sisj * D2(p[k], p[l], p[i], p[j]));
     }
 
     if (K2 != 0.) {
-        result += K2 * m[i]*m[j] * (E[k]*E[l] * D1(p[0], p[1], p[2], p[3]) + sksl * D2(p[i], p[j], p[k], p[l]));
+        result += K2 * m[i] * m[j] * (E[k] * E[l] * D1(p[0], p[1], p[2], p[3]) + sksl * D2(p[i], p[j], p[k], p[l]));
     }
 
     return result;
@@ -265,7 +265,7 @@ dbl Db(const std::array<dbl, 4> &p, const std::array<dbl, 4> &E, const std::arra
     dbl result(0.);
 
     if (K1 != 0.) {
-        dbl subresult = E[1]*E[2]*E[3] * Db1(p[1], p[2], p[3]);
+        dbl subresult = E[1] * E[2] * E[3] * Db1(p[1], p[2], p[3]);
 
         if (i * j == 0.) {
             subresult += sksl * E[i+j] * Db2(p[i+j], p[k], p[l]);
@@ -274,7 +274,7 @@ dbl Db(const std::array<dbl, 4> &p, const std::array<dbl, 4> &E, const std::arra
             subresult += sisj * E[k+l] * Db2(p[k+l], p[i], p[j]);
         }
 
-        result += K1 * subresult;
+        result += K1 * m[0] * subresult;
     }
 
     if (K2 != 0.) {
@@ -287,7 +287,7 @@ dbl Db(const std::array<dbl, 4> &p, const std::array<dbl, 4> &E, const std::arra
             subresult += m[i] * m[j] * E[k+l] * Db1(p[1], p[2], p[3]);
         }
 
-        result += K2 * subresult;
+        result += K2 * m[0] * subresult;
     }
 
     return result;
