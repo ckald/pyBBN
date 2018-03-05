@@ -495,10 +495,10 @@ dbl integrand_2nd_integration(
         max_2 = p2_max_dec(reaction, p0, p1);
     }
 
-    if (reaction_type == 0) {
-        min_2 = p2_min_scat(reaction, p0, p1);
-        max_2 = p2_max_scat(reaction, p0, p1);
-    }
+    // if (reaction_type == 0) {
+    //     min_2 = p2_min_scat(reaction, p0, p1);
+    //     max_2 = p2_max_scat(reaction, p0, p1);
+    // }
 
     gsl_function F;
     params.p1 = p1;
@@ -553,13 +553,13 @@ std::vector<dbl> integration(
             );
             max_1 = std::min(max_1, max);
         }
-        if (reaction_type == 0) {
-            dbl min = pow(reaction[2].specie.m + reaction[3].specie.m - energy(p0, reaction[0].specie.m), 2)
-                    - pow(reaction[1].specie.m, 2);
-            if (min > 0) {
-                min_1 = std::max(min_1, sqrt(min));
-            }
-        }
+        // if (reaction_type == 0) {
+        //     dbl min = pow(reaction[2].specie.m + reaction[3].specie.m - energy(p0, reaction[0].specie.m), 2)
+        //             - pow(reaction[1].specie.m, 2);
+        //     if (min > 0) {
+        //         min_1 = std::max(min_1, sqrt(min));
+        //     }
+        // }
 
         dbl result, error;
         size_t status;
