@@ -37,7 +37,6 @@ universe = Universe(params=params, folder=folder)
 
 
 from common import LinearSpacedGrid
-
 linear_grid = LinearSpacedGrid(MOMENTUM_SAMPLES=501, MAX_MOMENTUM=500*UNITS.MeV)
 linear_grid_s = LinearSpacedGrid(MOMENTUM_SAMPLES=51, MAX_MOMENTUM=10*UNITS.MeV)
 
@@ -112,8 +111,7 @@ def step_monitor(universe):
             something = particle.conformal_energy(particle.grid.TEMPLATE) / particle.conformal_mass
             integrand = (particle.collision_integral * particle.params.H * something / particle.old_distribution)
             decay_rate = -integrand
-#            print(particle.old_distribution)
-            print(decay_rate / UNITS.MeV / (2*1.10562e-21))
+            print(1 / decay_rate.mean() / UNITS.s, decay_rate / UNITS.MeV / 1.10562e-21 / 2, particle.density * universe.params.a**3 / universe.params.S)
             with open(os.path.join(folder, particle.name.replace(' ', '_') + "Decay_rate_post.txt"), 'a') as f1:
                 f1.write('{:e}'.format(particle.params.T / UNITS.MeV) + '\t'
                          + '{:e}'.format(particle.params.a) + '\t'

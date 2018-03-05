@@ -14,17 +14,15 @@ http://arxiv.org/pdf/hep-ph/0002223v2.pdf
 """
 
 import os
-os.environ['MAX_MOMENTUM_MEV'] = '30'
 
 import argparse
-import numpy
 from collections import defaultdict
 
 from particles import Particle
 from library.SM import particles as SMP, interactions as SMI
 from library.NuMSM import particles as NuP, interactions as NuI
 from evolution import Universe
-from common import UNITS, Params, CONST
+from common import UNITS, Params
 
 
 parser = argparse.ArgumentParser(description='Run simulation for given mass and mixing angle')
@@ -35,34 +33,36 @@ args = parser.parse_args()
 
 mass = float(args.mass) * UNITS.MeV
 lifetime = float(args.tau) * UNITS.s
-#theta = 0.5 * numpy.arcsin(numpy.sqrt(4*5.7*10**(-4)/float(args.tau)))
+# theta = 0.5 * numpy.arcsin(numpy.sqrt(4*5.7*10**(-4)/float(args.tau)))
 theta = 0.031
-T_dec = 30 * UNITS.MeV
-print('theta=',theta, ' Tdec=', T_dec/ UNITS.MeV)
+T_dec = 50 * UNITS.MeV
+print('theta=', theta, ' Tdec=', T_dec / UNITS.MeV)
 
 
 folder = os.path.join(os.path.split(__file__)[0], "output", args.tau)
 
-T_initial = max(50. * UNITS.MeV, T_dec)
-T_interaction_freezeout = 0.08 * UNITS.MeV
+T_initial = T_dec
+T_washout = 0.1 * UNITS.MeV
 T_final = 0.0008 * UNITS.MeV
 params = Params(T=T_initial,
-                dy=0.003125)
+                dy=0.003125 * 4)
 
 universe = Universe(params=params, folder=folder)
 
 photon = Particle(**SMP.photon)
 electron = Particle(**SMP.leptons.electron)
 muon = Particle(**SMP.leptons.muon)
-neutrino_e = Particle(**SMP.leptons.neutrino_e)
-neutrino_mu = Particle(**SMP.leptons.neutrino_mu)
-neutrino_tau = Particle(**SMP.leptons.neutrino_tau)
-sterile = Particle(**NuP.dirac_sterile_neutrino(mass))
+
+from common import LogSpacedGrid
+active_grid = LogSpacedGrid(MOMENTUM_SAMPLES=201, MAX_MOMENTUM=1.5 * mass / (T_washout / UNITS.MeV))
+sterile_grid = LogSpacedGrid(MOMENTUM_SAMPLES=51, MAX_MOMENTUM=mass)
+
+neutrino_e = Particle(**SMP.leptons.neutrino_e, grid=active_grid)
+neutrino_mu = Particle(**SMP.leptons.neutrino_mu, grid=active_grid)
+neutrino_tau = Particle(**SMP.leptons.neutrino_tau, grid=active_grid)
+sterile = Particle(**NuP.dirac_sterile_neutrino(mass), grid=sterile_grid)
 
 sterile.decoupling_temperature = T_initial
-neutrino_e.decoupling_temperature = 10 * UNITS.MeV
-neutrino_mu.decoupling_temperature = 10 * UNITS.MeV
-neutrino_tau.decoupling_temperature = 10 * UNITS.MeV
 
 universe.add_particles([
     photon,
@@ -116,9 +116,14 @@ def step_monitor(universe):
                 for x in sterile._distribution
             ]) + '\n')
 
+
 universe.step_monitor = step_monitor
 
-universe.evolve(T_interaction_freezeout, export=False)
+universe.evolve(5 * UNITS.MeV, export=False)
+universe.params.dy = 0.003125
+universe.params.infer()
+
+universe.evolve(T_washout, export=False)
 universe.interactions = tuple()
 universe.evolve(T_final)
 

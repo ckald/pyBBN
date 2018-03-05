@@ -1,15 +1,5 @@
 # -*- coding: utf-8 -*-
 """
-## Heavy sterile dirac neutrino
-
-$$ M = 33.9 MeV $$
-
-$$ \theta_\tau \approx 7.6 10^{-3} \sim \tau_N \approx 0.3 sec $$
-
-http://arxiv.org/pdf/hep-ph/0002223v2.pdf
-
-<img src="plots.svg" width=100% />
-<img src="particles.svg" width=100% />
 
 """
 
@@ -21,7 +11,7 @@ from particles import Particle
 from library.SM import particles as SMP, interactions as SMI
 from library.NuMSM import particles as NuP, interactions as NuI
 from evolution import Universe
-from common import UNITS, Params, utils
+from common import UNITS, Params, utils, LogSpacedGrid, LinearSpacedGrid
 
 
 parser = argparse.ArgumentParser(description='Run simulation for given mass and mixing angle')
@@ -42,17 +32,21 @@ T_washout = float(args.Twashout) * UNITS.MeV
 folder = utils.ensure_dir(
     op.split(__file__)[0],
     'output',
-    "mass={:e}_tau={:e}_theta={:e}_Tdec={:e}_Twashout={:e}".format(
-        mass / UNITS.MeV,lifetime / UNITS.s,theta, Tdec / UNITS.MeV,
-        T_washout / UNITS.MeV
+    "mass={mass:e}_tau={tau:e}_theta={theta:e}_Tdec={Tdec:e}_Twashout={Twashout:e}"
+    .format(
+        mass=mass / UNITS.MeV,
+        tau=lifetime / UNITS.s, theta=theta,
+        Tdec=Tdec / UNITS.MeV,
+        Twashout=T_washout / UNITS.MeV
     ) + args.comment
 )
 
 
 T_initial = Tdec
+T_weak_decoupling = 5 * UNITS.MeV
 T_final = 0.0008 * UNITS.MeV
 params = Params(T=T_initial,
-                dy=0.003125)
+                dy=0.003125*4)
 
 universe = Universe(params=params, folder=folder)
 
@@ -60,19 +54,21 @@ photon = Particle(**SMP.photon)
 electron = Particle(**SMP.leptons.electron)
 muon = Particle(**SMP.leptons.muon)
 
-from common import LogSpacedGrid, LinearSpacedGrid
-sterile_grid = LogSpacedGrid(MOMENTUM_SAMPLES=51, MAX_MOMENTUM=20*UNITS.MeV)
-active_grid = LinearSpacedGrid(MOMENTUM_SAMPLES=201, MAX_MOMENTUM=mass/T_washout*1.5*UNITS.MeV)
 
-neutrino_e = Particle(**SMP.leptons.neutrino_e, grid=active_grid)
-neutrino_mu = Particle(**SMP.leptons.neutrino_mu, grid=active_grid)
-neutrino_tau = Particle(**SMP.leptons.neutrino_tau, grid=active_grid)
-sterile = Particle(**NuP.dirac_sterile_neutrino(mass), grid=sterile_grid)
+active_grid = LinearSpacedGrid(MOMENTUM_SAMPLES=201,
+                               MAX_MOMENTUM=mass / T_washout * 1.5 * UNITS.MeV)
+neutrino_e = Particle(**SMP.leptons.neutrino_e,
+                      grid=active_grid)
+neutrino_mu = Particle(**SMP.leptons.neutrino_mu,
+                       grid=active_grid)
+neutrino_tau = Particle(**SMP.leptons.neutrino_tau,
+                        grid=active_grid)
 
+sterile_grid = LogSpacedGrid(MOMENTUM_SAMPLES=51, MAX_MOMENTUM=20 * UNITS.MeV)
+sterile = Particle(**NuP.dirac_sterile_neutrino(mass),
+                   grid=sterile_grid)
+sterile.decoupling_temperature = Tdec
 
-sterile.decoupling_temperature = T_initial
-for neutrino in [neutrino_e, neutrino_mu, neutrino_tau]:
-    neutrino.decoupling_temperature = 5 * UNITS.MeV
 
 universe.add_particles([
     photon,
@@ -116,17 +112,15 @@ def step_monitor(universe):
                     for x in
                     particle.grid.TEMPLATE / UNITS.MeV
                 ]) + '\n')
-            with open(op.join(folder, particle.name.replace(' ', '_') + ".rho.txt"), 'a') as f3:
-                f3.write('## a\tT, MeV\taT, MeV\trho_nu, MeV^4\ta^3 n, MeV^3\n')
-        with open(op.join(folder, "rho_nu.txt"), 'a') as f2:
-            f2.write('# a    rho_nu' + '\n')
+            with open(op.join(folder, particle.name.replace(' ', '_') + ".rho.txt"), 'a') as f:
+                f.write('## a\tT, MeV\taT, MeV\trho_nu, MeV^4\ta^3 n, MeV^3\n')
 
     # Output the distribution function and collision integrals distortion to file every 10 steps,
     # first column is temperature
     if universe.step % 10 == 0:
         for particle in [neutrino_e, neutrino_mu, neutrino_tau, sterile]:
             with open(op.join(folder, particle.name.replace(' ', '_') + ".distribution.txt"), 'a') as f:
-                f.write('{a:e}\t{T:e}\t'.format(a=universe.params.a, T=universe.params.T/UNITS.MeV))
+                f.write('{a:e}\t{T:e}\t'.format(a=universe.params.a, T=universe.params.T / UNITS.MeV))
                 f.write('\t'.join(['{:e}'.format(x) for x in particle._distribution]) + '\n')
 
             with open(op.join(folder, particle.name.replace(' ', '_') + ".rho.txt"), 'a') as f:
@@ -134,23 +128,19 @@ def step_monitor(universe):
                     '{a:e}\t{t:e}\t{T:e}\t{aT:e}\t{rho:e}\t{n:e}\n'.format(
                         a=universe.params.a,
                         t=universe.params.t / UNITS.s,
-                        T=universe.params.T/UNITS.MeV,
-                        aT=universe.params.aT/UNITS.MeV,
-                        rho=particle.energy_density/(UNITS.MeV)**4,
-                        n=universe.params.a**3 * particle.density/(UNITS.MeV)**3
+                        T=universe.params.T / UNITS.MeV,
+                        aT=universe.params.aT / UNITS.MeV,
+                        rho=particle.energy_density / UNITS.MeV**4,
+                        n=universe.params.a**3 * particle.density / UNITS.MeV**3
                     )
                 )
-        with open(op.join(folder, "rho_nu.txt"), 'a') as f:
-            f.write(
-                '{:e}'.format(universe.params.a) + '\t' +
-                '{:e}'.format(sum(
-                    particle.energy_density / UNITS.MeV**4
-                    for particle in [neutrino_e, neutrino_mu]
-                )) + '\n')
 
 
 universe.step_monitor = step_monitor
 
+universe.evolve(T_weak_decoupling, export=False)
+universe.params.dy = 0.003125
+universe.params.infer()
 universe.evolve(T_washout, export=False)
 sterile._distribution *= 0
 universe.interactions = tuple()

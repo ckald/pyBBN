@@ -100,10 +100,10 @@ class FourParticleIntegral(BoltzmannIntegral):
 
         if bounds is None:
             bounds = (
-                self.grids[0].MIN_MOMENTUM_INTEGRATION / params.aT,
-                self.grids[0].MAX_MOMENTUM_INTEGRATION / params.aT,
-                self.grids[1].MIN_MOMENTUM_INTEGRATION / params.aT,
-                self.grids[1].MAX_MOMENTUM_INTEGRATION / params.aT
+                self.grids[0].MIN_MOMENTUM / params.aT,
+                self.grids[0].MAX_MOMENTUM / params.aT,
+                self.grids[1].MIN_MOMENTUM / params.aT,
+                self.grids[1].MAX_MOMENTUM / params.aT
             )
 
         if stepsize is None:

@@ -510,6 +510,7 @@ dbl integrand_2nd_integration(
     params.up_2 = up_2;
     F.params = &params;
 
+
     // return result;
     gsl_set_error_handler_off();
 
@@ -518,11 +519,11 @@ dbl integrand_2nd_integration(
     F.function = &integrand_1st_integration;
 
     gsl_integration_workspace *w = gsl_integration_workspace_alloc(params.subdivisions);
-    //status = gsl_integration_qags(&F, low_2, up_2, params.abseps, params.releps, params.subdivisions, w, &result, &error);
-    status = gsl_integration_qag(&F, low_2, up_2, params.abseps, params.releps, params.subdivisions, GSL_INTEG_GAUSS21, w, &result, &error);
-    //if (status) {
-    //    printf("(p0=%e, p1=%e) 1st integration result: %e ± %e. %i intervals. %s\n", params.p0, p1, result, error, (int) w->size, gsl_strerror(status));
-    //}
+    status = gsl_integration_qags(&F, low_2, up_2, params.abseps, params.releps, params.subdivisions, w, &result, &error);
+    // status = gsl_integration_qag(&F, g, h, params.abseps, params.releps, params.subdivisions, GSL_INTEG_GAUSS15, w, &result, &error);
+    if (status) {
+        printf("(p0=%e, p1=%e) 1st integration result: %e ± %e. %i intervals. %s\n", params.p0, p1, result, error, (int) w->size, gsl_strerror(status));
+    }
     gsl_integration_workspace_free(w);
 
     return result;
@@ -583,7 +584,7 @@ std::vector<dbl> integration(
 
         size_t subdivisions = 100;
         struct integration_params params = {
-            p0, low_1, low_2,
+            p0, 0., 0.,
             &reaction, &Ms,
             low_1, up_1, low_2, up_2,
             kind, releps, abseps,
@@ -593,8 +594,9 @@ std::vector<dbl> integration(
 
         gsl_set_error_handler_off();
         gsl_integration_workspace *w = gsl_integration_workspace_alloc(subdivisions);
-        //status = gsl_integration_qags(&F, low_1, up_1, abseps, releps, subdivisions, w, &result, &error);
-        status = gsl_integration_qag(&F, low_1, up_1, abseps, releps, subdivisions, GSL_INTEG_GAUSS21, w, &result, &error);
+        // status = gsl_integration_qags(&F, ai, bi, abseps, releps, subdivisions, w, &result, &error);
+        status = gsl_integration_qag(&F, low_1, up_2, abseps, releps, subdivisions, GSL_INTEG_GAUSS15, w, &result, &error);
+
         if (status) {
             printf("2nd integration_1 result: %e ± %e. %i intervals. %s\n", result, error, (int) w->size, gsl_strerror(status));
             throw std::runtime_error("Integrator failed to reach required accuracy");
@@ -602,10 +604,31 @@ std::vector<dbl> integration(
         gsl_integration_workspace_free(w);
         integral[i] += result;
 
+        // params = {
+        //     p0, 0., 0.,
+        //     &reaction, &Ms,
+        //     ai, bi, gi, hi,
+        //     3, releps, abseps,
+        //     subdivisions
+        // };
+        // F.params = &params;
+
+        // w = gsl_integration_workspace_alloc(subdivisions);
+        // status = gsl_integration_qag(&F, ai, bi, abseps, releps, subdivisions, GSL_INTEG_GAUSS15, w, &result, &error);
+        // if (status) {
+        //     printf("2nd integration_f result: %e ± %e. %i intervals. %s\n", result, error, (int) w->size, gsl_strerror(status));
+        //     throw std::runtime_error("Integrator failed to reach required accuracy");
+        // }
+        // gsl_integration_workspace_free(w);
+        // integral[i] += result;
     }
 
     return integral;
 }
+
+
+
+
 
 
 PYBIND11_MODULE(integral, m) {
