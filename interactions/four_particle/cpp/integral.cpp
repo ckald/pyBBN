@@ -590,7 +590,7 @@ std::vector<dbl> integration(
         gsl_set_error_handler_off();
         gsl_integration_workspace *w = gsl_integration_workspace_alloc(subdivisions);
         // status = gsl_integration_qags(&F, ai, bi, abseps, releps, subdivisions, w, &result, &error);
-        status = gsl_integration_qag(&F, min_1, max_2, abseps, releps, subdivisions, GSL_INTEG_GAUSS15, w, &result, &error);
+        status = gsl_integration_qag(&F, min_1, max_1, abseps, releps, subdivisions, GSL_INTEG_GAUSS15, w, &result, &error);
 
         if (status) {
             printf("2nd integration_1 result: %e ± %e. %i intervals. %s\n", result, error, (int) w->size, gsl_strerror(status));
