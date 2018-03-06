@@ -310,7 +310,7 @@ dbl integrand_full(
             specie.T, specie.in_equilibrium
         );
     }
-
+    std::cout << F_1(reaction, f) << "\t" << F_f(reaction, f) << "\t" << f[0] << "\t" << F_1(reaction, f) + f[0] * F_f(reaction, f) << "\n";
     if (kind == 1) {
         return temp * F_1(reaction, f);
     }
