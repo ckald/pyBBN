@@ -129,7 +129,7 @@ class Params(object):
 
         # Conformal scale factor step size during computations
         if environment.get('LOGARITHMIC_TIMESTEP'):
-            self.dx = self.x * self.dy #(numpy.exp(self.dy) - 1.)
+            self.dx = self.x * self.dy
             self.h = self.dy
         else:
             self.dy = None
