@@ -633,7 +633,7 @@ std::vector<dbl> integration(
 
         if (status) {
             printf("2nd integration_1 result: %e ± %e. %i intervals. %s\n", result, error, (int) w->size, gsl_strerror(status));
-            throw std::runtime_error("Integrator failed to reach required accuracy");
+            // throw std::runtime_error("Integrator failed to reach required accuracy");
         }
         gsl_integration_workspace_free(w);
         integral[i] += result;
