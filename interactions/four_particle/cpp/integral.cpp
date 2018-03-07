@@ -310,7 +310,7 @@ dbl integrand_full(
             specie.T, specie.in_equilibrium
         );
     }
-    std::cout << F_1(reaction, f) << "\t" << F_f(reaction, f) << "\t" << f[0] << "\t" << F_1(reaction, f) + f[0] * F_f(reaction, f) << "\n";
+
     if (kind == 1) {
         return temp * F_1(reaction, f);
     }
@@ -517,15 +517,16 @@ dbl integrand_2nd_integration(
      }
 
     if (reaction_type == -2) {
-        min_2 = 0.;
-        max_2 = sqrt(
-            pow(
-                reaction[3].specie.m
-                - energy(p0, reaction[0].specie.m)
-                - energy(p1, reaction[1].specie.m)
-            , 2)
-            - pow(reaction[2].specie.m, 2)
-            );
+        min_and_max = sqrt(
+                        pow(
+                            reaction[3].specie.m
+                            - energy(p0, reaction[0].specie.m)
+                            - energy(p1, reaction[1].specie.m)
+                        , 2)
+                        - pow(reaction[2].specie.m, 2)
+                    );
+        min_2 = min_and_max;
+        max_2 = min_and_max;
     }
 
     gsl_function F;
