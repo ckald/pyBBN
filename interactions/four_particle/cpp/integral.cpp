@@ -548,6 +548,7 @@ dbl integrand_2nd_integration(
     // status = gsl_integration_qag(&F, g, h, params.abseps, params.releps, params.subdivisions, GSL_INTEG_GAUSS15, w, &result, &error);
     if (status) {
         printf("(p0=%e, p1=%e) 1st integration result: %e ± %e. %i intervals. %s\n", params.p0, p1, result, error, (int) w->size, gsl_strerror(status));
+        throw std::runtime_error("Integrator failed to reach required accuracy");
     }
     gsl_integration_workspace_free(w);
 
@@ -633,7 +634,7 @@ std::vector<dbl> integration(
 
         if (status) {
             printf("2nd integration_1 result: %e ± %e. %i intervals. %s\n", result, error, (int) w->size, gsl_strerror(status));
-            // throw std::runtime_error("Integrator failed to reach required accuracy");
+            throw std::runtime_error("Integrator failed to reach required accuracy");
         }
         gsl_integration_workspace_free(w);
         integral[i] += result;
