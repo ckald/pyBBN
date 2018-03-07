@@ -517,7 +517,7 @@ dbl integrand_2nd_integration(
      }
 
     if (reaction_type == -2) {
-        min_and_max = sqrt(
+        dbl min_and_max = sqrt(
                         pow(
                             reaction[3].specie.m
                             - energy(p0, reaction[0].specie.m)
