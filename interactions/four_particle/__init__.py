@@ -2,7 +2,7 @@
 import numpy
 
 import environment
-from common import UNITS
+from common import UNITS, CONST
 from interactions.boltzmann import BoltzmannIntegral
 from interactions.four_particle.cpp.integral import integration, M_t, grid_t, particle_t, reaction_t
 
@@ -136,9 +136,8 @@ class FourParticleIntegral(BoltzmannIntegral):
             constant /= params.x
 
         if not self.cMs:
-            self.cMs = [M_t(list(M.order), M.K1, M.K2) for M in self.Ms]
+            self.cMs = [M_t(list(M.order), M.K1 / CONST.G_F**2, M.K2 / CONST.G_F**2) for M in self.Ms]
 
         ps = ps / params.aT
         fullstack = numpy.array(integration(ps, *bounds, self.creaction, self.cMs, stepsize, self.kind))
-        # print(self, "\t", fullstack * self.particle.params.h / self.particle._distribution)
-        return fullstack * constant
+        return fullstack * constant * CONST.G_F**2
