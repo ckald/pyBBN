@@ -544,7 +544,6 @@ dbl integrand_2nd_integration(
     F.function = &integrand_1st_integration;
 
     gsl_integration_workspace *w = gsl_integration_workspace_alloc(params.subdivisions);
-    // status = gsl_integration_qags(&F, min_2, max_2, params.abseps, params.releps, params.subdivisions, w, &result, &error);
     status = gsl_integration_qag(&F, min_2, max_2, params.abseps, params.releps, params.subdivisions, GSL_INTEG_GAUSS15, w, &result, &error);
     if (status) {
         printf("(p0=%e, p1=%e) 1st integration result: %e ± %e. %i intervals. %s\n", params.p0, p1, result, error, (int) w->size, gsl_strerror(status));
@@ -628,7 +627,6 @@ std::vector<dbl> integration(
 
         gsl_set_error_handler_off();
         gsl_integration_workspace *w = gsl_integration_workspace_alloc(subdivisions);
-        // status = gsl_integration_qags(&F, ai, bi, abseps, releps, subdivisions, w, &result, &error);
         status = gsl_integration_qag(&F, min_1, max_1, abseps, releps, subdivisions, GSL_INTEG_GAUSS15, w, &result, &error);
 
         if (status) {
