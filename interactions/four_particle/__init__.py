@@ -139,5 +139,7 @@ class FourParticleIntegral(BoltzmannIntegral):
             self.cMs = [M_t(list(M.order), M.K1 / CONST.G_F**2, M.K2 / CONST.G_F**2) for M in self.Ms]
 
         ps = ps / params.aT
-        fullstack = numpy.array(integration(ps, *bounds, self.creaction, self.cMs, stepsize, self.kind))
-        return fullstack * constant * CONST.G_F**2
+        A = numpy.array(integration(ps, *bounds, self.creaction, self.cMs, stepsize, 1))
+        B = numpy.array(integration(ps, *bounds, self.creaction, self.cMs, stepsize, 2))
+
+        return A * constant * CONST.G_F**2, B * constant * CONST.G_F**2

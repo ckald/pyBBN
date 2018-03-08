@@ -11,7 +11,7 @@ import numpy
 
 import environment
 from common import GRID, UNITS, statistics as STATISTICS
-from common.integrators import adams_bashforth_correction, implicit_euler
+from common.integrators import adams_bashforth_correction, adams_moulton_solver, implicit_euler
 from common.utils import Dynamic2DArray, DynamicRecArray
 
 from particles import DustParticle, RadiationParticle, IntermediateParticle, NonEqParticle
@@ -227,9 +227,8 @@ class DistributionParticle(AbstractParticle):
         })
 
         if force_print or self.regime != oldregime or self.in_equilibrium != oldeq:
-            print("\n\t\t{} decoupled at T_dec = {:.2f} MeV \n\t\t"
-                  .format(self.name, self.decoupling_temperature / UNITS.MeV)
-                  + "-" * 50)
+            print("\n"+ "\t" * 2 + "%s decoupled at T_dec = %.2f MeV \n" %
+                (self.name, self.decoupling_temperature / UNITS.MeV) + ("\t" * 2 + "-" * 50))
 
     def update_distribution(self):
         """ Apply collision integral to modify the distribution function """
@@ -251,7 +250,7 @@ class DistributionParticle(AbstractParticle):
         self.data['distribution'].append(self._distribution)
 
     def integrate_collisions(self):
-        return self.calculate_collision_integral(self.grid.TEMPLATE)
+        return numpy.vectorize(self.calculate_collision_integral)(self.grid.TEMPLATE)
 
     def calculate_collision_integral(self, ps):
         """ ### Particle collisions integration """
@@ -259,42 +258,49 @@ class DistributionParticle(AbstractParticle):
         if not self.collision_integrals:
             return numpy.zeros(len(ps))
 
-        Is = []
+        # Is = []
+
+        # for integral in self.collision_integrals:
+        #     Is.append(integral.integrate(ps, stepsize=self.params.h))
+
+        # integral = sum(Is)
+        # return integral
+
+        As = []
+        Bs = []
 
         for integral in self.collision_integrals:
-            Is.append(integral.integrate(ps, stepsize=self.params.h))
+            A, B = integral.integrate(numpy.array([ps]))
+            As.append(A)
+            Bs.append(B)
 
-        integral = sum(Is)
-        return integral
+        A = sum(As)
+        B = sum(Bs)
 
-        #     A, B = integral.integrate(p0)
-        #     As.append(A)
-        #     Bs.append(B)
+        if environment.get('ADAMS_MOULTON_DISTRIBUTION_CORRECTION'):
+            order = min(len(self.data['collision_integral']) + 1, 5)
+            index = numpy.searchsorted(self.grid.TEMPLATE, ps)
+            fs = []
+            if order > 1:
+                fs = list(self.data['collision_integral'][-order+1:, index])
 
-        # A = sum(As)
-        # B = sum(Bs)
+            prediction = adams_moulton_solver(y=self.distribution(ps), fs=fs,
+                                              A=A, B=B, h=self.params.h, order=order)
+            # prediction = adams_moulton_solver(y=self.distribution(ps), fs=fs,
+            #                                   A=A, B=B, h=self.params.h, order=order)
+        else:
+            prediction = implicit_euler(y=self.distribution(ps), t=None,
+                                        A=A, B=B, h=self.params.h)
 
-        # if environment.get('ADAMS_MOULTON_DISTRIBUTION_CORRECTION'):
-        #     order = min(len(self.data['collision_integral']) + 1, 5)
-        #     index = numpy.searchsorted(self.grid.TEMPLATE, p0)
-        #     fs = []
-        #     if order > 1:
-        #         fs = list(self.data['collision_integral'][-order+1:, index])
-
-        #     prediction = adams_moulton_solver(y=self.distribution(p0), fs=fs,
-        #                                       A=A, B=B, h=self.params.h, order=order)
-        # else:
-        #     prediction = implicit_euler(y=self.distribution(p0), t=None,
-        #                                 A=A, B=B, h=self.params.h)
-
-        # # To ensure that total_integral =  0 when A = B = 0. In previous cases total_integral
-        # # would be constant, even if A = B = 0
+        # To ensure that total_integral =  0 when A = B = 0. In previous cases total_integral
+        # would be constant, even if A = B = 0
         # if (A + B) == 0:
         #     total_integral = 0
         # else:
-        #     total_integral = (prediction - self.distribution(p0)) / self.params.h
+        total_integral = (prediction - self.distribution(ps)) / self.params.h
+        # total_integral = (prediction - self.distribution(ps)) / self.params.h
 
-        # return total_integral
+        return total_integral
 
     def distribution(self, p):
         """
@@ -313,8 +319,6 @@ class DistributionParticle(AbstractParticle):
         excessive evaluation of the costly logarithms and exponentials, this function first checks\
         if the current momenta value coincides with any of the grid points.
         """
-
-        p = abs(p)
 
         return distribution_interpolation(
             self.grid.TEMPLATE,
