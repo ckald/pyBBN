@@ -315,13 +315,13 @@ dbl integrand_full(
         return temp * F_1(reaction, f);
     }
     if (kind == 2) {
-        return temp * f[0] * F_f(reaction, f);
+        return temp * F_f(reaction, f);
     }
     if (kind == 3) {
         return temp * F_1_vacuum_decay();
     }
     if (kind == 4) {
-        return temp * f[0] * F_f_vacuum_decay();
+        return temp * F_f_vacuum_decay();
     }
     if (kind == 5) {
         return temp * (F_1_vacuum_decay() + f[0] * F_f_vacuum_decay());
