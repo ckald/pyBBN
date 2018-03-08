@@ -643,15 +643,21 @@ std::vector<dbl> integration(
 }
 
 
-
-
-
-
 PYBIND11_MODULE(integral, m) {
-    m.def("distribution_interpolation", &distribution_interpolation,
-          "Exponential interpolation of distribution function",
-          "grid"_a, "distribution"_a,
-          "p"_a, "m"_a=0, "eta"_a=1, "T"_a=1., "in_equilibrium"_a=false);
+    m.def("distribution_interpolation", [](
+        const std::vector<dbl> &grid,
+        const std::vector<dbl> &distribution,
+        const py::array_t<double> &ps, dbl m=0., int eta=1, dbl T=1.,
+        bool in_equilibrium=false) {
+            auto v = [grid, distribution, m, eta, T, in_equilibrium](double p) {
+                return distribution_interpolation(grid, distribution, p, m, eta, T, in_equilibrium);
+            };
+            return py::vectorize(v)(ps);
+        },
+        "Exponential interpolation of distribution function",
+        "grid"_a, "distribution"_a,
+        "p"_a, "m"_a=0, "eta"_a=1, "T"_a=1., "in_equilibrium"_a=false
+    );
     m.def("binary_find", &binary_find,
           "grid"_a, "x"_a);
 
