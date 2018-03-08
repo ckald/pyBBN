@@ -331,6 +331,15 @@ dbl integrand_full(
 }
 
 
+int get_reaction_type(const std::vector<reaction_t> &reaction) {
+    int reaction_type = 0;
+    for (const reaction_t &reactant : reaction) {
+        reaction_type += reactant.side;
+    }
+    return reaction_type;
+}
+
+
 struct integration_params {
     dbl p0;
     dbl p1;
@@ -492,10 +501,7 @@ dbl integrand_2nd_integration(
     dbl p0 = params.p0;
     auto reaction = *params.reaction;
 
-    int reaction_type = 0;
-    for (const reaction_t &reactant : reaction) {
-        reaction_type += reactant.side;
-    }
+    int reaction_type = get_reaction_type(reaction);
 
     if (reaction_type == 2) {
         if (p0 == 0) {
@@ -565,10 +571,7 @@ std::vector<dbl> integration(
     std::vector<dbl> integral(ps.size(), 0.);
 
     // Determine the integration bounds
-    int reaction_type = 0;
-    for (const reaction_t &reactant : reaction) {
-        reaction_type += reactant.side;
-    }
+    int reaction_type = get_reaction_type(reaction);
 
     // Note firstprivate() clause: those variables will be copied for each thread
     #pragma omp parallel for default(none) shared(ps, Ms, reaction, integral, stepsize, kind, reaction_type) firstprivate(min_1, max_1, min_2, max_2)
