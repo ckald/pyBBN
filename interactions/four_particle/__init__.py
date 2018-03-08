@@ -95,16 +95,15 @@ class FourParticleIntegral(BoltzmannIntegral):
         self.creaction = None
         self.cMs = None
 
-    def integrate(self, ps, stepsize=None, bounds=None):
+    def integrate(self, ps, stepsize=None):
         params = self.particle.params
 
-        if bounds is None:
-            bounds = (
-                self.grids[0].MIN_MOMENTUM / params.aT,
-                self.grids[0].MAX_MOMENTUM / params.aT,
-                self.grids[1].MIN_MOMENTUM / params.aT,
-                self.grids[1].MAX_MOMENTUM / params.aT
-            )
+        bounds = (
+            self.grids[0].MIN_MOMENTUM / params.aT,
+            self.grids[0].MAX_MOMENTUM / params.aT,
+            self.grids[1].MIN_MOMENTUM / params.aT,
+            self.grids[1].MAX_MOMENTUM / params.aT
+        )
 
         if stepsize is None:
             stepsize = params.h
