@@ -672,6 +672,8 @@ PYBIND11_MODULE(integral, m) {
     m.def("D1", &D1);
     m.def("D2", &D2);
     m.def("D3", &D3);
+    m.def("Db1", &Db1);
+    m.def("Db2", &Db2);
     m.def("D", &D,
           "p"_a, "E"_a, "m"_a,
           "K1"_a, "K2"_a, "order"_a, "sides"_a);

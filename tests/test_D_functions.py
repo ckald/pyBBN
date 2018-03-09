@@ -3,7 +3,7 @@ import json
 import numpy
 
 # from interactions.four_particle.integral import D1, D2, D3
-from interactions.four_particle.cpp.integral import D1, D2, D3
+from interactions.four_particle.cpp.integral import D1, D2, D3, Db1, Db2
 
 from common import LogSpacedGrid
 
@@ -65,4 +65,26 @@ for (i, j, k, l), momenta in grid_iterator():
 
 with open(os.path.join(cwd, 'D3.json'), 'w') as f:
     f.write(json.dumps(d3_table.tolist()))
+print("Done")
+
+print("Computing Db1...")
+db1_table = numpy.ndarray(shape=(GRID.MOMENTUM_SAMPLES, GRID.MOMENTUM_SAMPLES,
+                                GRID.MOMENTUM_SAMPLES))
+
+for (i, j, k), momenta in grid_iterator(dimension=3):
+    db1_table[i, j, k] = Db1(*momenta)
+
+with open(os.path.join(cwd, 'Db1.json'), 'w') as f:
+    f.write(json.dumps(db1_table.tolist()))
+print("Done")
+
+print("Computing Db2...")
+db2_table = numpy.ndarray(shape=(GRID.MOMENTUM_SAMPLES, GRID.MOMENTUM_SAMPLES,
+                                GRID.MOMENTUM_SAMPLES))
+
+for (i, j, k), momenta in grid_iterator(dimension=3):
+    db1_table[i, j, k] = Db2(*momenta)
+
+with open(os.path.join(cwd, 'Db2.json'), 'w') as f:
+    f.write(json.dumps(db2_table.tolist()))
 print("Done")
