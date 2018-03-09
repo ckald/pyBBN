@@ -21,7 +21,7 @@ from common import UNITS, Params, utils, LinearSpacedGrid, HeuristicGrid
 
 parser = argparse.ArgumentParser(description='Run simulation for given mass and mixing angle')
 parser.add_argument('--mass', default=300)#required=True)
-parser.add_argument('--theta', default=0.0001)#required=True)
+parser.add_argument('--theta', default=0.001)#required=True)
 #parser.add_argument('--tau', required=True)
 parser.add_argument('--comment', default='')
 args = parser.parse_args()
@@ -45,16 +45,15 @@ params = Params(T=T_initial,
 
 universe = Universe(params=params, folder=folder)
 
-linear_grid_s = LinearSpacedGrid(MOMENTUM_SAMPLES=51, MAX_MOMENTUM=1*UNITS.MeV)
-heuristic_grid = HeuristicGrid(mass, 0.35 * UNITS.s)
-print(heuristic_grid.TEMPLATE*0.02)
+linear_grid_s = LinearSpacedGrid(MOMENTUM_SAMPLES=51, MAX_MOMENTUM=20*UNITS.MeV)
+linear_grid = LinearSpacedGrid(MOMENTUM_SAMPLES=51, MAX_MOMENTUM=50*UNITS.MeV)
 photon = Particle(**SMP.photon)
 
 #electron = Particle(**SMP.leptons.electron)
 #muon = Particle(**SMP.leptons.muon)
 #tau = Particle(**SMP.leptons.tau)
 
-neutrino_e = Particle(**SMP.leptons.neutrino_e, **{'grid': heuristic_grid})
+neutrino_e = Particle(**SMP.leptons.neutrino_e, **{'grid': linear_grid})
 #neutrino_mu = Particle(**SMP.leptons.neutrino_mu)
 #neutrino_tau = Particle(**SMP.leptons.neutrino_tau)
 
@@ -116,6 +115,7 @@ interaction = NuI.sterile_hadrons_interactions(
         neutrinos = [neutrino_e],
         leptons = [],
         mesons = [neutral_pion],
+        kind=4
 )[0]
 
 #for inter in interaction:
@@ -123,7 +123,7 @@ interaction = NuI.sterile_hadrons_interactions(
 #                             if reaction_type(integral.reaction) in [1]]
 
 interaction.integrals = [integral for integral in interaction.integrals
-                            if reaction_type(integral.reaction) in [1]] 
+                            if reaction_type(integral.reaction) in [1]]
 
 universe.interactions += (interaction, )
 
@@ -142,7 +142,7 @@ universe.interactions += (
         thetas = thetas, sterile=sterile,
         neutrinos = [neutrino_e],# neutrino_mu, neutrino_tau],
         leptons = [],#[electron],# muon, tau],
-        mesons = [neutral_pion#, charged_pion#, neutral_rho, charged_rho, eta, 
+        mesons = [neutral_pion#, charged_pion#, neutral_rho, charged_rho, eta,
 #        eta_prime, omega, phi
         ],
     )
@@ -159,12 +159,12 @@ def step_monitor(universe):
     for particle in universe.particles:
         data = particle.data['params']
         if particle.mass > 0 and not particle.in_equilibrium:
-            momenta = particle.grid.TEMPLATE 
+            momenta = particle.grid.TEMPLATE
             density = particle.density
-            density_c = particle.density * particle.params.a**3 
-            integrand = (particle.collision_integral * particle.params.H * particle.conformal_energy(particle.grid.TEMPLATE) / particle.mass /particle.params.a / particle._distribution)
+            density_c = particle.density * particle.params.a**3
+            integrand = (particle.collision_integral * particle.params.H * particle.conformal_energy(particle.grid.TEMPLATE) / particle.mass /particle.params.a / particle.old_distribution)
             decay_rate = -integrand
-            print((decay_rate/UNITS.MeV / 3.92472e-21))
+#            print(["{0:0.15f}".format(i) for i in decay_rate/UNITS.MeV / 3.92472e-19],"\n")
             with open(os.path.join(folder, particle.name.replace(' ', '_') + ".decay_rate.txt"), 'a') as f1:
                 f1.write('{:e}'.format(particle.params.T / UNITS.MeV) + '\t' + '{:e}'.format(particle.params.a) + '\t' + '\t'.join(['{:e}'.format(x) for x in decay_rate / UNITS.MeV]) + '\n')
 

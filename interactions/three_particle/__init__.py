@@ -2,9 +2,8 @@
 import numpy
 
 import environment
-from common.integrators import paired as paired_integrators
 from interactions.boltzmann import BoltzmannIntegral
-from interactions.three_particle.cpp.integral import integrand_3, grid_t3, particle_t3, reaction_t3
+from interactions.three_particle.cpp.integral import integration_3, grid_t3, particle_t3, reaction_t3
 
 
 class ThreeParticleM(object):
@@ -50,64 +49,48 @@ class ThreeParticleIntegral(BoltzmannIntegral):
         if self.grids is None:
             self.grids = self.reaction[1].specie.grid
 
-        self.creaction = None
-        self.cMs = None
+    def integrate(self, ps, stepsize=None, bounds=None):
+        params = self.particle.params
 
-        if not self.cMs:
-            self.cMs = sum(M.K for M in self.Ms)
-
-    def integrate(self, ps, bounds=None):
         if self.reaction[0].specie.mass == 0:
-            return 0, 0
-        
+            return 0.
+
         if bounds is None:
-            bounds = tuple(b1 * self.par.a for b1 in self.grids.BOUNDS)
+            bounds = tuple(b1 / params.aT for b1 in self.grids.BOUNDS)
 
-        if not self.creaction:
-            self.creaction = [
-                reaction_t3(
-                    specie=particle_t3(
-                        m=particle.specie.conformal_mass,
-                        grid=grid_t3(
-                            grid=particle.specie.grid.TEMPLATE,
-                            distribution=particle.specie._distribution
-                        ),
-                        eta=int(particle.specie.eta),
-                        in_equilibrium=int(particle.specie.in_equilibrium),
-                        T=particle.specie.aT
-                    ),
-                    side=particle.side
-                )
-                for particle in self.reaction
-            ]
-
-        def prepared_integrand(p1):
-            integrand_1, integrand_f = integrand_3(ps, p1, self.cMs, self.creaction)
-            return integrand_1, integrand_f
-
-
-        if ps == 0:
-            constant = self.par.m / self.par.x / 8 / numpy.pi / self.par.H / self.particle.mass**2
-
-            integral_1, integral_f = prepared_integrand(numpy.zeros(len(self.grids.TEMPLATE)))
-            integral_1 = integral_1[0]
-            integral_f = integral_f[0]
-
-        else:
-            constant = self.par.x / self.par.m / 32. / numpy.pi / self.par.H
-
-            if environment.get('SIMPSONS_INTEGRATION'):
-                integral_1, integral_f = paired_integrators.integrate_1D_simpsons(
-                    prepared_integrand(self.grids.TEMPLATE),
-                    grid=self.grids.TEMPLATE
-                )
-            else:
-                integral_1, integral_f = paired_integrators.integrate_1D(
-                    prepared_integrand,
-                    bounds=bounds
-                )
+        if stepsize is None:
+            stepsize = params.h
 
         if not environment.get('LOGARITHMIC_TIMESTEP'):
-            constant /= self.par.x
+            stepsize /= params.aT
 
-        return constant * integral_1, constant * integral_f
+        self.creaction = [
+            reaction_t3(
+                specie=particle_t3(
+                    m=particle.specie.conformal_mass / params.aT,
+                    grid=grid_t3(
+                        grid=particle.specie.grid.TEMPLATE / params.aT,
+                        distribution=particle.specie._distribution
+                    ),
+                    eta=int(particle.specie.eta),
+                    in_equilibrium=int(particle.specie.in_equilibrium),
+                    T=particle.specie.aT / params.aT
+                ),
+                side=particle.side
+            )
+            for particle in self.reaction
+        ]
+
+        self.cMs = sum(M.K for M in self.Ms)
+
+        constant_0 = self.cMs * params.aT / params.a / 8. / numpy.pi / params.H / self.particle.mass**2
+        constant = self.cMs * params.a / params.aT / 32. / numpy.pi / params.H
+
+        if not environment.get('LOGARITHMIC_TIMESTEP'):
+            constant /= params.x
+
+        ps = ps / params.aT
+        fullstack = numpy.array(integration_3(ps, *bounds, stepsize, self.creaction, self.kind))
+        fullstack[0] *= constant_0
+        fullstack[1:] *= constant
+        return fullstack

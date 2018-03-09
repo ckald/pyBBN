@@ -4,15 +4,14 @@ all: clean compile_3p compile_4p test
 
 compile_3p:
 	cd interactions/three_particle/cpp \
-	&& $(COMPILER) -fopenmp -fPIC -O0 -g -shared -std=c++11 -I pybind11/include \
+	&& $(COMPILER) -fopenmp -fPIC -shared -o integral.so integral.cpp -O0 -g -std=c++11 -I pybind11/include \
 	`$(PYTHON)-config --cflags --ldflags` -lgsl -lgslcblas -lm -Wfatal-errors \
-	integral.cpp -o integral.so
 
 compile_4p:
 	cd interactions/four_particle/cpp \
-	&& $(COMPILER) -fopenmp -fPIC -O3 -shared -std=c++11 -I pybind11/include \
+	&& $(COMPILER) -fopenmp -fPIC -shared -o integral.so integral.cpp Ds.cpp -O3 -std=c++11 -I pybind11/include \
 	`$(PYTHON)-config --cflags --ldflags` -lgsl -lgslcblas -lm -Wfatal-errors \
-	integral.cpp Ds.cpp -o integral.so
+
 
 clean:
 	cd interactions/four_particle/cpp && rm -rf *.o *.so *.c *.so.DSYM ;\

@@ -246,7 +246,7 @@ class interactions(object):
 
     @classmethod
     def sterile_hadrons_interactions(cls, thetas=None, sterile=None, neutrinos=None,
-                                     leptons=None, mesons=None):
+                                     leptons=None, mesons=None, kind=None):
 
         inters = []
 
@@ -258,13 +258,15 @@ class interactions(object):
                             inters += cls.neutral_scalar_meson(theta=thetas[neutrino.flavour],
                                                                sterile=sterile,
                                                                active=neutrino,
-                                                               meson=particle)
+                                                               meson=particle,
+                                                               kind=kind)
 
                         if particle.type == "vector":
                             inters += cls.neutral_vector_meson(theta=thetas[neutrino.flavour],
                                                                sterile=sterile,
                                                                active=neutrino,
-                                                               meson=particle)
+                                                               meson=particle,
+                                                               kind=kind)
 
         for lepton in leptons:
             if thetas[lepton.flavour]:
@@ -274,18 +276,20 @@ class interactions(object):
                             inters += cls.charged_scalar_meson(theta=thetas[lepton.flavour],
                                                                sterile=sterile,
                                                                lepton=lepton,
-                                                               meson=particle)
+                                                               meson=particle,
+                                                               kind=kind)
 
                         if particle.type == "vector":
                             inters += cls.charged_vector_meson(theta=thetas[neutrino.flavour],
                                                                sterile=sterile,
                                                                lepton=lepton,
-                                                               meson=particle)
+                                                               meson=particle,
+                                                               kind=kind)
 
         return inters
 
     @staticmethod
-    def neutral_scalar_meson(theta=1., sterile=None, active=None, meson=None):
+    def neutral_scalar_meson(theta=1., sterile=None, active=None, meson=None, kind=None):
         """ \begin{align}
                 N \to \nu + meson
             \end{align}
@@ -297,14 +301,15 @@ class interactions(object):
             Ms=(
                 ThreeParticleM(K=(CONST.G_F * theta * meson.decay_constant)**2
                                   * sterile.mass**4 * (1 - (meson.mass / sterile.mass)**2)), ),
-            integral_type=ThreeParticleIntegral
+            integral_type=ThreeParticleIntegral,
+            kind=kind
         ) for antiparticles in [
             ((False, ), (False, False)),
             ((True, ), (True, False))
         ]]
 
     @staticmethod
-    def charged_scalar_meson(theta=1., sterile=None, lepton=None, meson=None):
+    def charged_scalar_meson(theta=1., sterile=None, lepton=None, meson=None, kind=None):
         """ \begin{align}
                 N \to l + meson
             \end{align}
@@ -322,14 +327,15 @@ class interactions(object):
                     - (meson.mass / sterile.mass)**2 * (1 + (lepton.mass / sterile.mass)**2)
                 )
             ),),
-            integral_type=ThreeParticleIntegral
+            integral_type=ThreeParticleIntegral,
+            kind=kind
         ) for antiparticles in [
             ((False, ), (False, True)),
             ((True, ), (True, False))
         ]]
 
     @staticmethod
-    def neutral_vector_meson(theta=1., sterile=None, active=None, meson=None):
+    def neutral_vector_meson(theta=1., sterile=None, active=None, meson=None, kind=None):
         """ \begin{align}
                 N \to \nu + meson
             \end{align}
@@ -344,7 +350,8 @@ class interactions(object):
                                    * sterile.mass**4 * (1 - 2 * CONST.sin_theta_w_2)**2
                                    * (1 + 2 * (meson.mass / sterile.mass)**2)
                                    * (1 - (meson.mass / sterile.mass)**2)), ),
-                integral_type=ThreeParticleIntegral
+                integral_type=ThreeParticleIntegral,
+                kind=kind
             ) for antiparticles in [
                 ((False, ), (False, False)),
                 ((True, ), (True, False))
@@ -359,7 +366,8 @@ class interactions(object):
                                    * sterile.mass**4 * (CONST.sin_theta_w_2 / 3)**2
                                    * (1 + 2 * (meson.mass / sterile.mass)**2)
                                    * (1 - (meson.mass / sterile.mass)**2)), ),
-                integral_type=ThreeParticleIntegral
+                integral_type=ThreeParticleIntegral,
+                kind=kind
             ) for antiparticles in [
                 ((False, ), (False, False)),
                 ((True, ), (True, False))
@@ -367,7 +375,7 @@ class interactions(object):
 
 
     @staticmethod
-    def charged_vector_meson(theta=1., sterile=None, lepton=None, meson=None):
+    def charged_vector_meson(theta=1., sterile=None, lepton=None, meson=None, kind=None):
         """ \begin{align}
                 N \to l + meson
             \end{align}
@@ -386,7 +394,8 @@ class interactions(object):
                     - 2 * (meson.mass / sterile.mass)**4
                 )
             ),),
-            integral_type=ThreeParticleIntegral
+            integral_type=ThreeParticleIntegral,
+            kind=kind
         ) for antiparticles in [
             ((False, ), (False, True)),
             ((True, ), (True, False))
