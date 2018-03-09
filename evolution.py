@@ -91,6 +91,8 @@ class Universe(object):
         long before then BBN. Then most particle species are in the thermodynamical equilibrium.
 
         """
+        T_initial = self.params.T
+
         print("\n\n" + "#"*32 + " Initial states " + "#"*32 + "\n")
         for particle in self.particles:
             print(particle)
@@ -110,8 +112,6 @@ class Universe(object):
             self.params.update(self.total_energy_density(), self.total_entropy())
         self.save_params()
 
-        # TODO: `Interrupted` resulted in unexpectedly interrupted simulations
-        # interrupted = False
         while self.params.T > T_final:
             try:
                 self.log()
@@ -125,12 +125,13 @@ class Universe(object):
                 print("\nKeyboard interrupt!")
                 sys.exit(1)
                 break
-        # else:
-        #     interrupted = True
-        #     print("Simulation was interrupted.")
+
+        if not (T_initial > self.params.T > 0):
+            print("\n(T < 0) or (T > T_initial): suspect numerical instability")
+            sys.exit(1)
 
         self.log()
-        if export:  # and not interrupted:
+        if export:
             self.export()
 
         return self.data
