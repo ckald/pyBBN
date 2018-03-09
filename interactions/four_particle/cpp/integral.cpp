@@ -360,6 +360,7 @@ struct integration_params {
     dbl releps;
     dbl abseps;
     size_t subdivisions;
+    gsl_integration_workspace *w;
 };
 
 
@@ -548,21 +549,17 @@ dbl integrand_2nd_integration(
     params.max_2 = max_2;
     F.params = &params;
 
-
-    // return result;
-    gsl_set_error_handler_off();
-
     dbl result, error;
     size_t status;
     F.function = &integrand_1st_integration;
 
-    gsl_integration_workspace *w = gsl_integration_workspace_alloc(params.subdivisions);
-    status = gsl_integration_qag(&F, min_2, max_2, params.abseps, params.releps, params.subdivisions, GSL_INTEG_GAUSS15, w, &result, &error);
+    gsl_set_error_handler_off();
+
+    status = gsl_integration_qag(&F, min_2, max_2, params.abseps, params.releps, params.subdivisions, GSL_INTEG_GAUSS61, params.w, &result, &error);
     if (status) {
-        printf("(p0=%e, p1=%e) 1st integration result: %e ± %e. %i intervals. %s\n", params.p0, p1, result, error, (int) w->size, gsl_strerror(status));
+        printf("(p0=%e, p1=%e) 1st integration result: %e ± %e. %i intervals. %s\n", params.p0, p1, result, error, (int) params.w->size, gsl_strerror(status));
         throw std::runtime_error("Integrator failed to reach required accuracy");
     }
-    gsl_integration_workspace_free(w);
 
     return result;
 }
@@ -610,40 +607,37 @@ std::vector<dbl> integration(
             max_1 = sqrt(max2);
         }
 
-        dbl result, error;
+        dbl result(0.), error(0.);
         size_t status;
         gsl_function F;
         F.function = &integrand_2nd_integration;
 
-        dbl f = distribution_interpolation(
-            reaction[0].specie.grid.grid, reaction[0].specie.grid.distribution,
-            p0,
-            reaction[0].specie.m, reaction[0].specie.eta,
-            reaction[0].specie.T, reaction[0].specie.in_equilibrium
-        );
-
+        dbl f = distribution_interpolation(reaction[0].specie, p0);
         dbl releps = 1e-2;
         dbl abseps = f / stepsize * releps;
 
-        size_t subdivisions = 100;
+
+        size_t subdivisions = 1;
+        gsl_integration_workspace *w1 = gsl_integration_workspace_alloc(subdivisions);
+        gsl_integration_workspace *w2 = gsl_integration_workspace_alloc(subdivisions);
         struct integration_params params = {
             p0, 0., 0.,
             &reaction, &Ms,
             min_1, max_1, min_2, max_2,
             kind, releps, abseps,
-            subdivisions
+            subdivisions, w2
         };
         F.params = &params;
 
         gsl_set_error_handler_off();
-        gsl_integration_workspace *w = gsl_integration_workspace_alloc(subdivisions);
-        status = gsl_integration_qag(&F, min_1, max_1, abseps, releps, subdivisions, GSL_INTEG_GAUSS15, w, &result, &error);
 
+        status = gsl_integration_qag(&F, min_1, max_1, abseps, releps, subdivisions, GSL_INTEG_GAUSS61, w1, &result, &error);
         if (status) {
-            printf("2nd integration_1 result: %e ± %e. %i intervals. %s\n", result, error, (int) w->size, gsl_strerror(status));
+            printf("2nd integration_1 result: %e ± %e. %i intervals. %s\n", result, error, (int) w1->size, gsl_strerror(status));
             throw std::runtime_error("Integrator failed to reach required accuracy");
         }
-        gsl_integration_workspace_free(w);
+        gsl_integration_workspace_free(w1);
+        gsl_integration_workspace_free(w2);
         integral[i] += result;
     }
 
