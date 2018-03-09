@@ -11,7 +11,10 @@ import numpy
 
 import environment
 from common import GRID, UNITS, statistics as STATISTICS
-from common.integrators import adams_bashforth_correction, implicit_euler
+from common.integrators import (
+    adams_bashforth_correction, adams_moulton_solver, implicit_euler,
+    MAX_ADAMS_BASHFORTH_ORDER, MAX_ADAMS_MOULTON_ORDER
+)
 from common.utils import Dynamic2DArray, DynamicRecArray
 
 from particles import DustParticle, RadiationParticle, IntermediateParticle, NonEqParticle
@@ -227,9 +230,9 @@ class DistributionParticle(AbstractParticle):
         })
 
         if force_print or self.regime != oldregime or self.in_equilibrium != oldeq:
-            print("\n\t\t{} decoupled at T_dec = {:.2f} MeV \n\t\t"
+            print("\n" + "\t"*2 + "{} decoupled at T_dec = {:.2f} MeV \n"
                   .format(self.name, self.decoupling_temperature / UNITS.MeV)
-                  + "-" * 50)
+                  + "\t" * 2 + "-"*50)
 
     def update_distribution(self):
         """ Apply collision integral to modify the distribution function """
@@ -243,7 +246,6 @@ class DistributionParticle(AbstractParticle):
 
         # assert all(self._distribution >= 0), self._distribution
         self._distribution = numpy.maximum(self._distribution, 0)
-        # self._distribution[self._distribution < 1e-25] = 0
 
         # Clear collision integrands for the next computation step
         self.collision_integrals = []
@@ -259,42 +261,35 @@ class DistributionParticle(AbstractParticle):
         if not self.collision_integrals:
             return numpy.zeros(len(ps))
 
-        Is = []
+        if not environment.get('SPLIT_COLLISION_INTEGRAL'):
+            fs = [sum([integral.integrate(ps, stepsize=self.params.h)
+                       for integral in self.collision_integrals])]
+
+            fs = list(self.data['collision_integral'][-MAX_ADAMS_BASHFORTH_ORDER:]) + fs
+
+            return adams_bashforth_correction(fs=fs, h=self.params.h) / self.params.h
+
+        As = []
+        Bs = []
 
         for integral in self.collision_integrals:
-            Is.append(integral.integrate(ps, stepsize=self.params.h))
+            A, B = integral.integrate(ps, stepsize=self.params.h)
+            As.append(A)
+            Bs.append(B)
 
-        integral = sum(Is)
-        return integral
+        A = sum(As)
+        B = sum(Bs)
 
-        #     A, B = integral.integrate(p0)
-        #     As.append(A)
-        #     Bs.append(B)
+        if environment.get('ADAMS_MOULTON_DISTRIBUTION_CORRECTION'):
+            fs = list(self.data['collision_integral'][-MAX_ADAMS_MOULTON_ORDER:])
 
-        # A = sum(As)
-        # B = sum(Bs)
+            prediction = adams_moulton_solver(y=self.distribution(ps), fs=fs,
+                                              A=A, B=B, h=self.params.h)
+        else:
+            prediction = implicit_euler(y=self.distribution(ps), t=None,
+                                        A=A, B=B, h=self.params.h)
 
-        # if environment.get('ADAMS_MOULTON_DISTRIBUTION_CORRECTION'):
-        #     order = min(len(self.data['collision_integral']) + 1, 5)
-        #     index = numpy.searchsorted(self.grid.TEMPLATE, p0)
-        #     fs = []
-        #     if order > 1:
-        #         fs = list(self.data['collision_integral'][-order+1:, index])
-
-        #     prediction = adams_moulton_solver(y=self.distribution(p0), fs=fs,
-        #                                       A=A, B=B, h=self.params.h, order=order)
-        # else:
-        #     prediction = implicit_euler(y=self.distribution(p0), t=None,
-        #                                 A=A, B=B, h=self.params.h)
-
-        # # To ensure that total_integral =  0 when A = B = 0. In previous cases total_integral
-        # # would be constant, even if A = B = 0
-        # if (A + B) == 0:
-        #     total_integral = 0
-        # else:
-        #     total_integral = (prediction - self.distribution(p0)) / self.params.h
-
-        # return total_integral
+        return (prediction - self.distribution(ps)) / self.params.h
 
     def distribution(self, p):
         """
@@ -313,8 +308,6 @@ class DistributionParticle(AbstractParticle):
         excessive evaluation of the costly logarithms and exponentials, this function first checks\
         if the current momenta value coincides with any of the grid points.
         """
-
-        p = abs(p)
 
         return distribution_interpolation(
             self.grid.TEMPLATE,

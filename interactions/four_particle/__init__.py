@@ -2,9 +2,12 @@
 import numpy
 
 import environment
-from common import UNITS
+from common import CONST
 from interactions.boltzmann import BoltzmannIntegral
-from interactions.four_particle.cpp.integral import integration, M_t, grid_t, particle_t, reaction_t
+from interactions.four_particle.cpp.integral import (
+    integration, M_t, grid_t, particle_t, reaction_t,
+    CollisionIntegralKind
+)
 
 
 class FourParticleM(object):
@@ -95,16 +98,15 @@ class FourParticleIntegral(BoltzmannIntegral):
         self.creaction = None
         self.cMs = None
 
-    def integrate(self, ps, stepsize=None, bounds=None):
+    def integrate(self, ps, stepsize=None):
         params = self.particle.params
 
-        if bounds is None:
-            bounds = (
-                self.grids[0].MIN_MOMENTUM / params.aT,
-                self.grids[0].MAX_MOMENTUM / params.aT,
-                self.grids[1].MIN_MOMENTUM / params.aT,
-                self.grids[1].MAX_MOMENTUM / params.aT
-            )
+        bounds = (
+            self.grids[0].MIN_MOMENTUM / params.aT,
+            self.grids[0].MAX_MOMENTUM / params.aT,
+            self.grids[1].MIN_MOMENTUM / params.aT,
+            self.grids[1].MAX_MOMENTUM / params.aT
+        )
 
         if stepsize is None:
             stepsize = params.h
@@ -130,15 +132,22 @@ class FourParticleIntegral(BoltzmannIntegral):
                 for particle in self.reaction
             ]
 
-        # constant = (params.m / params.x)**5 / 64. / numpy.pi**3 / params.H
-        constant = (params.aT / params.a)**5 / 64. / numpy.pi**3 / params.H
+        ps = ps / params.aT
+        # All matrix elements share the same weak scale multiplier
+        unit = 32 * CONST.G_F**2
+        constant = unit * (params.aT / params.a)**5 / 64. / numpy.pi**3 / params.H
         if not environment.get('LOGARITHMIC_TIMESTEP'):
             constant /= params.x
 
-        if not self.cMs:
-            self.cMs = [M_t(list(M.order), M.K1, M.K2) for M in self.Ms]
+        stepsize *= constant
 
-        ps = ps / params.aT
-        fullstack = numpy.array(integration(ps, *bounds, self.creaction, self.cMs, stepsize, self.kind))
-        # print(self, "\t", fullstack * self.particle.params.h / self.particle._distribution)
-        return fullstack * constant
+        if not self.cMs:
+            self.cMs = [M_t(list(M.order), M.K1 / unit, M.K2 / unit) for M in self.Ms]
+
+        if environment.get('SPLIT_COLLISION_INTEGRAL'):
+            A = integration(ps, *bounds, self.creaction, self.cMs, stepsize, CollisionIntegralKind.F_1)
+            B = integration(ps, *bounds, self.creaction, self.cMs, stepsize, CollisionIntegralKind.F_f)
+            return numpy.array(A) * constant, numpy.array(B) * constant
+
+        fullstack = integration(ps, *bounds, self.creaction, self.cMs, stepsize, CollisionIntegralKind.Full)
+        return numpy.array(fullstack) * constant

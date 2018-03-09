@@ -108,6 +108,16 @@ dbl distribution_interpolation(const std::vector<dbl> &grid,
 }
 
 
+dbl distribution_interpolation(const particle_t &specie, dbl p) {
+    return distribution_interpolation(
+        specie.grid.grid, specie.grid.distribution,
+        p,
+        specie.m, specie.eta,
+        specie.T, specie.in_equilibrium
+    );
+}
+
+
 /* ## $\mathcal{F}(f_\alpha)$ functional */
 
 /* ### Naive form
@@ -303,31 +313,36 @@ dbl integrand_full(
     std::array<dbl, 4> f;
     for (int k = 0; k < 4; ++k) {
         const particle_t &specie = reaction[k].specie;
-        f[k] = distribution_interpolation(
-            specie.grid.grid, specie.grid.distribution,
-            p[k],
-            specie.m, specie.eta,
-            specie.T, specie.in_equilibrium
-        );
+        f[k] = distribution_interpolation(specie, p[k]);
     }
 
-    if (kind == 1) {
-        return temp * F_1(reaction, f);
-    }
-    if (kind == 2) {
-        return temp * f[0] * F_f(reaction, f);
-    }
-    if (kind == 3) {
-        return temp * F_1_vacuum_decay();
-    }
-    if (kind == 4) {
-        return temp * f[0] * F_f_vacuum_decay();
-    }
-    if (kind == 5) {
-        return temp * (F_1_vacuum_decay() + f[0] * F_f_vacuum_decay());
-    }
+    auto integral_kind = CollisionIntegralKind(kind);
 
-    return temp * (F_1(reaction, f) + f[0] * F_f(reaction, f));
+    switch (integral_kind) {
+        case CollisionIntegralKind::F_1_vacuum_decay:
+             return temp * F_1_vacuum_decay();
+        case CollisionIntegralKind::F_f_vacuum_decay:
+            return temp * F_f_vacuum_decay();
+        case CollisionIntegralKind::Full_vacuum_decay:
+            return temp * (F_1_vacuum_decay() + f[0] * F_f_vacuum_decay());
+
+        case CollisionIntegralKind::F_1:
+            return temp * F_1(reaction, f);
+        case CollisionIntegralKind::F_f:
+            return temp * F_f(reaction, f);
+        case CollisionIntegralKind::Full:
+        default:
+            return temp * (F_1(reaction, f) + f[0] * F_f(reaction, f));
+    }
+}
+
+
+Kinematics get_reaction_type(const std::vector<reaction_t> &reaction) {
+    int reaction_type = 0;
+    for (const reaction_t &reactant : reaction) {
+        reaction_type += reactant.side;
+    }
+    return static_cast<Kinematics>(reaction_type);
 }
 
 
@@ -345,6 +360,7 @@ struct integration_params {
     dbl releps;
     dbl abseps;
     size_t subdivisions;
+    gsl_integration_workspace *w;
 };
 
 
@@ -486,18 +502,15 @@ dbl p2_max_scat(const std::vector<reaction_t> &reaction, dbl p0, dbl p1) {
 dbl integrand_2nd_integration(
     dbl p1, void *p
 ) {
-    struct integration_params &params = *(struct integration_params *) p;
-    dbl min_2 = params.min_2;
-    dbl max_2 = params.max_2;
-    dbl p0 = params.p0;
-    auto reaction = *params.reaction;
+    struct integration_params &old_params = *(struct integration_params *) p;
+    dbl min_2 = old_params.min_2;
+    dbl max_2 = old_params.max_2;
+    dbl p0 = old_params.p0;
+    auto reaction = *old_params.reaction;
 
-    int reaction_type = 0;
-    for (const reaction_t &reactant : reaction) {
-        reaction_type += reactant.side;
-    }
+    auto reaction_type = get_reaction_type(reaction);
 
-    if (reaction_type == 2) {
+    if (reaction_type == Kinematics::DECAY) {
         if (p0 == 0) {
             dbl p2_min_1 = p2_min_dec(reaction, 0, 1, 2, 3);
             dbl p2_min_2 = p2_min_dec(reaction, 0, 2, 1, 3);
@@ -511,12 +524,12 @@ dbl integrand_2nd_integration(
         max_2 = p2_max_dec(reaction, p0, p1);
     }
 
-     if (reaction_type == 0) {
+     if (reaction_type == Kinematics::SCATTERING) {
          min_2 = p2_min_scat(reaction, p0, p1);
          max_2 = p2_max_scat(reaction, p0, p1);
      }
 
-    if (reaction_type == -2) {
+    if (reaction_type == Kinematics::CREATION) {
         dbl min_and_max = sqrt(
                         pow(
                             reaction[3].specie.m
@@ -530,26 +543,23 @@ dbl integrand_2nd_integration(
     }
 
     gsl_function F;
+    struct integration_params params = old_params;
     params.p1 = p1;
     params.min_2 = min_2;
     params.max_2 = max_2;
     F.params = &params;
 
-
-    // return result;
-    gsl_set_error_handler_off();
-
     dbl result, error;
     size_t status;
     F.function = &integrand_1st_integration;
 
-    gsl_integration_workspace *w = gsl_integration_workspace_alloc(params.subdivisions);
-    status = gsl_integration_qags(&F, min_2, max_2, params.abseps, params.releps, params.subdivisions, w, &result, &error);
-    // status = gsl_integration_qag(&F, g, h, params.abseps, params.releps, params.subdivisions, GSL_INTEG_GAUSS15, w, &result, &error);
+    gsl_set_error_handler_off();
+
+    status = gsl_integration_qag(&F, min_2, max_2, params.abseps, params.releps, params.subdivisions, GSL_INTEG_GAUSS15, params.w, &result, &error);
     if (status) {
-        printf("(p0=%e, p1=%e) 1st integration result: %e ± %e. %i intervals. %s\n", params.p0, p1, result, error, (int) w->size, gsl_strerror(status));
+        printf("(p0=%e, p1=%e) 1st integration result: %e ± %e. %i intervals. %s\n", params.p0, p1, result, error, (int) params.w->size, gsl_strerror(status));
+        throw std::runtime_error("Integrator failed to reach required accuracy");
     }
-    gsl_integration_workspace_free(w);
 
     return result;
 }
@@ -565,23 +575,20 @@ std::vector<dbl> integration(
     std::vector<dbl> integral(ps.size(), 0.);
 
     // Determine the integration bounds
-    int reaction_type = 0;
-    for (const reaction_t &reactant : reaction) {
-        reaction_type += reactant.side;
-    }
+    auto reaction_type = get_reaction_type(reaction);
 
     // Note firstprivate() clause: those variables will be copied for each thread
     #pragma omp parallel for default(none) shared(ps, Ms, reaction, integral, stepsize, kind, reaction_type) firstprivate(min_1, max_1, min_2, max_2)
     for (size_t i = 0; i < ps.size(); ++i) {
         dbl p0 = ps[i];
 
-        if (reaction_type == 2) {
+        if (reaction_type == Kinematics::DECAY) {
             max_1 = sqrt(
                 pow(energy(p0, reaction[0].specie.m) - reaction[2].specie.m - reaction[3].specie.m, 2)
                 - pow(reaction[1].specie.m, 2)
             );
         }
-        if (reaction_type == 0) {
+        if (reaction_type == Kinematics::SCATTERING) {
             dbl min = reaction[2].specie.m + reaction[3].specie.m - energy(p0, reaction[0].specie.m);
             dbl min2 = pow(min, 2) - pow(reaction[1].specie.m, 2);
             if (min < 0 || min2 < 0) {
@@ -591,7 +598,7 @@ std::vector<dbl> integration(
                 min_1 = sqrt(min2);
             }
         }
-        if (reaction_type == -2) {
+        if (reaction_type == Kinematics::CREATION) {
             dbl max = reaction[3].specie.m - energy(p0, reaction[0].specie.m) - reaction[2].specie.m;
             dbl max2 = pow(max, 2) - pow(reaction[1].specie.m, 2);
             if (max < 0 || max2 < 0) {
@@ -600,76 +607,65 @@ std::vector<dbl> integration(
             max_1 = sqrt(max2);
         }
 
-        dbl result, error;
+        dbl result(0.), error(0.);
         size_t status;
         gsl_function F;
         F.function = &integrand_2nd_integration;
 
-        dbl f = distribution_interpolation(
-            reaction[0].specie.grid.grid, reaction[0].specie.grid.distribution,
-            p0,
-            reaction[0].specie.m, reaction[0].specie.eta,
-            reaction[0].specie.T, reaction[0].specie.in_equilibrium
-        );
-
         dbl releps = 1e-2;
-        //dbl abseps = 1e-10;
-        dbl abseps = std::max(f / stepsize * releps, 1e-15);
+        dbl abseps = releps / stepsize;
+        auto integral_kind = CollisionIntegralKind(kind);
+        if (integral_kind != CollisionIntegralKind::F_f
+            && integral_kind != CollisionIntegralKind::F_f_vacuum_decay)
+        {
+            dbl f = distribution_interpolation(reaction[0].specie, p0);
+            abseps *= f;
+        }
 
-        size_t subdivisions = 100;
+
+        size_t subdivisions = 10000;
+        gsl_integration_workspace *w1 = gsl_integration_workspace_alloc(subdivisions);
+        gsl_integration_workspace *w2 = gsl_integration_workspace_alloc(subdivisions);
         struct integration_params params = {
             p0, 0., 0.,
             &reaction, &Ms,
             min_1, max_1, min_2, max_2,
             kind, releps, abseps,
-            subdivisions
+            subdivisions, w2
         };
         F.params = &params;
 
         gsl_set_error_handler_off();
-        gsl_integration_workspace *w = gsl_integration_workspace_alloc(subdivisions);
-        // status = gsl_integration_qags(&F, ai, bi, abseps, releps, subdivisions, w, &result, &error);
-        status = gsl_integration_qag(&F, min_1, max_1, abseps, releps, subdivisions, GSL_INTEG_GAUSS15, w, &result, &error);
 
+        status = gsl_integration_qag(&F, min_1, max_1, abseps, releps, subdivisions, GSL_INTEG_GAUSS15, w1, &result, &error);
         if (status) {
-            printf("2nd integration_1 result: %e ± %e. %i intervals. %s\n", result, error, (int) w->size, gsl_strerror(status));
-            // throw std::runtime_error("Integrator failed to reach required accuracy");
+            printf("2nd integration_1 result: %e ± %e. %i intervals. %s\n", result, error, (int) w1->size, gsl_strerror(status));
+            throw std::runtime_error("Integrator failed to reach required accuracy");
         }
-        gsl_integration_workspace_free(w);
+        gsl_integration_workspace_free(w1);
+        gsl_integration_workspace_free(w2);
         integral[i] += result;
-
-        // params = {
-        //     p0, 0., 0.,
-        //     &reaction, &Ms,
-        //     ai, bi, gi, hi,
-        //     3, releps, abseps,
-        //     subdivisions
-        // };
-        // F.params = &params;
-
-        // w = gsl_integration_workspace_alloc(subdivisions);
-        // status = gsl_integration_qag(&F, ai, bi, abseps, releps, subdivisions, GSL_INTEG_GAUSS15, w, &result, &error);
-        // if (status) {
-        //     printf("2nd integration_f result: %e ± %e. %i intervals. %s\n", result, error, (int) w->size, gsl_strerror(status));
-        //     throw std::runtime_error("Integrator failed to reach required accuracy");
-        // }
-        // gsl_integration_workspace_free(w);
-        // integral[i] += result;
     }
 
     return integral;
 }
 
 
-
-
-
-
 PYBIND11_MODULE(integral, m) {
-    m.def("distribution_interpolation", &distribution_interpolation,
-          "Exponential interpolation of distribution function",
-          "grid"_a, "distribution"_a,
-          "p"_a, "m"_a=0, "eta"_a=1, "T"_a=1., "in_equilibrium"_a=false);
+    m.def("distribution_interpolation", [](
+        const std::vector<dbl> &grid,
+        const std::vector<dbl> &distribution,
+        const py::array_t<double> &ps, dbl m=0., int eta=1, dbl T=1.,
+        bool in_equilibrium=false) {
+            auto v = [grid, distribution, m, eta, T, in_equilibrium](double p) {
+                return distribution_interpolation(grid, distribution, p, m, eta, T, in_equilibrium);
+            };
+            return py::vectorize(v)(ps);
+        },
+        "Exponential interpolation of distribution function",
+        "grid"_a, "distribution"_a,
+        "p"_a, "m"_a=0, "eta"_a=1, "T"_a=1., "in_equilibrium"_a=false
+    );
     m.def("binary_find", &binary_find,
           "grid"_a, "x"_a);
 
@@ -686,6 +682,15 @@ PYBIND11_MODULE(integral, m) {
     m.def("integration", &integration,
           "ps"_a, "min_1"_a, "max_1"_a, "min_2"_a, "max_2"_a,
           "reaction"_a, "Ms"_a, "stepsize"_a, "kind"_a);
+
+    py::enum_<CollisionIntegralKind>(m, "CollisionIntegralKind")
+        .value("Full", CollisionIntegralKind::Full)
+        .value("F_1", CollisionIntegralKind::F_1)
+        .value("F_f", CollisionIntegralKind::F_f)
+        .value("Full_vacuum_decay", CollisionIntegralKind::Full_vacuum_decay)
+        .value("F_1_vacuum_decay", CollisionIntegralKind::F_1_vacuum_decay)
+        .value("F_f_vacuum_decay", CollisionIntegralKind::F_f_vacuum_decay)
+        .enum_::export_values();
 
     py::class_<M_t>(m, "M_t")
         .def(py::init<std::array<int, 4>, dbl, dbl>(),

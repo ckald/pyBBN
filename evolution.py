@@ -7,7 +7,8 @@ import shutil
 from datetime import timedelta
 
 import environment
-from common import UNITS, Params, integrators, utils
+from common import UNITS, Params, utils
+from common.integrators import adams_bashforth_correction, MAX_ADAMS_BASHFORTH_ORDER
 
 import kawano
 
@@ -91,6 +92,8 @@ class Universe(object):
         long before then BBN. Then most particle species are in the thermodynamical equilibrium.
 
         """
+        T_initial = self.params.T
+
         print("\n\n" + "#"*32 + " Initial states " + "#"*32 + "\n")
         for particle in self.particles:
             print(particle)
@@ -110,8 +113,6 @@ class Universe(object):
             self.params.update(self.total_energy_density(), self.total_entropy())
         self.save_params()
 
-        # TODO: `Interrupted` resulted in unexpectedly interrupted simulations
-        # interrupted = False
         while self.params.T > T_final:
             try:
                 self.log()
@@ -125,12 +126,13 @@ class Universe(object):
                 print("\nKeyboard interrupt!")
                 sys.exit(1)
                 break
-        # else:
-        #     interrupted = True
-        #     print("Simulation was interrupted.")
+
+        if not (T_initial > self.params.T > 0):
+            print("\n(T < 0) or (T > T_initial): suspect numerical instability")
+            sys.exit(1)
 
         self.log()
-        if export:  # and not interrupted:
+        if export:
             self.export()
 
         return self.data
@@ -158,17 +160,13 @@ class Universe(object):
     def make_step(self):
         self.integrand(self.params.x, self.params.aT)
 
-        order = min(len(self.data) + 1, 5)
-        fs = [self.fraction]
-        if order > 1:
-            fs = list(self.data['fraction'][-(order-1):]) + fs
-
         if self.step_monitor:
             self.step_monitor(self)
 
         if environment.get('ADAMS_BASHFORTH_TEMPERATURE_CORRECTION'):
-            self.params.aT += integrators.adams_bashforth_correction(fs=fs, h=self.params.h,
-                                                                     order=order)
+            fs = (list(self.data['fraction'][-MAX_ADAMS_BASHFORTH_ORDER:]) + [self.fraction])
+
+            self.params.aT += adams_bashforth_correction(fs=fs, h=self.params.h)
         else:
             self.params.aT += self.fraction * self.params.h
 
