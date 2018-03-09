@@ -24,6 +24,17 @@ enum class Kinematics {
   CREATION = -2
 };
 
+
+enum class CollisionIntegralKind {
+  Full = 0,
+  F_1 = 1,
+  F_f = 2,
+  Full_vacuum_decay = 3,
+  F_1_vacuum_decay = 4,
+  F_f_vacuum_decay = 5
+};
+
+
 struct M_t {
     M_t(std::array<int, 4> order, dbl K1, dbl K2)
         : order(order), K1(K1), K2(K2) {}

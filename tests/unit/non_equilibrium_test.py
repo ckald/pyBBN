@@ -1,5 +1,6 @@
 import numpy
 
+import environment
 from . import non_equilibium_setup, with_setup_args
 
 
@@ -41,9 +42,11 @@ def unit_non_equilibrium_test(params, universe):
 
     integral = neutrino_e.collision_integrals[0]
 
-    # collision_integral = integral.integrate(neutrino_e.grid.TEMPLATE)
-    A, B = integral.integrate(neutrino_e.grid.TEMPLATE)
-    collision_integral = (A + neutrino_e._distribution * B)
+    if environment.get('SPLIT_COLLISION_INTEGRAL'):
+        A, B = integral.integrate(neutrino_e.grid.TEMPLATE)
+        collision_integral = (A + neutrino_e._distribution * B)
+    else:
+        collision_integral = integral.integrate(neutrino_e.grid.TEMPLATE)
 
     universe.calculate_collisions()
 

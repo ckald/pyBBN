@@ -227,8 +227,9 @@ class DistributionParticle(AbstractParticle):
         })
 
         if force_print or self.regime != oldregime or self.in_equilibrium != oldeq:
-            print("\n"+ "\t" * 2 + "%s decoupled at T_dec = %.2f MeV \n" %
-                (self.name, self.decoupling_temperature / UNITS.MeV) + ("\t" * 2 + "-" * 50))
+            print("\n" + "\t"*2 + "{} decoupled at T_dec = {:.2f} MeV \n"
+                  .format(self.name, self.decoupling_temperature / UNITS.MeV)
+                  + "\t" * 2 + "-"*50)
 
     def update_distribution(self):
         """ Apply collision integral to modify the distribution function """
@@ -242,7 +243,6 @@ class DistributionParticle(AbstractParticle):
 
         # assert all(self._distribution >= 0), self._distribution
         self._distribution = numpy.maximum(self._distribution, 0)
-        # self._distribution[self._distribution < 1e-25] = 0
 
         # Clear collision integrands for the next computation step
         self.collision_integrals = []
@@ -258,19 +258,15 @@ class DistributionParticle(AbstractParticle):
         if not self.collision_integrals:
             return numpy.zeros(len(ps))
 
-        # Is = []
-
-        # for integral in self.collision_integrals:
-        #     Is.append(integral.integrate(ps, stepsize=self.params.h))
-
-        # integral = sum(Is)
-        # return integral
+        if not environment.get('SPLIT_COLLISION_INTEGRAL'):
+            return sum([integral.integrate(ps, stepsize=self.params.h)
+                        for integral in self.collision_integrals])
 
         As = []
         Bs = []
 
         for integral in self.collision_integrals:
-            A, B = integral.integrate(ps)
+            A, B = integral.integrate(ps, stepsize=self.params.h)
             As.append(A)
             Bs.append(B)
 
@@ -286,21 +282,11 @@ class DistributionParticle(AbstractParticle):
 
             prediction = adams_moulton_solver(y=self.distribution(ps), fs=fs,
                                               A=A, B=B, h=self.params.h, order=order)
-            # prediction = adams_moulton_solver(y=self.distribution(ps), fs=fs,
-            #                                   A=A, B=B, h=self.params.h, order=order)
         else:
             prediction = implicit_euler(y=self.distribution(ps), t=None,
                                         A=A, B=B, h=self.params.h)
 
-        # To ensure that total_integral =  0 when A = B = 0. In previous cases total_integral
-        # would be constant, even if A = B = 0
-        # if (A + B) == 0:
-        #     total_integral = 0
-        # else:
-        total_integral = (prediction - self.distribution(ps)) / self.params.h
-        # total_integral = (prediction - self.distribution(ps)) / self.params.h
-
-        return total_integral
+        return (prediction - self.distribution(ps)) / self.params.h
 
     def distribution(self, p):
         """

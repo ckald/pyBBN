@@ -316,23 +316,24 @@ dbl integrand_full(
         f[k] = distribution_interpolation(specie, p[k]);
     }
 
-    if (kind == 1) {
-        return temp * F_1(reaction, f);
-    }
-    if (kind == 2) {
-        return temp * F_f(reaction, f);
-    }
-    if (kind == 3) {
-        return temp * F_1_vacuum_decay();
-    }
-    if (kind == 4) {
-        return temp * F_f_vacuum_decay();
-    }
-    if (kind == 5) {
-        return temp * (F_1_vacuum_decay() + f[0] * F_f_vacuum_decay());
-    }
+    auto integral_kind = CollisionIntegralKind(kind);
 
-    return temp * (F_1(reaction, f) + f[0] * F_f(reaction, f));
+    switch (integral_kind) {
+        case CollisionIntegralKind::F_1_vacuum_decay:
+             return temp * F_1_vacuum_decay();
+        case CollisionIntegralKind::F_f_vacuum_decay:
+            return temp * F_f_vacuum_decay();
+        case CollisionIntegralKind::Full_vacuum_decay:
+            return temp * (F_1_vacuum_decay() + f[0] * F_f_vacuum_decay());
+
+        case CollisionIntegralKind::F_1:
+            return temp * F_1(reaction, f);
+        case CollisionIntegralKind::F_f:
+            return temp * F_f(reaction, f);
+        case CollisionIntegralKind::Full:
+        default:
+            return temp * (F_1(reaction, f) + f[0] * F_f(reaction, f));
+    }
 }
 
 
@@ -681,6 +682,15 @@ PYBIND11_MODULE(integral, m) {
     m.def("integration", &integration,
           "ps"_a, "min_1"_a, "max_1"_a, "min_2"_a, "max_2"_a,
           "reaction"_a, "Ms"_a, "stepsize"_a, "kind"_a);
+
+    py::enum_<CollisionIntegralKind>(m, "CollisionIntegralKind")
+        .value("Full", CollisionIntegralKind::Full)
+        .value("F_1", CollisionIntegralKind::F_1)
+        .value("F_f", CollisionIntegralKind::F_f)
+        .value("Full_vacuum_decay", CollisionIntegralKind::Full_vacuum_decay)
+        .value("F_1_vacuum_decay", CollisionIntegralKind::F_1_vacuum_decay)
+        .value("F_f_vacuum_decay", CollisionIntegralKind::F_f_vacuum_decay)
+        .enum_::export_values();
 
     py::class_<M_t>(m, "M_t")
         .def(py::init<std::array<int, 4>, dbl, dbl>(),
