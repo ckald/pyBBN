@@ -108,6 +108,16 @@ dbl distribution_interpolation(const std::vector<dbl> &grid,
 }
 
 
+dbl distribution_interpolation(const particle_t &specie, dbl p) {
+    return distribution_interpolation(
+        specie.grid.grid, specie.grid.distribution,
+        p,
+        specie.m, specie.eta,
+        specie.T, specie.in_equilibrium
+    );
+}
+
+
 /* ## $\mathcal{F}(f_\alpha)$ functional */
 
 /* ### Naive form
@@ -303,12 +313,7 @@ dbl integrand_full(
     std::array<dbl, 4> f;
     for (int k = 0; k < 4; ++k) {
         const particle_t &specie = reaction[k].specie;
-        f[k] = distribution_interpolation(
-            specie.grid.grid, specie.grid.distribution,
-            p[k],
-            specie.m, specie.eta,
-            specie.T, specie.in_equilibrium
-        );
+        f[k] = distribution_interpolation(specie, p[k]);
     }
 
     if (kind == 1) {
