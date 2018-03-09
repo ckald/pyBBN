@@ -555,7 +555,7 @@ dbl integrand_2nd_integration(
 
     gsl_set_error_handler_off();
 
-    status = gsl_integration_qag(&F, min_2, max_2, params.abseps, params.releps, params.subdivisions, GSL_INTEG_GAUSS61, params.w, &result, &error);
+    status = gsl_integration_qag(&F, min_2, max_2, params.abseps, params.releps, params.subdivisions, GSL_INTEG_GAUSS15, params.w, &result, &error);
     if (status) {
         printf("(p0=%e, p1=%e) 1st integration result: %e ± %e. %i intervals. %s\n", params.p0, p1, result, error, (int) params.w->size, gsl_strerror(status));
         throw std::runtime_error("Integrator failed to reach required accuracy");
@@ -623,7 +623,7 @@ std::vector<dbl> integration(
         }
 
 
-        size_t subdivisions = 100;
+        size_t subdivisions = 10000;
         gsl_integration_workspace *w1 = gsl_integration_workspace_alloc(subdivisions);
         gsl_integration_workspace *w2 = gsl_integration_workspace_alloc(subdivisions);
         struct integration_params params = {
@@ -637,7 +637,7 @@ std::vector<dbl> integration(
 
         gsl_set_error_handler_off();
 
-        status = gsl_integration_qag(&F, min_1, max_1, abseps, releps, subdivisions, GSL_INTEG_GAUSS61, w1, &result, &error);
+        status = gsl_integration_qag(&F, min_1, max_1, abseps, releps, subdivisions, GSL_INTEG_GAUSS15, w1, &result, &error);
         if (status) {
             printf("2nd integration_1 result: %e ± %e. %i intervals. %s\n", result, error, (int) w1->size, gsl_strerror(status));
             throw std::runtime_error("Integrator failed to reach required accuracy");
