@@ -2,7 +2,7 @@
 import numpy
 
 import environment
-from common import UNITS, CONST
+from common import CONST
 from interactions.boltzmann import BoltzmannIntegral
 from interactions.four_particle.cpp.integral import (
     integration, M_t, grid_t, particle_t, reaction_t,

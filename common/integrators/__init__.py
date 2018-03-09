@@ -75,15 +75,18 @@ ADAMS_BASHFORTH_COEFFICIENTS = {
     4: ([-9., 37., -59., 55.], 24.),
     5: ([251., -1274., 2616., -2774., 1901.], 720.)
 }
+MAX_ADAMS_BASHFORTH_ORDER = max(ADAMS_BASHFORTH_COEFFICIENTS.keys())
 
 
 def adams_bashforth_correction(fs, h, order=None):
     if order is None:
-        order = min(len(ADAMS_BASHFORTH_COEFFICIENTS), len(fs))
+        order = min(MAX_ADAMS_BASHFORTH_ORDER, len(fs))
 
     bs, divider = ADAMS_BASHFORTH_COEFFICIENTS[order]
+    fs = fs[-order:]
+    assert len(fs) == order, (len(fs), order)
 
-    return h * sum(b * f for b, f in zip(bs, fs[-order:])) / divider
+    return h * sum(b * f for b, f in zip(bs, fs)) / divider
 
 
 ADAMS_MOULTON_COEFFICIENTS = {
@@ -93,16 +96,20 @@ ADAMS_MOULTON_COEFFICIENTS = {
     4: ([1., -5., 19., 9.], 24.),
     5: ([-19., 106., -264., 646., 251.], 720.)
 }
+MAX_ADAMS_MOULTON_ORDER = max(ADAMS_MOULTON_COEFFICIENTS.keys())
 
 
 def adams_moulton_solver(y, fs, A, B, h, order=None):
     if order is None:
-        order = min(len(ADAMS_MOULTON_COEFFICIENTS), len(fs))
+        order = min(MAX_ADAMS_MOULTON_ORDER, len(fs) + 1)
 
     bs, divider = ADAMS_MOULTON_COEFFICIENTS[order]
+    fs = fs[-(order-1):] + [A]
+    assert len(fs) == order, (len(fs), order)
 
-    return (y + h * sum(b * f for b, f in zip(bs, fs[-order+1:] + [A])) / divider) /\
-        (1 - h * B * bs[-1] / divider)
+    return (
+        y + h * sum(b * f for b, f in zip(bs, fs)) / divider
+    ) / (1 - h * B * bs[-1] / divider)
 
 
 def integrate_1D(integrand, bounds):

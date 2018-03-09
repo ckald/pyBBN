@@ -11,7 +11,10 @@ import numpy
 
 import environment
 from common import GRID, UNITS, statistics as STATISTICS
-from common.integrators import adams_bashforth_correction, adams_moulton_solver, implicit_euler
+from common.integrators import (
+    adams_bashforth_correction, adams_moulton_solver, implicit_euler,
+    MAX_ADAMS_BASHFORTH_ORDER, MAX_ADAMS_MOULTON_ORDER
+)
 from common.utils import Dynamic2DArray, DynamicRecArray
 
 from particles import DustParticle, RadiationParticle, IntermediateParticle, NonEqParticle
@@ -259,8 +262,12 @@ class DistributionParticle(AbstractParticle):
             return numpy.zeros(len(ps))
 
         if not environment.get('SPLIT_COLLISION_INTEGRAL'):
-            return sum([integral.integrate(ps, stepsize=self.params.h)
-                        for integral in self.collision_integrals])
+            fs = [sum([integral.integrate(ps, stepsize=self.params.h)
+                       for integral in self.collision_integrals])]
+
+            fs = list(self.data['collision_integral'][-MAX_ADAMS_BASHFORTH_ORDER:]) + fs
+
+            return adams_bashforth_correction(fs=fs, h=self.params.h) / self.params.h
 
         As = []
         Bs = []
@@ -274,14 +281,10 @@ class DistributionParticle(AbstractParticle):
         B = sum(Bs)
 
         if environment.get('ADAMS_MOULTON_DISTRIBUTION_CORRECTION'):
-            order = min(len(self.data['collision_integral']) + 1, 5)
-            index = numpy.searchsorted(self.grid.TEMPLATE, ps)
-            fs = []
-            if order > 1:
-                fs = list(self.data['collision_integral'][-order+1:, index])
+            fs = list(self.data['collision_integral'][-MAX_ADAMS_MOULTON_ORDER:])
 
             prediction = adams_moulton_solver(y=self.distribution(ps), fs=fs,
-                                              A=A, B=B, h=self.params.h, order=order)
+                                              A=A, B=B, h=self.params.h)
         else:
             prediction = implicit_euler(y=self.distribution(ps), t=None,
                                         A=A, B=B, h=self.params.h)
