@@ -331,12 +331,12 @@ dbl integrand_full(
 }
 
 
-int get_reaction_type(const std::vector<reaction_t> &reaction) {
+Kinematics get_reaction_type(const std::vector<reaction_t> &reaction) {
     int reaction_type = 0;
     for (const reaction_t &reactant : reaction) {
         reaction_type += reactant.side;
     }
-    return reaction_type;
+    return static_cast<Kinematics>(reaction_type);
 }
 
 
@@ -501,9 +501,9 @@ dbl integrand_2nd_integration(
     dbl p0 = old_params.p0;
     auto reaction = *old_params.reaction;
 
-    int reaction_type = get_reaction_type(reaction);
+    auto reaction_type = get_reaction_type(reaction);
 
-    if (reaction_type == 2) {
+    if (reaction_type == Kinematics::DECAY) {
         if (p0 == 0) {
             dbl p2_min_1 = p2_min_dec(reaction, 0, 1, 2, 3);
             dbl p2_min_2 = p2_min_dec(reaction, 0, 2, 1, 3);
@@ -517,12 +517,12 @@ dbl integrand_2nd_integration(
         max_2 = p2_max_dec(reaction, p0, p1);
     }
 
-     if (reaction_type == 0) {
+     if (reaction_type == Kinematics::SCATTERING) {
          min_2 = p2_min_scat(reaction, p0, p1);
          max_2 = p2_max_scat(reaction, p0, p1);
      }
 
-    if (reaction_type == -2) {
+    if (reaction_type == Kinematics::CREATION) {
         dbl min_and_max = sqrt(
                         pow(
                             reaction[3].specie.m
@@ -572,20 +572,20 @@ std::vector<dbl> integration(
     std::vector<dbl> integral(ps.size(), 0.);
 
     // Determine the integration bounds
-    int reaction_type = get_reaction_type(reaction);
+    auto reaction_type = get_reaction_type(reaction);
 
     // Note firstprivate() clause: those variables will be copied for each thread
     #pragma omp parallel for default(none) shared(ps, Ms, reaction, integral, stepsize, kind, reaction_type) firstprivate(min_1, max_1, min_2, max_2)
     for (size_t i = 0; i < ps.size(); ++i) {
         dbl p0 = ps[i];
 
-        if (reaction_type == 2) {
+        if (reaction_type == Kinematics::DECAY) {
             max_1 = sqrt(
                 pow(energy(p0, reaction[0].specie.m) - reaction[2].specie.m - reaction[3].specie.m, 2)
                 - pow(reaction[1].specie.m, 2)
             );
         }
-        if (reaction_type == 0) {
+        if (reaction_type == Kinematics::SCATTERING) {
             dbl min = reaction[2].specie.m + reaction[3].specie.m - energy(p0, reaction[0].specie.m);
             dbl min2 = pow(min, 2) - pow(reaction[1].specie.m, 2);
             if (min < 0 || min2 < 0) {
@@ -595,7 +595,7 @@ std::vector<dbl> integration(
                 min_1 = sqrt(min2);
             }
         }
-        if (reaction_type == -2) {
+        if (reaction_type == Kinematics::CREATION) {
             dbl max = reaction[3].specie.m - energy(p0, reaction[0].specie.m) - reaction[2].specie.m;
             dbl max2 = pow(max, 2) - pow(reaction[1].specie.m, 2);
             if (max < 0 || max2 < 0) {

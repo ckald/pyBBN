@@ -18,6 +18,12 @@ typedef double dbl;
 typedef py::array_t<dbl> npdbl;
 
 
+enum class Kinematics {
+  DECAY = 2,
+  SCATTERING = 0,
+  CREATION = -2
+};
+
 struct M_t {
     M_t(std::array<int, 4> order, dbl K1, dbl K2)
         : order(order), K1(K1), K2(K2) {}
