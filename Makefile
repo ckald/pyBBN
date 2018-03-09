@@ -1,22 +1,16 @@
 COMPILER ?= c++
 PYTHON ?= python3.5
-all: clean compile_3p compile_4p test
+all: compile_4p compile_3p test
 
 compile_3p:
-	cd interactions/three_particle/cpp \
-	&& $(COMPILER) -fopenmp -fPIC -O0 -g -shared -std=c++11 -I pybind11/include \
-	`$(PYTHON)-config --cflags --ldflags` -lgsl -lgslcblas -lm -Wfatal-errors \
-	integral.cpp -o integral.so
+	cd interactions/three_particle/cpp && make all
 
 compile_4p:
-	cd interactions/four_particle/cpp \
-	&& $(COMPILER) -fopenmp -fPIC -O3 -shared -std=c++11 -I pybind11/include \
-	`$(PYTHON)-config --cflags --ldflags` -lgsl -lgslcblas -lm -Wfatal-errors \
-	integral.cpp Ds.cpp -o integral.so
+	cd interactions/four_particle/cpp && make all
 
 clean:
-	cd interactions/four_particle/cpp && rm -rf *.o *.so *.c *.so.DSYM ;\
-	cd ../../three_particle/cpp && rm -rf *.o *.so *.c *.so.DSYM
+	cd interactions/four_particle/cpp && make clean
+	cd interactions/three_particle/cpp && make clean
 
 test:
 	$(PYTHON) -m "nose" tests/unit
