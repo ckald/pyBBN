@@ -612,12 +612,18 @@ std::vector<dbl> integration(
         gsl_function F;
         F.function = &integrand_2nd_integration;
 
-        dbl f = distribution_interpolation(reaction[0].specie, p0);
         dbl releps = 1e-2;
-        dbl abseps = f / stepsize * releps;
+        dbl abseps = releps / stepsize;
+        auto integral_kind = CollisionIntegralKind(kind);
+        if (integral_kind != CollisionIntegralKind::F_f
+            && integral_kind != CollisionIntegralKind::F_f_vacuum_decay)
+        {
+            dbl f = distribution_interpolation(reaction[0].specie, p0);
+            abseps *= f;
+        }
 
 
-        size_t subdivisions = 1;
+        size_t subdivisions = 100;
         gsl_integration_workspace *w1 = gsl_integration_workspace_alloc(subdivisions);
         gsl_integration_workspace *w2 = gsl_integration_workspace_alloc(subdivisions);
         struct integration_params params = {

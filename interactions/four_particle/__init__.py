@@ -147,7 +147,7 @@ class FourParticleIntegral(BoltzmannIntegral):
         if environment.get('SPLIT_COLLISION_INTEGRAL'):
             A = integration(ps, *bounds, self.creaction, self.cMs, stepsize, CollisionIntegralKind.F_1)
             B = integration(ps, *bounds, self.creaction, self.cMs, stepsize, CollisionIntegralKind.F_f)
-            return A * constant, B * constant
+            return numpy.array(A) * constant, numpy.array(B) * constant
 
         fullstack = integration(ps, *bounds, self.creaction, self.cMs, stepsize, CollisionIntegralKind.Full)
-        return fullstack * constant
+        return numpy.array(fullstack) * constant
