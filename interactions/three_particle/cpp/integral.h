@@ -8,8 +8,8 @@
 #include <pybind11/stl.h>
 #include <pybind11/numpy.h>
 
-//#include <gsl/gsl_errno.h>
-//#include <gsl/gsl_integration.h>
+#include <gsl/gsl_errno.h>
+#include <gsl/gsl_integration.h>
 
 namespace py = pybind11;
 using namespace pybind11::literals;
@@ -42,15 +42,12 @@ struct reaction_t3 {
 
 dbl energy(dbl y, dbl mass);
 
-
 std::pair<int, int> binary_find(const std::vector<dbl> &grid, dbl x);
-
 
 dbl distribution_interpolation(const std::vector<dbl> &grid,
                                const std::vector<dbl> &distribution,
                                dbl p, dbl m, int eta, dbl T,
                                bool in_equilibrium);
-
 
 dbl F_A(const std::vector<reaction_t3> &reaction, const std::array<dbl, 3> &f, int skip_index);
 dbl F_B(const std::vector<reaction_t3> &reaction, const std::array<dbl, 3> &f, int skip_index);
