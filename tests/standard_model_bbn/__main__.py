@@ -105,11 +105,12 @@ def step_monitor(universe):
                 sum(p.energy_density for p in [neutrino_e, neutrino_mu]) / UNITS.MeV**4
             ))
 
+
 universe.step_monitor = step_monitor
 
 universe.evolve(T_interaction_freezeout, export=False)
-#universe.interactions = tuple()
-#universe.evolve(T_final)
+universe.interactions = tuple()
+universe.evolve(T_final)
 
 """
 ### Plots for comparison with articles
