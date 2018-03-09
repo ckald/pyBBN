@@ -495,11 +495,11 @@ dbl p2_max_scat(const std::vector<reaction_t> &reaction, dbl p0, dbl p1) {
 dbl integrand_2nd_integration(
     dbl p1, void *p
 ) {
-    struct integration_params &params = *(struct integration_params *) p;
-    dbl min_2 = params.min_2;
-    dbl max_2 = params.max_2;
-    dbl p0 = params.p0;
-    auto reaction = *params.reaction;
+    struct integration_params &old_params = *(struct integration_params *) p;
+    dbl min_2 = old_params.min_2;
+    dbl max_2 = old_params.max_2;
+    dbl p0 = old_params.p0;
+    auto reaction = *old_params.reaction;
 
     int reaction_type = get_reaction_type(reaction);
 
@@ -536,6 +536,7 @@ dbl integrand_2nd_integration(
     }
 
     gsl_function F;
+    struct integration_params params = old_params;
     params.p1 = p1;
     params.min_2 = min_2;
     params.max_2 = max_2;
