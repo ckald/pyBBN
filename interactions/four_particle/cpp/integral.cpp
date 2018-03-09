@@ -407,13 +407,21 @@ dbl p2_min_scat(const std::vector<reaction_t> &reaction, dbl p0, dbl p1) {
     }
 
     if (m1 != 0) {
-        dbl temp1 = (-p1 * (pow(m1,2) + pow(m2,2) - pow(m3,2))
-                    + sqrt(
-                        (pow(p1,2) + pow(m1,2)) * (pow(m1,4)
-                        + pow(pow(m2,2)-pow(m3,2),2) - 2 * pow(m1,2)
-                        * (pow(m2,2) + pow(m3,2)))
-                        )
-                    ) / (2 * pow(m1,2));
+        dbl temp = (pow(p1,2) + pow(m1,2))
+                    * (
+                    pow(m1,4) + pow(pow(m2,2) - pow(m3,2), 2)
+                    - 2 * pow(m1,2) * (pow(m2,2) + pow(m3,2))
+                    );
+
+        if (temp < 0) {
+            temp = 0;
+        }
+
+        dbl temp1 = (
+                    -p1 * (pow(m1,2) + pow(m2,2) - pow(m3,2))
+                    + sqrt(temp)
+                    )
+                    / (2 * pow(m1,2));
 
         dbl temp2 = -temp1;
 
@@ -454,13 +462,21 @@ dbl p2_max_scat(const std::vector<reaction_t> &reaction, dbl p0, dbl p1) {
     }
 
     if (m1 != 0) {
-        return (p1 * (pow(m1,2) + pow(m2,2) - pow(m3,2))
-                    + sqrt(
-                        (pow(p1,2) + pow(m1,2)) * (pow(m1,4)
-                        + pow(pow(m2,2)-pow(m3,2),2) - 2 * pow(m1,2)
-                        * (pow(m2,2) + pow(m3,2)))
-                        )
-                    ) / (2 * pow(m1,2));
+        dbl temp = (pow(p1,2) + pow(m1,2))
+                    * (
+                    pow(m1,4) + pow(pow(m2,2) - pow(m3,2), 2)
+                    - 2 * pow(m1,2) * (pow(m2,2) + pow(m3,2))
+                    );
+
+        if (temp < 0) {
+            temp = 0;
+        }
+
+        return (
+                p1 * (pow(m1,2) + pow(m2,2) - pow(m3,2))
+                + sqrt(temp)
+                )
+                / (2 * pow(m1,2));
     }
 
     return p1;
@@ -489,16 +505,29 @@ dbl integrand_2nd_integration(
             min_2 = std::max(p2_min_1 - p1 * (p2_min_1 / p2_min_2), 0.);
         }
         else {
-            min_2 = 0;
+            min_2 = 0.;
         }
 
         max_2 = p2_max_dec(reaction, p0, p1);
     }
 
-    // if (reaction_type == 0) {
-    //     min_2 = p2_min_scat(reaction, p0, p1);
-    //     max_2 = p2_max_scat(reaction, p0, p1);
-    // }
+     if (reaction_type == 0) {
+         min_2 = p2_min_scat(reaction, p0, p1);
+         max_2 = p2_max_scat(reaction, p0, p1);
+     }
+
+    if (reaction_type == -2) {
+        dbl min_and_max = sqrt(
+                        pow(
+                            reaction[3].specie.m
+                            - energy(p0, reaction[0].specie.m)
+                            - energy(p1, reaction[1].specie.m)
+                        , 2)
+                        - pow(reaction[2].specie.m, 2)
+                    );
+        min_2 = min_and_max;
+        max_2 = min_and_max;
+    }
 
     gsl_function F;
     params.p1 = p1;
@@ -547,19 +576,29 @@ std::vector<dbl> integration(
         dbl p0 = ps[i];
 
         if (reaction_type == 2) {
-            dbl max = sqrt(
+            max_1 = sqrt(
                 pow(energy(p0, reaction[0].specie.m) - reaction[2].specie.m - reaction[3].specie.m, 2)
                 - pow(reaction[1].specie.m, 2)
             );
-            max_1 = std::min(max_1, max);
         }
-        // if (reaction_type == 0) {
-        //     dbl min = pow(reaction[2].specie.m + reaction[3].specie.m - energy(p0, reaction[0].specie.m), 2)
-        //             - pow(reaction[1].specie.m, 2);
-        //     if (min > 0) {
-        //         min_1 = std::max(min_1, sqrt(min));
-        //     }
-        // }
+        if (reaction_type == 0) {
+            dbl min = reaction[2].specie.m + reaction[3].specie.m - energy(p0, reaction[0].specie.m);
+            dbl min2 = pow(min, 2) - pow(reaction[1].specie.m, 2);
+            if (min < 0 || min2 < 0) {
+                min_1 = 0.;
+            }
+            else {
+                min_1 = sqrt(min2);
+            }
+        }
+        if (reaction_type == -2) {
+            dbl max = reaction[3].specie.m - energy(p0, reaction[0].specie.m) - reaction[2].specie.m;
+            dbl max2 = pow(max, 2) - pow(reaction[1].specie.m, 2);
+            if (max < 0 || max2 < 0) {
+                continue;
+            }
+            max_1 = sqrt(max2);
+        }
 
         dbl result, error;
         size_t status;
