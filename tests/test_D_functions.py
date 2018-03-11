@@ -10,7 +10,7 @@ from common import LogSpacedGrid
 cwd = os.path.split(__file__)[0]
 
 
-GRID = LogSpacedGrid(MOMENTUM_SAMPLES=20)
+GRID = LogSpacedGrid(MOMENTUM_SAMPLES=30)
 
 def grid_iterator(dimension=4, grid=GRID):
     value = numpy.zeros(dimension, dtype=numpy.int)
