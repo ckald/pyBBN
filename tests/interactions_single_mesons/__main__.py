@@ -106,6 +106,14 @@ thetas = defaultdict(float, {
     'electron': theta,
 })
 
+# kind =
+# 0: I_coll = A + f_1 * B
+# 1: I_coll = A
+# 2: I_coll = f_1 * B
+# 3: I_coll = I_coll = A_vacuum_decay + f_1 * B_vacuum_decay
+# 4: I_coll = A_vacuum_decay
+# 5: I_coll = f_1 * B_vacuum_decay
+kind = 5
 
 def reaction_type(reaction):
     return sum(reactant.side for reactant in reaction)
@@ -115,7 +123,7 @@ interaction = NuI.sterile_hadrons_interactions(
         neutrinos = [neutrino_e],
         leptons = [],
         mesons = [neutral_pion],
-        kind=4
+        kind=kind
 )[0]
 
 #for inter in interaction:
@@ -159,14 +167,14 @@ def step_monitor(universe):
     for particle in universe.particles:
         data = particle.data['params']
         if particle.mass > 0 and not particle.in_equilibrium:
-            momenta = particle.grid.TEMPLATE
-            density = particle.density
-            density_c = particle.density * particle.params.a**3
-            integrand = (particle.collision_integral * particle.params.H * particle.conformal_energy(particle.grid.TEMPLATE) / particle.mass /particle.params.a / particle.old_distribution)
+            boost = particle.conformal_energy(particle.grid.TEMPLATE) / particle.conformal_mass
+            integrand = (particle.collision_integral * particle.params.H * boost / particle.old_distribution)
             decay_rate = -integrand
-#            print(["{0:0.15f}".format(i) for i in decay_rate/UNITS.MeV / 3.92472e-19],"\n")
-            with open(os.path.join(folder, particle.name.replace(' ', '_') + ".decay_rate.txt"), 'a') as f1:
-                f1.write('{:e}'.format(particle.params.T / UNITS.MeV) + '\t' + '{:e}'.format(particle.params.a) + '\t' + '\t'.join(['{:e}'.format(x) for x in decay_rate / UNITS.MeV]) + '\n')
+            print(["{0:0.15f}".format(i) for i in decay_rate/UNITS.MeV / 3.92472e-19],"\n")
+#            with open(os.path.join(folder, particle.name.replace(' ', '_') + "Decay_rate_3p.txt"), 'a') as f1:
+#                f1.write('{:e}'.format(particle.params.T / UNITS.MeV) + '\t'
+#                         + '{:e}'.format(particle.params.a) + '\t'
+#                         + '\t'.join(['{:e}'.format(x / UNITS.MeV) for x in decay_rate]) + '\n')
 
 
 universe.step_monitor = step_monitor

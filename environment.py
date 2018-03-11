@@ -2,7 +2,7 @@ import os
 
 
 defaults = {
-    'SPLIT_COLLISION_INTEGRAL': True,
+    'SPLIT_COLLISION_INTEGRAL': False,
 
     # Whether the code should use a fixed order Gauss-Legendre quadrature
     # or adaptive NumPy method `quad` (based on QUADPACK library)

@@ -16,6 +16,19 @@ using namespace pybind11::literals;
 typedef double dbl;
 typedef py::array_t<dbl> npdbl;
 
+enum class Kinematics_3 {
+  DECAY = 1,
+  CREATION = -1
+};
+
+enum class CollisionIntegralKind_3 {
+  Full = 0,
+  F_1 = 1,
+  F_f = 2,
+  Full_vacuum_decay = 3,
+  F_1_vacuum_decay = 4,
+  F_f_vacuum_decay = 5
+};
 
 struct grid_t3 {
     grid_t3(std::vector<dbl> grid, std::vector<dbl> distribution)
