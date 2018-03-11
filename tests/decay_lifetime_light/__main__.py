@@ -76,12 +76,10 @@ thetas = defaultdict(float, {
 # 0: I_coll = A + f_1 * B
 # 1: I_coll = A
 # 2: I_coll = f_1 * B
-# 3: I_coll = A_vacuum_decay
-# 4: I_coll = f_1 * B_vacuum_decay
-# 5: I_coll = A_vacuum_decay + f_1 * B_vacuum_decay
-kind = 4
-
-# TODO: add variable that controls integrator precision
+# 3: I_coll = I_coll = A_vacuum_decay + f_1 * B_vacuum_decay
+# 4: I_coll = A_vacuum_decay
+# 5: I_coll = f_1 * B_vacuum_decay
+kind = 5
 
 interaction = NuI.sterile_leptons_interactions(
     thetas=thetas, sterile=sterile,
@@ -111,7 +109,8 @@ def step_monitor(universe):
             something = particle.conformal_energy(particle.grid.TEMPLATE) / particle.conformal_mass
             integrand = (particle.collision_integral * particle.params.H * something / particle.old_distribution)
             decay_rate = -integrand
-            print(1 / decay_rate.mean() / UNITS.s, decay_rate / UNITS.MeV / 1.10562e-21 / 2, particle.density * universe.params.a**3 / universe.params.S)
+            print(1 / decay_rate.mean() / UNITS.s, "\n", decay_rate / UNITS.MeV / 1.10562e-21 / 2, "\n",
+                particle.density * universe.params.a**3 / universe.params.S, "\n\n")
             with open(os.path.join(folder, particle.name.replace(' ', '_') + "Decay_rate_post.txt"), 'a') as f1:
                 f1.write('{:e}'.format(particle.params.T / UNITS.MeV) + '\t'
                          + '{:e}'.format(particle.params.a) + '\t'

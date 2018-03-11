@@ -51,11 +51,20 @@ universe.add_particles([
     neutrino_mu
 ])
 
+# kind =
+# 0: I_coll = A + f_1 * B
+# 1: I_coll = A
+# 2: I_coll = f_1 * B
+# 3: I_coll = I_coll = A_vacuum_decay + f_1 * B_vacuum_decay
+# 4: I_coll = A_vacuum_decay
+# 5: I_coll = f_1 * B_vacuum_decay
+kind = 0
 
 universe.interactions += (
     SMI.neutrino_interactions(
         leptons=[electron],
-        neutrinos=[neutrino_e, neutrino_mu]
+        neutrinos=[neutrino_e, neutrino_mu],
+        kind=kind
     )
 )
 

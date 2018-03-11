@@ -144,10 +144,14 @@ class FourParticleIntegral(BoltzmannIntegral):
         if not self.cMs:
             self.cMs = [M_t(list(M.order), M.K1 / unit, M.K2 / unit) for M in self.Ms]
 
-        if environment.get('SPLIT_COLLISION_INTEGRAL'):
-            A = integration(ps, *bounds, self.creaction, self.cMs, stepsize, CollisionIntegralKind.F_1)
-            B = integration(ps, *bounds, self.creaction, self.cMs, stepsize, CollisionIntegralKind.F_f)
+        if environment.get('SPLIT_COLLISION_INTEGRAL') and self.kind in [0, 3]:
+            A = integration(ps, *bounds, self.creaction, self.cMs, stepsize, self.kind + 1)
+            B = integration(ps, *bounds, self.creaction, self.cMs, stepsize, self.kind + 2)
             return numpy.array(A) * constant, numpy.array(B) * constant
 
-        fullstack = integration(ps, *bounds, self.creaction, self.cMs, stepsize, CollisionIntegralKind.Full)
+        fullstack = integration(ps, *bounds, self.creaction, self.cMs, stepsize, self.kind)
+
+        if self.kind in [2, 5]:
+            constant *= self.particle._distribution
+
         return numpy.array(fullstack) * constant
