@@ -1,10 +1,6 @@
-import os
 import numpy as np
-import json
 
 from common import UNITS, LogSpacedGrid
-
-cwd = os.path.split(__file__)[0]
 
 GRID = LogSpacedGrid(MOMENTUM_SAMPLES=30, MAX_MOMENTUM=20)
 
