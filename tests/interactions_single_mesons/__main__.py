@@ -5,6 +5,7 @@
 <img src="particles.svg" width=100% />
 
 """
+import numpy
 import sys
 import os
 sys.path.insert(0, "/".join(os.path.dirname(os.path.abspath(__file__)).split("/")[:-2]))
@@ -12,31 +13,30 @@ sys.settrace
 import argparse
 from collections import defaultdict
 
+os.environ['SPLIT_COLLISION_INTEGRAL'] = 'False'
+
 from particles import Particle
 from library.SM import particles as SMP, interactions as SMI
 from library.NuMSM import particles as NuP, interactions as NuI
 from evolution import Universe
-from common import UNITS, Params, utils, LinearSpacedGrid, HeuristicGrid
-
+from common import CONST, UNITS, Params, utils, LinearSpacedGrid, HeuristicGrid
+from interactions.four_particle.cpp.integral import CollisionIntegralKind
 
 parser = argparse.ArgumentParser(description='Run simulation for given mass and mixing angle')
-parser.add_argument('--mass', default=300)#required=True)
-parser.add_argument('--theta', default=0.001)#required=True)
-#parser.add_argument('--tau', required=True)
+parser.add_argument('--mass', default=300)
+parser.add_argument('--theta', default=0.001)
 parser.add_argument('--comment', default='')
 args = parser.parse_args()
 
 mass = float(args.mass) * UNITS.MeV
 theta = float(args.theta)
-#lifetime = float(args.tau) * UNITS.s
 
 folder = utils.ensure_dir(
     os.path.split(__file__)[0],
     'output',
-    "mass={:e}_theta={:e}".format(mass / UNITS.MeV, theta)#, lifetime / UNITS.s)
+    "mass={:e}_theta={:e}".format(mass / UNITS.MeV, theta)
     + args.comment
 )
-
 
 T_initial = 50. * UNITS.MeV
 T_final = 0.0008 * UNITS.MeV
@@ -106,14 +106,15 @@ thetas = defaultdict(float, {
     'electron': theta,
 })
 
-# kind =
-# 0: I_coll = A + f_1 * B
-# 1: I_coll = A
-# 2: I_coll = f_1 * B
-# 3: I_coll = I_coll = A_vacuum_decay + f_1 * B_vacuum_decay
-# 4: I_coll = A_vacuum_decay
-# 5: I_coll = f_1 * B_vacuum_decay
-kind = 5
+# kind = CollisionIntegralKind.{}
+# {} =
+# Full: I_coll = A + f_1 * B
+# F_1: I_coll = A
+# F_f: I_coll = f_1 * B
+# Full_vacuum_decay: I_coll = I_coll = A_vacuum_decay + f_1 * B_vacuum_decay
+# F_1_vacuum_decay: I_coll = A_vacuum_decay
+# F_f_vacuum_decay: I_coll = f_1 * B_vacuum_decay
+kind = CollisionIntegralKind.F_f_vacuum_decay
 
 def reaction_type(reaction):
     return sum(reactant.side for reactant in reaction)
@@ -157,27 +158,27 @@ universe.interactions += (
 )
 """
 
-
-#universe.init_kawano(electron=electron, neutrino=neutrino_e)
-#universe.init_oscillations(SMP.leptons.oscillations_map(), (neutrino_e, neutrino_mu, neutrino_tau))
-
+theo_value = (CONST.G_F * theta * neutral_pion.decay_constant)**2 \
+            * sterile.mass**3 * (1 - (neutral_pion.mass / sterile.mass)**2)**2 \
+            / (16 * numpy.pi) / UNITS.MeV
 
 def step_monitor(universe):
-    import numpy
     for particle in universe.particles:
-        data = particle.data['params']
         if particle.mass > 0 and not particle.in_equilibrium:
             boost = particle.conformal_energy(particle.grid.TEMPLATE) / particle.conformal_mass
             integrand = (particle.collision_integral * particle.params.H * boost / particle.old_distribution)
             decay_rate = -integrand
-            print(["{0:0.15f}".format(i) for i in decay_rate/UNITS.MeV / 3.92472e-19],"\n")
-#            with open(os.path.join(folder, particle.name.replace(' ', '_') + "Decay_rate_3p.txt"), 'a') as f1:
-#                f1.write('{:e}'.format(particle.params.T / UNITS.MeV) + '\t'
-#                         + '{:e}'.format(particle.params.a) + '\t'
-#                         + '\t'.join(['{:e}'.format(x / UNITS.MeV) for x in decay_rate]) + '\n')
+            print('Average lifetime: {t:.6f} s\nΓ_code / Γ_theory:\n{rates}\n N/S: {NS:.6f}\n\n'
+                .format(t=1 / decay_rate.mean() / UNITS.s,
+                        rates=decay_rate / UNITS.MeV / theo_value,
+                        NS=particle.density * universe.params.a**3 / universe.params.S))
 
+            with open(os.path.join(folder, particle.name.replace(' ', '_') + "Decay_rate_three_particle.txt"), 'a') as f1:
+                f1.write('{T:e}\t{a:e}\t{rates}\n'
+                    .format(T=particle.params.T / UNITS.MeV,
+                            a=particle.params.a,
+                            rates='\t'.join(['{:e}'.format(x / UNITS.MeV) for x in decay_rate])))
 
 universe.step_monitor = step_monitor
 
 universe.evolve(T_final)
-
