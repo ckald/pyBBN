@@ -51,16 +51,14 @@ universe.add_particles([
     neutrino_mu
 ])
 
-
 universe.interactions += (
     SMI.neutrino_interactions(
         leptons=[electron],
-        neutrinos=[neutrino_e, neutrino_mu]
+        neutrinos=[neutrino_e, neutrino_mu],
     )
 )
 
 universe.init_kawano(electron=electron, neutrino=neutrino_e)
-
 
 def step_monitor(universe):
     # explanation of what is inside the file + first row which is a grid on y
@@ -104,7 +102,6 @@ def step_monitor(universe):
                 universe.params.a,
                 sum(p.energy_density for p in [neutrino_e, neutrino_mu]) / UNITS.MeV**4
             ))
-
 
 universe.step_monitor = step_monitor
 

@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import numpy
 
+import os
 import environment
 from common import CONST
 from interactions.boltzmann import BoltzmannIntegral
@@ -149,5 +150,9 @@ class FourParticleIntegral(BoltzmannIntegral):
             B = integration(ps, *bounds, self.creaction, self.cMs, stepsize, CollisionIntegralKind.F_f)
             return numpy.array(A) * constant, numpy.array(B) * constant
 
-        fullstack = integration(ps, *bounds, self.creaction, self.cMs, stepsize, CollisionIntegralKind.Full)
+        fullstack = integration(ps, *bounds, self.creaction, self.cMs, stepsize, self.kind)
+
+        if self.kind == CollisionIntegralKind.F_f or self.kind == CollisionIntegralKind.F_f_vacuum_decay:
+            constant *= self.particle._distribution
+
         return numpy.array(fullstack) * constant

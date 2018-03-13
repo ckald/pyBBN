@@ -373,19 +373,6 @@ dbl integrand_1st_integration(
     return integrand_full(p0, p1, p2, *params.reaction, *params.Ms, params.kind);
 }
 
-dbl p2_min_dec(const std::vector<reaction_t> &reaction,
-           int i=0, int j=1, int k=2, int l=3) {
-    return sqrt(
-        (
-            pow(
-                pow(reaction[i].specie.m - reaction[j].specie.m, 2)
-                - pow(reaction[k].specie.m, 2)
-                - pow(reaction[l].specie.m, 2)
-            , 2)
-            - 4 * pow(reaction[k].specie.m * reaction[l].specie.m, 2)
-        ) / (4 * pow(reaction[i].specie.m - reaction[j].specie.m, 2))
-    );
-}
 
 dbl p2_max_dec(const std::vector<reaction_t> &reaction,
             dbl p0, dbl p1) {
@@ -398,6 +385,7 @@ dbl p2_max_dec(const std::vector<reaction_t> &reaction,
             - pow(reaction[2].specie.m, 2)
         );
 }
+
 
 dbl p2_min_scat(const std::vector<reaction_t> &reaction, dbl p0, dbl p1) {
     dbl m0 = reaction[0].specie.m;
@@ -511,16 +499,7 @@ dbl integrand_2nd_integration(
     auto reaction_type = get_reaction_type(reaction);
 
     if (reaction_type == Kinematics::DECAY) {
-        if (p0 == 0) {
-            dbl p2_min_1 = p2_min_dec(reaction, 0, 1, 2, 3);
-            dbl p2_min_2 = p2_min_dec(reaction, 0, 2, 1, 3);
-
-            min_2 = std::max(p2_min_1 - p1 * (p2_min_1 / p2_min_2), 0.);
-        }
-        else {
-            min_2 = 0.;
-        }
-
+        min_2 = 0.;
         max_2 = p2_max_dec(reaction, p0, p1);
     }
 
