@@ -83,7 +83,7 @@ db2_table = numpy.ndarray(shape=(GRID.MOMENTUM_SAMPLES, GRID.MOMENTUM_SAMPLES,
                                 GRID.MOMENTUM_SAMPLES))
 
 for (i, j, k), momenta in grid_iterator(dimension=3):
-    db1_table[i, j, k] = Db2(*momenta)
+    db2_table[i, j, k] = Db2(*momenta)
 
 with open(os.path.join(cwd, 'Db2.json'), 'w') as f:
     f.write(json.dumps(db2_table.tolist()))

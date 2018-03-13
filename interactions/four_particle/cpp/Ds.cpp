@@ -41,16 +41,16 @@ dbl D1(dbl q1, dbl q2, dbl q3, dbl q4) {
 
     // Full analytic expression (for testing)
 
-    dbl y1, y2, y3, y4;
+    //dbl y1, y2, y3, y4;
     dbl result;
-    std::array<dbl, 4> mom = {q1, q2, q3, q4};
+    //std::array<dbl, 4> mom = {q1, q2, q3, q4};
 
-    std::sort(mom.begin(), mom.end(), std::greater<dbl>());
+    //std::sort(mom.begin(), mom.end(), std::greater<dbl>());
 
-    y1 = mom[0];
-    y2 = mom[1];
-    y3 = mom[2];
-    y4 = mom[3];
+    //y1 = mom[0];
+    //y2 = mom[1];
+    //y3 = mom[2];
+    //y4 = mom[3];
 
     result = 0.25 * (-std::abs(q1 + q2 - q3 - q4) - std::abs(q1 - q2 + q3 - q4)
             + std::abs(q1 + q2 + q3 - q4) - std::abs(q1 - q2 - q3 + q4)
