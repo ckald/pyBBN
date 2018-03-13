@@ -3,8 +3,10 @@ import numpy
 
 import environment
 from interactions.boltzmann import BoltzmannIntegral
-from interactions.three_particle.cpp.integral import integration_3, grid_t3, particle_t3, reaction_t3
-
+from interactions.three_particle.cpp.integral import (
+    integration_3, grid_t3, particle_t3, reaction_t3
+)
+from interactions.four_particle.cpp.integral import CollisionIntegralKind
 
 class ThreeParticleM(object):
 
@@ -31,7 +33,6 @@ class ThreeParticleM(object):
     def __imul__(self, mul):
         self.K *= mul
         return self
-
 
 class ThreeParticleIntegral(BoltzmannIntegral):
 
@@ -93,14 +94,14 @@ class ThreeParticleIntegral(BoltzmannIntegral):
 
         stepsize *= constant_else
 
-        if environment.get('SPLIT_COLLISION_INTEGRAL') and self.kind in [0, 3]:
-            A = integration_3(ps, *bounds, self.creaction, stepsize, self.kind + 1)
-            B = integration_3(ps, *bounds, self.creaction, stepsize, self.kind + 2)
+        if environment.get('SPLIT_COLLISION_INTEGRAL'):
+            A = integration_3(ps, *bounds, self.creaction, stepsize, CollisionIntegralKind.F_1)
+            B = integration_3(ps, *bounds, self.creaction, stepsize, CollisionIntegralKind.F_f)
             return numpy.array(A) * constant, numpy.array(B) * constant
 
         fullstack = integration_3(ps, *bounds, self.creaction, stepsize, self.kind)
 
-        if self.kind in [2, 5]:
+        if self.kind == CollisionIntegralKind.F_f or self.kind == CollisionIntegralKind.F_f_vacuum_decay:
             constant *= self.particle._distribution
 
         return numpy.array(fullstack) * constant
