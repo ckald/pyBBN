@@ -5,15 +5,15 @@ int Sgn(double lam) {
   return (lam > 0) - (lam < 0);
 }
 
-
+/*
 dbl D1(dbl q1, dbl q2, dbl q3, dbl q4) {
-    /* Dimensionality: energy
+     Dimensionality: energy
 
         \begin{align}
             D_1(p_i, p_j, p_k, p_l) = \frac{4}{\pi} \int_0^\infty \frac{d \lambda}{\lambda^2}
             sin(p_i \lambda) sin(p_j \lambda) sin(p_k \lambda) sin(p_l \lambda)
         \end{align}
-    */
+
 
     if (q1 < q2) { std::swap(q1, q2); }
     if (q3 < q4) { std::swap(q3, q4); }
@@ -33,40 +33,37 @@ dbl D1(dbl q1, dbl q2, dbl q3, dbl q4) {
         return 0.5 * (q1 + q2 - q3 + q4);
     }
     return q2;
-}
+}*/
 
 
-/*
+
 dbl D1(dbl q1, dbl q2, dbl q3, dbl q4) {
 
     // Full analytic expression (for testing)
 
-    dbl y1, y2, y3, y4;
+    //dbl y1, y2, y3, y4;
     dbl result;
-    std::array<dbl, 4> mom = {q1, q2, q3, q4};
+    //std::array<dbl, 4> mom = {q1, q2, q3, q4};
 
-    for (int i=0; i<4; i++) {
-        for (int j=i; j<4; j++) {
-            if (mom[j] > mom[i]) {
-                dbl tmp = mom[i];
-                mom[i] = mom[j];
-                mom[j] = tmp;
-            }
-        }
-    }
+    //std::sort(mom.begin(), mom.end(), std::greater<dbl>());
 
-    y1 = mom[0];
-    y2 = mom[1];
-    y3 = mom[2];
-    y4 = mom[3];
+    //y1 = mom[0];
+    //y2 = mom[1];
+    //y3 = mom[2];
+    //y4 = mom[3];
 
-    result = 0.25 * (2*y4 - std::abs(y1-y2-y3+y4) + std::abs(-y1+y2+y3+y4));
+    result = 0.25 * (-std::abs(q1 + q2 - q3 - q4) - std::abs(q1 - q2 + q3 - q4)
+            + std::abs(q1 + q2 + q3 - q4) - std::abs(q1 - q2 - q3 + q4)
+            + std::abs(q1 + q2 - q3 + q4) + std::abs(q1 - q2 + q3 + q4)
+            + std::abs(-q1 + q2 + q3 + q4) - std::abs(q1 + q2 + q3 + q4));
+
+    //result = 0.25 * (2*y4 - std::abs(y1-y2-y3+y4) + std::abs(-y1+y2+y3+y4));
     return result;
-}*/
+}
 
-
+/*
 dbl D2(dbl q1, dbl q2, dbl q3, dbl q4) {
-    /* Dimensionality: pow(energy, 3)
+     Dimensionality: pow(energy, 3)
 
         \begin{align}
             D_2(p_i, p_j, p_k, p_l) = s_k s_l \frac{4 p_k p_l}{\pi}
@@ -75,7 +72,7 @@ dbl D2(dbl q1, dbl q2, dbl q3, dbl q4) {
              \left[ cos(p_k \lambda) - \frac{sin(p_k \lambda)}{p_k \lambda} \right]
             \left[ cos(p_l \lambda) - \frac{sin(p_l \lambda)}{p_l \lambda} \right]
         \end{align}
-    */
+
 
     if (q1 < q2) { std::swap(q1, q2); }
     if (q3 < q4) { std::swap(q3, q4); }
@@ -107,10 +104,10 @@ dbl D2(dbl q1, dbl q2, dbl q3, dbl q4) {
             ) / 12.;
         }
     }
-}
+}*/
 
 
-/*
+
 dbl D2(dbl q1, dbl q2, dbl q3, dbl q4) {
 
     // Full analytic expression (for testing)
@@ -129,7 +126,7 @@ dbl D2(dbl q1, dbl q2, dbl q3, dbl q4) {
 
     return result;
 }
-*/
+
 
 
 dbl D3(dbl q1, dbl q2, dbl q3, dbl q4) {

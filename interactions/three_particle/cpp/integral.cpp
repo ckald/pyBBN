@@ -108,6 +108,16 @@ dbl distribution_interpolation(const std::vector<dbl> &grid,
 }
 
 
+dbl distribution_interpolation(const particle_t3 &specie, dbl p) {
+    return distribution_interpolation(
+        specie.grid.grid, specie.grid.distribution,
+        p,
+        specie.m, specie.eta,
+        specie.T, specie.in_equilibrium
+    );
+}
+
+
 /* ## $\mathcal{F}(f_\alpha)$ functional */
 
 /* ### Naive form
@@ -117,6 +127,7 @@ dbl distribution_interpolation(const std::vector<dbl> &grid,
         \\\\ &= \mathcal{F}_B + \mathcal{F}_A
     \end{align}
 */
+
 
 dbl F_A(const std::vector<reaction_t3> &reaction, const std::array<dbl, 3> &f, int skip_index=-1) {
     /*
@@ -147,6 +158,7 @@ dbl F_A(const std::vector<reaction_t3> &reaction, const std::array<dbl, 3> &f, i
     return temp;
 }
 
+
 dbl F_B(const std::vector<reaction_t3> &reaction, const std::array<dbl, 3> &f, int skip_index=-1) {
     /*
     Backward reaction distribution functional term
@@ -175,6 +187,7 @@ dbl F_B(const std::vector<reaction_t3> &reaction, const std::array<dbl, 3> &f, i
 
     return temp;
 }
+
 
 /*
 ### Linearized in $\, f_1$ form
@@ -215,9 +228,11 @@ dbl F_1_vacuum_decay() {
     return 0;
 }
 
+
 int Sgn(double lam) {
   return (lam > 0) - (lam < 0);
 }
+
 
 int in_bounds(const std::array<dbl, 3> p, const std::array<dbl, 3> E, const std::array<dbl, 3> m) {
     /* $D$-functions involved in the interactions imply a cut-off region for the collision\
@@ -321,32 +336,38 @@ dbl integrand_full(
     // The distribution function of the main particle is not required here
     for (int k = 0; k < 3; ++k) {
         const particle_t3 &specie = reaction[k].specie;
-        f[k] = distribution_interpolation(
-            specie.grid.grid, specie.grid.distribution,
-            p[k],
-            specie.m, specie.eta,
-            specie.T, specie.in_equilibrium
-        );
+        f[k] = distribution_interpolation(specie, p[k]);
     }
 
-    if (kind == 1) {
-    return temp * F_1(reaction, f);
-    }
-    if (kind == 2) {
-        return temp * f[0] * F_f(reaction, f);
-    }
-    if (kind == 3) {
-        return temp * F_1_vacuum_decay();
-    }
-    if (kind == 4) {
-        return temp * f[0] * F_f_vacuum_decay();
-    }
-    if (kind == 5) {
-        return temp * (F_1_vacuum_decay() + f[0] * F_f_vacuum_decay());
-    }
+    auto integral_kind = CollisionIntegralKind_3(kind);
 
-    return temp * (F_1(reaction, f) + f[0] * F_f(reaction, f));
+    switch (integral_kind) {
+        case CollisionIntegralKind_3::F_1_vacuum_decay:
+             return temp * F_1_vacuum_decay();
+        case CollisionIntegralKind_3::F_f_vacuum_decay:
+            return temp * F_f_vacuum_decay();
+        case CollisionIntegralKind_3::Full_vacuum_decay:
+            return temp * (F_1_vacuum_decay() + f[0] * F_f_vacuum_decay());
+
+        case CollisionIntegralKind_3::F_1:
+            return temp * F_1(reaction, f);
+        case CollisionIntegralKind_3::F_f:
+            return temp * F_f(reaction, f);
+        case CollisionIntegralKind_3::Full:
+        default:
+            return temp * (F_1(reaction, f) + f[0] * F_f(reaction, f));
+    }
 }
+
+
+Kinematics_3 get_reaction_type(const std::vector<reaction_t3> &reaction) {
+    int reaction_type = 0;
+    for (const reaction_t3 &reactant : reaction) {
+        reaction_type += reactant.side;
+    }
+    return static_cast<Kinematics_3>(reaction_type);
+}
+
 
 struct integration_params {
     dbl p0;
@@ -360,6 +381,7 @@ struct integration_params {
     size_t subdivisions;
 };
 
+
 dbl integrand_integration(
     dbl p1, void *p
 ) {
@@ -367,6 +389,7 @@ dbl integrand_integration(
     dbl p0 = params.p0;
     return integrand_full(p0, p1, params.kind, *params.reaction);
 }
+
 
 dbl p1_bounds_1(const std::vector<reaction_t3> &reaction,
                 int i=0, int j=1, int k=2
@@ -382,6 +405,7 @@ dbl p1_bounds_1(const std::vector<reaction_t3> &reaction,
             )
             / (2. * mi);
 }
+
 
 dbl p1_bounds_2(const std::vector<reaction_t3> &reaction, dbl p0,
     int sign1, int sign2
@@ -405,25 +429,22 @@ dbl p1_bounds_2(const std::vector<reaction_t3> &reaction, dbl p0,
 
 }
 
+
 std::vector<dbl> integration_3(
-    std::vector<dbl> ps, dbl min_1, dbl max_1, dbl stepsize,
-    const std::vector<reaction_t3> &reaction, int kind=0
+    std::vector<dbl> ps, dbl min_1, dbl max_1, const std::vector<reaction_t3> &reaction,
+    dbl stepsize, int kind=0
 ) {
 
     std::vector<dbl> integral(ps.size(), 0.);
 
-    // Determine the integration bounds
-    int reaction_type = 0;
-    for (const reaction_t3 &reactant : reaction) {
-        reaction_type += reactant.side;
-    }
+    auto reaction_type = get_reaction_type(reaction);
 
     // Note firstprivate() clause: those variables will be copied for each thread
     #pragma omp parallel for default(none) shared(ps, reaction, integral, stepsize, kind, reaction_type) firstprivate(min_1, max_1)
     for (size_t i = 0; i < ps.size(); ++i) {
         dbl p0 = ps[i];
 
-        if (reaction_type == -1) {
+        if (reaction_type == Kinematics_3::CREATION) {
             if (p0 == 0) {continue; }
 
             dbl temp = p1_bounds_1(reaction, 2, 0, 1);
@@ -448,22 +469,23 @@ std::vector<dbl> integration_3(
                 min_1 = std::max(min, -min);
                 max_1 = p1_bounds_2(reaction, p0, -1, 1);
 
-                dbl result, error;
+                dbl result(0.), error(0.);
                 size_t status;
                 gsl_function F;
                 F.function = &integrand_integration;
 
-                dbl f = distribution_interpolation(
-                    reaction[0].specie.grid.grid, reaction[0].specie.grid.distribution,
-                    p0,
-                    reaction[0].specie.m, reaction[0].specie.eta,
-                    reaction[0].specie.T, reaction[0].specie.in_equilibrium
-                );
-
                 dbl releps = 1e-2;
-                dbl abseps = std::max(f / stepsize * releps, 1e-15);
+                dbl abseps = releps / stepsize;
+                auto integral_kind = CollisionIntegralKind_3(kind);
+                if (integral_kind != CollisionIntegralKind_3::F_f
+                    && integral_kind != CollisionIntegralKind_3::F_f_vacuum_decay)
+                {
+                    dbl f = distribution_interpolation(reaction[0].specie, p0);
+                    abseps *= f;
+                }
 
-                size_t subdivisions = 100;
+                size_t subdivisions = 10000;
+                gsl_integration_workspace *w = gsl_integration_workspace_alloc(subdivisions);
                 struct integration_params params = {
                     p0, 0.,
                     &reaction,
@@ -474,37 +496,53 @@ std::vector<dbl> integration_3(
                 F.params = &params;
 
                 gsl_set_error_handler_off();
-                gsl_integration_workspace *w = gsl_integration_workspace_alloc(subdivisions);
-                // status = gsl_integration_qags(&F, min_1, max_1, abseps, releps, subdivisions, w, &result, &error);
                 status = gsl_integration_qag(&F, min_1, max_1, abseps, releps, subdivisions, GSL_INTEG_GAUSS15, w, &result, &error);
 
                 if (status) {
                     printf("integration result: %e ± %e. %i intervals. %s\n", result, error, (int) w->size, gsl_strerror(status));
                     throw std::runtime_error("Integrator failed to reach required accuracy");
                 }
+
                 gsl_integration_workspace_free(w);
                 integral[i] += result;
-
             }
         }
     }
-
     return integral;
 }
 
 
-
 PYBIND11_MODULE(integral, m) {
-    m.def("distribution_interpolation", &distribution_interpolation,
-          "Exponential interpolation of distribution function",
-          "grid"_a, "distribution"_a,
-          "p"_a, "m"_a=0, "eta"_a=1, "T"_a=1., "in_equilibrium"_a=false);
+    m.def("distribution_interpolation", [](
+        const std::vector<dbl> &grid,
+        const std::vector<dbl> &distribution,
+        const py::array_t<double> &ps, dbl m=0., int eta=1, dbl T=1.,
+        bool in_equilibrium=false) {
+            auto v = [grid, distribution, m, eta, T, in_equilibrium](double p) {
+                return distribution_interpolation(grid, distribution, p, m, eta, T, in_equilibrium);
+            };
+            return py::vectorize(v)(ps);
+        },
+        "Exponential interpolation of distribution function",
+        "grid"_a, "distribution"_a,
+        "p"_a, "m"_a=0, "eta"_a=1, "T"_a=1., "in_equilibrium"_a=false
+    );
+
     m.def("binary_find", &binary_find,
           "grid"_a, "x"_a);
 
     m.def("integration_3", &integration_3,
           "ps"_a, "min_1"_a, "max_1"_a,
           "reaction"_a, "stepsize"_a, "kind"_a);
+
+    py::enum_<CollisionIntegralKind_3>(m, "CollisionIntegralKind_3")
+        .value("Full", CollisionIntegralKind_3::Full)
+        .value("F_1", CollisionIntegralKind_3::F_1)
+        .value("F_f", CollisionIntegralKind_3::F_f)
+        .value("Full_vacuum_decay", CollisionIntegralKind_3::Full_vacuum_decay)
+        .value("F_1_vacuum_decay", CollisionIntegralKind_3::F_1_vacuum_decay)
+        .value("F_f_vacuum_decay", CollisionIntegralKind_3::F_f_vacuum_decay)
+        .enum_::export_values();
 
     py::class_<grid_t3>(m, "grid_t3")
         .def(py::init<std::vector<dbl>, std::vector<dbl>>(),

@@ -262,6 +262,7 @@ class DistributionParticle(AbstractParticle):
         if not self.collision_integrals:
             return numpy.zeros(len(ps))
 
+        # # Adams-Bashforth integrator is unstable for unknown reason at the moment
         # if not environment.get('SPLIT_COLLISION_INTEGRAL'):
         #     fs = [sum([integral.integrate(ps, stepsize=self.params.h)
         #                for integral in self.collision_integrals])]
@@ -269,6 +270,7 @@ class DistributionParticle(AbstractParticle):
         #     fs = list(self.data['collision_integral'][-MAX_ADAMS_BASHFORTH_ORDER:]) + fs
 
         #     return adams_bashforth_correction(fs=fs, h=self.params.h) / self.params.h
+
 
         if not environment.get('SPLIT_COLLISION_INTEGRAL'):
             fs = sum([integral.integrate(ps, stepsize=self.params.h)

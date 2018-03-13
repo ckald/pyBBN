@@ -53,10 +53,9 @@ class ThreeParticleIntegral(BoltzmannIntegral):
         params = self.particle.params
 
         if self.reaction[0].specie.mass == 0:
-            return 0.
+            return numpy.zeros(len(ps))
 
-        if bounds is None:
-            bounds = tuple(b1 / params.aT for b1 in self.grids.BOUNDS)
+        bounds = tuple(b1 / params.aT for b1 in self.grids.BOUNDS)
 
         if stepsize is None:
             stepsize = params.h
@@ -81,16 +80,27 @@ class ThreeParticleIntegral(BoltzmannIntegral):
             for particle in self.reaction
         ]
 
+        ps = ps / params.aT
         self.cMs = sum(M.K for M in self.Ms)
 
         constant_0 = self.cMs * params.aT / params.a / 8. / numpy.pi / params.H / self.particle.mass**2
-        constant = self.cMs * params.a / params.aT / 32. / numpy.pi / params.H
+        constant_else = self.cMs * params.a / params.aT / 32. / numpy.pi / params.H
+
+        constant = numpy.append(constant_0, numpy.repeat(constant_else, len(ps) - 1))
 
         if not environment.get('LOGARITHMIC_TIMESTEP'):
             constant /= params.x
 
-        ps = ps / params.aT
-        fullstack = numpy.array(integration_3(ps, *bounds, stepsize, self.creaction, self.kind))
-        fullstack[0] *= constant_0
-        fullstack[1:] *= constant
-        return fullstack
+        stepsize *= constant_else
+
+        if environment.get('SPLIT_COLLISION_INTEGRAL') and self.kind in [0, 3]:
+            A = integration_3(ps, *bounds, self.creaction, stepsize, self.kind + 1)
+            B = integration_3(ps, *bounds, self.creaction, stepsize, self.kind + 2)
+            return numpy.array(A) * constant, numpy.array(B) * constant
+
+        fullstack = integration_3(ps, *bounds, self.creaction, stepsize, self.kind)
+
+        if self.kind in [2, 5]:
+            constant *= self.particle._distribution
+
+        return numpy.array(fullstack) * constant
