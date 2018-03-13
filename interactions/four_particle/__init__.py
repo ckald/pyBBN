@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import numpy
 
+import os
 import environment
 from common import CONST
 from interactions.boltzmann import BoltzmannIntegral
@@ -144,14 +145,14 @@ class FourParticleIntegral(BoltzmannIntegral):
         if not self.cMs:
             self.cMs = [M_t(list(M.order), M.K1 / unit, M.K2 / unit) for M in self.Ms]
 
-        if environment.get('SPLIT_COLLISION_INTEGRAL') and self.kind in [0, 3]:
-            A = integration(ps, *bounds, self.creaction, self.cMs, stepsize, self.kind + 1)
-            B = integration(ps, *bounds, self.creaction, self.cMs, stepsize, self.kind + 2)
+        if environment.get('SPLIT_COLLISION_INTEGRAL') and not os.environ.get('SPLIT_COLLISION_INTEGRAL') == 'False':
+            A = integration(ps, *bounds, self.creaction, self.cMs, stepsize, CollisionIntegralKind.F_1)
+            B = integration(ps, *bounds, self.creaction, self.cMs, stepsize, CollisionIntegralKind.F_f)
             return numpy.array(A) * constant, numpy.array(B) * constant
 
         fullstack = integration(ps, *bounds, self.creaction, self.cMs, stepsize, self.kind)
 
-        if self.kind in [2, 5]:
+        if self.kind == CollisionIntegralKind.F_f or self.kind == CollisionIntegralKind.F_f_vacuum_decay:
             constant *= self.particle._distribution
 
         return numpy.array(fullstack) * constant

@@ -9,6 +9,7 @@ from __future__ import division
 
 import numpy
 
+import os
 import environment
 from common import GRID, UNITS, statistics as STATISTICS
 from common.integrators import (
@@ -261,7 +262,7 @@ class DistributionParticle(AbstractParticle):
         if not self.collision_integrals:
             return numpy.zeros(len(ps))
 
-        if not environment.get('SPLIT_COLLISION_INTEGRAL'):
+        if not environment.get('SPLIT_COLLISION_INTEGRAL') or os.environ.get('SPLIT_COLLISION_INTEGRAL') == 'False':
             fs = sum([integral.integrate(ps, stepsize=self.params.h)
                        for integral in self.collision_integrals])
             return fs

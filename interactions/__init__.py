@@ -3,7 +3,7 @@ import copy
 import itertools
 from collections import namedtuple, Counter
 from interactions.four_particle import FourParticleM
-
+from interactions.four_particle.cpp.integral import CollisionIntegralKind
 
 """
 ## Boltzmann collision integral
@@ -70,7 +70,7 @@ class CrossGeneratingInteraction(Interaction):
 
     def __init__(self, name=None,
                  particles=None, antiparticles=None, Ms=None,
-                 integral_type=None, washout_temperature=0, kind=0):
+                 integral_type=None, washout_temperature=0, kind=CollisionIntegralKind.Full):
         """ Create an `Integral` object for all particle species involved in the interaction.
 
             Precise expressions for all integrals can be derived by permuting all particle-related\
@@ -90,11 +90,14 @@ class CrossGeneratingInteraction(Interaction):
         self.integral_type = integral_type
         self.washout_temperature = washout_temperature
 
-        if not (kind is None or kind in [0, 1, 2, 3, 4, 5]):
-            raise ValueError("Variable 'kind' out of range or non-integer")
+        if not (kind is None or kind in [CollisionIntegralKind.F_1, CollisionIntegralKind.F_f,
+                CollisionIntegralKind.F_1_vacuum_decay, CollisionIntegralKind.F_f_vacuum_decay,
+                CollisionIntegralKind.Full, CollisionIntegralKind.Full_vacuum_decay]
+        ):
+            raise ValueError("Variable 'kind' set to incorrect value")
         else:
             if kind is None:
-                kind = 0
+                kind = CollisionIntegralKind.Full
             self.kind = kind
 
         self.integrals = []
