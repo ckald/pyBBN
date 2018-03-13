@@ -13,7 +13,7 @@ sys.settrace
 import argparse
 from collections import defaultdict
 
-os.environ['SPLIT_COLLISION_INTEGRAL'] = 'False'
+os.environ['SPLIT_COLLISION_INTEGRAL'] = ''
 
 from particles import Particle
 from library.SM import particles as SMP, interactions as SMI
