@@ -262,7 +262,7 @@ class DistributionParticle(AbstractParticle):
         if not self.collision_integrals:
             return numpy.zeros(len(ps))
 
-        if not environment.get('SPLIT_COLLISION_INTEGRAL') or os.environ.get('SPLIT_COLLISION_INTEGRAL') == 'False':
+        if not environment.get('SPLIT_COLLISION_INTEGRAL'):
             fs = sum([integral.integrate(ps, stepsize=self.params.h)
                        for integral in self.collision_integrals])
             return fs
