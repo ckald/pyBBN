@@ -3,9 +3,8 @@ PYTHON ?= python3.5
 all: integral.so
 
 integral.so: integral.cpp integral.h
-	$(COMPILER) -fopenmp -fPIC -O3 -shared -std=c++11 -I pybind11/include \
+	$(COMPILER) -fopenmp -fPIC -shared -o integral.so integral.cpp -O3 -g -std=c++11 -I pybind11/include \
 	`$(PYTHON)-config --cflags --ldflags` -lgsl -lgslcblas -lm -Werror -Wfatal-errors \
-	integral.cpp -o integral.so
 
 clean:
 	rm -rf *.o *.so *.c *.so.DSYM
