@@ -129,5 +129,7 @@ def step_monitor(universe):
 
 universe.step_monitor = step_monitor
 
+universe.evolve(T_freeze, export=False)
+universe.interactions = tuple()
 universe.evolve(T_final)
 
