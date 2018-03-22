@@ -11,7 +11,7 @@ import numpy
 
 import os
 import environment
-from common import GRID, UNITS, statistics as STATISTICS
+from common import GRID, CONST, UNITS, statistics as STATISTICS
 from common.integrators import (
     adams_bashforth_correction, adams_moulton_solver, implicit_euler,
     MAX_ADAMS_BASHFORTH_ORDER, MAX_ADAMS_MOULTON_ORDER
@@ -244,7 +244,6 @@ class DistributionParticle(AbstractParticle):
 
         self.old_distribution = self._distribution.copy()
         self._distribution += self.collision_integral * self.params.h
-
         # assert all(self._distribution >= 0), self._distribution
         self._distribution = numpy.maximum(self._distribution, 0)
 
@@ -258,6 +257,10 @@ class DistributionParticle(AbstractParticle):
 
     def calculate_collision_integral(self, ps):
         """ ### Particle collisions integration """
+
+        limit = 2.4 * CONST.eta * self.T**3 / numpy.pi**2
+        if self.density < limit:
+            self.collision_integrals = []
 
         if not self.collision_integrals:
             return numpy.zeros(len(ps))
