@@ -245,6 +245,15 @@ dbl in_bounds(const std::array<dbl, 4> p, const std::array<dbl, 4> E, const std:
 }
 
 
+Kinematics get_reaction_type(const std::vector<reaction_t> &reaction) {
+    int reaction_type = 0;
+    for (const reaction_t &reactant : reaction) {
+        reaction_type += reactant.side;
+    }
+    return static_cast<Kinematics>(reaction_type);
+}
+
+
 dbl integrand_full(
     dbl p0, dbl p1, dbl p2,
     const std::vector<reaction_t> &reaction, const std::vector<M_t> &Ms,
@@ -253,6 +262,8 @@ dbl integrand_full(
     /*
     Collision integral interior.
     */
+
+    auto reaction_type = get_reaction_type(reaction);
 
     dbl integrand = 0.;
 
@@ -280,6 +291,8 @@ dbl integrand_full(
     if (E[3] < m[3]) { return integrand; }
 
     p[3] = sqrt(pow(E[3], 2) - pow(m[3], 2));
+
+    if (reaction_type == Kinematics::CREATION && p[3] > 1e-3) { return integrand; }
 
     if (!in_bounds(p, E, m)) { return integrand; }
 
@@ -337,15 +350,6 @@ dbl integrand_full(
 }
 
 
-Kinematics get_reaction_type(const std::vector<reaction_t> &reaction) {
-    int reaction_type = 0;
-    for (const reaction_t &reactant : reaction) {
-        reaction_type += reactant.side;
-    }
-    return static_cast<Kinematics>(reaction_type);
-}
-
-
 struct integration_params {
     dbl p0;
     dbl p1;
@@ -371,6 +375,19 @@ dbl integrand_1st_integration(
     dbl p0 = params.p0;
     dbl p1 = params.p1;
     return integrand_full(p0, p1, p2, *params.reaction, *params.Ms, params.kind);
+}
+
+
+dbl p2_max_creation(const std::vector<reaction_t> &reaction,
+            dbl p0, dbl p1) {
+    return sqrt(
+            pow(
+                reaction[3].specie.m
+                - energy(p0, reaction[0].specie.m)
+                -energy(p1, reaction[1].specie.m)
+            , 2)
+            - pow(reaction[2].specie.m, 2)
+        );
 }
 
 
@@ -504,21 +521,13 @@ dbl integrand_2nd_integration(
     }
 
      if (reaction_type == Kinematics::SCATTERING) {
-         min_2 = p2_min_scat(reaction, p0, p1);
-         max_2 = p2_max_scat(reaction, p0, p1);
+        min_2 = p2_min_scat(reaction, p0, p1);
+        max_2 = p2_max_scat(reaction, p0, p1);
      }
 
     if (reaction_type == Kinematics::CREATION) {
-        dbl min_and_max = sqrt(
-                        pow(
-                            reaction[3].specie.m
-                            - energy(p0, reaction[0].specie.m)
-                            - energy(p1, reaction[1].specie.m)
-                        , 2)
-                        - pow(reaction[2].specie.m, 2)
-                    );
-        min_2 = min_and_max;
-        max_2 = min_and_max;
+        min_2 = 0.;
+        max_2 = p2_max_creation(reaction, p0, p1);
     }
 
     gsl_function F;
@@ -533,8 +542,7 @@ dbl integrand_2nd_integration(
     F.function = &integrand_1st_integration;
 
     gsl_set_error_handler_off();
-
-    status = gsl_integration_qag(&F, min_2, max_2, params.abseps, params.releps, params.subdivisions, GSL_INTEG_GAUSS15, params.w, &result, &error);
+    status = gsl_integration_qag(&F, min_2, max_2, params.abseps, params.releps, params.subdivisions, GSL_INTEG_GAUSS21, params.w, &result, &error);
     if (status) {
         printf("(p0=%e, p1=%e) 1st integration result: %e ± %e. %i intervals. %s\n", params.p0, p1, result, error, (int) params.w->size, gsl_strerror(status));
         throw std::runtime_error("Integrator failed to reach required accuracy");
@@ -576,6 +584,10 @@ std::vector<dbl> integration(
             else {
                 min_1 = sqrt(min2);
             }
+            dbl max = reaction[2].specie.m + reaction[3].specie.m;
+            if (max > 0.) {
+                max_1 = 20. * max;
+            }
         }
         if (reaction_type == Kinematics::CREATION) {
             dbl max = reaction[3].specie.m - energy(p0, reaction[0].specie.m) - reaction[2].specie.m;
@@ -616,7 +628,7 @@ std::vector<dbl> integration(
 
         gsl_set_error_handler_off();
 
-        status = gsl_integration_qag(&F, min_1, max_1, abseps, releps, subdivisions, GSL_INTEG_GAUSS15, w1, &result, &error);
+        status = gsl_integration_qag(&F, min_1, max_1, abseps, releps, subdivisions, GSL_INTEG_GAUSS21, w1, &result, &error);
         if (status) {
             printf("2nd integration_1 result: %e ± %e. %i intervals. %s\n", result, error, (int) w1->size, gsl_strerror(status));
             throw std::runtime_error("Integrator failed to reach required accuracy");
