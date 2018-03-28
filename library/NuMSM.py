@@ -6,12 +6,13 @@
 from __future__ import division
 
 import itertools
+from collections import Counter
 
 from common import UNITS, CONST, statistics as STATISTICS
 from interactions import CrossGeneratingInteraction
 from interactions.three_particle import ThreeParticleM, ThreeParticleIntegral
 from interactions.four_particle import FourParticleIntegral
-from library.SM import WeakM, particles as SM_particles
+from library.SM import WeakM, particles as SM_particles, particles as SMP, interactions as SMI
 
 
 class SterileM(WeakM):
@@ -93,7 +94,7 @@ class interactions(object):
         """
 
         return CrossGeneratingInteraction(
-            name="Sterile decay into neutrino and leptons pair",
+            name="Neutral current sterile-lepton interactions",
             particles=((sterile, active), (lepton, lepton)),
             antiparticles=((False, True), (True, False)),
             Ms=(
@@ -114,7 +115,7 @@ class interactions(object):
         """
 
         return CrossGeneratingInteraction(
-            name="Sterile decay into neutrino and leptons",
+            name="Charged current sterile-lepton interactions",
             particles=((sterile, active), (lepton2, lepton1)),
             antiparticles=((False, True), (True, False)),
             Ms=(
@@ -158,17 +159,18 @@ class interactions(object):
                     ))
 
                 if len(leptons) > 1:
-                    other_lepton = [par for par in leptons if par != lepton][0]
-                    if thetas[lepton.flavour] and neutrino.flavour == other_lepton.flavour:
-                        # Charged current
-                        inters.append(cls.sterile_active_to_leptons_CC(
-                            theta=thetas[lepton.flavour],
-                            sterile=sterile,
-                            active=neutrino,
-                            lepton1=lepton,
-                            lepton2=other_lepton,
-                            kind=kind
-                        ))
+                    other_lepton = [par for par in leptons if par != lepton]
+                    for other_lep in other_lepton:
+                        if thetas[lepton.flavour] and neutrino.flavour == other_lep.flavour:
+                            # Charged current
+                            inters.append(cls.sterile_active_to_leptons_CC(
+                                theta=thetas[lepton.flavour],
+                                sterile=sterile,
+                                active=neutrino,
+                                lepton1=lepton,
+                                lepton2=other_lep,
+                                kind=kind
+                            ))
         return inters
 
     # ## Quark interactions
@@ -400,3 +402,35 @@ class interactions(object):
             ((False, ), (False, True)),
             ((True, ), (True, False))
         ]]
+
+
+    @classmethod
+    def interactions_decay_products(cls, interactions_primary=None, interactions_SM=None,
+                                    neutrinos=None, leptons=None, kind=None):
+
+        interactions_decay = []
+        species = Counter()
+        for inter in interactions_primary:
+            for integral in inter.integrals:
+                species.update(Counter(item.specie.name for item in integral.reaction if item.side == 1))
+
+        if species['Muon']:
+            SM = False
+            if interactions_SM:
+                for inter in interactions_SM:
+                    for integral in inter.integrals:
+                        if Counter(item.specie.name for item in integral.reaction if item.specie.name == 'Muon'):
+                            SM = True
+
+            interactions_decay += SMI.lepton_interactions(
+                                leptons=leptons,
+                                neutrinos=neutrinos,
+                                SM_inters=SM,
+                                kind=kind
+                            )
+
+        for inter in interactions_decay:
+            inter.integrals = [integral for integral in inter.integrals
+                    if integral.reaction[0].specie.name != 'Electron']
+
+        return interactions_decay

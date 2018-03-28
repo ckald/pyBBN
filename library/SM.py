@@ -371,6 +371,36 @@ class interactions(object):
             kind=kind
         )
 
+    @staticmethod
+    def leptons_CC(active1=None, active2=None, lepton1=None, lepton2=None, kind=None):
+
+        return CrossGeneratingInteraction(
+            name="Charged current lepton-neutrino interactions",
+            particles=((lepton1, lepton2), (active1, active2)),
+            antiparticles=((False, True), (False, True)),
+            Ms=(
+                WeakM(K1=4., order=(0, 3, 1, 2)),
+            ),
+            integral_type=FourParticleIntegral,
+            kind=kind
+        )
+
+    @staticmethod
+    def leptons_leptons_NC(lepton1=None, lepton2=None, g_L=CONST.g_R - 0.5, kind=None):
+
+        return CrossGeneratingInteraction(
+            name="Neutral current lepton-lepton interactions",
+            particles=((lepton1, lepton2), (lepton1, lepton2)),
+            antiparticles=((False, False), (False, False)),
+            Ms=(
+                WeakM(K1=4 * (g_L**4 + CONST.g_R**4), order=(0, 1, 2, 3)),
+                WeakM(K1=4 * 2 * g_L**2 * CONST.g_R**2, order=(0, 3, 1, 2)),
+                WeakM(K2=4 * -g_L * CONST.g_R * (g_L**2 + CONST.g_R**2), order=(0, 2, 1, 3)),
+            ),
+            integral_type=FourParticleIntegral,
+            kind=kind
+        )
+
     @classmethod
     def neutrino_interactions(cls, leptons=None, neutrinos=None, kind=None):
 
@@ -388,6 +418,45 @@ class interactions(object):
                 inters.append(cls.neutrinos_to_leptons(g_L=g_L, lepton=lepton, neutrino=neutrino, kind=kind))
 
         return inters
+
+    @classmethod
+    def lepton_interactions(cls, leptons=None, neutrinos=None, SM_inters=False, kind=None):
+
+        g_R = CONST.g_R
+        inters = []
+
+        # Interactions of neutrinos and leptons
+        for lepton in leptons:
+            for neutrino in neutrinos:
+                if lepton.name != 'Electron' and SM_inters == False:
+                    g_L = g_R + 0.5 if lepton.flavour == neutrino.flavour else g_R - 0.5
+                    inters.append(cls.neutrinos_to_leptons(g_L=g_L, lepton=lepton, neutrino=neutrino, kind=kind))
+
+                if len(leptons) > 1 and len(neutrinos) > 1:
+                    other_lepton = [par for par in leptons if par != lepton]
+                    other_neutrino = [par for par in neutrinos if par != neutrino]
+                    for other_lep in other_lepton:
+                        for other_neut in other_neutrino:
+                            if neutrino.flavour == lepton.flavour and other_neut.flavour == other_lep.flavour:
+                                inters.append(cls.leptons_CC(
+                                    active1=neutrino,
+                                    active2=other_neut,
+                                    lepton1=lepton,
+                                    lepton2=other_lep,
+                                    kind=kind
+                                ))
+
+        if len(leptons) > 1:
+            lepton = leptons[0]
+            other_lepton = [par for par in leptons if par != lepton]
+            for other_lep in other_lepton:
+                inters.append(cls.leptons_leptons_NC(
+                    lepton1=lepton,
+                    lepton2=other_lep,
+                    kind=kind
+                ))
+        return inters
+
 
     @classmethod
     def baryons_interaction(cls, neutron=None, proton=None, neutrino=None, electron=None):

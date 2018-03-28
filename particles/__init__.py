@@ -53,7 +53,8 @@ class AbstractParticle:
         'dof': 2,
         'statistics': STATISTICS.FERMION,
         'params': None,
-        'grid': GRID
+        'grid': GRID,
+        'thermal': True
     }
 
     def __init__(self, **kwargs):
@@ -81,6 +82,9 @@ class AbstractParticle:
             ])
         }
         # self.data['distribution'].append(self._distribution)
+
+        if not self.thermal:
+            self.decoupling_temperature = 1e20 * UNITS.MeV
 
         if self.params:
             self.set_params(self.params)
@@ -208,7 +212,7 @@ class DistributionParticle(AbstractParticle):
         oldeq = self.in_equilibrium
 
         # Update particle internal params only while it is in equilibrium
-        if self.in_equilibrium:
+        if self.in_equilibrium and self.thermal:
             # Particle species has temperature only when it is in equilibrium
             self.aT = self.params.aT
 
@@ -270,7 +274,6 @@ class DistributionParticle(AbstractParticle):
         #     fs = list(self.data['collision_integral'][-MAX_ADAMS_BASHFORTH_ORDER:]) + fs
 
         #     return adams_bashforth_correction(fs=fs, h=self.params.h) / self.params.h
-
 
         if not environment.get('SPLIT_COLLISION_INTEGRAL'):
             fs = sum([integral.integrate(ps, stepsize=self.params.h)
@@ -339,7 +342,10 @@ class DistributionParticle(AbstractParticle):
             return self.equilibrium_distribution_function(self.conformal_energy(y) / aT)
 
     def init_distribution(self):
-        self._distribution = self.equilibrium_distribution()
+        if self.thermal == False:
+            self._distribution = numpy.zeros(self.grid.MOMENTUM_SAMPLES)
+        else:
+            self._distribution = self.equilibrium_distribution()
         return self._distribution
 
 
