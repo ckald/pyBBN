@@ -100,9 +100,9 @@ class Universe(object):
         print("\n\n" + "#"*34 + " Log output " + "#"*34 + "\n")
 
         for interaction in self.interactions:
-            print(interaction)
+            if interaction.integrals:
+                print(interaction)
         print("\n")
-
 
         # TODO: test if changing updating particles beforehand changes the computed time
         if init_time:
