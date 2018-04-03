@@ -3,6 +3,7 @@ import numpy
 
 import os
 import environment
+from collections import Counter
 from common import CONST
 from interactions.boltzmann import BoltzmannIntegral
 from interactions.four_particle.cpp.integral import (
@@ -106,7 +107,8 @@ class FourParticleIntegral(BoltzmannIntegral):
             self.grids[0].MIN_MOMENTUM / params.aT,
             self.grids[0].MAX_MOMENTUM / params.aT,
             self.grids[1].MIN_MOMENTUM / params.aT,
-            self.grids[1].MAX_MOMENTUM / params.aT
+            self.grids[1].MAX_MOMENTUM / params.aT,
+            self.reaction[3].specie.grid.MAX_MOMENTUM / params.aT
         )
 
         if stepsize is None:
@@ -137,6 +139,14 @@ class FourParticleIntegral(BoltzmannIntegral):
         # All matrix elements share the same weak scale multiplier
         unit = 32 * CONST.G_F**2
         constant = unit * (params.aT / params.a)**5 / 64. / numpy.pi**3 / params.H
+
+        left = Counter(item.specie for item in self.reaction if item.side == -1)
+        right = Counter(item.specie for item in self.reaction if item.side == 1)
+        if left[self.reaction[0].specie] == 2 and right[self.reaction[0].specie] in [0, 1]:
+            constant *= 2
+        if left[self.reaction[0].specie] == 3 and right[self.reaction[0].specie] == 0:
+            constant *= 3
+
         if not environment.get('LOGARITHMIC_TIMESTEP'):
             constant /= params.x
 

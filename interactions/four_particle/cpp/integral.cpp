@@ -346,6 +346,7 @@ struct integration_params {
     dbl max_1;
     dbl min_2;
     dbl max_2;
+    dbl max_3;
     int kind;
     dbl releps;
     dbl abseps;
@@ -523,6 +524,7 @@ dbl integrand_2nd_integration(
     struct integration_params &old_params = *(struct integration_params *) p;
     dbl min_2 = old_params.min_2;
     dbl max_2 = old_params.max_2;
+    dbl max_3 = old_params.max_3;
     dbl p0 = old_params.p0;
     auto reaction = *old_params.reaction;
 
@@ -539,8 +541,22 @@ dbl integrand_2nd_integration(
      }
 
     if (reaction_type == Kinematics::CREATION) {
-        min_2 = p2_min_creation(reaction, p0, p1);
-        max_2 = old_params.max_1 / 20.;
+        dbl max = energy(max_3, reaction[3].specie.m) - energy(p0, reaction[0].specie.m) - energy(p1, reaction[1].specie.m);
+        dbl max2 = pow(max, 2) - pow(reaction[2].specie.m, 2);
+        dbl min = reaction[3].specie.m - energy(p0, reaction[0].specie.m) - energy(p1, reaction[1].specie.m);
+        dbl min2 = pow(min, 2) - pow(reaction[2].specie.m, 2);
+        if (max <= 0 || max2 <= 0) {
+            return 0.;
+        }
+        else {
+            max_2 = sqrt(max2);
+        }
+        if (min <= 0 || min2 <= 0) {
+            min_2 = 0.;
+        }
+        else {
+            min_2 = sqrt(min2);
+        }
     }
 
     gsl_function F;
@@ -565,7 +581,7 @@ dbl integrand_2nd_integration(
 
 
 std::vector<dbl> integration(
-    std::vector<dbl> ps, dbl min_1, dbl max_1, dbl min_2, dbl max_2,
+    std::vector<dbl> ps, dbl min_1, dbl max_1, dbl min_2, dbl max_2, dbl max_3,
     const std::vector<reaction_t> &reaction,
     const std::vector<M_t> &Ms,
     dbl stepsize, int kind=0
@@ -577,7 +593,7 @@ std::vector<dbl> integration(
     auto reaction_type = get_reaction_type(reaction);
 
     // Note firstprivate() clause: those variables will be copied for each thread
-    #pragma omp parallel for default(none) shared(ps, Ms, reaction, integral, stepsize, kind, reaction_type) firstprivate(min_1, max_1, min_2, max_2)
+    #pragma omp parallel for default(none) shared(ps, Ms, reaction, integral, stepsize, kind, reaction_type) firstprivate(min_1, max_1, min_2, max_2, max_3)
     for (size_t i = 0; i < ps.size(); ++i) {
         dbl p0 = ps[i];
 
@@ -606,17 +622,16 @@ std::vector<dbl> integration(
             }
         }
         if (reaction_type == Kinematics::CREATION) {
-            // if (reaction[3].specie.m == 0.) {continue; }
-            // dbl min = reaction[3].specie.m - energy(p0, reaction[0].specie.m) - reaction[2].specie.m;
-            // dbl min2 = pow(min, 2) - pow(reaction[1].specie.m, 2);
-            // if (min <= 0 || min2 <= 0) {
-            //     min_1 = 0.;
-            // }
-            // else {
-            //     min_1 = sqrt(min2) / 1e3;
-            // }
+            if (reaction[3].specie.m == 0.) {continue; }
+            dbl max = energy(max_3, reaction[3].specie.m) - reaction[2].specie.m - reaction[0].specie.m;
+            dbl max2 = pow(max, 2) - pow(reaction[1].specie.m, 2);
+            if (max <= 0 || max2 <= 0) {
+                continue;
+            }
+            else {
+                max_1 = sqrt(max2);
+            }
             min_1 = 0.;
-            max_1 = 10. * reaction[3].specie.m;
         }
 
         dbl result(0.), error(0.);
@@ -635,13 +650,13 @@ std::vector<dbl> integration(
         //     abseps *= f;
         // }
 
-        size_t subdivisions = 10000;
+        size_t subdivisions = 100000;
         gsl_integration_workspace *w1 = gsl_integration_workspace_alloc(subdivisions);
         gsl_integration_workspace *w2 = gsl_integration_workspace_alloc(subdivisions);
         struct integration_params params = {
             p0, 0., 0.,
             &reaction, &Ms,
-            min_1, max_1, min_2, max_2,
+            min_1, max_1, min_2, max_2, max_3,
             kind, releps, abseps,
             subdivisions, w2
         };
@@ -694,7 +709,7 @@ PYBIND11_MODULE(integral, m) {
           "K1"_a, "K2"_a, "order"_a, "sides"_a);
 
     m.def("integration", &integration,
-          "ps"_a, "min_1"_a, "max_1"_a, "min_2"_a, "max_2"_a,
+          "ps"_a, "min_1"_a, "max_1"_a, "min_2"_a, "max_2"_a, "max_3"_a,
           "reaction"_a, "Ms"_a, "stepsize"_a, "kind"_a);
 
     py::enum_<CollisionIntegralKind>(m, "CollisionIntegralKind")
