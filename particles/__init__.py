@@ -83,9 +83,6 @@ class AbstractParticle:
         }
         # self.data['distribution'].append(self._distribution)
 
-        if not self.thermal:
-            self.decoupling_temperature = 1e20 * UNITS.MeV
-
         if self.params:
             self.set_params(self.params)
 
@@ -145,7 +142,7 @@ class AbstractParticle:
     @property
     def in_equilibrium(self):
         """ Simple check for equilibrium """
-        return self.T > self.decoupling_temperature
+        return (self.T > self.decoupling_temperature) * self.thermal
 
     def energy(self, p):
         """ Physical energy of the particle
