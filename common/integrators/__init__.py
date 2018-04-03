@@ -176,7 +176,7 @@ def double_gaussian(f, a, b, g, h):
     return integral
 
 
-def lambda_integrate(bounds=(GRID.MIN_MOMENTUM, GRID.MAX_MOMENTUM)):
+def lambda_integrate(bounds=GRID.BOUNDS):
     """ Gaussian integration over the momentum space of the lambda function """
 
     def decorator(func):

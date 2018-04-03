@@ -212,7 +212,7 @@ class DistributionParticle(AbstractParticle):
         oldeq = self.in_equilibrium
 
         # Update particle internal params only while it is in equilibrium
-        if self.in_equilibrium and self.thermal:
+        if self.in_equilibrium:
             # Particle species has temperature only when it is in equilibrium
             self.aT = self.params.aT
 
@@ -237,7 +237,7 @@ class DistributionParticle(AbstractParticle):
         if force_print or self.regime != oldregime or self.in_equilibrium != oldeq:
             print("\n" + "\t"*2 + "{} decoupled at T_dec = {:.2f} MeV \n"
                   .format(self.name, self.decoupling_temperature / UNITS.MeV)
-                  + "\t" * 2 + "-"*50)
+                  + "\t"*2 + "-"*50)
 
     def update_distribution(self):
         """ Apply collision integral to modify the distribution function """
@@ -342,7 +342,7 @@ class DistributionParticle(AbstractParticle):
             return self.equilibrium_distribution_function(self.conformal_energy(y) / aT)
 
     def init_distribution(self):
-        if self.thermal == False:
+        if not self.thermal:
             self._distribution = numpy.zeros(self.grid.MOMENTUM_SAMPLES)
         else:
             self._distribution = self.equilibrium_distribution()
