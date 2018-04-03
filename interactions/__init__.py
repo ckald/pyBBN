@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-import numpy
+
 import copy
 import itertools
 from collections import namedtuple, Counter
@@ -118,22 +118,6 @@ class CrossGeneratingInteraction(Interaction):
 
         self.integrals = IntegralDeduplicator(self.integrals).integrals
 
-        # def reaction_type(reaction):
-        #     return sum(item.side for item in reaction)
-
-        # def counter(reaction):
-        #     return Counter(item.specie.name for item in reaction)
-
-        # for integral in self.integrals:
-        #     if reaction_type(integral.reaction) == -2:
-        #         count_creation = counter(integral.reaction)
-        #         for other_integral in self.integrals:
-        #             if reaction_type(other_integral.reaction) == 2:
-        #                 count_decay = counter(other_integral.reaction)
-        #                 if count_decay == count_creation:
-        #                     integral.Ms = other_integral.Ms
-        #                     integral.reaction = other_integral.reaction
-        #                     print(integral.particle, "\n", other_integral.particle, "\n\n\n")
     @classmethod
     def cross_particle(cls, item):
         return item._replace(
