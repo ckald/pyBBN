@@ -36,6 +36,11 @@ defaults = {
     # Use Simpson's rule for computation of collision integrals instead of Gaussian quadrature
     'SIMPSONS_INTEGRATION': False,
 
+    # Use Simpson's rule for computation of thermodynamical quantities of non-equilibrium particles
+    # instead of Gaussian quadrature
+    # NOTE: Gaussian quadrature (wrongly) gives increasing comoving number density and entropy for decoupled species.
+    'SIMPSONS_NONEQ_PARTICLES': True,
+
     'LAGUERRE_GAUSS_FOR_MASSIVE_EQUILIBRIUM_PARTICLES': False,
 
 }
