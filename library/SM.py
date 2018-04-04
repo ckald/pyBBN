@@ -47,7 +47,8 @@ class particles(object):
         'symbol': 'γ',
         'statistics': STATISTICS.BOSON,
         'dof': 2,
-        'majorana': True
+        'majorana': True,
+        'Q': 0
     }
 
     class hadrons(object):
@@ -57,7 +58,8 @@ class particles(object):
             'statistics': STATISTICS.FERMION,
             'mass': 939.565378 * UNITS.MeV,
             'dof': 4,
-            'majorana': False
+            'majorana': False,
+            'Q': 0
         }
         proton = {
             'name': 'Proton',
@@ -65,7 +67,8 @@ class particles(object):
             'statistics': STATISTICS.FERMION,
             'mass': 938.272046 * UNITS.MeV,
             'dof': 4,
-            'majorana': False
+            'majorana': False,
+            'Q': -1
         }
         neutral_pion = {
             'name': 'Neutral pion',
@@ -165,6 +168,7 @@ class particles(object):
             'dof': 2,
             'decoupling_temperature': 5 * UNITS.MeV,
             'majorana': False,
+            'Q': 0,
             'flavour': 'electron'
         }
         neutrino_mu = {
@@ -175,6 +179,7 @@ class particles(object):
             'dof': 2,
             'decoupling_temperature': 5 * UNITS.MeV,
             'majorana': False,
+            'Q': 0,
             'flavour': 'muon'
         }
         neutrino_tau = {
@@ -185,9 +190,9 @@ class particles(object):
             'dof': 2,
             'decoupling_temperature': 5 * UNITS.MeV,
             'majorana': False,
+            'Q': 0,
             'flavour': 'tau'
         }
-
         electron = {
             'name': 'Electron',
             'symbol': 'e',
@@ -195,6 +200,7 @@ class particles(object):
             'mass': 0.511 * UNITS.MeV,
             'dof': 4,
             'majorana': False,
+            'Q': -1,
             'flavour': 'electron'
         }
         muon = {
@@ -204,6 +210,7 @@ class particles(object):
             'mass': 105.7 * UNITS.MeV,
             'dof': 4,
             'majorana': False,
+            'Q': -1,
             'flavour': 'muon'
         }
         tau = {
@@ -213,6 +220,7 @@ class particles(object):
             'mass': 1777 * UNITS.MeV,
             'dof': 4,
             'majorana': False,
+            'Q': -1,
             'flavour': 'tau'
         }
 

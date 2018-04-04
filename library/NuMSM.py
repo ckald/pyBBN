@@ -47,7 +47,8 @@ class particles(object):
             'mass': mass,
             'dof': 2,
             'decoupling_temperature': 1. * UNITS.GeV,
-            'majorana': True
+            'majorana': True,
+            'Q': 0
         }
 
     @staticmethod
@@ -59,7 +60,8 @@ class particles(object):
             'mass': mass,
             'dof': 4,
             'decoupling_temperature': 1. * UNITS.GeV,
-            'majorana': False
+            'majorana': False,
+            'Q': 0
         }
 
 

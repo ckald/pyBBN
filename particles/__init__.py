@@ -54,7 +54,7 @@ class AbstractParticle:
         'statistics': STATISTICS.FERMION,
         'params': None,
         'grid': GRID,
-        'thermal': True
+        'thermal_dyn': True
     }
 
     def __init__(self, **kwargs):
@@ -142,7 +142,7 @@ class AbstractParticle:
     @property
     def in_equilibrium(self):
         """ Simple check for equilibrium """
-        return (self.T > self.decoupling_temperature) * self.thermal
+        return (self.T > self.decoupling_temperature) * self.thermal_dyn
 
     def energy(self, p):
         """ Physical energy of the particle
@@ -209,7 +209,7 @@ class DistributionParticle(AbstractParticle):
         oldeq = self.in_equilibrium
 
         # Update particle internal params only while it is in equilibrium
-        if self.in_equilibrium:
+        if self.in_equilibrium or (not self.thermal_dyn and self.Q != 0):
             # Particle species has temperature only when it is in equilibrium
             self.aT = self.params.aT
 
@@ -339,7 +339,7 @@ class DistributionParticle(AbstractParticle):
             return self.equilibrium_distribution_function(self.conformal_energy(y) / aT)
 
     def init_distribution(self):
-        if not self.thermal:
+        if not self.thermal_dyn:
             self._distribution = numpy.zeros(self.grid.MOMENTUM_SAMPLES)
         else:
             self._distribution = self.equilibrium_distribution()
