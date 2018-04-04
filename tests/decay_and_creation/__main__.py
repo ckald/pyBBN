@@ -31,17 +31,16 @@ params = Params(T=T_initial,
 
 universe = Universe(params=params, folder=folder)
 
-from common import LinearSpacedGrid
 linear_grid = LinearSpacedGrid(MOMENTUM_SAMPLES=301, MAX_MOMENTUM=600*UNITS.MeV)
 linear_grid_s = LinearSpacedGrid(MOMENTUM_SAMPLES=51, MAX_MOMENTUM=20*UNITS.MeV)
 
 photon = Particle(**SMP.photon)
 
 electron = Particle(**SMP.leptons.electron, **{'grid': linear_grid})
-muon = Particle(**SMP.leptons.muon, **{'grid': linear_grid, 'thermal': False})
+muon = Particle(**SMP.leptons.muon, **{'grid': linear_grid, 'thermal_dyn': False})
 
 neutrino_e = Particle(**SMP.leptons.neutrino_e, **{'grid': linear_grid})
-neutrino_mu = Particle(**SMP.leptons.neutrino_mu, **{'grid': linear_grid, 'thermal': False})
+neutrino_mu = Particle(**SMP.leptons.neutrino_mu, **{'grid': linear_grid, 'thermal_dyn': False})
 neutrino_tau = Particle(**SMP.leptons.neutrino_tau, **{'grid': linear_grid})
 
 for neutrino in [neutrino_e, neutrino_tau]:
@@ -49,7 +48,6 @@ for neutrino in [neutrino_e, neutrino_tau]:
 
 sterile = Particle(**NuP.dirac_sterile_neutrino(mass), **{'grid': linear_grid_s})
 sterile.decoupling_temperature = T_initial
-muon.decoupling_temperature = T_initial
 
 universe.add_particles([
     photon,
@@ -82,9 +80,19 @@ interactions_F1 = NuI.sterile_leptons_interactions(
     kind=CollisionIntegralKind.F_1_vacuum_decay
 )
 
+
+interactions_F1 = utils.interaction_filter(
+                ['Electron'],
+                interactions_F1
+                )
+
+interactions_Ff = utils.interaction_filter(
+                ['Electron'],
+                interactions_Ff
+                )
+
 def reaction_type(reaction):
     return sum(reactant.side for reactant in reaction)
-
 
 ## Test for N <--> electron + muon + muon neutrino
 def Count(reaction):

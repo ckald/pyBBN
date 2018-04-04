@@ -122,6 +122,13 @@ def ensure_dir(*chunks):
     return dir
 
 
+def interaction_filter(names, interaction):
+    for inter in interaction:
+        inter.integrals = [integral for integral in inter.integrals
+                        if integral.reaction[0].specie.name not in names]
+    return interaction
+
+
 class Dynamic2DArray(object):
     def __init__(self, header):
         self.header = header

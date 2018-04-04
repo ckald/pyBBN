@@ -111,9 +111,6 @@ class CrossGeneratingInteraction(Interaction):
             if item.antiparticle:
                 continue
 
-            if item.specie.name == 'Electron':
-                continue
-
             self.init_integrals(reaction, item)
 
         self.integrals = IntegralDeduplicator(self.integrals).integrals
