@@ -206,12 +206,12 @@ dbl F_1(const std::vector<reaction_t> &reaction, const std::array<dbl, 4> &f) {
     return F_B(reaction, f, 0);
 }
 
-dbl F_f_vacuum_decay() {
+dbl F_f_vacuum_decay(const std::vector<reaction_t> &reaction, const std::array<dbl, 4> &f) {
     /* Variable part of the distribution functional */
     return -1;
 }
 
-dbl F_1_vacuum_decay(const std::array<dbl, 4> &f) {
+dbl F_1_vacuum_decay(const std::vector<reaction_t> &reaction, const std::array<dbl, 4> &f) {
     /* Constant part of the distribution functional */
     return f[3];
 }
@@ -311,11 +311,11 @@ dbl integrand_full(
 
     switch (integral_kind) {
         case CollisionIntegralKind::F_1_vacuum_decay:
-             return temp * F_1_vacuum_decay(f);
+             return temp * F_1_vacuum_decay(reaction, f);
         case CollisionIntegralKind::F_f_vacuum_decay:
-            return temp * F_f_vacuum_decay();
+            return temp * F_f_vacuum_decay(reaction, f);
         case CollisionIntegralKind::Full_vacuum_decay:
-            return temp * (F_1_vacuum_decay(f) + f[0] * F_f_vacuum_decay());
+            return temp * (F_1_vacuum_decay(reaction, f) + f[0] * F_f_vacuum_decay(reaction, f));
         case CollisionIntegralKind::F_1:
             return temp * F_1(reaction, f);
         case CollisionIntegralKind::F_f:
