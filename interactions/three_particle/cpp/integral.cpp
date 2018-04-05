@@ -218,14 +218,14 @@ dbl F_1(const std::vector<reaction_t3> &reaction, const std::array<dbl, 3> &f) {
     return F_B(reaction, f, 0);
 }
 
-dbl F_f_vacuum_decay() {
+dbl F_f_vacuum_decay(const std::vector<reaction_t3> &reaction, const std::array<dbl, 3> &f) {
     /* Variable part of the distribution functional */
     return -1;
 }
 
-dbl F_1_vacuum_decay() {
+dbl F_1_vacuum_decay(const std::vector<reaction_t3> &reaction, const std::array<dbl, 3> &f) {
     /* Constant part of the distribution functional */
-    return 0;
+    return f[2];
 }
 
 
@@ -343,11 +343,11 @@ dbl integrand_full(
 
     switch (integral_kind) {
         case CollisionIntegralKind_3::F_1_vacuum_decay:
-             return temp * F_1_vacuum_decay();
+             return temp * F_1_vacuum_decay(reaction, f);
         case CollisionIntegralKind_3::F_f_vacuum_decay:
-            return temp * F_f_vacuum_decay();
+            return temp * F_f_vacuum_decay(reaction, f);
         case CollisionIntegralKind_3::Full_vacuum_decay:
-            return temp * (F_1_vacuum_decay() + f[0] * F_f_vacuum_decay());
+            return temp * (F_1_vacuum_decay(reaction, f) + f[0] * F_f_vacuum_decay(reaction, f));
 
         case CollisionIntegralKind_3::F_1:
             return temp * F_1(reaction, f);
@@ -391,23 +391,37 @@ dbl integrand_integration(
 }
 
 
-dbl p1_bounds_1(const std::vector<reaction_t3> &reaction,
-                int i=0, int j=1, int k=2
+dbl p1_bounds_1(const std::vector<reaction_t3> &reaction
 ) {
-    dbl mi = reaction[i].specie.m;
-    dbl mj = reaction[j].specie.m;
-    dbl mk = reaction[k].specie.m;
+    dbl m0 = reaction[0].specie.m;
+    dbl m1 = reaction[1].specie.m;
+    dbl m2 = reaction[2].specie.m;
+    if (m0 == 0) {return 0.;}
     return sqrt(
                 pow(
-                    pow(mi, 2) - pow(mj,2) - pow(mk, 2)
+                    pow(m0, 2) - pow(m1,2) - pow(m2, 2)
                 , 2)
-                - 4. * pow(mj, 2) * pow(mk, 2)
+                - 4. * pow(m1, 2) * pow(m2, 2)
             )
-            / (2. * mi);
+            / (2. * m0);
 }
 
 
-dbl p1_bounds_2(const std::vector<reaction_t3> &reaction, dbl p0,
+dbl p1_bounds_2(const std::vector<reaction_t3> &reaction, dbl p0
+) {
+    dbl m1 = reaction[1].specie.m;
+    dbl m2 = reaction[2].specie.m;
+
+    return (
+            pow(m1, 4) + pow(m2, 4)
+            -2 * pow(m1, 2) * (pow(m2, 2) + 2 * pow(p0, 2))
+        ) / (
+            4 * p0 * (pow(m1, 2) - pow(m2, 2))
+        );
+}
+
+
+dbl p1_bounds_3(const std::vector<reaction_t3> &reaction, dbl p0,
     int sign1, int sign2
 ) {
     dbl m0 = reaction[0].specie.m;
@@ -430,8 +444,23 @@ dbl p1_bounds_2(const std::vector<reaction_t3> &reaction, dbl p0,
 }
 
 
+dbl p1_bounds_4(const std::vector<reaction_t3> &reaction, dbl p0, dbl max_2
+) {
+    dbl m0 = reaction[0].specie.m;
+    dbl m1 = reaction[1].specie.m;
+    dbl m2 = reaction[2].specie.m;
+
+    dbl max = energy(max_2, m2) - energy(p0, m0);
+    dbl max2 = pow(max, 2) - pow(m1, 2);
+    if (max <= 0 || max2 <= 0) {
+        return -1;
+    }
+    return sqrt(max2);
+}
+
+
 std::vector<dbl> integration_3(
-    std::vector<dbl> ps, dbl min_1, dbl max_1, const std::vector<reaction_t3> &reaction,
+    std::vector<dbl> ps, dbl min_1, dbl max_1, dbl max_2, const std::vector<reaction_t3> &reaction,
     dbl stepsize, int kind=0
 ) {
 
@@ -440,72 +469,69 @@ std::vector<dbl> integration_3(
     auto reaction_type = get_reaction_type(reaction);
 
     // Note firstprivate() clause: those variables will be copied for each thread
-    #pragma omp parallel for default(none) shared(ps, reaction, integral, stepsize, kind, reaction_type) firstprivate(min_1, max_1)
+    #pragma omp parallel for default(none) shared(std::cout,ps, reaction, integral, stepsize, kind, reaction_type) firstprivate(min_1, max_1, max_2)
     for (size_t i = 0; i < ps.size(); ++i) {
         dbl p0 = ps[i];
 
-        if (reaction_type == Kinematics_3::CREATION) {
-            if (p0 == 0) {continue; }
-
-            dbl temp = p1_bounds_1(reaction, 2, 0, 1);
-            if (std::abs(p0 / temp) - 1 > 1e-4) {continue; }
-
-            dbl temp2 = energy(temp, reaction[0].specie.m)
-                    + energy(temp, reaction[1].specie.m);
-            if (std::abs(temp2 / reaction[2].specie.m) - 1 > 1e-4) {continue; }
-
-            integral[i] = integrand_full(temp, temp, kind, reaction);
-            }
-
+        if (p0 == 0) {
+            dbl p1 = p1_bounds_1(reaction);
+            integral[i] = integrand_full(p0, p1, kind, reaction);
+        }
 
         else {
-            if (p0 == 0) {
-                dbl p1 = p1_bounds_1(reaction, 0, 1, 2);
-
-                integral[i] = integrand_full(p0, p1, kind, reaction);
+            if (reaction_type == Kinematics_3::CREATION) {
+                if (reaction[0].specie.m == 0) {
+                    dbl min = p1_bounds_2(reaction, p0);
+                    min_1 = std::max(min, -min);
+                    dbl temp = p1_bounds_4(reaction, p0, max_2);
+                    if (temp == -1) {continue; }
+                    max_1 = temp;
+                }
+                else {
+                    dbl min = p1_bounds_3(reaction, p0, -1, 1);
+                    min_1 = std::max(min, -min);
+                    dbl temp = p1_bounds_4(reaction, p0, max_2);
+                    if (temp == -1) {continue; }
+                    max_1 = std::min(p1_bounds_3(reaction, p0, 1, 1), temp);
+                    if (max_1 < min_1) {continue; }
+                }
             }
+
             else {
-                dbl min = p1_bounds_2(reaction, p0, 1, 1);
+                dbl min = p1_bounds_3(reaction, p0, 1, 1);
                 min_1 = std::max(min, -min);
-                max_1 = p1_bounds_2(reaction, p0, -1, 1);
-
-                dbl result(0.), error(0.);
-                size_t status;
-                gsl_function F;
-                F.function = &integrand_integration;
-
-                dbl releps = 1e-2;
-                dbl abseps = releps / stepsize;
-                auto integral_kind = CollisionIntegralKind_3(kind);
-                if (integral_kind != CollisionIntegralKind_3::F_f
-                    && integral_kind != CollisionIntegralKind_3::F_f_vacuum_decay)
-                {
-                    dbl f = distribution_interpolation(reaction[0].specie, p0);
-                    abseps *= f;
-                }
-
-                size_t subdivisions = 10000;
-                gsl_integration_workspace *w = gsl_integration_workspace_alloc(subdivisions);
-                struct integration_params params = {
-                    p0, 0.,
-                    &reaction,
-                    min_1, max_1,
-                    kind, releps, abseps,
-                    subdivisions
-                };
-                F.params = &params;
-
-                gsl_set_error_handler_off();
-                status = gsl_integration_qag(&F, min_1, max_1, abseps, releps, subdivisions, GSL_INTEG_GAUSS15, w, &result, &error);
-
-                if (status) {
-                    printf("integration result: %e ± %e. %i intervals. %s\n", result, error, (int) w->size, gsl_strerror(status));
-                    throw std::runtime_error("Integrator failed to reach required accuracy");
-                }
-
-                gsl_integration_workspace_free(w);
-                integral[i] += result;
+                max_1 = p1_bounds_3(reaction, p0, -1, 1);
             }
+
+            dbl result(0.), error(0.);
+            size_t status;
+            gsl_function F;
+            F.function = &integrand_integration;
+
+            dbl releps = 1e-2;
+            dbl abseps = releps / stepsize;
+
+            size_t subdivisions = 10000;
+            gsl_integration_workspace *w = gsl_integration_workspace_alloc(subdivisions);
+            struct integration_params params = {
+                p0, 0.,
+                &reaction,
+                min_1, max_1,
+                kind, releps, abseps,
+                subdivisions
+            };
+            F.params = &params;
+
+            gsl_set_error_handler_off();
+            status = gsl_integration_qag(&F, min_1, max_1, abseps, releps, subdivisions, GSL_INTEG_GAUSS15, w, &result, &error);
+
+            if (status) {
+                printf("integration result: %e ± %e. %i intervals. %s\n", result, error, (int) w->size, gsl_strerror(status));
+                throw std::runtime_error("Integrator failed to reach required accuracy");
+            }
+
+            gsl_integration_workspace_free(w);
+            integral[i] += result;
         }
     }
     return integral;
@@ -532,7 +558,7 @@ PYBIND11_MODULE(integral, m) {
           "grid"_a, "x"_a);
 
     m.def("integration_3", &integration_3,
-          "ps"_a, "min_1"_a, "max_1"_a,
+          "ps"_a, "min_1"_a, "max_1"_a, "max_2"_a,
           "reaction"_a, "stepsize"_a, "kind"_a);
 
     py::enum_<CollisionIntegralKind_3>(m, "CollisionIntegralKind_3")

@@ -53,10 +53,10 @@ class ThreeParticleIntegral(BoltzmannIntegral):
     def integrate(self, ps, stepsize=None, bounds=None):
         params = self.particle.params
 
-        if self.reaction[0].specie.mass == 0:
+        if self.reaction[0].specie.mass == 0 and self.reaction[1].side == 1:
             return numpy.zeros(len(ps))
 
-        bounds = tuple(b1 / params.aT for b1 in self.grids.BOUNDS)
+        bounds = tuple(b1 / params.aT for b1 in self.grids.BOUNDS) + (self.reaction[2].specie.grid.MAX_MOMENTUM / params.aT, )
 
         if stepsize is None:
             stepsize = params.h
@@ -84,7 +84,11 @@ class ThreeParticleIntegral(BoltzmannIntegral):
         ps = ps / params.aT
         self.cMs = sum(M.K for M in self.Ms)
 
-        constant_0 = self.cMs * params.aT / params.a / 8. / numpy.pi / params.H / self.particle.mass**2
+        if self.particle.mass == 0:
+            constant_0 = 0
+        else:
+            constant_0 = self.cMs * params.aT / params.a / 8. / numpy.pi / params.H / self.particle.mass**2
+
         constant_else = self.cMs * params.a / params.aT / 32. / numpy.pi / params.H
 
         constant = numpy.append(constant_0, numpy.repeat(constant_else, len(ps) - 1))
@@ -100,7 +104,6 @@ class ThreeParticleIntegral(BoltzmannIntegral):
             return numpy.array(A) * constant, numpy.array(B) * constant
 
         fullstack = integration_3(ps, *bounds, self.creaction, stepsize, self.kind)
-
         if self.kind == CollisionIntegralKind.F_f or self.kind == CollisionIntegralKind.F_f_vacuum_decay:
             constant *= self.particle._distribution
 
