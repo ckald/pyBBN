@@ -6,7 +6,7 @@
 from __future__ import division
 
 import itertools
-from collections import Counter, namedtuple
+from collections import Counter
 
 from common import UNITS, CONST, statistics as STATISTICS
 from interactions import CrossGeneratingInteraction
@@ -144,7 +144,7 @@ class interactions(object):
 
         g_R = CONST.g_R
         inters = []
-        IntegralItem = namedtuple('IntegralItem', ['side', 'specie', 'antiparticle', 'index', 'crossed'])
+
         # Neutrinos scatterings
         for neutrino_a, neutrino_b in itertools.product(neutrinos, neutrinos):
             if thetas[neutrino_a.flavour]:
