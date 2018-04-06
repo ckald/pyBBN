@@ -6,7 +6,7 @@
 from __future__ import division
 
 import itertools
-from collections import Counter
+from collections import Counter, namedtuple
 
 from common import UNITS, CONST, statistics as STATISTICS
 from interactions import CrossGeneratingInteraction
@@ -78,14 +78,19 @@ class interactions(object):
         # SOMETHING IS CLEARLY NOT RIGHT
         K1 = 2. if active_a == active_b else 1
 
-        return CrossGeneratingInteraction(
+        return [CrossGeneratingInteraction(
             name="Sterile-active neutrino scattering",
-            particles=((sterile, active_b), (active_a, active_b)),
+            particles=particles,
             antiparticles=((False, False), (False, False)),
-            Ms=(SterileM(theta=theta, K1=K1, order=(0, 1, 2, 3)), ),
+            Ms=Ms,
             integral_type=FourParticleIntegral,
             kind=kind
-        )
+        ) for particles, Ms in zip(
+            [((sterile, active_b), (active_a, active_b)),
+            ((active_a, active_b), (sterile, active_b))],
+            [(SterileM(theta=theta, K1=K1, order=(0, 1, 2, 3)), ),
+            (SterileM(theta=theta, K1=K1, order=(2, 3, 0, 1)), )]
+        )]
 
     @staticmethod
     def sterile_active_to_leptons_NC(theta=1., g_L=CONST.g_R+0.5, sterile=None,
@@ -139,17 +144,22 @@ class interactions(object):
 
         g_R = CONST.g_R
         inters = []
-
+        IntegralItem = namedtuple('IntegralItem', ['side', 'specie', 'antiparticle', 'index', 'crossed'])
         # Neutrinos scatterings
         for neutrino_a, neutrino_b in itertools.product(neutrinos, neutrinos):
             if thetas[neutrino_a.flavour]:
-                inters.append(cls.sterile_active_scattering(
+                inter = cls.sterile_active_scattering(
                     theta=thetas[neutrino_a.flavour],
                     sterile=sterile,
                     active_a=neutrino_a,
                     active_b=neutrino_b,
                     kind=kind
-                ))
+                )
+                inter[1].integrals = [integral for integral in inter[1].integrals if \
+                                    integral.reaction[0].specie.name not in [integral2.reaction[0].specie.name for \
+                                    integral2 in inter[0].integrals]]
+
+                inters.extend(inter)
 
         # Interactions of neutrinos and leptons
         for lepton in leptons:
