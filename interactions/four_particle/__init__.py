@@ -138,7 +138,12 @@ class FourParticleIntegral(BoltzmannIntegral):
         ps = ps / params.aT
         # All matrix elements share the same weak scale multiplier
         unit = 32 * CONST.G_F**2
-        constant = unit * (params.aT / params.a)**5 / 64. / numpy.pi**3 / params.H / self.particle.dof
+        constant = unit * (params.aT / params.a)**5 / 64. / numpy.pi**3 / params.H
+
+        if self.particle.majorana:
+            constant /= self.particle.dof
+        else:
+            constant /= self.particle.dof / 2
 
         # left = Counter(item.specie for item in self.reaction if item.side == -1)
         # right = Counter(item.specie for item in self.reaction if item.side == 1)
