@@ -138,14 +138,14 @@ class FourParticleIntegral(BoltzmannIntegral):
         ps = ps / params.aT
         # All matrix elements share the same weak scale multiplier
         unit = 32 * CONST.G_F**2
-        constant = unit * (params.aT / params.a)**5 / 64. / numpy.pi**3 / params.H
+        constant = unit * (params.aT / params.a)**5 / 64. / numpy.pi**3 / params.H / self.particle.dof
 
-        left = Counter(item.specie for item in self.reaction if item.side == -1)
-        right = Counter(item.specie for item in self.reaction if item.side == 1)
-        if left[self.reaction[0].specie] == 2 and right[self.reaction[0].specie] in [0, 1]:
-            constant *= 2
-        if left[self.reaction[0].specie] == 3 and right[self.reaction[0].specie] == 0:
-            constant *= 3
+        # left = Counter(item.specie for item in self.reaction if item.side == -1)
+        # right = Counter(item.specie for item in self.reaction if item.side == 1)
+        # if left[self.reaction[0].specie] == 2 and right[self.reaction[0].specie] in [0, 1]:
+        #     constant *= 2
+        # if left[self.reaction[0].specie] == 3 and right[self.reaction[0].specie] == 0:
+        #     constant *= 3
 
         if not environment.get('LOGARITHMIC_TIMESTEP'):
             constant /= params.x

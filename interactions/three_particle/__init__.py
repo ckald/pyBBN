@@ -91,7 +91,7 @@ class ThreeParticleIntegral(BoltzmannIntegral):
 
         constant_else = self.cMs * params.a / params.aT / 32. / numpy.pi / params.H
 
-        constant = numpy.append(constant_0, numpy.repeat(constant_else, len(ps) - 1))
+        constant = numpy.append(constant_0, numpy.repeat(constant_else, len(ps) - 1)) / self.particle.dof
 
         if not environment.get('LOGARITHMIC_TIMESTEP'):
             constant /= params.x
