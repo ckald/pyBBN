@@ -145,12 +145,13 @@ class FourParticleIntegral(BoltzmannIntegral):
         else:
             constant /= self.particle.dof / 2
 
-        # left = Counter(item.specie for item in self.reaction if item.side == -1)
-        # right = Counter(item.specie for item in self.reaction if item.side == 1)
-        # if left[self.reaction[0].specie] == 2 and right[self.reaction[0].specie] in [0, 1]:
-        #     constant *= 2
-        # if left[self.reaction[0].specie] == 3 and right[self.reaction[0].specie] == 0:
-        #     constant *= 3
+        # if 'Sterile neutrino (Dirac)' in [item.specie.name for item in self.reaction]:
+        #     left = Counter(item.specie for item in self.reaction if item.side == -1)
+        #     right = Counter(item.specie for item in self.reaction if item.side == 1)
+        #     if left[self.reaction[0].specie] == 2 and right[self.reaction[0].specie] in [0, 1]:
+        #         constant *= 2
+        #     if left[self.reaction[0].specie] == 3 and right[self.reaction[0].specie] == 0:
+        #         constant *= 3
 
         if not environment.get('LOGARITHMIC_TIMESTEP'):
             constant /= params.x
