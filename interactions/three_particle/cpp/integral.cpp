@@ -409,9 +409,10 @@ dbl p1_bounds_1(const std::vector<reaction_t3> &reaction
 
 dbl p1_bounds_2(const std::vector<reaction_t3> &reaction, dbl p0
 ) {
+    dbl m0 = reaction[0].specie.m;
     dbl m1 = reaction[1].specie.m;
     dbl m2 = reaction[2].specie.m;
-
+    if (m0 == 0 && p0 == 0) {return 0.;}
     return (
             pow(m1, 4) + pow(m2, 4)
             -2 * pow(m1, 2) * (pow(m2, 2) + 2 * pow(p0, 2))
@@ -486,6 +487,7 @@ std::vector<dbl> integration_3(
                     dbl temp = p1_bounds_4(reaction, p0, max_2);
                     if (temp == -1) {continue; }
                     max_1 = temp;
+                    if (min_1 >= max_1) {continue; }
                 }
                 else {
                     dbl min = p1_bounds_3(reaction, p0, -1, 1);
@@ -493,7 +495,7 @@ std::vector<dbl> integration_3(
                     dbl temp = p1_bounds_4(reaction, p0, max_2);
                     if (temp == -1) {continue; }
                     max_1 = std::min(p1_bounds_3(reaction, p0, 1, 1), temp);
-                    if (max_1 < min_1) {continue; }
+                    if (min_1 >= max_1) {continue; }
                 }
             }
 

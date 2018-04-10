@@ -24,8 +24,8 @@ folder = utils.ensure_dir(
     "mass={:e}_theta={:e}_3p".format(mass / UNITS.MeV, theta)
 )
 
-T_initial = 20. * UNITS.MeV
-T_final = 0.0008 * UNITS.MeV
+T_initial = 5. * UNITS.MeV
+T_final = 0.8 * UNITS.MeV
 params = Params(T=T_initial,
                 dy=0.003125)
 
@@ -33,11 +33,11 @@ universe = Universe(params=params, folder=folder)
 
 from common import LinearSpacedGrid
 linear_grid = LinearSpacedGrid(MOMENTUM_SAMPLES=1001, MAX_MOMENTUM=500*UNITS.MeV)
-log_grid = LogSpacedGrid(MOMENTUM_SAMPLES=1001, MAX_MOMENTUM=200*UNITS.MeV)
+linear_grid_nu = LinearSpacedGrid(MOMENTUM_SAMPLES=1001, MAX_MOMENTUM=200*UNITS.MeV)
 linear_grid_s = LinearSpacedGrid(MOMENTUM_SAMPLES=51, MAX_MOMENTUM=20*UNITS.MeV)
 
 photon = Particle(**SMP.photon)
-neutrino_e = Particle(**SMP.leptons.neutrino_e, **{'grid': log_grid, 'thermal_dyn': False})
+neutrino_e = Particle(**SMP.leptons.neutrino_e, **{'grid': linear_grid_nu, 'thermal_dyn': False})
 neutral_pion = Particle(**SMP.hadrons.neutral_pion, **{'grid': linear_grid, 'thermal_dyn': False})
 
 sterile = Particle(**NuP.dirac_sterile_neutrino(mass), **{'grid': linear_grid_s})
@@ -110,7 +110,7 @@ def step_monitor(universe):
                 com_den_nu_1st = data['density'][-1] * universe.data['a'][-1]**3
                 com_den_nu_2nd = data['density'][-2] * universe.data['a'][-2]**3
                 delta_den_nu = com_den_nu_1st - com_den_nu_2nd
-        print(delta_den_HNL, delta_den_pion * 2, delta_den_nu * 2)
+        print(delta_den_HNL, delta_den_pion, delta_den_nu)
         with open(os.path.join(folder, particle.name.replace(' ', '_') + "Densities_3p.txt"), 'a') as f1:
             f1.write('{T:e}\t{a:e}\t{nHNL:e}\t{nmu:e}\t{nnu:e}\n'
                 .format(T=particle.params.T / UNITS.MeV,
