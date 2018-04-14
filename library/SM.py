@@ -11,6 +11,7 @@ from math import sin, cos
 
 from common import UNITS, CONST, statistics as STATISTICS
 from interactions import CrossGeneratingInteraction
+from interactions.three_particle import ThreeParticleM, ThreeParticleIntegral
 from interactions.four_particle import FourParticleM, FourParticleIntegral
 
 
@@ -207,7 +208,7 @@ class particles(object):
             'name': 'Muon',
             'symbol': 'μ',
             'statistics': STATISTICS.FERMION,
-            'mass': 105.7 * UNITS.MeV,
+            'mass': 105.658 * UNITS.MeV,
             'dof': 4,
             'majorana': False,
             'Q': -1,
@@ -465,6 +466,60 @@ class interactions(object):
                 ))
         return inters
 
+    @staticmethod
+    def decay_charged_pion(meson=None, lepton=None, neutrino=None, kind=None):
+
+        CKM = particles.quarks.CKM[(1, 1)]
+
+        return [CrossGeneratingInteraction(
+            name="Charged pion decay into neutrino and charged lepton",
+            particles=((meson, ), (lepton, neutrino)),
+            antiparticles=antiparticles,
+            Ms=(ThreeParticleM(
+                K=2 * (CONST.G_F * meson.decay_constant * CKM)**2 * lepton.mass**4 * (
+                    ((meson.mass / lepton.mass)**2 - 1)
+                )
+            ),),
+            integral_type=ThreeParticleIntegral,
+            kind=kind
+        ) for antiparticles in [
+            ((False, ), (False, True)),
+            ((True, ), (True, False))
+        ]]
+
+    @staticmethod
+    def decay_neutral_pion(meson=None, photon=None, kind=None):
+
+        return [CrossGeneratingInteraction(
+            name="Neutral pion decay into two photons",
+            particles=((meson, ), (photon, photon)),
+            antiparticles=((False, ), (False, False)),
+            Ms=(ThreeParticleM(
+                K=CONST.alpha**2 * meson.mass**4 / (2 * np.pi**2 * meson.decay_constant**2)
+            ),),
+            integral_type=ThreeParticleIntegral,
+            kind=kind
+        )]
+
+    @classmethod
+    def meson_interactions(cls, mesons=None, leptons=None, neutrinos=None, photon=None, kind=None):
+
+        inters = []
+        for meson in mesons:
+            if meson.name == 'Charged pion':
+                lepton = [lepton for lepton in leptons if lepton.name == 'Muon'][0]
+                neutrino = [neutrino for neutrino in neutrinos if neutrino.name == 'Muon neutrino'][0]
+                inters += cls.decay_charged_pion(meson=meson,
+                                                lepton=lepton,
+                                                neutrino=neutrino,
+                                                kind=kind)
+
+            if meson.name == 'Neutral pion':
+                inters += cls.decay_neutral_pion(meson=meson,
+                                                photon=photon[0],
+                                                kind=kind)
+
+        return inters
 
     @classmethod
     def baryons_interaction(cls, neutron=None, proton=None, neutrino=None, electron=None):

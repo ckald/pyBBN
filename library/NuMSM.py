@@ -346,7 +346,7 @@ class interactions(object):
             particles=((sterile, ), (lepton, meson)),
             antiparticles=antiparticles,
             Ms=(ThreeParticleM(
-                K=(CONST.G_F * theta * meson.decay_constant * CKM)**2 * sterile.mass**4 * (
+                K=2 * (CONST.G_F * theta * meson.decay_constant * CKM)**2 * sterile.mass**4 * (
                     (1 - (lepton.mass / sterile.mass)**2)**2
                     - (meson.mass / sterile.mass)**2 * (1 + (lepton.mass / sterile.mass)**2)
                 )
@@ -428,27 +428,67 @@ class interactions(object):
 
     @classmethod
     def interactions_decay_products(cls, interactions_primary=None, interactions_SM=None,
-                                    neutrinos=None, leptons=None, kind=None):
+                                    neutrinos=None, leptons=None, mesons=None, photon=None, kind=None):
 
         interactions_decay = []
         species = Counter()
-        for inter in interactions_primary:
-            for integral in inter.integrals:
-                species.update(Counter(item.specie.name for item in integral.reaction if item.side == 1))
 
-        if species['Muon']:
-            SM = False
-            if interactions_SM:
-                for inter in interactions_SM:
+        for main in interactions_primary:
+            for inter in main:
+                for integral in inter.integrals:
+                    species.update(Counter(item.specie.name for item in integral.reaction if item.side == 1))
+
+            def already_there(interaction, name):
+                if not interaction:
+                    return False
+
+                for inter in interaction:
                     for integral in inter.integrals:
-                        if Counter(item.specie.name for item in integral.reaction if item.specie.name == 'Muon'):
-                            SM = True
+                        if Counter(item.specie.name for item in integral.reaction if item.specie.name == name):
+                            return True
 
-            interactions_decay += SMI.lepton_interactions(
-                                leptons=leptons,
-                                neutrinos=neutrinos,
-                                SM_inters=SM,
-                                kind=kind
-                            )
+                return False
+
+            def decay_muon_taon():
+                # SM = False
+                # if interactions_SM:
+                #     for inter in interactions_SM:
+                #         for integral in inter.integrals:
+                #             if Counter(item.specie.name for item in integral.reaction if item.specie.name == 'Muon'):
+                #                 SM = True
+
+                return SMI.lepton_interactions(
+                        leptons=leptons,
+                        neutrinos=neutrinos,
+                        SM_inters=already_there(interactions_SM, "Muon"),
+                        kind=kind
+                    )
+
+            def decay_charged_pion():
+                return SMI.meson_interactions(
+                        mesons=mesons,
+                        leptons=leptons,
+                        neutrinos=neutrinos,
+                        kind=kind
+                    )
+
+            def decay_neutral_pion():
+                return SMI.meson_interactions(
+                        mesons=mesons,
+                        photon=photon,
+                        kind=kind
+                    )
+
+            if species['Muon']:
+                interactions_decay += decay_muon_taon()
+
+            if species['Charged pion']:
+                if not already_there(interactions_decay, "Muon"):
+                    interactions_decay += decay_muon_taon()
+
+                interactions_decay += decay_charged_pion()
+
+            if species['Neutral pion']:
+                interactions_decay += decay_neutral_pion()
 
         return interactions_decay

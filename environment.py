@@ -26,9 +26,9 @@ defaults = {
     'ADAMS_MOULTON_DISTRIBUTION_CORRECTION': True,
 
     # The default number of points on the momentum space grid
-    'MOMENTUM_SAMPLES': 101,
+    'MOMENTUM_SAMPLES': 201,
     # The maximal value on the momentum space grid in MeV
-    'MAX_MOMENTUM_MEV': 100,
+    'MAX_MOMENTUM_MEV': 200,
 
     # The fraction $\gamma = m/T$ at which the equilibrium particle switch
     'REGIME_SWITCHING_FACTOR': 1e3,

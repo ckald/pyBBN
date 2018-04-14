@@ -266,6 +266,11 @@ class IntegralDeduplicator:
         for new_M in new_integral.Ms:
             reduced = False
             for old_M in old_integral.Ms:
+                if hasattr(old_M, 'K'):
+                    reduced = True
+                    old_M += new_M
+                    break
+
                 if old_M.stackable(new_M):
                     reduced = True
                     old_M += new_M

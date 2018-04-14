@@ -63,6 +63,8 @@ class CONST(object):
     f_Ds_star = 315. * UNITS.MeV
     # Baryon-to-photon ratio
     eta = 6.1e-10
+    # Fine-structure constant
+    alpha = 1 / 137.036
 
     rate_normalization = 17.54459
 
