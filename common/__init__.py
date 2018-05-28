@@ -65,6 +65,8 @@ class CONST(object):
     eta = 6.1e-10
     # Fine-structure constant
     alpha = 1 / 137.036
+    # QCD transition temperature
+    lambda_QCD = 150 * UNITS.MeV
 
     rate_normalization = 17.54459
 

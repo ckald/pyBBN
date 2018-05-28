@@ -8,7 +8,6 @@ regimes
 from __future__ import division
 
 import numpy
-
 import os
 import environment
 from common import GRID, UNITS, statistics as STATISTICS
@@ -17,6 +16,8 @@ from common.integrators import (
     MAX_ADAMS_BASHFORTH_ORDER, MAX_ADAMS_MOULTON_ORDER
 )
 from common.utils import Dynamic2DArray, DynamicRecArray
+from scipy.integrate import simps
+from collections import Counter
 
 from particles import DustParticle, RadiationParticle, IntermediateParticle, NonEqParticle
 # from interactions.four_particle.integral import distribution_interpolation
@@ -211,6 +212,7 @@ class DistributionParticle(AbstractParticle):
         # Update particle internal params only while it is in equilibrium
         if self.in_equilibrium or (not self.thermal_dyn and self.Q != 0):
             # Particle species has temperature only when it is in equilibrium
+            self.init_distribution()
             self.aT = self.params.aT
 
         self.T = self.aT / self.params.a
@@ -243,9 +245,12 @@ class DistributionParticle(AbstractParticle):
 
         assert numpy.all(numpy.isfinite(self.collision_integral))
 
-        self.old_distribution = self._distribution.copy()
-        self._distribution += self.collision_integral * self.params.h
-
+        if not hasattr(self, 'thermalization'):
+            self.old_distribution = self._distribution.copy()
+            self._distribution += self.collision_integral * self.params.h
+        else:
+            self._distribution = self.old_distribution if not self.T > self.decoupling_temperature \
+                                else numpy.zeros(len(self.grid.TEMPLATE))
         # assert all(self._distribution >= 0), self._distribution
         self._distribution = numpy.maximum(self._distribution, 0)
 
@@ -272,32 +277,91 @@ class DistributionParticle(AbstractParticle):
 
         #     return adams_bashforth_correction(fs=fs, h=self.params.h) / self.params.h
 
-        if not environment.get('SPLIT_COLLISION_INTEGRAL'):
-            fs = sum([integral.integrate(ps, stepsize=self.params.h)
-                       for integral in self.collision_integrals])
-            return fs
+        if hasattr(self, 'thermalization'):
+            F1s = []
+            Ffs = []
+            Ffs_temp = []
+            dofs = []
+            for integral in self.collision_integrals:
+                F1, Ff = integral.integrate(ps, stepsize=self.params.h)
+                F1s.append(F1)
+                Ffs_temp.append(Ff)
+                dofs.append(self.dof if self.majorana else self.dof / 2)
 
-        As = []
-        Bs = []
+            distr_backg = self.equilibrium_distribution() if self.thermal_dyn else numpy.zeros(len(ps))
 
-        for integral in self.collision_integrals:
-            A, B = integral.integrate(ps, stepsize=self.params.h)
-            As.append(A)
-            Bs.append(B)
+            if self.thermalization:
+                distr_ini = distr_backg + sum(F1s) * self.params.h
+                distr_bef = distr_backg + simps(sum(F1s) * self.grid.TEMPLATE**2, self.grid.TEMPLATE) * self.params.h \
+                            / (2 * numpy.pi * self.conformal_mass * self.aT)**(3/2) \
+                            * numpy.exp(-self.grid.TEMPLATE**2 / (2 * self.conformal_mass * self.aT))
 
-        A = sum(As)
-        B = sum(Bs)
+            else:
+                distr_bef = distr_backg + sum(F1s) * self.params.h
 
-        if environment.get('ADAMS_MOULTON_DISTRIBUTION_CORRECTION'):
-            fs = list(self.data['collision_integral'][-MAX_ADAMS_MOULTON_ORDER:])
+            self.num_creation = simps(sum(F1s*numpy.array(dofs)[:,None]) * self.grid.TEMPLATE**2, self.grid.TEMPLATE)
 
-            prediction = adams_moulton_solver(y=self.distribution(ps), fs=fs,
-                                              A=A, B=B, h=self.params.h)
+            for index, Ff in enumerate(Ffs_temp):
+                integral = self.collision_integrals[index]
+                if sum([item.side for item in integral.reaction]) in [1, 2]: # line not needed
+                    sym = ''.join([item.specie.symbol for item in integral.reaction[1:]])
+                    for key in integral.reaction[0].specie.BR:
+                        if Counter(sym) == Counter(key):
+                            BR = integral.reaction[0].specie.BR[key]
+                    dof = self.dof if self.majorana else self.dof / 2
+                    decayed = simps(-1 * distr_bef * Ff * dof * self.grid.TEMPLATE**2, self.grid.TEMPLATE)
+                    if decayed == 0.:
+                        Ffs.append(numpy.zeros(len(Ff)))
+                    else:
+                        scaling = BR * self.num_creation / decayed
+                        Ffs.append(scaling * Ff * distr_bef)
+                else:
+                    Ffs.append(Ff * distr_bef)
+
+            if self.thermalization:
+                coll_creation = sum(F1s)
+                coll_thermalization = (distr_bef - distr_ini)/self.params.h
+                coll_decay = sum(Ffs)
+                coll_integral = coll_creation + coll_thermalization + coll_decay
+                self.old_distribution = distr_backg
+                self._distribution = distr_bef
+                return coll_integral
+
+            coll_creation = sum(F1s)
+            coll_decay = sum(Ffs)
+            coll_integral = coll_creation + coll_decay
+            self.old_distribution = distr_backg
+            self._distribution = distr_bef
+
+            return coll_integral
+
         else:
-            prediction = implicit_euler(y=self.distribution(ps), t=None,
-                                        A=A, B=B, h=self.params.h)
+            if not environment.get('SPLIT_COLLISION_INTEGRAL'):
+                Fs = sum([integral.integrate(ps, stepsize=self.params.h)
+                           for integral in self.collision_integrals])
+                return Fs
 
-        return (prediction - self.distribution(ps)) / self.params.h
+            As = []
+            Bs = []
+
+            for integral in self.collision_integrals:
+                A, B = integral.integrate(ps, stepsize=self.params.h)
+                As.append(A)
+                Bs.append(B)
+
+            A = sum(As)
+            B = sum(Bs)
+
+            if environment.get('ADAMS_MOULTON_DISTRIBUTION_CORRECTION'):
+                fs = list(self.data['collision_integral'][-MAX_ADAMS_MOULTON_ORDER:])
+
+                prediction = adams_moulton_solver(y=self.distribution(ps), fs=fs,
+                                                A=A, B=B, h=self.params.h)
+            else:
+                prediction = implicit_euler(y=self.distribution(ps), t=None,
+                                            A=A, B=B, h=self.params.h)
+
+            return (prediction - self.distribution(ps)) / self.params.h
 
     def distribution(self, p):
         """

@@ -12,6 +12,7 @@ from common import UNITS, CONST, statistics as STATISTICS
 from interactions import CrossGeneratingInteraction
 from interactions.three_particle import ThreeParticleM, ThreeParticleIntegral
 from interactions.four_particle import FourParticleIntegral
+from interactions.four_particle.cpp.integral import CollisionIntegralKind
 from library.SM import WeakM, particles as SM_particles, particles as SMP, interactions as SMI
 
 
@@ -176,8 +177,10 @@ class interactions(object):
                         kind=kind
                     )
                     if lepton.name in ['Muon', 'Tau']:
-                        inter[1].integrals = [integral for integral in inter[1].integrals if \
-                                             integral.reaction[0].specie.name not in ['Muon', 'Tau']]
+                        for interac in inter:
+                            interac.integrals = [integral for integral in interac.integrals if not (integral.reaction[0].specie.name != sterile.name and\
+                                                Counter([item.specie.name for item in integral.reaction if item.side == -1])[lepton.name] == 1)]
+                        inter[1].integrals = [integral for integral in inter[1].integrals if integral.reaction[0].specie.name != lepton.name]
                     inters.extend(inter)
 
                 if len(leptons) > 1:
@@ -185,21 +188,25 @@ class interactions(object):
                     for other_lep in other_lepton:
                         if thetas[lepton.flavour] and neutrino.flavour == other_lep.flavour:
                             # Charged current
-                            inters.extend(cls.sterile_active_to_leptons_CC(
+                            inter = cls.sterile_active_to_leptons_CC(
                                 theta=thetas[lepton.flavour],
                                 sterile=sterile,
                                 active=neutrino,
                                 lepton1=lepton,
                                 lepton2=other_lep,
                                 kind=kind
-                            ))
+                            )
+                            for interac in inter:
+                                interac.integrals = [integral for integral in interac.integrals if\
+                                                    sum([item.side for item in integral.reaction if item.specie.name in [other_lep.name, sterile.name]]) == 0]
+                            inters.extend(inter)
         return inters
 
     # ## Quark interactions
 
     @staticmethod
     def sterile_quark_interactions(thetas=None, sterile=None,
-                                   neutrinos=None, leptons=None, quarks=None):
+                                   neutrinos=None, leptons=None, quarks=None, kind=None):
 
         inters = []
 
@@ -208,7 +215,7 @@ class interactions(object):
                 if thetas[active.flavour]:
                     inters.append(interactions.sterile_quark_neutral(
                         theta=thetas[active.flavour], sterile=sterile,
-                        active=active, quark=quark
+                        active=active, quark=quark, kind=kind
                     ))
 
         for up, down in itertools.product([q for q in quarks if q.Q == 2./3.],
@@ -217,39 +224,41 @@ class interactions(object):
                 if thetas[lepton.flavour]:
                     inters.append(interactions.sterile_quark_charged(
                         theta=thetas[lepton.flavour], sterile=sterile,
-                        lepton=lepton, up=up, down=down
+                        lepton=lepton, up=up, down=down, kind=kind
                     ))
 
         return inters
 
     @staticmethod
-    def sterile_quark_neutral(theta=1., sterile=None, active=None, quark=None):
+    def sterile_quark_neutral(theta=1., sterile=None, active=None, quark=None, kind=None):
         """ \begin{align}
                 N_S + \overline{\nu} &\to q + \overline{q}
             \end{align}
         """
 
-        g_R = CONST.g_R
 
         if quark.Q == 2./3.:
-            x = (3 - 4 * g_R)
+            g_R = CONST.g_R
         if quark.Q == -1./3.:
-            x = (3 - 2 * g_R)
+            g_R = CONST.g_R / 2.
+
+        x = (3 - 4 * g_R)
 
         return CrossGeneratingInteraction(
             name="Sterile-quarks neutral channel interaction",
             particles=((sterile, active), (quark, quark)),
             antiparticles=((False, True), (False, True)),
             Ms=(
-                SterileM(theta=theta, K1=32. / 9. * g_R, order=(0, 3, 1, 2)),
-                SterileM(theta=theta, K1=2. / 9. * x**2, order=(0, 2, 1, 3)),
-                SterileM(theta=theta, K2=16. / 9. * g_R * x, order=(0, 1, 2, 3)),
+                SterileM(theta=theta, K1=16. / 9. * g_R**2, order=(0, 2, 1, 3)),
+                SterileM(theta=theta, K1=1. / 9. * x**2, order=(0, 3, 1, 2)),
+                SterileM(theta=theta, K2=-4. / 9. * g_R * x, order=(2, 3, 0, 1)),
             ),
-            integral_type=FourParticleIntegral
+            integral_type=FourParticleIntegral,
+            kind=kind
         )
 
     @staticmethod
-    def sterile_quark_charged(theta=1., sterile=None, lepton=None, up=None, down=None):
+    def sterile_quark_charged(theta=1., sterile=None, lepton=None, up=None, down=None, kind=None):
         """ \begin{align}
                 N_S + l^+ &\to u + \overline{d}
             \end{align}
@@ -262,10 +271,10 @@ class interactions(object):
             particles=((sterile, lepton), (up, down)),
             antiparticles=((False, True), (False, True)),
             Ms=(
-                SterileM(theta=theta, K1=.5 * CKM**2, order=(0, 2, 1, 3)),
-                SterileM(theta=theta, K1=.5 * CKM**2, order=(0, 3, 1, 2)),
+                SterileM(theta=theta, K1=4. * CKM**2, order=(0, 3, 1, 2)),
             ),
-            integral_type=FourParticleIntegral
+            integral_type=FourParticleIntegral,
+            kind=kind
         )
 
     @classmethod
@@ -430,7 +439,12 @@ class interactions(object):
     def interactions_decay_products(cls, interactions_primary=None, interactions_SM=None,
                                     neutrinos=None, leptons=None, mesons=None, photon=None, kind=None):
 
-        interactions_decay = []
+        assert kind in [CollisionIntegralKind.F_creation, CollisionIntegralKind.F_decay,
+                CollisionIntegralKind.F_1_vacuum_decay, CollisionIntegralKind.F_f_vacuum_decay], \
+                "Variable 'kind' set to incorrect value"
+
+        interactions = []
+        primary_mesons = []
         species = Counter()
 
         for main in interactions_primary:
@@ -438,57 +452,32 @@ class interactions(object):
                 for integral in inter.integrals:
                     species.update(Counter(item.specie.name for item in integral.reaction if item.side == 1))
 
-            def already_there(interaction, name):
-                if not interaction:
-                    return False
+        if species['Muon'] or species['Tau']:
+            interactions += SMI.lepton_interactions(
+                                    leptons=leptons,
+                                    neutrinos=neutrinos,
+                                    # SM_inters=already_there(interactions_SM, ['Muon', 'Tau']),
+                                    kind=kind
+                                )
 
-                for inter in interaction:
-                    for integral in inter.integrals:
-                        if Counter(item.specie.name for item in integral.reaction if item.specie.name == name):
-                            return True
+        if mesons:
+            for meson in mesons:
+                if species[meson.name]:
+                    primary_mesons.append(meson)
 
-                return False
+        if primary_mesons:
+            interactions += SMI.meson_interactions(
+                                    primary_mesons=primary_mesons,
+                                    mesons=mesons,
+                                    leptons=leptons,
+                                    neutrinos=neutrinos,
+                                    photon=photon,
+                                    muon_tau=[species['Muon'], species['Tau']],
+                                    kind=kind
+                                )
 
-            def decay_muon_taon():
-                # SM = False
-                # if interactions_SM:
-                #     for inter in interactions_SM:
-                #         for integral in inter.integrals:
-                #             if Counter(item.specie.name for item in integral.reaction if item.specie.name == 'Muon'):
-                #                 SM = True
+        for inter in interactions:
+            inter.integrals = [integral for integral in inter.integrals \
+                            if sum([item.side for item in integral.reaction]) in [-2, -1, 1, 2]]
 
-                return SMI.lepton_interactions(
-                        leptons=leptons,
-                        neutrinos=neutrinos,
-                        SM_inters=already_there(interactions_SM, "Muon"),
-                        kind=kind
-                    )
-
-            def decay_charged_pion():
-                return SMI.meson_interactions(
-                        mesons=mesons,
-                        leptons=leptons,
-                        neutrinos=neutrinos,
-                        kind=kind
-                    )
-
-            def decay_neutral_pion():
-                return SMI.meson_interactions(
-                        mesons=mesons,
-                        photon=photon,
-                        kind=kind
-                    )
-
-            if species['Muon']:
-                interactions_decay += decay_muon_taon()
-
-            if species['Charged pion']:
-                if not already_there(interactions_decay, "Muon"):
-                    interactions_decay += decay_muon_taon()
-
-                interactions_decay += decay_charged_pion()
-
-            if species['Neutral pion']:
-                interactions_decay += decay_neutral_pion()
-
-        return interactions_decay
+        return interactions

@@ -127,8 +127,8 @@ class Universe(object):
                 sys.exit(1)
                 break
 
-        if not (T_initial > self.params.T > 0):
-            print("\n(T < 0) or (T > T_initial): suspect numerical instability")
+        if not (self.params.T > 0):
+            print("\n(T < 0): suspect numerical instability")
             sys.exit(1)
 
         self.log()
@@ -179,7 +179,8 @@ class Universe(object):
         for particle in particles:
             particle.set_params(self.params)
 
-        self.particles += particles
+        self.particles += [part for (mass, part) in
+                        sorted(zip([particle.mass for particle in particles], particles), reverse=True)]
 
     def update_particles(self):
         """ ### 1. Update particles state

@@ -7,6 +7,7 @@ from __future__ import division
 
 import numpy as np
 import itertools
+from collections import Counter
 from math import sin, cos
 
 from common import UNITS, CONST, statistics as STATISTICS
@@ -30,6 +31,9 @@ class WeakM(FourParticleM):
     def __str__(self):
         """ String-like representation of the matrix element """
         ret = ""
+        if self.K:
+            ret += "|M|²={: .4e}".format(self.K)
+            return ret
         if self.K1:
             ret += "K1=32 G_F^2 {: .2e} ".format(self.K1 / self.const)
         if self.K2:
@@ -79,8 +83,10 @@ class particles(object):
             'dof': 1,
             'majorana': True,
             'Q': 0,
-            'decay_constant': 130. / np.sqrt(2) * UNITS.MeV,
-            'type': 'scalar'
+            'decay_constant': 130.2 / np.sqrt(2) * UNITS.MeV,
+            'type': 'scalar',
+            'thermalization': False,
+            'BR': {'γγ': 0.98823}
         }
         charged_pion = {
             'name': 'Charged pion',
@@ -90,30 +96,62 @@ class particles(object):
             'dof': 2,
             'majorana': False,
             'Q': -1,
-            'decay_constant': 130. * UNITS.MeV,
-            'type': 'scalar'
+            'decay_constant': 130.2 * UNITS.MeV,
+            'type': 'scalar',
+            'thermalization': True,
+            'BR': {'μν_μ': 0.999877}
         }
-        neutral_rho = {
-            'name': 'Neutral rho',
-            'symbol': 'ρ0',
+        charged_kaon = {
+            'name': 'Charged kaon',
+            'symbol': 'K',
             'statistics': STATISTICS.BOSON,
-            'mass': 775.49 * UNITS.MeV,
-            'dof': 3,
-            'majorana': True,
-            'Q': 0,
-            'decay_constant': 209. * UNITS.MeV,
-            'type': 'vector'
-        }
-        charged_rho = {
-            'name': 'Charged rho',
-            'symbol': 'ρ',
-            'statistics': STATISTICS.BOSON,
-            'mass': 775.11 * UNITS.MeV,
-            'dof': 3,
+            'mass': 493.677 * UNITS.MeV,
+            'dof': 2,
             'majorana': False,
             'Q': -1,
-            'decay_constant': 209. * UNITS.MeV,
-            'type': 'vector'
+            'decay_constant': 155.6 * UNITS.MeV,
+            'type': 'scalar',
+            'thermalization': True, #TODO: Is this true?
+            'BR': {
+                'π0eν_e': 0.0507,
+                'πππ': 0.05583,
+                'μν_μ': 0.6356,
+                'ππ0': 0.2067
+            }
+        }
+        kaon_long = {
+            'name': 'Kaon long',
+            'symbol': 'K0L',
+            'statistics': STATISTICS.BOSON,
+            'mass': 497.611 * UNITS.MeV,
+            'dof': 1,
+            'majorana': True,
+            'Q': 0,
+            'decay_constant': 155.6 * UNITS.MeV, #TODO: Is this true?
+            'type': 'scalar',
+            'thermalization': False,
+            'BR': {
+                'πeν_e': 0.4055,
+                'πμν_μ': 0.2704,
+                'π0π0π0': 0.1952,
+                'πππ0': 0.1254
+            }
+        }
+        kaon_short = {
+            'name': 'Kaon short',
+            'symbol': 'K0S',
+            'statistics': STATISTICS.BOSON,
+            'mass': 497.611 * UNITS.MeV,
+            'dof': 1,
+            'majorana': True,
+            'Q': 0,
+            'decay_constant': 155.6 * UNITS.MeV, #TODO: Is this true?
+            'type': 'scalar',
+            'thermalization': False,
+            'BR': {
+                'ππ': 0.6920,
+                'π0π0': 0.3069
+            }
         }
         eta = {
             'name': 'Eta',
@@ -123,19 +161,41 @@ class particles(object):
             'dof': 1,
             'majorana': True,
             'Q': 0,
-            'decay_constant': 156. * UNITS.MeV,
-            'type': 'scalar'
+            'decay_constant': -81.7 * UNITS.MeV,
+            'type': 'scalar',
+            'thermalization': False,
+            'BR': {
+                'γγ': 0.3941,
+                'π0π0π0': 0.3268,
+                'πππ0': 0.2292,
+                'ππγ': 0.0422
+            }
         }
-        eta_prime = {
-            'name': 'Eta prime',
-            'symbol': 'η*',
+        charged_rho = {
+            'name': 'Charged rho',
+            'symbol': 'ρ',
             'statistics': STATISTICS.BOSON,
-            'mass': 957.78 * UNITS.MeV,
-            'dof': 1,
+            'mass': 775.11 * UNITS.MeV,
+            'dof': 6,
+            'majorana': False,
+            'Q': -1,
+            'decay_constant': 209. * UNITS.MeV,
+            'type': 'vector',
+            'thermalization': False,
+            'BR': {'ππ0': 1.}
+        }
+        neutral_rho = {
+            'name': 'Neutral rho',
+            'symbol': 'ρ0',
+            'statistics': STATISTICS.BOSON,
+            'mass': 775.49 * UNITS.MeV,
+            'dof': 3,
             'majorana': True,
             'Q': 0,
-            'decay_constant': 152. * UNITS.MeV,
-            'type': 'scalar'
+            'decay_constant': 208.9 * UNITS.MeV,
+            'type': 'vector',
+            'thermalization': False,
+            'BR': {'ππ': 1.}
         }
         omega = {
             'name': 'Omega',
@@ -146,7 +206,29 @@ class particles(object):
             'majorana': True,
             'Q': 0,
             'decay_constant': 195. * UNITS.MeV,
-            'type': 'vector'
+            'type': 'vector',
+            'thermalization': False,
+            'BR': {
+                'πππ0': 0.892,
+                'π0γ': 0.0840
+            }
+        }
+        eta_prime = {
+            'name': 'Eta prime',
+            'symbol': 'η*',
+            'statistics': STATISTICS.BOSON,
+            'mass': 957.78 * UNITS.MeV,
+            'dof': 1,
+            'majorana': True,
+            'Q': 0,
+            'decay_constant': 94.7 * UNITS.MeV,
+            'type': 'scalar',
+            'thermalization': False,
+            'BR': {
+                'ππη': 0.426,
+                'ρ0γ': 0.289,
+                'π0π0η': 0.228
+            }
         }
         phi = {
             'name': 'Phi',
@@ -157,7 +239,13 @@ class particles(object):
             'majorana': True,
             'Q': 0,
             'decay_constant': 229. * UNITS.MeV,
-            'type': 'vector'
+            'type': 'vector',
+            'thermalization': False,
+            'BR': {
+                'KK': 0.489,
+                'K0LK0S': 0.342,
+                'ρ0π0': 0.1532
+            }
         }
 
     class leptons(object):
@@ -212,7 +300,9 @@ class particles(object):
             'dof': 4,
             'majorana': False,
             'Q': -1,
-            'flavour': 'muon'
+            'flavour': 'muon',
+            'thermalization': True,
+            'BR': {'eν_eν_μ': 1.}
         }
         tau = {
             'name': 'Tau',
@@ -222,7 +312,8 @@ class particles(object):
             'dof': 4,
             'majorana': False,
             'Q': -1,
-            'flavour': 'tau'
+            'flavour': 'tau',
+            'thermalization': False
         }
 
         @staticmethod
@@ -253,12 +344,12 @@ class particles(object):
         CKM = {
             (1, 1): 0.974,
             (1, 2): 0.225,
-            (1, 3): 0.003,
+            (1, 3): 0.004,
             (2, 1): 0.225,
             (2, 2): 0.973,
             (2, 3): 0.041,
             (3, 1): 0.009,
-            (3, 2): 0.040,
+            (3, 2): 0.041,
             (3, 3): 0.999,
         }
 
@@ -266,7 +357,7 @@ class particles(object):
             'name': 'Up quark',
             'symbol': 'u',
             'statistics': STATISTICS.FERMION,
-            'mass': 3 * UNITS.MeV,
+            'mass': 2.2 * UNITS.MeV,
             'dof': 2,
             'majorana': False,
             'family': 1,
@@ -276,7 +367,7 @@ class particles(object):
             'name': 'Down quark',
             'symbol': 'd',
             'statistics': STATISTICS.FERMION,
-            'mass': 5 * UNITS.MeV,
+            'mass': 4.7 * UNITS.MeV,
             'dof': 2,
             'majorana': False,
             'family': 1,
@@ -286,7 +377,7 @@ class particles(object):
             'name': 'Charm quark',
             'symbol': 'c',
             'statistics': STATISTICS.FERMION,
-            'mass': 1300 * UNITS.MeV,
+            'mass': 1.28 * UNITS.GeV,
             'dof': 2,
             'majorana': False,
             'family': 2,
@@ -296,7 +387,7 @@ class particles(object):
             'name': 'Strange quark',
             'symbol': 's',
             'statistics': STATISTICS.FERMION,
-            'mass': 200 * UNITS.MeV,
+            'mass': 96 * UNITS.MeV,
             'dof': 2,
             'majorana': False,
             'family': 2,
@@ -306,7 +397,7 @@ class particles(object):
             'name': 'Top quark',
             'symbol': 't',
             'statistics': STATISTICS.FERMION,
-            'mass': 180 * UNITS.GeV,
+            'mass': 173.1 * UNITS.GeV,
             'dof': 2,
             'majorana': False,
             'family': 3,
@@ -316,7 +407,7 @@ class particles(object):
             'name': 'Bottom quark',
             'symbol': 'b',
             'statistics': STATISTICS.FERMION,
-            'mass': 4.3 * UNITS.GeV,
+            'mass': 4.18 * UNITS.GeV,
             'dof': 2,
             'majorana': False,
             'family': 3,
@@ -434,12 +525,15 @@ class interactions(object):
         g_R = CONST.g_R
         inters = []
 
+        def reaction_type(reaction):
+            return sum(reactant.side for reactant in reaction)
+
         # Interactions of neutrinos and leptons
         for lepton in leptons:
             for neutrino in neutrinos:
-                if lepton.name != 'Electron' and SM_inters == False:
-                    g_L = g_R + 0.5 if lepton.flavour == neutrino.flavour else g_R - 0.5
-                    inters.append(cls.neutrinos_to_leptons(g_L=g_L, lepton=lepton, neutrino=neutrino, kind=kind))
+                # if lepton.name != 'Electron' and SM_inters == False:
+                #     g_L = g_R + 0.5 if lepton.flavour == neutrino.flavour else g_R - 0.5
+                #     inters.append(cls.neutrinos_to_leptons(g_L=g_L, lepton=lepton, neutrino=neutrino, kind=kind))
 
                 if len(leptons) > 1 and len(neutrinos) > 1:
                     other_lepton = [par for par in leptons if par != lepton]
@@ -447,23 +541,24 @@ class interactions(object):
                     for other_lep in other_lepton:
                         for other_neut in other_neutrino:
                             if neutrino.flavour == lepton.flavour and other_neut.flavour == other_lep.flavour:
-                                inters.append(cls.leptons_CC(
+                                inter = cls.leptons_CC(
                                     active1=neutrino,
                                     active2=other_neut,
                                     lepton1=lepton,
                                     lepton2=other_lep,
                                     kind=kind
-                                ))
+                                )
 
-        if len(leptons) > 1:
-            lepton = leptons[0]
-            other_lepton = [par for par in leptons if par != lepton]
-            for other_lep in other_lepton:
-                inters.append(cls.leptons_leptons_NC(
-                    lepton1=lepton,
-                    lepton2=other_lep,
-                    kind=kind
-                ))
+                                inters.append(inter)
+        # if len(leptons) > 1:
+        #     lepton = leptons[0]
+        #     other_lepton = [par for par in leptons if par != lepton]
+        #     for other_lep in other_lepton:
+        #         inters.append(cls.leptons_leptons_NC(
+        #             lepton1=lepton,
+        #             lepton2=other_lep,
+        #             kind=kind
+        #         ))
         return inters
 
     @staticmethod
@@ -488,10 +583,10 @@ class interactions(object):
         ]]
 
     @staticmethod
-    def decay_neutral_pion(meson=None, photon=None, kind=None):
+    def decay_pi0_eta_gamma(meson=None, photon=None, kind=None):
 
         return [CrossGeneratingInteraction(
-            name="Neutral pion decay into two photons",
+            name="Neutral pion / eta decay into two photons",
             particles=((meson, ), (photon, photon)),
             antiparticles=((False, ), (False, False)),
             Ms=(ThreeParticleM(
@@ -501,23 +596,354 @@ class interactions(object):
             kind=kind
         )]
 
+    @staticmethod
+    def four_particle_meson_decay(parts=None, antiparts=None, ME=None, kind=None):
+
+        return [CrossGeneratingInteraction(
+            name="Meson decay",
+            particles=((parts[0], parts[1]), (parts[2], parts[3])),
+            antiparticles=((antiparts[0], antiparts[1]), (antiparts[2], antiparts[3])),
+            Ms=(WeakM(K=ME),),
+            integral_type=FourParticleIntegral,
+            kind=kind
+        )]
+
+    @staticmethod
+    def three_particle_meson_decay(parts=None, antiparts=None, ME=None, kind=None):
+
+        return [CrossGeneratingInteraction(
+            name="Meson decay",
+            particles=((parts[0], ), (parts[1], parts[2])),
+            antiparticles=((antiparts[0], ), (antiparts[1], antiparts[2])),
+            Ms=(ThreeParticleM(K=ME),),
+            integral_type=ThreeParticleIntegral,
+            kind=kind
+        )]
+
     @classmethod
-    def meson_interactions(cls, mesons=None, leptons=None, neutrinos=None, photon=None, kind=None):
+    def meson_interactions(cls, primary_mesons=None, mesons=None, leptons=None, neutrinos=None,
+                        photon=None, muon_tau=None, kind=None):
 
         inters = []
-        for meson in mesons:
+
+        photon = photon[0] if photon else []
+        for lepton in leptons or []:
+            if lepton.name == 'Electron':
+                electron = lepton
+            if lepton.name == 'Muon':
+                muon = lepton
+            if lepton.name == 'Tau':
+                tau = lepton
+        for neutrino in neutrinos or []:
+            if neutrino.name == 'Electron neutrino':
+                neutrino_e = neutrino
+            if neutrino.name == 'Muon neutrino':
+                neutrino_mu = neutrino
+            if neutrino.name == 'Tau neutrino':
+                neutrino_tau = neutrino
+        for meson in mesons or []:
             if meson.name == 'Charged pion':
-                lepton = [lepton for lepton in leptons if lepton.name == 'Muon'][0]
-                neutrino = [neutrino for neutrino in neutrinos if neutrino.name == 'Muon neutrino'][0]
-                inters += cls.decay_charged_pion(meson=meson,
-                                                lepton=lepton,
-                                                neutrino=neutrino,
+                charged_pion = meson
+            if meson.name == 'Neutral pion':
+                neutral_pion = meson
+            if meson.name == 'Charged kaon':
+                charged_kaon = meson
+            if meson.name == 'Kaon long':
+                kaon_long = meson
+            if meson.name == 'Kaon short':
+                kaon_short = meson
+            if meson.name == 'Eta':
+                eta = meson
+            if meson.name == 'Neutral rho':
+                neutral_rho = meson
+            if meson.name == 'Charged rho':
+                charged_rho = meson
+            if meson.name == 'Omega':
+                omega = meson
+            if meson.name == 'Eta prime':
+                eta_prime = meson
+            if meson.name == 'Phi':
+                phi = meson
+
+        matrix_elements = {
+            # Four-particle
+            'EtaToThreePi0': 0.0870984,
+            'EtaToPiPlusPiMinPi0': 0.0690629,
+            'EtaToPiPlusPiMinGamma': 0.0046653,
+            'OmegaToPiPlusPiMinPi0': 1145.69,
+            'EtaPrimeToPiPlusPiMinEta': 43.888,
+            'EtaPrimeToTwoPi0Eta': 20.0986,
+            'KaonMinToPi0ElecNue': 1.42906e-13,
+            'KaonMinToPiPlusTwoPiMin': 1.85537e-12,
+            'KaonLPiPlusElecNue': 2.80345e-13,
+            'KaonLPiPlusMuonNumu': 3.03627e-13,
+            'KaonLThreePi0': 1.05573e-12,
+            'KaonLPiPlusPiMinPi0': 8.26989e-13,
+
+            # Three-particle
+            'RhoPlusToPiPlusPi0': 1.8639e7 * UNITS.MeV**2,
+            'Rho0ToPiPlusPiMin': 1.86839e7 * UNITS.MeV**2,
+            'OmegaToPi0Gamma': 85508.6 * UNITS.MeV**2,
+            'EtaPrimeToRho0Gamma': 8044.63 * UNITS.MeV**2,
+            'PhiToKPlusKMin': 1.28798e6 * UNITS.MeV**2,
+            'PhiToK0LK0S': 1.03471e6 * UNITS.MeV**2,
+            'PhiToRho0Pi0': 286706. * UNITS.MeV**2,
+            'KaonMinToMuonNumu': 8.78918e-10 * UNITS.MeV**2,
+            'KaonMinPiMinPi0': 3.28177e-10 * UNITS.MeV**2,
+            'KaonSTwoPi0': 6.718e-8 * UNITS.MeV**2,
+            'KaonSPiPlusPiMin': 1.53713e-7 * UNITS.MeV**2
+        }
+
+        def already_there(interaction, name):
+            if not interaction:
+                return False
+
+            for inter in interaction:
+                for integral in inter.integrals:
+                    if Counter(item.specie.name for item in integral.reaction if item.specie.name == name):
+                        return True
+
+            return False
+
+        def neutral_pion_decay(inters=None):
+            inters += cls.decay_pi0_eta_gamma(meson=neutral_pion,
+                                            photon=photon,
+                                            kind=kind)
+
+        def charged_pion_decay(inters=None):
+            if not muon_tau[0] or already_there(inters, 'Muon'):
+                inters += cls.lepton_interactions(leptons=leptons,
+                                                neutrinos=neutrinos,
                                                 kind=kind)
 
-            if meson.name == 'Neutral pion':
-                inters += cls.decay_neutral_pion(meson=meson,
-                                                photon=photon[0],
+            inters += cls.decay_charged_pion(meson=charged_pion,
+                                            lepton=muon,
+                                            neutrino=neutrino_mu,
+                                            kind=kind)
+
+        def charged_kaon_decay(inters=None):
+            if not already_there(inters, 'Charged pion'):
+                charged_pion_decay(inters)
+
+            if not already_there(inters, 'Neutral pion'):
+                neutral_pion_decay(inters)
+
+            if not muon_tau[0] or already_there(inters, 'Muon'):
+                interactions.lepton_interactions(leptons=leptons,
+                                                neutrinos=neutrinos,
                                                 kind=kind)
+
+            inters += cls.four_particle_meson_decay(parts=[charged_kaon, neutral_pion, electron, neutrino_e],
+                                                    antiparts=[False, False, False, True],
+                                                    ME=matrix_elements['KaonMinToPi0ElecNue'],
+                                                    kind=kind)
+            inters += cls.four_particle_meson_decay(parts=[charged_kaon, charged_pion, charged_pion, charged_pion],
+                                                    antiparts=[False, True, False, False],
+                                                    ME=matrix_elements['KaonMinToPiPlusTwoPiMin'],
+                                                    kind=kind)
+            inters += cls.three_particle_meson_decay(parts=[charged_kaon, muon, neutrino_mu],
+                                                    antiparts=[False, False, True],
+                                                    ME=matrix_elements['KaonMinToMuonNumu'],
+                                                    kind=kind)
+            inters += cls.three_particle_meson_decay(parts=[charged_kaon, charged_pion, neutral_pion],
+                                                    antiparts=[False, False, False],
+                                                    ME=matrix_elements['KaonMinPiMinPi0'],
+                                                    kind=kind)
+
+        def kaon_long_decay(inters=None):
+            if not already_there(inters, 'Charged pion'):
+                charged_pion_decay(inters)
+
+            if not already_there(inters, 'Neutral pion'):
+                neutral_pion_decay(inters)
+
+            if not muon_tau[0] or already_there(inters, 'Muon'):
+                interactions.lepton_interactions(leptons=leptons,
+                                                neutrinos=neutrinos,
+                                                kind=kind)
+
+            inters += cls.four_particle_meson_decay(parts=[kaon_long, charged_pion, electron, neutrino_e],
+                                                    antiparts=[False, True, False, True],
+                                                    ME=matrix_elements['KaonLPiPlusElecNue'],
+                                                    kind=kind)
+            inters += cls.four_particle_meson_decay(parts=[kaon_long, charged_pion, muon, neutrino_mu],
+                                                    antiparts=[False, True, False, True],
+                                                    ME=matrix_elements['KaonLPiPlusMuonNumu'],
+                                                    kind=kind)
+            inters += cls.four_particle_meson_decay(parts=[kaon_long, neutral_pion, neutral_pion, neutral_pion],
+                                                    antiparts=[False, False, False, False],
+                                                    ME=matrix_elements['KaonLThreePi0'],
+                                                    kind=kind)
+            inters += cls.four_particle_meson_decay(parts=[kaon_long, neutral_pion, charged_pion, charged_pion],
+                                                    antiparts=[False, False, False, True],
+                                                    ME=matrix_elements['KaonLPiPlusPiMinPi0'],
+                                                    kind=kind)
+
+        def kaon_short_decay(inters=None):
+            if not already_there(inters, 'Charged pion'):
+                charged_pion_decay(inters)
+
+            if not already_there(inters, 'Neutral pion'):
+                neutral_pion_decay(inters)
+
+            inters += cls.three_particle_meson_decay(parts=[kaon_short, neutral_pion, neutral_pion],
+                                                    antiparts=[False, False, False],
+                                                    ME=matrix_elements['KaonSTwoPi0'],
+                                                    kind=kind)
+            inters += cls.three_particle_meson_decay(parts=[kaon_short, charged_pion, charged_pion],
+                                                    antiparts=[False, False, True],
+                                                    ME=matrix_elements['KaonSPiPlusPiMin'],
+                                                    kind=kind)
+
+        def eta_decay(inters=None):
+            if not already_there(inters, 'Charged pion'):
+                charged_pion_decay(inters)
+
+            if not already_there(inters, 'Neutral pion'):
+                neutral_pion_decay(inters)
+
+            inters += cls.decay_pi0_eta_gamma(meson=meson,
+                                            photon=photon,
+                                            kind=kind)
+
+            inters += cls.four_particle_meson_decay(parts=[eta, neutral_pion, neutral_pion, neutral_pion],
+                                                    antiparts=[False, False, False, False],
+                                                    ME=matrix_elements['EtaToThreePi0'],
+                                                    kind=kind)
+            inters += cls.four_particle_meson_decay(parts=[eta, neutral_pion, charged_pion, charged_pion],
+                                                    antiparts=[False, False, False, True],
+                                                    ME=matrix_elements['EtaToPiPlusPiMinPi0'],
+                                                    kind=kind)
+            inters += cls.four_particle_meson_decay(parts=[eta, photon, charged_pion, charged_pion],
+                                                    antiparts=[False, False, False, True],
+                                                    ME=matrix_elements['EtaToPiPlusPiMinGamma'],
+                                                    kind=kind)
+
+        def neutral_rho_decay(inters=None):
+            if not already_there(inters, 'Charged pion'):
+                charged_pion_decay(inters)
+
+            inters += cls.three_particle_meson_decay(parts=[neutral_rho, charged_pion, charged_pion],
+                                                    antiparts=[False, True, False],
+                                                    ME=matrix_elements['Rho0ToPiPlusPiMin'],
+                                                    kind=kind)
+
+        def charged_rho_decay(inters=None):
+            if not already_there(inters, 'Charged pion'):
+                charged_pion_decay(inters)
+
+            if not already_there(inters, 'Neutral pion'):
+                neutral_pion_decay(inters)
+
+            inters += cls.three_particle_meson_decay(parts=[charged_rho, charged_pion, neutral_pion],
+                                                    antiparts=[False, False, False],
+                                                    ME=matrix_elements['RhoMinToPiMinPi0'],
+                                                    kind=kind)
+
+        def omega_decay(inters=None):
+            if not already_there(inters, 'Charged pion'):
+                charged_pion_decay(inters)
+
+            if not already_there(inters, 'Neutral pion'):
+                neutral_pion_decay(inters)
+
+            inters += cls.four_particle_meson_decay(parts=[omega, charged_pion, charged_pion, neutral_pion],
+                                                    antiparts=[False, True, False, False],
+                                                    ME=matrix_elements['OmegaToPiPlusPiMinPi0'],
+                                                    kind=kind)
+            inters += cls.three_particle_meson_decay(parts=[omega, neutral_rho, photon],
+                                                    antiparts=[False, False, False],
+                                                    ME=matrix_elements['OmegaToPi0Gamma'],
+                                                    kind=kind)
+
+        def eta_prime_decay(inters=None):
+            if not already_there(inters, 'Neutral rho'):
+                neutral_rho_decay(inters)
+
+            if not already_there(inters, 'Eta'):
+                eta_decay(inters)
+
+            if not already_there(inters, 'Charged pion'):
+                charged_pion_decay(inters)
+
+            if not already_there(inters, 'Neutral pion'):
+                neutral_pion_decay(inters)
+
+            inters += cls.four_particle_meson_decay(parts=[eta_prime, eta, charged_pion, charged_pion],
+                                                    antiparts=[False, False, False, True],
+                                                    ME=matrix_elements['EtaPrimeToPiPlusPiMinEta'],
+                                                    kind=kind)
+            inters += cls.four_particle_meson_decay(parts=[eta_prime, neutral_pion, neutral_pion, eta],
+                                                    antiparts=[False, False, False, False],
+                                                    ME=matrix_elements['EtaPrimeToTwoPi0Eta'],
+                                                    kind=kind)
+            inters += cls.three_particle_meson_decay(parts=[eta_prime, neutral_rho, photon],
+                                                    antiparts=[False, False, False],
+                                                    ME=matrix_elements['EtaPrimeToRho0Gamma'],
+                                                    kind=kind)
+
+        def phi_decay(inters=None):
+            if not already_there(inters, 'Neutral rho'):
+                neutral_rho_decay(inters)
+
+            if not already_there(inters, 'Charged kaon'):
+                charged_kaon_decay(inters)
+
+            if not already_there(inters, 'Kaon long'):
+                kaon_long_decay(inters)
+
+            if not already_there(inters, 'Kaon short'):
+                kaon_short_decay(inters)
+
+            if not already_there(inters, 'Neutral pion'):
+                neutral_pion_decay(inters)
+
+            inters += cls.three_particle_meson_decay(parts=[phi, charged_kaon, charged_kaon],
+                                                    antiparts=[False, True, False],
+                                                    ME=matrix_elements['PhiToKPlusKMin'],
+                                                    kind=kind)
+            inters += cls.three_particle_meson_decay(parts=[phi, kaon_long, kaon_short],
+                                                    antiparts=[False, False, False],
+                                                    ME=matrix_elements['PhiToK0LK0S'],
+                                                    kind=kind)
+            inters += cls.three_particle_meson_decay(parts=[phi, neutral_rho, neutral_pion],
+                                                    antiparts=[False, False, False],
+                                                    ME=matrix_elements['PhiToRho0Pi0'],
+                                                    kind=kind)
+
+        for meson in primary_mesons:
+            if meson.name == 'Charged pion':
+                charged_pion_decay(inters)
+
+            if meson.name == 'Neutral pion':
+                neutral_pion_decay(inters)
+
+            if meson.name == 'Charged kaon':
+                charged_kaon_decay(inters)
+
+            if meson.name == 'Kaon long':
+                kaon_long_decay(inters)
+
+            if meson.name == 'Kaon short':
+                kaon_short_decay(inters)
+
+            if meson.name == 'Eta':
+                eta_decay(inters)
+
+            if meson.name == 'Neutral rho':
+                neutral_rho_decay(inters)
+
+            if meson.name == 'Charged rho':
+                charged_rho_decay(inters)
+
+            if meson.name == 'Omega':
+                omega_decay(inters)
+
+            if meson.name == 'Eta prime':
+                eta_prime_decay(inters)
+
+            if meson.name == 'Phi':
+                phi_decay(inters)
 
         return inters
 

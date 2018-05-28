@@ -218,6 +218,17 @@ dbl F_1(const std::vector<reaction_t3> &reaction, const std::array<dbl, 3> &f) {
     return F_B(reaction, f, 0);
 }
 
+dbl F_decay(const std::vector<reaction_t3> &reaction, const std::array<dbl, 3> &f) {
+    /* Variable part of the distribution functional */
+    // std::cout<<F_A(reaction, f, 0)<<'\t'<<f[0]<<'\t'<<f[1]<<'\t'<<f[2]<<'\n';
+    return F_A(reaction, f, 0);
+}
+
+dbl F_creation(const std::vector<reaction_t3> &reaction, const std::array<dbl, 3> &f) {
+    /* Constant part of the distribution functional */
+    return F_B(reaction, f, -1);
+}
+
 dbl F_f_vacuum_decay(const std::vector<reaction_t3> &reaction, const std::array<dbl, 3> &f) {
     /* Variable part of the distribution functional */
     return -1;
@@ -342,13 +353,16 @@ dbl integrand_full(
     auto integral_kind = CollisionIntegralKind_3(kind);
 
     switch (integral_kind) {
+        case CollisionIntegralKind_3::F_creation:
+            return temp * F_creation(reaction, f);
+        case CollisionIntegralKind_3::F_decay:
+            return temp * F_decay(reaction, f);
         case CollisionIntegralKind_3::F_1_vacuum_decay:
-             return temp * F_1_vacuum_decay(reaction, f);
+            return temp * F_1_vacuum_decay(reaction, f);
         case CollisionIntegralKind_3::F_f_vacuum_decay:
             return temp * F_f_vacuum_decay(reaction, f);
         case CollisionIntegralKind_3::Full_vacuum_decay:
             return temp * (F_1_vacuum_decay(reaction, f) + f[0] * F_f_vacuum_decay(reaction, f));
-
         case CollisionIntegralKind_3::F_1:
             return temp * F_1(reaction, f);
         case CollisionIntegralKind_3::F_f:
@@ -528,6 +542,7 @@ std::vector<dbl> integration_3(
             status = gsl_integration_qag(&F, min_1, max_1, abseps, releps, subdivisions, GSL_INTEG_GAUSS15, w, &result, &error);
 
             if (status) {
+                std::cout<<min_1<<'\t'<< max_1<<'\t'<<p0<<'\n';
                 printf("integration result: %e ± %e. %i intervals. %s\n", result, error, (int) w->size, gsl_strerror(status));
                 throw std::runtime_error("Integrator failed to reach required accuracy");
             }
@@ -568,6 +583,8 @@ PYBIND11_MODULE(integral, m) {
         .value("F_1", CollisionIntegralKind_3::F_1)
         .value("F_f", CollisionIntegralKind_3::F_f)
         .value("Full_vacuum_decay", CollisionIntegralKind_3::Full_vacuum_decay)
+        .value("F_creation", CollisionIntegralKind_3::F_creation)
+        .value("F_decay", CollisionIntegralKind_3::F_decay)
         .value("F_1_vacuum_decay", CollisionIntegralKind_3::F_1_vacuum_decay)
         .value("F_f_vacuum_decay", CollisionIntegralKind_3::F_f_vacuum_decay)
         .enum_::export_values();

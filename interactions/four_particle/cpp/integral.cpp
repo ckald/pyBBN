@@ -206,6 +206,16 @@ dbl F_1(const std::vector<reaction_t> &reaction, const std::array<dbl, 4> &f) {
     return F_B(reaction, f, 0);
 }
 
+dbl F_decay(const std::vector<reaction_t> &reaction, const std::array<dbl, 4> &f) {
+    /* Variable part of the distribution functional */
+    return F_A(reaction, f, 0);
+}
+
+dbl F_creation(const std::vector<reaction_t> &reaction, const std::array<dbl, 4> &f) {
+    /* Constant part of the distribution functional */
+    return F_B(reaction, f, -1);
+}
+
 dbl F_f_vacuum_decay(const std::vector<reaction_t> &reaction, const std::array<dbl, 4> &f) {
     /* Variable part of the distribution functional */
     return -1;
@@ -287,16 +297,23 @@ dbl integrand_full(
 
     dbl ds = 0.;
 
-    if (p[0] != 0.) {
-        for (const M_t &M : Ms) {
-            ds += D(p, E, m, M.K1, M.K2, M.order, sides);
-        }
-        ds /= p[0] * E[0];
-    } else {
-        for (const M_t &M : Ms) {
-            ds += Db(p, E, m, M.K1, M.K2, M.order, sides);
+    if (Ms[0].K != 0.) {
+        ds += Ms[0].K;
+    }
+
+    else {
+        if (p[0] != 0.) {
+            for (const M_t &M : Ms) {
+                ds += D(p, E, m, M.K1, M.K2, M.order, sides);
+            }
+            ds /= p[0] * E[0];
+        } else {
+            for (const M_t &M : Ms) {
+                ds += Db(p, E, m, M.K1, M.K2, M.order, sides);
+            }
         }
     }
+
     temp *= ds;
 
     if (temp == 0.) { return integrand; }
@@ -310,8 +327,12 @@ dbl integrand_full(
     auto integral_kind = CollisionIntegralKind(kind);
 
     switch (integral_kind) {
+        case CollisionIntegralKind::F_creation:
+            return temp * F_creation(reaction, f);
+        case CollisionIntegralKind::F_decay:
+            return temp * F_decay(reaction, f);
         case CollisionIntegralKind::F_1_vacuum_decay:
-             return temp * F_1_vacuum_decay(reaction, f);
+            return temp * F_1_vacuum_decay(reaction, f);
         case CollisionIntegralKind::F_f_vacuum_decay:
             return temp * F_f_vacuum_decay(reaction, f);
         case CollisionIntegralKind::Full_vacuum_decay:
@@ -593,7 +614,7 @@ std::vector<dbl> integration(
     auto reaction_type = get_reaction_type(reaction);
 
     // Note firstprivate() clause: those variables will be copied for each thread
-    #pragma omp parallel for default(none) shared(ps, Ms, reaction, integral, stepsize, kind, reaction_type) firstprivate(min_1, max_1, min_2, max_2, max_3)
+    #pragma omp parallel for default(none) shared(std::cout,ps, Ms, reaction, integral, stepsize, kind, reaction_type) firstprivate(min_1, max_1, min_2, max_2, max_3)
     for (size_t i = 0; i < ps.size(); ++i) {
         dbl p0 = ps[i];
 
@@ -612,13 +633,11 @@ std::vector<dbl> integration(
             else {
                 min_1 = sqrt(min2);
             }
-            dbl max = reaction[2].specie.m + reaction[3].specie.m;
-            dbl max2 = reaction[0].specie.m + reaction[1].specie.m;
-            if (max > 0.) {
-                max_1 = 20. * max;
+            if (max_1 > 3. * min_1) {
+                max_1 = max_1;
             }
-            else{
-                max_1 = 20. * max2;
+            else {
+                max_1 = 3. * min_1;
             }
         }
         if (reaction_type == Kinematics::CREATION) {
@@ -641,14 +660,15 @@ std::vector<dbl> integration(
 
         dbl releps = 1e-2;
         dbl abseps = releps / stepsize;
-        // dbl abseps = releps / stepsize;
-        // auto integral_kind = CollisionIntegralKind(kind);
-        // if (integral_kind != CollisionIntegralKind::F_f
-        //     && integral_kind != CollisionIntegralKind::F_f_vacuum_decay)
-        // {
-        //     dbl f = distribution_interpolation(reaction[0].specie, p0);
-        //     abseps *= f;
-        // }
+        auto integral_kind = CollisionIntegralKind(kind);
+        if (integral_kind != CollisionIntegralKind::F_f
+            && integral_kind != CollisionIntegralKind::F_f_vacuum_decay)
+        {
+            dbl f = distribution_interpolation(reaction[0].specie, p0);
+            if (reaction[0].specie.m == 0.) {abseps *= f; }
+            // else {abseps *= 1e-15;}
+            // abseps *= 1e-20;
+        }
 
         size_t subdivisions = 100000;
         gsl_integration_workspace *w1 = gsl_integration_workspace_alloc(subdivisions);
@@ -717,13 +737,15 @@ PYBIND11_MODULE(integral, m) {
         .value("F_1", CollisionIntegralKind::F_1)
         .value("F_f", CollisionIntegralKind::F_f)
         .value("Full_vacuum_decay", CollisionIntegralKind::Full_vacuum_decay)
+        .value("F_creation", CollisionIntegralKind::F_creation)
+        .value("F_decay", CollisionIntegralKind::F_decay)
         .value("F_1_vacuum_decay", CollisionIntegralKind::F_1_vacuum_decay)
         .value("F_f_vacuum_decay", CollisionIntegralKind::F_f_vacuum_decay)
         .enum_::export_values();
 
     py::class_<M_t>(m, "M_t")
-        .def(py::init<std::array<int, 4>, dbl, dbl>(),
-             "order"_a, "K1"_a=0., "K2"_a=0.);
+        .def(py::init<std::array<int, 4>, dbl, dbl, dbl>(),
+             "order"_a, "K1"_a=0., "K2"_a=0., "K"_a=0.);
 
     py::class_<grid_t>(m, "grid_t")
         .def(py::init<std::vector<dbl>, std::vector<dbl>>(),
