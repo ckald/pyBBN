@@ -8,7 +8,7 @@ from __future__ import division
 import numpy as np
 import itertools
 from collections import Counter
-from math import sin, cos
+from math import sin, cos, atan
 
 from common import UNITS, CONST, statistics as STATISTICS
 from interactions import CrossGeneratingInteraction
@@ -56,6 +56,15 @@ class particles(object):
         'Q': 0
     }
 
+    gluon = {
+        'name': 'Gluon',
+        'symbol': 'g',
+        'statistics': STATISTICS.BOSON,
+        'dof': 16,
+        'majorana': True,
+        'Q': 0
+    }
+
     class hadrons(object):
         neutron = {
             'name': 'Neutron',
@@ -81,11 +90,13 @@ class particles(object):
             'statistics': STATISTICS.BOSON,
             'mass': 134.98 * UNITS.MeV,
             'dof': 1,
+            'decoupling_temperature': 6.8 * UNITS.MeV, # T @ Gamma_decay > Gamma_annihilation
             'majorana': True,
             'Q': 0,
-            'decay_constant': 130.2 / np.sqrt(2) * UNITS.MeV,
+            'decay_constant': 130.2 * UNITS.MeV,
             'type': 'scalar',
-            'thermalization': False,
+            'fast_decay': True,
+            'lifetime': 8.52e-17 * UNITS.s,
             'BR': {'γγ': 0.98823}
         }
         charged_pion = {
@@ -94,11 +105,14 @@ class particles(object):
             'statistics': STATISTICS.BOSON,
             'mass': 139.57 * UNITS.MeV,
             'dof': 2,
+            'decoupling_temperature': 6.8 * UNITS.MeV, # T @ Gamma_decay > Gamma_annihilation
             'majorana': False,
             'Q': -1,
             'decay_constant': 130.2 * UNITS.MeV,
             'type': 'scalar',
+            'fast_decay': True,
             'thermalization': True,
+            'lifetime': 2.603e-8 * UNITS.s,
             'BR': {'μν_μ': 0.999877}
         }
         charged_kaon = {
@@ -107,11 +121,14 @@ class particles(object):
             'statistics': STATISTICS.BOSON,
             'mass': 493.677 * UNITS.MeV,
             'dof': 2,
+            'decoupling_temperature': 25.1 * UNITS.MeV, # T @ Gamma_decay > Gamma_annihilation
             'majorana': False,
             'Q': -1,
             'decay_constant': 155.6 * UNITS.MeV,
             'type': 'scalar',
+            'fast_decay': True,
             'thermalization': True, #TODO: Is this true?
+            'lifetime': 1.238e-8 * UNITS.s,
             'BR': {
                 'π0eν_e': 0.0507,
                 'πππ': 0.05583,
@@ -129,7 +146,8 @@ class particles(object):
             'Q': 0,
             'decay_constant': 155.6 * UNITS.MeV, #TODO: Is this true?
             'type': 'scalar',
-            'thermalization': False,
+            'fast_decay': True,
+            'lifetime': 5.116e-8 * UNITS.s,
             'BR': {
                 'πeν_e': 0.4055,
                 'πμν_μ': 0.2704,
@@ -147,7 +165,8 @@ class particles(object):
             'Q': 0,
             'decay_constant': 155.6 * UNITS.MeV, #TODO: Is this true?
             'type': 'scalar',
-            'thermalization': False,
+            'fast_decay': True,
+            'lifetime': 8.954e-11 * UNITS.s,
             'BR': {
                 'ππ': 0.6920,
                 'π0π0': 0.3069
@@ -161,9 +180,10 @@ class particles(object):
             'dof': 1,
             'majorana': True,
             'Q': 0,
-            'decay_constant': -81.7 * UNITS.MeV,
+            'decay_constant': 81.7 * UNITS.MeV,
             'type': 'scalar',
-            'thermalization': False,
+            'fast_decay': True,
+            'lifetime': 5.025e-19 * UNITS.s,
             'BR': {
                 'γγ': 0.3941,
                 'π0π0π0': 0.3268,
@@ -181,7 +201,8 @@ class particles(object):
             'Q': -1,
             'decay_constant': 209. * UNITS.MeV,
             'type': 'vector',
-            'thermalization': False,
+            'fast_decay': True,
+            'lifetime': 4.415e-24 * UNITS.s,
             'BR': {'ππ0': 1.}
         }
         neutral_rho = {
@@ -194,7 +215,8 @@ class particles(object):
             'Q': 0,
             'decay_constant': 208.9 * UNITS.MeV,
             'type': 'vector',
-            'thermalization': False,
+            'fast_decay': True,
+            'lifetime': 4.415e-24 * UNITS.s,
             'BR': {'ππ': 1.}
         }
         omega = {
@@ -205,9 +227,10 @@ class particles(object):
             'dof': 3,
             'majorana': True,
             'Q': 0,
-            'decay_constant': 195. * UNITS.MeV,
+            'decay_constant': 195.5 * UNITS.MeV,
             'type': 'vector',
-            'thermalization': False,
+            'fast_decay': True,
+            'lifetime': 7.753e-23 * UNITS.s,
             'BR': {
                 'πππ0': 0.892,
                 'π0γ': 0.0840
@@ -221,9 +244,10 @@ class particles(object):
             'dof': 1,
             'majorana': True,
             'Q': 0,
-            'decay_constant': 94.7 * UNITS.MeV,
+            'decay_constant': -94.7 * UNITS.MeV,
             'type': 'scalar',
-            'thermalization': False,
+            'fast_decay': True,
+            'lifetime': 3.358e-21 * UNITS.s,
             'BR': {
                 'ππη': 0.426,
                 'ρ0γ': 0.289,
@@ -238,9 +262,10 @@ class particles(object):
             'dof': 3,
             'majorana': True,
             'Q': 0,
-            'decay_constant': 229. * UNITS.MeV,
+            'decay_constant': 229.5 * UNITS.MeV,
             'type': 'vector',
-            'thermalization': False,
+            'fast_decay': True,
+            'lifetime': 1.549e-22 * UNITS.s,
             'BR': {
                 'KK': 0.489,
                 'K0LK0S': 0.342,
@@ -298,41 +323,54 @@ class particles(object):
             'statistics': STATISTICS.FERMION,
             'mass': 105.658 * UNITS.MeV,
             'dof': 4,
+            'decoupling_temperature': 4.6 * UNITS.MeV, # T @ Gamma_decay > Gamma_annihilation
             'majorana': False,
             'Q': -1,
             'flavour': 'muon',
+            'fast_decay': True,
             'thermalization': True,
+            'lifetime': 2.197e-6 * UNITS.s,
             'BR': {'eν_eν_μ': 1.}
         }
         tau = {
             'name': 'Tau',
             'symbol': 'τ',
             'statistics': STATISTICS.FERMION,
-            'mass': 1777 * UNITS.MeV,
+            'mass': 1776.82 * UNITS.MeV,
             'dof': 4,
             'majorana': False,
             'Q': -1,
             'flavour': 'tau',
-            'thermalization': False
+            'fast_decay': True,
+            'lifetime': 2.903e-13 * UNITS.s
         }
 
         @staticmethod
-        def oscillations_map(angles=(0.5905, 0.805404, 0.152346)):
+        def oscillations_map(MSW_12=None, MSW_13=None, matter_effects=True):
+
+            # angles=(0.5905, 0., 0.152346) # theta_12, theta_23, theta_13
+            theta_12 = 0.57636
+            theta_23 = 0.
+            theta_13 = 0.14715
+
+            if matter_effects:
+                theta_12 = 0.5 * np.arctan(np.sin(2.*theta_12) / (np.cos(2.*theta_12) + MSW_12))
+                theta_13 = 0.5 * np.arctan(np.sin(2.*theta_13) / (np.cos(2.*theta_13) + MSW_13))
 
             oscillations = {
                 ('electron', 'electron'):
-                    1 - .5 * (sin(2*angles[2])**2 + cos(angles[2])**4 * sin(2*angles[0])**2),
+                    1 - .5 * (np.sin(2*theta_13)**2 + np.cos(theta_13)**4 * np.sin(2*theta_12)**2),
                 ('electron', 'muon'):
-                    .5 * cos(angles[2])**2 * sin(2*angles[0])**2,
+                    .5 * np.cos(theta_13)**2 * np.sin(2*theta_12)**2,
                 ('electron', 'tau'):
-                    sin(angles[2])**2 * cos(angles[2])**2 * (2 - .5 * sin(2*angles[0])**2),
+                    np.sin(theta_13)**2 * np.cos(theta_13)**2 * (2 - .5 * np.sin(2*theta_12)**2),
                 ('muon', 'muon'):
-                    1 - .5 * sin(2*angles[0])**2,
+                    1 - .5 * np.sin(2*theta_12)**2,
                 ('muon', 'tau'):
-                    .5 * sin(angles[2])**2 * sin(2*angles[0])**2,
+                    .5 * np.sin(theta_13)**2 * np.sin(2*theta_12)**2,
                 ('tau', 'tau'):
-                    1 - sin(angles[2])**2 * (2 * cos(angles[2])**2 +
-                                             .5 * sin(angles[2])**2 * sin(2*angles[0])**2)
+                    1 - np.sin(theta_13)**2 * (2 * np.cos(theta_13)**2 +
+                                             .5 * np.sin(theta_13)**2 * np.sin(2*theta_12)**2)
             }
             oscillations[('muon', 'electron')] = oscillations[('electron', 'muon')]
             oscillations[('tau', 'electron')] = oscillations[('electron', 'tau')]
@@ -349,7 +387,7 @@ class particles(object):
             (2, 2): 0.973,
             (2, 3): 0.041,
             (3, 1): 0.009,
-            (3, 2): 0.041,
+            (3, 2): 0.040,
             (3, 3): 0.999,
         }
 
@@ -358,7 +396,7 @@ class particles(object):
             'symbol': 'u',
             'statistics': STATISTICS.FERMION,
             'mass': 2.2 * UNITS.MeV,
-            'dof': 2,
+            'dof': 12,
             'majorana': False,
             'family': 1,
             'Q': 2./3.
@@ -368,7 +406,7 @@ class particles(object):
             'symbol': 'd',
             'statistics': STATISTICS.FERMION,
             'mass': 4.7 * UNITS.MeV,
-            'dof': 2,
+            'dof': 12,
             'majorana': False,
             'family': 1,
             'Q': -1./3.
@@ -378,7 +416,7 @@ class particles(object):
             'symbol': 'c',
             'statistics': STATISTICS.FERMION,
             'mass': 1.28 * UNITS.GeV,
-            'dof': 2,
+            'dof': 12,
             'majorana': False,
             'family': 2,
             'Q': 2./3.
@@ -388,7 +426,7 @@ class particles(object):
             'symbol': 's',
             'statistics': STATISTICS.FERMION,
             'mass': 96 * UNITS.MeV,
-            'dof': 2,
+            'dof': 12,
             'majorana': False,
             'family': 2,
             'Q': -1./3.
@@ -398,7 +436,7 @@ class particles(object):
             'symbol': 't',
             'statistics': STATISTICS.FERMION,
             'mass': 173.1 * UNITS.GeV,
-            'dof': 2,
+            'dof': 12,
             'majorana': False,
             'family': 3,
             'Q': 2./3.
@@ -408,7 +446,7 @@ class particles(object):
             'symbol': 'b',
             'statistics': STATISTICS.FERMION,
             'mass': 4.18 * UNITS.GeV,
-            'dof': 2,
+            'dof': 12,
             'majorana': False,
             'family': 3,
             'Q': -1./3.
@@ -583,10 +621,10 @@ class interactions(object):
         ]]
 
     @staticmethod
-    def decay_pi0_eta_gamma(meson=None, photon=None, kind=None):
+    def decay_neutral_pion(meson=None, photon=None, kind=None):
 
         return [CrossGeneratingInteraction(
-            name="Neutral pion / eta decay into two photons",
+            name="Neutral pion decay into two photons",
             particles=((meson, ), (photon, photon)),
             antiparticles=((False, ), (False, False)),
             Ms=(ThreeParticleM(
@@ -667,28 +705,29 @@ class interactions(object):
 
         matrix_elements = {
             # Four-particle
-            'EtaToThreePi0': 0.0870984,
-            'EtaToPiPlusPiMinPi0': 0.0690629,
-            'EtaToPiPlusPiMinGamma': 0.0046653,
-            'OmegaToPiPlusPiMinPi0': 1145.69,
-            'EtaPrimeToPiPlusPiMinEta': 43.888,
-            'EtaPrimeToTwoPi0Eta': 20.0986,
-            'KaonMinToPi0ElecNue': 1.42906e-13,
-            'KaonMinToPiPlusTwoPiMin': 1.85537e-12,
+            'EtaThreePi0': 0.0870984,
+            'EtaPiPlusPiMinPi0': 0.0690629,
+            'EtaPiPlusPiMinGamma': 0.0046653,
+            'OmegaPiPlusPiMinPi0': 1145.69,
+            'EtaPrimePiPlusPiMinEta': 43.888,
+            'EtaPrimeTwoPi0Eta': 20.0986,
+            'KaonMinPi0ElecNue': 1.42906e-13,
+            'KaonMinPiPlusTwoPiMin': 1.85537e-12,
             'KaonLPiPlusElecNue': 2.80345e-13,
             'KaonLPiPlusMuonNumu': 3.03627e-13,
             'KaonLThreePi0': 1.05573e-12,
             'KaonLPiPlusPiMinPi0': 8.26989e-13,
 
             # Three-particle
-            'RhoPlusToPiPlusPi0': 1.8639e7 * UNITS.MeV**2,
-            'Rho0ToPiPlusPiMin': 1.86839e7 * UNITS.MeV**2,
-            'OmegaToPi0Gamma': 85508.6 * UNITS.MeV**2,
-            'EtaPrimeToRho0Gamma': 8044.63 * UNITS.MeV**2,
-            'PhiToKPlusKMin': 1.28798e6 * UNITS.MeV**2,
-            'PhiToK0LK0S': 1.03471e6 * UNITS.MeV**2,
-            'PhiToRho0Pi0': 286706. * UNITS.MeV**2,
-            'KaonMinToMuonNumu': 8.78918e-10 * UNITS.MeV**2,
+            'RhoPlusPiPlusPi0': 1.8639e7 * UNITS.MeV**2,
+            'Rho0PiPlusPiMin': 1.86839e7 * UNITS.MeV**2,
+            'OmegaPi0Gamma': 85508.6 * UNITS.MeV**2,
+            'EtaPrimeRho0Gamma': 8044.63 * UNITS.MeV**2,
+            'PhiKPlusKMin': 1.28798e6 * UNITS.MeV**2,
+            'PhiK0LK0S': 1.03471e6 * UNITS.MeV**2,
+            'PhiRho0Pi0': 286706. * UNITS.MeV**2,
+            'EtaTwoGamma': 14.2174 * UNITS.MeV**2,
+            'KaonMinMuonNumu': 8.78918e-10 * UNITS.MeV**2,
             'KaonMinPiMinPi0': 3.28177e-10 * UNITS.MeV**2,
             'KaonSTwoPi0': 6.718e-8 * UNITS.MeV**2,
             'KaonSPiPlusPiMin': 1.53713e-7 * UNITS.MeV**2
@@ -706,12 +745,12 @@ class interactions(object):
             return False
 
         def neutral_pion_decay(inters=None):
-            inters += cls.decay_pi0_eta_gamma(meson=neutral_pion,
+            inters += cls.decay_neutral_pion(meson=neutral_pion,
                                             photon=photon,
                                             kind=kind)
 
         def charged_pion_decay(inters=None):
-            if not muon_tau[0] or already_there(inters, 'Muon'):
+            if not (muon_tau[0] or already_there(inters, 'Muon')):
                 inters += cls.lepton_interactions(leptons=leptons,
                                                 neutrinos=neutrinos,
                                                 kind=kind)
@@ -735,15 +774,15 @@ class interactions(object):
 
             inters += cls.four_particle_meson_decay(parts=[charged_kaon, neutral_pion, electron, neutrino_e],
                                                     antiparts=[False, False, False, True],
-                                                    ME=matrix_elements['KaonMinToPi0ElecNue'],
+                                                    ME=matrix_elements['KaonMinPi0ElecNue'],
                                                     kind=kind)
             inters += cls.four_particle_meson_decay(parts=[charged_kaon, charged_pion, charged_pion, charged_pion],
                                                     antiparts=[False, True, False, False],
-                                                    ME=matrix_elements['KaonMinToPiPlusTwoPiMin'],
+                                                    ME=matrix_elements['KaonMinPiPlusTwoPiMin'],
                                                     kind=kind)
             inters += cls.three_particle_meson_decay(parts=[charged_kaon, muon, neutrino_mu],
                                                     antiparts=[False, False, True],
-                                                    ME=matrix_elements['KaonMinToMuonNumu'],
+                                                    ME=matrix_elements['KaonMinMuonNumu'],
                                                     kind=kind)
             inters += cls.three_particle_meson_decay(parts=[charged_kaon, charged_pion, neutral_pion],
                                                     antiparts=[False, False, False],
@@ -802,21 +841,21 @@ class interactions(object):
             if not already_there(inters, 'Neutral pion'):
                 neutral_pion_decay(inters)
 
-            inters += cls.decay_pi0_eta_gamma(meson=meson,
-                                            photon=photon,
-                                            kind=kind)
-
+            inters += cls.three_particle_meson_decay(parts=[eta, photon, photon],
+                                                    antiparts=[False, False, False],
+                                                    ME=matrix_elements['EtaTwoGamma'],
+                                                    kind=kind)
             inters += cls.four_particle_meson_decay(parts=[eta, neutral_pion, neutral_pion, neutral_pion],
                                                     antiparts=[False, False, False, False],
-                                                    ME=matrix_elements['EtaToThreePi0'],
+                                                    ME=matrix_elements['EtaThreePi0'],
                                                     kind=kind)
             inters += cls.four_particle_meson_decay(parts=[eta, neutral_pion, charged_pion, charged_pion],
                                                     antiparts=[False, False, False, True],
-                                                    ME=matrix_elements['EtaToPiPlusPiMinPi0'],
+                                                    ME=matrix_elements['EtaPiPlusPiMinPi0'],
                                                     kind=kind)
             inters += cls.four_particle_meson_decay(parts=[eta, photon, charged_pion, charged_pion],
                                                     antiparts=[False, False, False, True],
-                                                    ME=matrix_elements['EtaToPiPlusPiMinGamma'],
+                                                    ME=matrix_elements['EtaPiPlusPiMinGamma'],
                                                     kind=kind)
 
         def neutral_rho_decay(inters=None):
@@ -825,7 +864,7 @@ class interactions(object):
 
             inters += cls.three_particle_meson_decay(parts=[neutral_rho, charged_pion, charged_pion],
                                                     antiparts=[False, True, False],
-                                                    ME=matrix_elements['Rho0ToPiPlusPiMin'],
+                                                    ME=matrix_elements['Rho0PiPlusPiMin'],
                                                     kind=kind)
 
         def charged_rho_decay(inters=None):
@@ -837,7 +876,7 @@ class interactions(object):
 
             inters += cls.three_particle_meson_decay(parts=[charged_rho, charged_pion, neutral_pion],
                                                     antiparts=[False, False, False],
-                                                    ME=matrix_elements['RhoMinToPiMinPi0'],
+                                                    ME=matrix_elements['RhoPlusPiPlusPi0'],
                                                     kind=kind)
 
         def omega_decay(inters=None):
@@ -849,11 +888,11 @@ class interactions(object):
 
             inters += cls.four_particle_meson_decay(parts=[omega, charged_pion, charged_pion, neutral_pion],
                                                     antiparts=[False, True, False, False],
-                                                    ME=matrix_elements['OmegaToPiPlusPiMinPi0'],
+                                                    ME=matrix_elements['OmegaPiPlusPiMinPi0'],
                                                     kind=kind)
-            inters += cls.three_particle_meson_decay(parts=[omega, neutral_rho, photon],
+            inters += cls.three_particle_meson_decay(parts=[omega, neutral_pion, photon],
                                                     antiparts=[False, False, False],
-                                                    ME=matrix_elements['OmegaToPi0Gamma'],
+                                                    ME=matrix_elements['OmegaPi0Gamma'],
                                                     kind=kind)
 
         def eta_prime_decay(inters=None):
@@ -871,15 +910,15 @@ class interactions(object):
 
             inters += cls.four_particle_meson_decay(parts=[eta_prime, eta, charged_pion, charged_pion],
                                                     antiparts=[False, False, False, True],
-                                                    ME=matrix_elements['EtaPrimeToPiPlusPiMinEta'],
+                                                    ME=matrix_elements['EtaPrimePiPlusPiMinEta'],
                                                     kind=kind)
             inters += cls.four_particle_meson_decay(parts=[eta_prime, neutral_pion, neutral_pion, eta],
                                                     antiparts=[False, False, False, False],
-                                                    ME=matrix_elements['EtaPrimeToTwoPi0Eta'],
+                                                    ME=matrix_elements['EtaPrimeTwoPi0Eta'],
                                                     kind=kind)
             inters += cls.three_particle_meson_decay(parts=[eta_prime, neutral_rho, photon],
                                                     antiparts=[False, False, False],
-                                                    ME=matrix_elements['EtaPrimeToRho0Gamma'],
+                                                    ME=matrix_elements['EtaPrimeRho0Gamma'],
                                                     kind=kind)
 
         def phi_decay(inters=None):
@@ -900,23 +939,23 @@ class interactions(object):
 
             inters += cls.three_particle_meson_decay(parts=[phi, charged_kaon, charged_kaon],
                                                     antiparts=[False, True, False],
-                                                    ME=matrix_elements['PhiToKPlusKMin'],
+                                                    ME=matrix_elements['PhiKPlusKMin'],
                                                     kind=kind)
             inters += cls.three_particle_meson_decay(parts=[phi, kaon_long, kaon_short],
                                                     antiparts=[False, False, False],
-                                                    ME=matrix_elements['PhiToK0LK0S'],
+                                                    ME=matrix_elements['PhiK0LK0S'],
                                                     kind=kind)
             inters += cls.three_particle_meson_decay(parts=[phi, neutral_rho, neutral_pion],
                                                     antiparts=[False, False, False],
-                                                    ME=matrix_elements['PhiToRho0Pi0'],
+                                                    ME=matrix_elements['PhiRho0Pi0'],
                                                     kind=kind)
 
         for meson in primary_mesons:
-            if meson.name == 'Charged pion':
-                charged_pion_decay(inters)
-
             if meson.name == 'Neutral pion':
                 neutral_pion_decay(inters)
+
+            if meson.name == 'Charged pion':
+                charged_pion_decay(inters)
 
             if meson.name == 'Charged kaon':
                 charged_kaon_decay(inters)

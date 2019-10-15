@@ -3,6 +3,7 @@
 """
 from __future__ import division
 import numpy
+numpy.seterr(divide='ignore', invalid='ignore', over='ignore')
 from scipy.integrate import simps
 
 import environment
@@ -11,7 +12,8 @@ from common.integrators import lambda_integrate
 
 
 name = 'non-equilibrium'
-
+aT = 0
+adec = 0
 if not environment.get('SIMPSONS_NONEQ_PARTICLES'):
 
     def density(particle):
@@ -164,6 +166,11 @@ else:
             \end{equation}
         """
         temp = particle.grid.TEMPLATE
+        if particle.mass == 0.:        
+            return simps((
+                particle.distribution(temp) * temp**3
+                * particle.dof / 6. / numpy.pi**2 / particle.params.a**4), temp
+            )
         return simps((
             particle.distribution(temp) * temp**4 / particle.conformal_energy(temp)
             * particle.dof / 6. / numpy.pi**2 / particle.params.a**4), temp
@@ -181,14 +188,10 @@ else:
         eta = particle.eta
         integrand = numpy.zeros(len(temp))
 
-        for num, mom in enumerate(temp):
-            f = particle.distribution(mom)
+        f = particle.distribution(temp)
 
-            if f == 0:
-                integrand[num] = 0.
-            else:
-                integrand[num] = (- particle.dof / 2 / numpy.pi**2 / particle.params.a**3
-                                * mom**2 * (f * numpy.log(f) + eta * (1 - eta * f) * numpy.log(1 - eta * f)))
+        integrand[f>0] = (- particle.dof / 2 / numpy.pi**2 / particle.params.a**3
+                        * temp[f>0]**2 * (f[f>0] * numpy.log(f[f>0]) + eta * (1 - eta * f[f>0]) * numpy.log(1 - eta * f[f>0])))
 
         return simps(integrand, temp)
 

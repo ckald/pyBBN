@@ -9,7 +9,7 @@ import numpy
 import numericalunits as nu
 
 import environment
-
+from common import statistics as STATISTICS
 
 class UNITS(object):
 
@@ -26,9 +26,9 @@ class UNITS(object):
         UNITS.MeV = UNITS.keV * 1e3
         UNITS.GeV = UNITS.MeV * 1e3
         UNITS.TeV = UNITS.GeV * 1e3
-        UNITS.s = 1e22 / 6.58 / UNITS.MeV
-        UNITS.kg = 1e27 / 1.8 * UNITS.GeV
-        UNITS.m = 1e15 / 0.197 / UNITS.GeV
+        UNITS.s = 1e22 / 6.582119 / UNITS.MeV
+        UNITS.kg = 1e27 / 1.782662 * UNITS.GeV
+        UNITS.m = 1e15 / 1.239842 / UNITS.GeV
         UNITS.N = 1e-5 / 8.19 * UNITS.GeV**2
 
         # Temperature: $10^9 K$
@@ -67,8 +67,15 @@ class CONST(object):
     alpha = 1 / 137.036
     # QCD transition temperature
     lambda_QCD = 150 * UNITS.MeV
+    # W_boson mass
+    M_W = 80.379 * UNITS.GeV
+    # Neutrino squared mass differences
+    delta_m12_sq = 7.37e-5 * UNITS.eV**2
+    delta_m13_sq = 2.56e-3 * UNITS.eV**2
 
-    rate_normalization = 17.54459
+    rate_normalization = 17.5426 / UNITS.MeV**5 #17.54459
+
+    MSW_constant = 16. * 1.2021 * numpy.sqrt(2) * G_F / numpy.pi / M_W**2
 
 
 class Params(object):
@@ -113,7 +120,8 @@ class Params(object):
 
         # As the initial scale factor is arbitrary, it can be use to ensure the initial $aT$ value\
         # equal to 1
-        self.a = self.m / self.T
+        self.a = 1 * self.m / self.T
+        self.a_ini = self.a
 
         self.infer()
 
@@ -142,6 +150,17 @@ class Params(object):
     def init_time(self, rho):
         self.t = numpy.sqrt(3. / (32. * numpy.pi * CONST.G * rho))
         return self.t
+
+    @staticmethod
+    def entropic_dof_eq(universe):
+        dof = 0
+        for particle in universe.particles:
+            if universe.params.T > particle.mass and particle.in_equilibrium:
+                if particle.statistics == STATISTICS.FERMION:
+                    dof += particle.dof * 7. / 8.
+                else:
+                    dof += particle.dof
+        return dof
 
     def update(self, rho, S):
         """ Hubble expansion parameter defined by a Friedmann equation:
@@ -352,3 +371,70 @@ def cubic_interpolation(function, grid):
             return a0*mu*mu*mu + a1*mu*mu + a2*mu + a3
 
     return interpolation
+
+
+def binary_find(grid, x):
+    temp = grid.TEMPLATE
+    head = 0
+    tail = grid.MOMENTUM_SAMPLES - 1
+
+    if temp[-1] < x:
+        return tail, -1
+
+    if temp[0] > x:
+        return -1, head
+
+    if x in temp:
+        pos = numpy.where(temp == x)
+        return pos, pos
+
+    return numpy.searchsorted(temp, x, side='right') - 1, numpy.searchsorted(temp, x, side='right')
+
+
+def interp(particle, p, conformal_mass):
+    if particle.in_equilibrium:
+        return 1. / (
+        numpy.exp(particle.conformal_energy(p, conformal_mass) / particle.aT)
+        + particle.eta
+    )
+
+    i_lo, i_hi = binary_find(particle.grid, p)
+    if i_lo == -1:
+        raise ValueError("Input momentum is too small for the given grid")
+
+    if i_hi == -1:
+        return particle._distribution[-1] \
+            * numpy.exp((particle.conformal_energy(particle.grid.MAX_MOMENTUM, conformal_mass) - particle.conformal_energy(p, conformal_mass)) / particle.aT)
+
+    if i_lo == i_hi:
+        return particle._distribution[i_lo]
+
+    p_lo = particle.grid.TEMPLATE[i_lo]
+    p_hi = particle.grid.TEMPLATE[i_hi]
+
+    E_p  = particle.conformal_energy(p, conformal_mass)
+    E_lo = particle.conformal_energy(p_lo, conformal_mass)
+    E_hi = particle.conformal_energy(p_hi, conformal_mass)
+
+    g_hi = particle._distribution[i_hi]
+    g_lo = particle._distribution[i_lo]
+
+    g_hi = (1. / g_hi - particle.eta)
+    if g_hi > 0:
+        g_hi = numpy.log(g_hi)
+    else:
+        return 0.
+
+    g_lo = (1. / g_lo - particle.eta)
+    if g_lo > 0:
+        g_lo = numpy.log(g_lo)
+    else:
+        return 0.
+
+    g = ((E_p - E_lo) * g_hi + (E_hi - E_p) * g_lo) / (E_hi - E_lo)
+
+    g = 1. / (numpy.exp(g) + particle.eta)
+    if not numpy.isfinite(g):
+        return 0.
+
+    return g

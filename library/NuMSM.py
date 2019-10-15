@@ -8,7 +8,7 @@ from __future__ import division
 import itertools
 from collections import Counter
 
-from common import UNITS, CONST, statistics as STATISTICS
+from common import UNITS, CONST, utils, statistics as STATISTICS
 from interactions import CrossGeneratingInteraction
 from interactions.three_particle import ThreeParticleM, ThreeParticleIntegral
 from interactions.four_particle import FourParticleIntegral
@@ -40,12 +40,13 @@ class SterileM(WeakM):
 
 class particles(object):
     @staticmethod
-    def sterile_neutrino(mass=33.9 * UNITS.MeV):
+    def sterile_neutrino(mass=33.9 * UNITS.MeV, mixing_angle=1.):
         return {
             'name': 'Sterile neutrino (Majorana)',
             'symbol': 'N',
             'statistics': STATISTICS.FERMION,
             'mass': mass,
+            'mixing_angle': mixing_angle,
             'dof': 2,
             'decoupling_temperature': 1. * UNITS.GeV,
             'majorana': True,
@@ -53,12 +54,13 @@ class particles(object):
         }
 
     @staticmethod
-    def dirac_sterile_neutrino(mass=33.9 * UNITS.MeV):
+    def dirac_sterile_neutrino(mass=33.9 * UNITS.MeV, mixing_angle=1.):
         return {
             'name': 'Sterile neutrino (Dirac)',
             'symbol': 'N',
             'statistics': STATISTICS.FERMION,
             'mass': mass,
+            'mixing_angle': mixing_angle,
             'dof': 4,
             'decoupling_temperature': 1. * UNITS.GeV,
             'majorana': False,
@@ -200,6 +202,12 @@ class interactions(object):
                                 interac.integrals = [integral for integral in interac.integrals if\
                                                     sum([item.side for item in integral.reaction if item.specie.name in [other_lep.name, sterile.name]]) == 0]
                             inters.extend(inter)
+
+        for inter in inters:
+            for integral in inter.integrals:
+                if hasattr(integral.reaction[0].specie, 'fast_decay'):
+                    integral.kind = CollisionIntegralKind.F_creation
+
         return inters
 
     # ## Quark interactions
@@ -319,6 +327,14 @@ class interactions(object):
                                                                meson=particle,
                                                                kind=kind)
 
+        for inter in inters:
+            for integral in inter.integrals:
+                if hasattr(integral.reaction[0].specie, 'fast_decay'):
+                    if utils.reaction_type(integral).CREATION:
+                        integral.kind = CollisionIntegralKind.F_creation
+                    else:
+                        integral.kind = CollisionIntegralKind.F_decay
+
         return inters
 
     @staticmethod
@@ -374,37 +390,26 @@ class interactions(object):
             \end{align}
         """
 
-        if meson.name in ["Neutral rho"]:
-            return [CrossGeneratingInteraction(
-                name="Sterile neutrino decay to neutral vector meson and neutrino",
-                particles=((sterile, ), (active, meson)),
-                antiparticles=antiparticles,
-                Ms=(ThreeParticleM(K=0.5 * (CONST.G_F * theta * meson.decay_constant)**2
-                                   * sterile.mass**4 * (1 - 2 * CONST.sin_theta_w_2)**2
-                                   * (1 + 2 * (meson.mass / sterile.mass)**2)
-                                   * (1 - (meson.mass / sterile.mass)**2)), ),
-                integral_type=ThreeParticleIntegral,
-                kind=kind
-            ) for antiparticles in [
-                ((False, ), (False, False)),
-                ((True, ), (True, False))
-            ]]
+        if meson.name == 'Neutral rho':
+            kappa = 1. - 2. * CONST.sin_theta_w_2
+        if meson.name == 'Omega':
+            kappa = 4. * CONST.sin_theta_w_2 / 3.
+        if meson.name == 'Phi':
+            kappa = 4. * CONST.sin_theta_w_2 / 3. - 1.
 
-        if meson.name in ["Omega", "Phi"]:
-            return [CrossGeneratingInteraction(
-                name="Sterile neutrino decay to neutral vector meson and neutrino",
-                particles=((sterile, ), (active, meson)),
-                antiparticles=antiparticles,
-                Ms=(ThreeParticleM(K=8 * (CONST.G_F * theta * meson.decay_constant)**2
-                                   * sterile.mass**4 * (CONST.sin_theta_w_2 / 3)**2
-                                   * (1 + 2 * (meson.mass / sterile.mass)**2)
-                                   * (1 - (meson.mass / sterile.mass)**2)), ),
-                integral_type=ThreeParticleIntegral,
-                kind=kind
-            ) for antiparticles in [
-                ((False, ), (False, False)),
-                ((True, ), (True, False))
-            ]]
+        return [CrossGeneratingInteraction(
+            name="Sterile neutrino decay to neutral vector meson and neutrino",
+            particles=((sterile, ), (active, meson)),
+            antiparticles=antiparticles,
+            Ms=(ThreeParticleM(K=(CONST.G_F * theta * meson.decay_constant * kappa)**2
+                                * sterile.mass**4 * (1 + 2 * (meson.mass / sterile.mass)**2)
+                                * (1 - (meson.mass / sterile.mass)**2)), ),
+            integral_type=ThreeParticleIntegral,
+            kind=kind
+        ) for antiparticles in [
+            ((False, ), (False, False)),
+            ((True, ), (True, False))
+        ]]
 
 
     @staticmethod
@@ -415,16 +420,15 @@ class interactions(object):
         """
 
         CKM = SM_particles.quarks.CKM[(1, 1)]
-
+        # Only charged rho for now
         return [CrossGeneratingInteraction(
             name="Sterile neutrino decay to charged vector meson and lepton",
             particles=((sterile, ), (lepton, meson)),
             antiparticles=antiparticles,
             Ms=(ThreeParticleM(
-                K=(CONST.G_F * theta * meson.decay_constant * CKM)**2 * sterile.mass**4 * (
-                    1 + (lepton.mass / sterile.mass)**4 + (lepton.mass / sterile.mass)**2
-                    * ((meson.mass / sterile.mass)**2 - 2) + (meson.mass / sterile.mass)**2
-                    - 2 * (meson.mass / sterile.mass)**4
+                K=2 * (CONST.G_F * theta * meson.decay_constant * CKM)**2 * sterile.mass**4 * (
+                    (1 - (lepton.mass / sterile.mass)**2)**2 + (meson.mass / sterile.mass)**2
+                    * (1 + (lepton.mass / sterile.mass)**2) - 2 * (meson.mass / sterile.mass)**4
                 )
             ),),
             integral_type=ThreeParticleIntegral,
@@ -436,12 +440,15 @@ class interactions(object):
 
 
     @classmethod
-    def interactions_decay_products(cls, interactions_primary=None, interactions_SM=None,
+    def interactions_decay_products(cls, interactions_primary=None, interactions_SM=None, muon_dec=False,
                                     neutrinos=None, leptons=None, mesons=None, photon=None, kind=None):
 
-        assert kind in [CollisionIntegralKind.F_creation, CollisionIntegralKind.F_decay,
-                CollisionIntegralKind.F_1_vacuum_decay, CollisionIntegralKind.F_f_vacuum_decay], \
-                "Variable 'kind' set to incorrect value"
+        if kind in [CollisionIntegralKind.F_1_vacuum_decay, CollisionIntegralKind.F_f_vacuum_decay]:
+            kind_creation = CollisionIntegralKind.F_1_vacuum_decay
+            kind_decay = CollisionIntegralKind.F_f_vacuum_decay
+        else:
+            kind_creation = CollisionIntegralKind.F_creation
+            kind_decay = CollisionIntegralKind.F_decay
 
         interactions = []
         primary_mesons = []
@@ -465,6 +472,9 @@ class interactions(object):
                 if species[meson.name]:
                     primary_mesons.append(meson)
 
+        if muon_dec:
+            species['Muon'] += 1
+
         if primary_mesons:
             interactions += SMI.meson_interactions(
                                     primary_mesons=primary_mesons,
@@ -478,6 +488,11 @@ class interactions(object):
 
         for inter in interactions:
             inter.integrals = [integral for integral in inter.integrals \
-                            if sum([item.side for item in integral.reaction]) in [-2, -1, 1, 2]]
+                            if utils.reaction_type(integral).CREATION or utils.reaction_type(integral).DECAY]
+            for integral in inter.integrals:
+                if utils.reaction_type(integral).CREATION:
+                    integral.kind = kind_creation
+                else:
+                    integral.kind = kind_decay
 
         return interactions

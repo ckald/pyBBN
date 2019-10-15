@@ -4,6 +4,7 @@ from scipy.integrate import simps
 from collections import Counter
 
 import environment
+from common import kinematics, UNITS
 from interactions.boltzmann import BoltzmannIntegral
 from interactions.three_particle.cpp.integral import (
     integration_3, grid_t3, particle_t3, reaction_t3
@@ -46,7 +47,7 @@ class ThreeParticleIntegral(BoltzmannIntegral):
         Initialize collision integral constants and save them to the first involved particle
         """
         self.par = self.particle.params
-        if self.par.T > self.washout_temperature and not self.particle.in_equilibrium:
+        if self.particle.params.T < self.particle.decoupling_temperature and not self.particle.in_equilibrium:
             self.particle.collision_integrals.append(self)
 
         if self.grids is None:
@@ -55,8 +56,8 @@ class ThreeParticleIntegral(BoltzmannIntegral):
     def integrate(self, ps, stepsize=None, bounds=None):
         params = self.particle.params
 
-        if self.reaction[0].specie.mass == 0 and self.reaction[1].side == 1:
-            return numpy.zeros(len(ps))
+        if kinematics.Neglect3pInteraction(self, ps):
+            return kinematics.return_function(self, ps)
 
         bounds = tuple(b1 / params.aT for b1 in self.grids.BOUNDS) + (self.reaction[2].specie.grid.MAX_MOMENTUM / params.aT, )
 
@@ -100,40 +101,34 @@ class ThreeParticleIntegral(BoltzmannIntegral):
         else:
             constant /= self.particle.dof / 2
 
-        if 'Sterile neutrino (Dirac)' in [item.specie.name for item in self.reaction] or \
-        sum([item.side for item in self.reaction]) == -1 and not \
-        (self.reaction[2].specie.majorana and self.particle.Q):
-            left = Counter(item.specie for item in self.reaction if item.side == -1)
-            right = Counter(item.specie for item in self.reaction if item.side == 1)
-            if left[self.reaction[0].specie] == 2 and right[self.reaction[0].specie] == 0:
-                constant *= 2
+        constant *= kinematics.CollisionMultiplier3p(self)
 
         if not environment.get('LOGARITHMIC_TIMESTEP'):
             constant /= params.x
 
         stepsize *= constant_else
 
-        if environment.get('SPLIT_COLLISION_INTEGRAL') and not hasattr(self.particle, 'thermalization'):
-            A = integration_3(ps, *bounds, self.creaction, stepsize, CollisionIntegralKind.F_1)
+        try:
+            ps, slice_1, slice_3 = kinematics.grid_cutoff_3p(self, ps)
+        except:
+            return kinematics.return_function(self, ps)
+
+        if self.kind in [CollisionIntegralKind.Full, CollisionIntegralKind.Full_vacuum_decay] and not hasattr(self.particle, 'fast_decay'):
+            C = integration_3(ps, *bounds, self.creaction, stepsize, CollisionIntegralKind.Full)
             B = integration_3(ps, *bounds, self.creaction, stepsize, CollisionIntegralKind.F_f)
-            return numpy.array(A) * constant, numpy.array(B) * constant
+            return numpy.array(slice_1 + C + slice_3) * constant, numpy.array(slice_1 + B + slice_3) * constant
 
         fullstack = integration_3(ps, *bounds, self.creaction, stepsize, self.kind)
-        fullstack = numpy.array(fullstack)
+        fullstack = numpy.array(slice_1 + fullstack + slice_3)
 
-        if sum([item.side for item in self.reaction]) == -1 and hasattr(self.reaction[-1].specie, 'thermalization'):
-            sym = ''.join([item.specie.symbol for item in self.reaction[:-1]])
-            for key in self.reaction[-1].specie.BR:
-                if Counter(sym) == Counter(key):
-                    BR = self.reaction[-1].specie.BR[key]
-            dof = self.particle.dof if self.particle.majorana else self.particle.dof / 2
-            created = simps(fullstack * constant * dof * self.particle.grid.TEMPLATE**2, self.particle.grid.TEMPLATE)
-            if created == 0.:
-                return numpy.zeros(len(fullstack)), numpy.zeros(len(fullstack))
-            scaling = BR * self.reaction[-1].specie.num_creation / created
-            fullstack *= scaling
+        scaled_output = kinematics.scaling(self, fullstack, constant)
+        try:
+            if not scaled_output:
+                return kinematics.return_function(self, fullstack)
+        except:
+            fullstack = scaled_output
 
-        if hasattr(self.particle, 'thermalization'):
+        if hasattr(self.particle, 'fast_decay'):
             if self.kind in [CollisionIntegralKind.F_decay, CollisionIntegralKind.F_f_vacuum_decay]:
                 return numpy.zeros(len(fullstack)), fullstack * constant
             if self.kind in [CollisionIntegralKind.F_creation, CollisionIntegralKind.F_1_vacuum_decay]:
