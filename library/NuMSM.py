@@ -5,6 +5,7 @@
 
 from __future__ import division
 
+import numpy as np
 import itertools
 from collections import Counter
 
@@ -349,7 +350,7 @@ class interactions(object):
             antiparticles=antiparticles,
             Ms=(
                 ThreeParticleM(K=(CONST.G_F * theta * meson.decay_constant)**2
-                                  * sterile.mass**4 * (1 - (meson.mass / sterile.mass)**2)), ),
+                                  * sterile.mass**4 * np.abs(1 - (meson.mass / sterile.mass)**2)), ),
             integral_type=ThreeParticleIntegral,
             kind=kind
         ) for antiparticles in [
@@ -371,7 +372,7 @@ class interactions(object):
             particles=((sterile, ), (lepton, meson)),
             antiparticles=antiparticles,
             Ms=(ThreeParticleM(
-                K=2 * (CONST.G_F * theta * meson.decay_constant * CKM)**2 * sterile.mass**4 * (
+                K=2 * (CONST.G_F * theta * meson.decay_constant * CKM)**2 * sterile.mass**4 * np.abs(
                     (1 - (lepton.mass / sterile.mass)**2)**2
                     - (meson.mass / sterile.mass)**2 * (1 + (lepton.mass / sterile.mass)**2)
                 )
