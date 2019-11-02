@@ -460,7 +460,7 @@ class interactions(object):
                 for integral in inter.integrals:
                     species.update(Counter(item.specie.name for item in integral.reaction if item.side == 1))
 
-        if species['Muon'] or species['Tau']:
+        if species['Muon'] and not muon_dec or species['Tau']:
             interactions += SMI.lepton_interactions(
                                     leptons=leptons,
                                     neutrinos=neutrinos,
