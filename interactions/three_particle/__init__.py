@@ -1,7 +1,10 @@
 # -*- coding: utf-8 -*-
 import numpy
+from scipy.integrate import simps
+from collections import Counter
 
 import environment
+from common import kinematics, UNITS
 from interactions.boltzmann import BoltzmannIntegral
 from interactions.three_particle.cpp.integral import (
     integration_3, grid_t3, particle_t3, reaction_t3
@@ -44,7 +47,7 @@ class ThreeParticleIntegral(BoltzmannIntegral):
         Initialize collision integral constants and save them to the first involved particle
         """
         self.par = self.particle.params
-        if self.par.T > self.washout_temperature and not self.particle.in_equilibrium:
+        if self.particle.params.T < self.particle.decoupling_temperature and not self.particle.in_equilibrium:
             self.particle.collision_integrals.append(self)
 
         if self.grids is None:
@@ -53,10 +56,10 @@ class ThreeParticleIntegral(BoltzmannIntegral):
     def integrate(self, ps, stepsize=None, bounds=None):
         params = self.particle.params
 
-        if self.reaction[0].specie.mass == 0:
-            return numpy.zeros(len(ps))
+        if kinematics.Neglect3pInteraction(self, ps):
+            return kinematics.return_function(self, ps)
 
-        bounds = tuple(b1 / params.aT for b1 in self.grids.BOUNDS)
+        bounds = tuple(b1 / params.aT for b1 in self.grids.BOUNDS) + (self.reaction[2].specie.grid.MAX_MOMENTUM / params.aT, )
 
         if stepsize is None:
             stepsize = params.h
@@ -84,24 +87,54 @@ class ThreeParticleIntegral(BoltzmannIntegral):
         ps = ps / params.aT
         self.cMs = sum(M.K for M in self.Ms)
 
-        constant_0 = self.cMs * params.aT / params.a / 8. / numpy.pi / params.H / self.particle.mass**2
+        if self.particle.mass == 0:
+            constant_0 = 0
+        else:
+            constant_0 = self.cMs * params.aT / params.a / 8. / numpy.pi / params.H / self.particle.mass**2
+
         constant_else = self.cMs * params.a / params.aT / 32. / numpy.pi / params.H
 
         constant = numpy.append(constant_0, numpy.repeat(constant_else, len(ps) - 1))
+
+        if self.particle.majorana:
+            constant /= self.particle.dof
+        else:
+            constant /= self.particle.dof / 2
+
+        constant *= kinematics.CollisionMultiplier3p(self)
 
         if not environment.get('LOGARITHMIC_TIMESTEP'):
             constant /= params.x
 
         stepsize *= constant_else
 
-        if environment.get('SPLIT_COLLISION_INTEGRAL'):
-            A = integration_3(ps, *bounds, self.creaction, stepsize, CollisionIntegralKind.F_1)
+        try:
+            ps, slice_1, slice_3 = kinematics.grid_cutoff_3p(self, ps)
+        except:
+            return kinematics.return_function(self, ps)
+
+        if self.kind in [CollisionIntegralKind.Full, CollisionIntegralKind.Full_vacuum_decay] and not hasattr(self.particle, 'fast_decay'):
+            C = integration_3(ps, *bounds, self.creaction, stepsize, CollisionIntegralKind.Full)
             B = integration_3(ps, *bounds, self.creaction, stepsize, CollisionIntegralKind.F_f)
-            return numpy.array(A) * constant, numpy.array(B) * constant
+            return numpy.array(slice_1 + C + slice_3) * constant, numpy.array(slice_1 + B + slice_3) * constant
 
         fullstack = integration_3(ps, *bounds, self.creaction, stepsize, self.kind)
+        fullstack = numpy.array(slice_1 + fullstack + slice_3)
 
-        if self.kind == CollisionIntegralKind.F_f or self.kind == CollisionIntegralKind.F_f_vacuum_decay:
+        scaled_output = kinematics.scaling(self, fullstack, constant)
+        try:
+            if not scaled_output:
+                return kinematics.return_function(self, fullstack)
+        except:
+            fullstack = scaled_output
+
+        if hasattr(self.particle, 'fast_decay'):
+            if self.kind in [CollisionIntegralKind.F_decay, CollisionIntegralKind.F_f_vacuum_decay]:
+                return numpy.zeros(len(fullstack)), fullstack * constant
+            if self.kind in [CollisionIntegralKind.F_creation, CollisionIntegralKind.F_1_vacuum_decay]:
+                return fullstack * constant, numpy.zeros(len(fullstack))
+
+        if self.kind in [CollisionIntegralKind.F_f, CollisionIntegralKind.F_decay, CollisionIntegralKind.F_f_vacuum_decay]:
             constant *= self.particle._distribution
 
-        return numpy.array(fullstack) * constant
+        return fullstack * constant

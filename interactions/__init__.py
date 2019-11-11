@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 import copy
 import itertools
 from collections import namedtuple, Counter
@@ -90,7 +91,8 @@ class CrossGeneratingInteraction(Interaction):
         self.integral_type = integral_type
         self.washout_temperature = washout_temperature
 
-        if not (kind is None or kind in [CollisionIntegralKind.F_1, CollisionIntegralKind.F_f,
+        if not (kind is None or kind in [CollisionIntegralKind.F_creation, CollisionIntegralKind.F_decay,
+                CollisionIntegralKind.F_1, CollisionIntegralKind.F_f,
                 CollisionIntegralKind.F_1_vacuum_decay, CollisionIntegralKind.F_f_vacuum_decay,
                 CollisionIntegralKind.Full, CollisionIntegralKind.Full_vacuum_decay]
         ):
@@ -265,6 +267,11 @@ class IntegralDeduplicator:
         for new_M in new_integral.Ms:
             reduced = False
             for old_M in old_integral.Ms:
+                if old_M.K != 0.:
+                    reduced = True
+                    old_M += new_M
+                    break
+
                 if old_M.stackable(new_M):
                     reduced = True
                     old_M += new_M

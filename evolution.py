@@ -7,7 +7,7 @@ import shutil
 from datetime import timedelta
 
 import environment
-from common import UNITS, Params, utils
+from common import CONST, UNITS, Params, utils
 from common.integrators import adams_bashforth_correction, MAX_ADAMS_BASHFORTH_ORDER
 
 import kawano
@@ -78,8 +78,26 @@ class Universe(object):
         self.kawano = kawano
         self.kawano_data = utils.DynamicRecArray(self.kawano.heading)
 
-    def init_oscillations(self, pattern, particles):
-        self.oscillations = (pattern, particles)
+    def oscillation_parameters(self):
+
+        if self.oscillation_matter:
+            MSW_12 = CONST.MSW_constant * self.oscillation_particles[0].grid.TEMPLATE**2 * self.params.T**4 / CONST.delta_m12_sq / self.params.a**2
+            MSW_13 = CONST.MSW_constant * self.oscillation_particles[0].grid.TEMPLATE**2 * self.params.T**4 / CONST.delta_m13_sq / self.params.a**2
+            if not environment.get("NORMAL_HIERARCHY_NEUTRINOS"):
+                MSW_13 *= -1
+
+        else:
+            MSW_12 = 0.
+            MSW_13 = 0.
+
+        pattern = self.pattern_function(MSW_12, MSW_13, self.oscillation_matter)
+        self.oscillations = (pattern, self.oscillation_particles)
+
+    def init_oscillations(self, pattern_function, particles, matter_effects=True):
+        self.pattern_function = pattern_function
+        self.oscillation_particles = particles
+        self.oscillation_matter = matter_effects
+        self.oscillation_parameters()
 
     def evolve(self, T_final, export=True, init_time=True):
         """
@@ -100,9 +118,9 @@ class Universe(object):
         print("\n\n" + "#"*34 + " Log output " + "#"*34 + "\n")
 
         for interaction in self.interactions:
-            print(interaction)
+            if interaction.integrals:
+                print(interaction)
         print("\n")
-
 
         # TODO: test if changing updating particles beforehand changes the computed time
         if init_time:
@@ -122,13 +140,16 @@ class Universe(object):
                 if self.folder and self.step % self.export_freq == 0:
                     with open(os.path.join(self.folder, "evolution.txt"), "wb") as f:
                         self.data.savetxt(f)
+                    if self.kawano:
+                        with open(os.path.join(self.folder, "kawano.txt"), "wb") as f:
+                            self.kawano_data.savetxt(f)
             except KeyboardInterrupt:
                 print("\nKeyboard interrupt!")
                 sys.exit(1)
                 break
 
-        if not (T_initial > self.params.T > 0):
-            print("\n(T < 0) or (T > T_initial): suspect numerical instability")
+        if not (self.params.T > 0):
+            print("\n(T < 0): suspect numerical instability")
             sys.exit(1)
 
         self.log()
@@ -181,6 +202,8 @@ class Universe(object):
 
         self.particles += particles
 
+        self.particles = utils.particle_orderer(self.particles)
+
     def update_particles(self):
         """ ### 1. Update particles state
             Update particle species distribution functions, check for regime switching,\
@@ -209,21 +232,24 @@ class Universe(object):
 
         with utils.printoptions(precision=3, linewidth=100):
             for particle in particles:
-                with (utils.benchmark(lambda: "δf/f ({}) = {}".format(particle.symbol, particle.collision_integral / particle._distribution * self.params.h),
-                      self.log_throttler.output)):
-                    particle.collision_integral = particle.integrate_collisions()
+                # with (utils.benchmark(lambda: "δf/f ({}) = {}".format(particle.symbol, particle.collision_integral / particle._distribution * self.params.h),
+                #       self.log_throttler.output)):
+                particle.collision_integral = particle.integrate_collisions()
 
     def update_distributions(self):
         """ ### 4. Update particles distributions """
 
         if self.oscillations:
+            self.oscillation_parameters()
             pattern, particles = self.oscillations
 
-            integrals = {A.flavour: A.collision_integral for A in particles}
+            if any(self.params.T < A.decoupling_temperature for A in particles):
 
-            for A in particles:
-                A.collision_integral = sum(pattern[(A.flavour, B.flavour)] * integrals[B.flavour]
-                                           for B in particles)
+                integrals = {A.flavour: A.collision_integral for A in particles}
+
+                for A in particles:
+                    A.collision_integral = sum(pattern[(A.flavour, B.flavour)] * integrals[B.flavour]
+                                               for B in particles)
 
         for particle in self.particles:
             particle.update_distribution()
@@ -300,13 +326,16 @@ class Universe(object):
 
             rates = self.kawano.baryonic_rates(self.params.a)
 
+            if environment.get('LOGARITHMIC_TIMESTEP'):
+                dTdt = (self.fraction - self.params.aT) * self.params.H / self.params.a
+            else:
+                dTdt = (self.fraction - self.params.T / self.params.m) * self.params.H * self.params.m
+
             row = {
                 self.kawano_data.columns[0]: self.params.t,
                 self.kawano_data.columns[1]: self.params.x,
                 self.kawano_data.columns[2]: self.params.T,
-                self.kawano_data.columns[3]:
-                    (self.data['T'][-1] - self.data['T'][-2])
-                    / (self.data['t'][-1] - self.data['t'][-2]),
+                self.kawano_data.columns[3]: dTdt,
                 self.kawano_data.columns[4]: self.params.rho,
                 self.kawano_data.columns[5]: self.params.H
             }
@@ -340,7 +369,36 @@ class Universe(object):
                           S=self.params.S / UNITS.MeV**3))
 
     def total_entropy(self):
-        return sum(particle.entropy for particle in self.particles) * self.params.a**3
+        return sum(particle.entropy for particle in self.particles) #* (self.params.a_ini/self.params.a)**3
 
     def total_energy_density(self):
         return sum(particle.energy_density for particle in self.particles)
+
+    def QCD_transition(self, hadrons=None, quarkic_interactions=None, hadronic_interactions=None, secondary_interactions=None):
+        self.data.truncate()
+
+        dof_before_qcd = Params.entropic_dof_eq(self)
+
+        self.particles = utils.particle_filter(
+                            ['Up quark', 'Down quark', 'Charm quark',
+                            'Strange quark', 'Top quark', 'Bottom quark', 'Gluon'],
+                            self.particles
+                            )
+        self.add_particles(hadrons)
+
+        dof_after_qcd = Params.entropic_dof_eq(self)
+
+        self.params.aT = self.data['aT'][-1] * (dof_before_qcd/dof_after_qcd)**(1/3)
+#        self.params.x = self.data['x'][-1] * (dof_before_qcd/dof_after_qcd)**(1/3)
+#        self.params.a = self.data['a'][-1] * (dof_before_qcd/dof_after_qcd)**(1/3)
+        self.params.update(self.total_energy_density(), self.total_entropy()) # T will be updated here...
+#        self.params.T = CONST.lambda_QCD # That's why we change it here again
+        self.update_particles()
+
+        if quarkic_interactions and self.interactions:
+            for inter in quarkic_interactions:
+                self.interactions.remove(inter)
+        if hadronic_interactions:
+            self.interactions += (hadronic_interactions)
+        if secondary_interactions:
+            self.interactions += (secondary_interactions)

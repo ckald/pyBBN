@@ -27,7 +27,9 @@ enum class CollisionIntegralKind_3 {
   F_f = 2,
   Full_vacuum_decay = 3,
   F_1_vacuum_decay = 4,
-  F_f_vacuum_decay = 5
+  F_f_vacuum_decay = 5,
+  F_creation = 6,
+  F_decay = 7
 };
 
 struct grid_t3 {

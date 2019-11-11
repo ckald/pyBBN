@@ -4,7 +4,7 @@ import os
 import itertools
 import numpy
 import argparse
-
+from scipy.integrate import simps
 from subprocess import Popen, PIPE
 
 from collections import namedtuple
@@ -141,7 +141,7 @@ def baryonic_rates(_a):
             (_rate6, ((q + m_e) * a, grid.MAX_MOMENTUM))
     ]:
         if bounds[0] < bounds[1]:
-            data.append(CONST.rate_normalization / a**5
+            data.append(CONST.rate_normalization / particles.neutrino.params.a**5
                         * integrate_1D(integrand, bounds=bounds)[0])
         else:
             data.append(0.)
@@ -160,12 +160,12 @@ heading = [
     ["dTg/dt", '10^9K/s', UNITS.K9 / UNITS.s],
     ["rho_tot", 'g/cm^3', UNITS.g_cm3],
     ["H", '1/s', 1 / UNITS.s],
-    ["n nue->p e", 'MeV^5', UNITS.MeV**5],
-    ["p e->n nue", 'MeV^5', UNITS.MeV**5],
-    ["n->p e nue", 'MeV^5', UNITS.MeV**5],
-    ["p e nue->n", 'MeV^5', UNITS.MeV**5],
-    ["n e->p nue", 'MeV^5', UNITS.MeV**5],
-    ["p nue->n e", 'MeV^5', UNITS.MeV**5]
+    ["n nue->p e", 'dimensionless', 1.],
+    ["p e->n nue", 'dimensionless', 1.],
+    ["n->p e nue", 'dimensionless', 1.],
+    ["p e nue->n", 'dimensionless', 1.],
+    ["n e->p nue", 'dimensionless', 1.],
+    ["p nue->n e", 'dimensionless', 1.]
 ]
 
 

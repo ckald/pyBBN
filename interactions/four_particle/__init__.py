@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
 import numpy
-
+from scipy.integrate import simps
+from scipy.interpolate import interp1d, UnivariateSpline
 import os
 import environment
-from common import CONST
+from collections import Counter
+from common import CONST, UNITS, kinematics
 from interactions.boltzmann import BoltzmannIntegral
 from interactions.four_particle.cpp.integral import (
     integration, M_t, grid_t, particle_t, reaction_t,
@@ -24,6 +26,7 @@ class FourParticleM(object):
     """
     K1 = 0.
     K2 = 0.
+    K = 0. # To use when |M|² is constant
     # Order defines the values of the $(i, j, k, l)$ indices
     order = (0, 1, 2, 3)
 
@@ -90,7 +93,7 @@ class FourParticleIntegral(BoltzmannIntegral):
         """
         Initialize collision integral constants and save them to the first involved particle
         """
-        if self.particle.params.T > self.washout_temperature and not self.particle.in_equilibrium:
+        if self.particle.params.T < self.particle.decoupling_temperature and not self.particle.in_equilibrium:
             self.particle.collision_integrals.append(self)
 
         if self.grids is None:
@@ -100,13 +103,19 @@ class FourParticleIntegral(BoltzmannIntegral):
         self.cMs = None
 
     def integrate(self, ps, stepsize=None):
+
+        if kinematics.Neglect4pInteraction(self, ps):
+            return kinematics.return_function(self, ps)
+
         params = self.particle.params
+
 
         bounds = (
             self.grids[0].MIN_MOMENTUM / params.aT,
             self.grids[0].MAX_MOMENTUM / params.aT,
             self.grids[1].MIN_MOMENTUM / params.aT,
-            self.grids[1].MAX_MOMENTUM / params.aT
+            self.grids[1].MAX_MOMENTUM / params.aT,
+            self.reaction[3].specie.grid.MAX_MOMENTUM / params.aT
         )
 
         if stepsize is None:
@@ -137,22 +146,60 @@ class FourParticleIntegral(BoltzmannIntegral):
         # All matrix elements share the same weak scale multiplier
         unit = 32 * CONST.G_F**2
         constant = unit * (params.aT / params.a)**5 / 64. / numpy.pi**3 / params.H
+
+        if self.particle.majorana:
+            constant /= self.particle.dof
+        else:
+            constant /= self.particle.dof / 2
+
+        constant *= kinematics.CollisionMultiplier4p(self)
+
         if not environment.get('LOGARITHMIC_TIMESTEP'):
             constant /= params.x
 
         stepsize *= constant
 
         if not self.cMs:
-            self.cMs = [M_t(list(M.order), M.K1 / unit, M.K2 / unit) for M in self.Ms]
+            self.cMs = [M_t(list(M.order), M.K1 / unit, M.K2 / unit, M.K / unit) for M in self.Ms]
 
-        if environment.get('SPLIT_COLLISION_INTEGRAL'):
+        kinematics.store_energy(self)
+
+        ps, slice_1, slice_2 = kinematics.grid_cutoff_4p(self)
+
+        ps, interpolate = kinematics.interpolation_4p(self, ps, slice_1)
+
+        if self.kind in [CollisionIntegralKind.Full, CollisionIntegralKind.Full_vacuum_decay] and not hasattr(self.particle, 'fast_decay'):
+            # C = integration(ps, *bounds, self.creaction, self.cMs, stepsize, CollisionIntegralKind.Full)
             A = integration(ps, *bounds, self.creaction, self.cMs, stepsize, CollisionIntegralKind.F_1)
             B = integration(ps, *bounds, self.creaction, self.cMs, stepsize, CollisionIntegralKind.F_f)
-            return numpy.array(A) * constant, numpy.array(B) * constant
+            C = A + self.particle.distribution(ps * params.aT) * B
+            if interpolate:
+                C = list(interp1d(ps, C, kind='linear')(slice_1 / params.aT))
+                # AB = list(interp1d(ps, AB, kind='linear')(slice_1 / params.aT))
+                B = list(interp1d(ps, B, kind='linear')(slice_1 / params.aT))
+            return numpy.array(list(C) + slice_2) * constant, numpy.array(list(B) + slice_2) * constant
 
         fullstack = integration(ps, *bounds, self.creaction, self.cMs, stepsize, self.kind)
+        fullstack = numpy.array(fullstack)
 
-        if self.kind == CollisionIntegralKind.F_f or self.kind == CollisionIntegralKind.F_f_vacuum_decay:
+        if interpolate:
+            fullstack = interp1d(ps, fullstack, kind='linear')(slice_1 / params.aT)
+
+        fullstack = numpy.append(fullstack, slice_2)
+
+        scaled_output = kinematics.scaling(self, fullstack, constant)
+        if not scaled_output:
+            return kinematics.return_function(self, fullstack)
+        else:
+            fullstack = scaled_output
+
+        if hasattr(self.particle, 'fast_decay'):
+            if self.kind in [CollisionIntegralKind.F_decay, CollisionIntegralKind.F_f_vacuum_decay]:
+                return numpy.zeros(len(fullstack)), fullstack * constant
+            if self.kind in [CollisionIntegralKind.F_creation, CollisionIntegralKind.F_1_vacuum_decay]:
+                return fullstack * constant, numpy.zeros(len(fullstack))
+
+        if self.kind in [CollisionIntegralKind.F_f, CollisionIntegralKind.F_decay, CollisionIntegralKind.F_f_vacuum_decay]:
             constant *= self.particle._distribution
 
-        return numpy.array(fullstack) * constant
+        return fullstack * constant

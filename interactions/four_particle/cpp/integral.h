@@ -31,16 +31,19 @@ enum class CollisionIntegralKind {
   F_f = 2,
   Full_vacuum_decay = 3,
   F_1_vacuum_decay = 4,
-  F_f_vacuum_decay = 5
+  F_f_vacuum_decay = 5,
+  F_creation = 6,
+  F_decay = 7
 };
 
 
 struct M_t {
-    M_t(std::array<int, 4> order, dbl K1, dbl K2)
-        : order(order), K1(K1), K2(K2) {}
+    M_t(std::array<int, 4> order, dbl K1, dbl K2, dbl K)
+        : order(order), K1(K1), K2(K2), K(K) {}
     std::array<int, 4> order;
     dbl K1;
     dbl K2;
+    dbl K;
 };
 
 struct grid_t {

@@ -15,7 +15,6 @@ neutrino = Particle(**SMP.leptons.neutrino_e)
 neutrino_scattering = CrossGeneratingInteraction(
     particles=((neutrino, neutrino), (neutrino, neutrino)),
     antiparticles=((False, True), (False, True)),
-    decoupling_temperature=0 * UNITS.MeV,
     Ms=(FourParticleM(K1=64 * CONST.G_F**2, order=(0, 1, 2, 3)),),
     integral_type=FourParticleIntegral
 )
