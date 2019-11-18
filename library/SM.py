@@ -10,6 +10,7 @@ import itertools
 from collections import Counter
 from math import sin, cos, atan
 
+import environment
 from common import UNITS, CONST, statistics as STATISTICS
 from interactions import CrossGeneratingInteraction
 from interactions.three_particle import ThreeParticleM, ThreeParticleIntegral
@@ -348,30 +349,59 @@ class particles(object):
         @staticmethod
         def oscillations_map(MSW_12=None, MSW_13=None, matter_effects=True):
 
-            # angles=(0.5905, 0., 0.152346) # theta_12, theta_23, theta_13
+            # angles=(0.5905, 0.71011, 0.152346) # theta_12, theta_23, theta_13
             theta_12 = 0.57636
-            theta_23 = 0.
+            theta_23 = 0.71011 if environment.get('NORMAL_HIERARCHY_NEUTRINOS') else 0.87487
             theta_13 = 0.14715
 
             if matter_effects:
                 theta_12 = 0.5 * np.arctan(np.sin(2.*theta_12) / (np.cos(2.*theta_12) + MSW_12))
+                theta_23 = 0.5 * np.arctan(np.sin(2.*theta_23) / (np.cos(2.*theta_23) + MSW_13)) # MSW_23 \approx MSW_13
                 theta_13 = 0.5 * np.arctan(np.sin(2.*theta_13) / (np.cos(2.*theta_13) + MSW_13))
+
+            PMNS = {
+                (1, 1): np.cos(theta_12) * np.cos(theta_13),
+                (1, 2): np.cos(theta_13) * np.sin(theta_12),
+                (1, 3): np.sin(theta_13),
+                (2, 1): -np.cos(theta_23) * np.sin(theta_12) - np.cos(theta_12) * np.sin(theta_13) * np.sin(theta_23),
+                (2, 2): np.cos(theta_12) * np.cos(theta_23) - np.sin(theta_12) * np.sin(theta_13) * np.sin(theta_23),
+                (2, 3): np.cos(theta_13) * np.sin(theta_23),
+                (3, 1): np.sin(theta_23) * np.sin(theta_12) - np.cos(theta_12) * np.cos(theta_23) * np.sin(theta_13),
+                (3, 2): -np.cos(theta_12) * np.sin(theta_23) - np.cos(theta_23) * np.sin(theta_12) * np.sin(theta_13),
+                (3, 3): np.cos(theta_13) * np.cos(theta_23),
+            }
+
+            # oscillations = {
+            #     ('electron', 'electron'):
+            #         1 - .5 * (np.sin(2*theta_13)**2 + np.cos(theta_13)**4 * np.sin(2*theta_12)**2),
+            #     ('electron', 'muon'):
+            #         .5 * np.cos(theta_13)**2 * np.sin(2*theta_12)**2,
+            #     ('electron', 'tau'):
+            #         np.sin(theta_13)**2 * np.cos(theta_13)**2 * (2 - .5 * np.sin(2*theta_12)**2),
+            #     ('muon', 'muon'):
+            #         1 - .5 * np.sin(2*theta_12)**2,
+            #     ('muon', 'tau'):
+            #         .5 * np.sin(theta_13)**2 * np.sin(2*theta_12)**2,
+            #     ('tau', 'tau'):
+            #         1 - np.sin(theta_13)**2 * (2 * np.cos(theta_13)**2 +
+            #                                  .5 * np.sin(theta_13)**2 * np.sin(2*theta_12)**2)
+            # }
 
             oscillations = {
                 ('electron', 'electron'):
-                    1 - .5 * (np.sin(2*theta_13)**2 + np.cos(theta_13)**4 * np.sin(2*theta_12)**2),
+                    1 - 2 * (PMNS[(1, 1)])**2 * (PMNS[(1, 2)])**2 - 2 * PMNS[(1, 3)]**2 * (1 - PMNS[(1, 3)]**2),
                 ('electron', 'muon'):
-                    .5 * np.cos(theta_13)**2 * np.sin(2*theta_12)**2,
+                    -2 * PMNS[(1, 1)] * PMNS[(1, 2)] * PMNS[(2, 1)] * PMNS[(2, 2)] + 2 * PMNS[(1, 3)]**2 * PMNS[(2, 3)]**2,
                 ('electron', 'tau'):
-                    np.sin(theta_13)**2 * np.cos(theta_13)**2 * (2 - .5 * np.sin(2*theta_12)**2),
+                    -2 * PMNS[(1, 1)] * PMNS[(1, 2)] * PMNS[(3, 1)] * PMNS[(3, 2)] + 2 * PMNS[(1, 3)]**2 * PMNS[(3, 3)]**2,
                 ('muon', 'muon'):
-                    1 - .5 * np.sin(2*theta_12)**2,
+                    1 - 2 * (PMNS[(2, 1)])**2 * (PMNS[(2, 2)])**2 - 2 * PMNS[(2, 3)]**2 * (1 - PMNS[(2, 3)]**2),
                 ('muon', 'tau'):
-                    .5 * np.sin(theta_13)**2 * np.sin(2*theta_12)**2,
+                    -2 * PMNS[(2, 1)] * PMNS[(2, 2)] * PMNS[(3, 1)] * PMNS[(3, 2)] + 2 * PMNS[(2, 3)]**2 * PMNS[(3, 3)]**2,
                 ('tau', 'tau'):
-                    1 - np.sin(theta_13)**2 * (2 * np.cos(theta_13)**2 +
-                                             .5 * np.sin(theta_13)**2 * np.sin(2*theta_12)**2)
+                    1 - 2 * (PMNS[(3, 1)])**2 * (PMNS[(3, 2)])**2 - 2 * PMNS[(3, 3)]**2 * (1 - PMNS[(3, 3)]**2)
             }
+
             oscillations[('muon', 'electron')] = oscillations[('electron', 'muon')]
             oscillations[('tau', 'electron')] = oscillations[('electron', 'tau')]
             oscillations[('tau', 'muon')] = oscillations[('muon', 'tau')]
@@ -749,7 +779,7 @@ class interactions(object):
                                             photon=photon,
                                             kind=kind)
 
-        def charged_pion_decay(inters=None):
+        def charged_pion_decay(inters=None): # Check if this only includes muon decay
             if not (muon_tau[0] or already_there(inters, 'Muon')):
                 inters += cls.lepton_interactions(leptons=leptons,
                                                 neutrinos=neutrinos,
