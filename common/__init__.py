@@ -171,13 +171,14 @@ class Params(object):
         """
         if environment.get('LOGARITHMIC_TIMESTEP'):
             self.dx = self.x * self.dy
+            self.h = self.dy
         self.rho = rho
         self.S = S
         self.H = numpy.sqrt(8./3. * numpy.pi * rho) / CONST.M_p
 
         self.N_eff = (
             (rho - (numpy.pi**2 / 15. * self.T**4))
-            / (7./8. * numpy.pi**2 / 15. * (self.T / 1.401)**4)
+            / (7./8. * numpy.pi**2 / 15. * (self.T / 1.40101966533)**4)
         )
 
         old_a = self.a
