@@ -11,7 +11,7 @@ from collections import Counter
 from math import sin, cos, atan
 
 import environment
-from common import UNITS, CONST, statistics as STATISTICS
+from common import UNITS, CONST, statistics as STATISTICS, utils
 from interactions import CrossGeneratingInteraction
 from interactions.three_particle import ThreeParticleM, ThreeParticleIntegral
 from interactions.four_particle import FourParticleM, FourParticleIntegral
@@ -769,26 +769,27 @@ class interactions(object):
 
             for inter in interaction:
                 for integral in inter.integrals:
-                    if Counter(item.specie.name for item in integral.reaction if item.specie.name == name):
+                    if utils.reaction_type(integral).DECAY and integral.reaction[0].specie.name == name: #Counter(item.specie.name for item in integral.reaction if item.specie.name == name):
                         return True
 
             return False
 
         def neutral_pion_decay(inters=None):
-            inters += cls.decay_neutral_pion(meson=neutral_pion,
-                                            photon=photon,
-                                            kind=kind)
+            if not already_there(inters, 'Neutral pion'):
+                inters += cls.decay_neutral_pion(meson=neutral_pion,
+                                                photon=photon,
+                                                kind=kind)
 
         def charged_pion_decay(inters=None): # Check if this only includes muon decay
             if not (muon_tau[0] or already_there(inters, 'Muon')):
                 inters += cls.lepton_interactions(leptons=leptons,
                                                 neutrinos=neutrinos,
                                                 kind=kind)
-
-            inters += cls.decay_charged_pion(meson=charged_pion,
-                                            lepton=muon,
-                                            neutrino=neutrino_mu,
-                                            kind=kind)
+            if not already_there(inters, 'Charged pion'):
+                inters += cls.decay_charged_pion(meson=charged_pion,
+                                                lepton=muon,
+                                                neutrino=neutrino_mu,
+                                                kind=kind)
 
         def charged_kaon_decay(inters=None):
             if not already_there(inters, 'Charged pion'):
