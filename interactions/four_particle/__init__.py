@@ -154,6 +154,8 @@ class FourParticleIntegral(BoltzmannIntegral):
 
         constant *= kinematics.CollisionMultiplier4p(self)
 
+        constant *= kinematics.quark_multiplier(self)
+
         if not environment.get('LOGARITHMIC_TIMESTEP'):
             constant /= params.x
 
@@ -188,7 +190,7 @@ class FourParticleIntegral(BoltzmannIntegral):
         fullstack = numpy.append(fullstack, slice_2)
 
         scaled_output = kinematics.scaling(self, fullstack, constant)
-        if not scaled_output:
+        if len(scaled_output) == 0:
             return kinematics.return_function(self, fullstack)
         else:
             fullstack = scaled_output

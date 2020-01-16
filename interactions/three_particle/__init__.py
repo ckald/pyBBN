@@ -122,10 +122,9 @@ class ThreeParticleIntegral(BoltzmannIntegral):
         fullstack = numpy.array(slice_1 + fullstack + slice_3)
 
         scaled_output = kinematics.scaling(self, fullstack, constant)
-        try:
-            if not scaled_output:
-                return kinematics.return_function(self, fullstack)
-        except:
+        if len(scaled_output) == 0:
+            return kinematics.return_function(self, fullstack)
+        else:
             fullstack = scaled_output
 
         if hasattr(self.particle, 'fast_decay'):

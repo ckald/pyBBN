@@ -344,6 +344,12 @@ def CollisionMultiplier3p(interaction):
             return 2.
     return 1.
 
+def quark_multiplier(interaction):
+    names = ['Up quark', 'Down quark', 'Charm quark', 'Strange quark', 'Top quark', 'Bottom quark']
+    if interaction.reaction[0].specie.params.T >= CONST.lambda_QCD and any(item.specie.name in names for item in interaction.reaction) and ((utils.reaction_type(interaction).SCATTERING and interaction.reaction[0].specie.name == "Sterile neutrino (Dirac)" and interaction.reaction[1].specie.name not in names) or utils.reaction_type(interaction).DECAY):
+        return 3.
+    return 1.
+
 def store_energy(interaction):
     if interaction.particle.name == 'Sterile neutrino (Dirac)':
         os.environ['HNL_ENERGY'] = str(np.sqrt((interaction.particle.grid.MAX_MOMENTUM/10)**2 + interaction.particle.conformal_mass**2))
@@ -368,7 +374,7 @@ def scaling(interaction, fullstack, constant):
         dof = interaction.particle.dof if interaction.particle.majorana else interaction.particle.dof / 2.
         created = simps(fullstack * constant * dof * grid.TEMPLATE**2, grid.TEMPLATE)
         if created == 0.:
-            return False
+            return []
         scaling = BR * interaction.reaction[-1].specie.num_creation / created
         fullstack *= scaling
     return fullstack
@@ -411,7 +417,7 @@ def Icoll_fast_decay(particle, ps):
 
     for index, Ff in enumerate(Ffs_temp):
         integral = particle.collision_integrals[index]
-        if utils.reaction_type(integral.reaction).DECAY: # line not necessary
+        if utils.reaction_type(integral).DECAY: # line not necessary
             sym = ''.join([item.specie.symbol for item in integral.reaction[1:]])
             for key in integral.reaction[0].specie.BR:
                 if Counter(sym) == Counter(key):

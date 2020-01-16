@@ -1,5 +1,5 @@
 #include "integral.h"
-
+  
 
 dbl energy(dbl y, dbl mass=0) {
     return sqrt(y*y + mass*mass);
@@ -516,7 +516,7 @@ std::vector<dbl> integration_3(
             else {
                 dbl min = p1_bounds_3(reaction, p0, 1, 1);
                 min_1 = std::max(min, -min);
-                max_1 = p1_bounds_3(reaction, p0, -1, 1);
+                max_1 = p1_bounds_3(reaction, p0, -1, 1) * 1.00000000001;
             }
 
             dbl result(0.), error(0.);
@@ -525,7 +525,8 @@ std::vector<dbl> integration_3(
             F.function = &integrand_integration;
 
             dbl releps = 1e-2;
-            dbl abseps = releps / stepsize;
+            dbl f = distribution_interpolation(reaction[0].specie, p0);
+            dbl abseps = releps / stepsize * std::max(f, 1e-20);
 
             size_t subdivisions = 10000;
             gsl_integration_workspace *w = gsl_integration_workspace_alloc(subdivisions);
@@ -539,7 +540,7 @@ std::vector<dbl> integration_3(
             F.params = &params;
 
             gsl_set_error_handler_off();
-            status = gsl_integration_qag(&F, min_1, max_1, abseps, releps, subdivisions, GSL_INTEG_GAUSS15, w, &result, &error);
+            status = gsl_integration_qag(&F, min_1, max_1, abseps, releps, subdivisions, GSL_INTEG_GAUSS31, w, &result, &error);
 
             if (status) {
                 std::cout<<min_1<<'\t'<< max_1<<'\t'<<p0<<'\n';

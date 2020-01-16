@@ -3,6 +3,7 @@
 import os
 import sys
 import time
+import numpy
 import shutil
 from datetime import timedelta
 
@@ -235,6 +236,8 @@ class Universe(object):
                 # with (utils.benchmark(lambda: "δf/f ({}) = {}".format(particle.symbol, particle.collision_integral / particle._distribution * self.params.h),
                 #       self.log_throttler.output)):
                 particle.collision_integral = particle.integrate_collisions()
+                if not numpy.all(numpy.isfinite(particle.collision_integral)):
+                    particle.collision_integral[numpy.isnan(particle.collision_integral)] = 0.
 
     def update_distributions(self):
         """ ### 4. Update particles distributions """

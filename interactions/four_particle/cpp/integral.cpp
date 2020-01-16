@@ -1,5 +1,5 @@
 #include "integral.h"
-
+     
 
 dbl energy(dbl y, dbl mass=0) {
     return sqrt(y*y + mass*mass);
@@ -369,10 +369,10 @@ struct integration_params {
     dbl max_2;
     dbl max_3;
     int kind;
-    dbl releps;
-    dbl abseps;
+//    dbl releps;
+//    dbl abseps;
     size_t subdivisions;
-    gsl_integration_workspace *w;
+    gsl_integration_glfixed_table *w;
 };
 
 
@@ -547,7 +547,7 @@ dbl integrand_2nd_integration(
     dbl max_2 = old_params.max_2;
     dbl max_3 = old_params.max_3;
     dbl p0 = old_params.p0;
-    auto reaction = *old_params.reaction;
+    auto &reaction = *old_params.reaction;
 
     auto reaction_type = get_reaction_type(reaction);
 
@@ -587,15 +587,22 @@ dbl integrand_2nd_integration(
     params.max_2 = max_2;
     F.params = &params;
 
-    dbl result, error;
-    size_t status;
+    dbl result; //, error;
+//    size_t status;
     F.function = &integrand_1st_integration;
     gsl_set_error_handler_off();
-    status = gsl_integration_qag(&F, min_2, max_2, params.abseps, params.releps, params.subdivisions, GSL_INTEG_GAUSS15, params.w, &result, &error);
-    if (status) {
-        printf("(p0=%e, p1=%e) 1st integration result: %e ± %e. %i intervals. %s\n", params.p0, p1, result, error, (int) params.w->size, gsl_strerror(status));
-        throw std::runtime_error("Integrator failed to reach required accuracy");
-    }
+    result = gsl_integration_glfixed(&F, min_2, max_2, params.w);
+    // status = gsl_integration_qag(&F, min_2, max_2, params.abseps, params.releps, params.subdivisions, GSL_INTEG_GAUSS31, params.w, &result, &error);
+    // if (status) {
+    //     if (std::abs(error / result) < 0.03) {
+    //         printf("Warning: 1%% < error < 3%%.");
+    //         printf("(p0=%e, p1=%e) 1st integration result: %e ± %e. %i intervals. %s\n", params.p0, p1, result, error, (int) params.w->size, gsl_strerror(status));
+    //     }
+    //     else {
+    //         printf("Error is larger than 3%%.");
+    //         throw std::runtime_error("Integrator failed to reach required accuracy");
+    //     }
+    // }
 
     return result;
 }
@@ -633,12 +640,8 @@ std::vector<dbl> integration(
             else {
                 min_1 = sqrt(min2);
             }
-            if (max_1 > 3. * min_1) {
-                max_1 = max_1;
-            }
-            else {
-                max_1 = 3. * min_1;
-            }
+            max_1 = std::max(max_1, 3 * min_1);
+
         }
         if (reaction_type == Kinematics::CREATION) {
             if (reaction[3].specie.m == 0.) {continue; }
@@ -653,44 +656,54 @@ std::vector<dbl> integration(
             min_1 = 0.;
         }
 
-        dbl result(0.), error(0.);
-        size_t status;
+        dbl result(0.); //, error(0.);
+//        size_t status;
         gsl_function F;
         F.function = &integrand_2nd_integration;
 
-        dbl releps = 1e-2;
-        dbl abseps = releps / stepsize;
-        auto integral_kind = CollisionIntegralKind(kind);
-        if (integral_kind != CollisionIntegralKind::F_f
-            && integral_kind != CollisionIntegralKind::F_f_vacuum_decay)
-        {
-            dbl f = distribution_interpolation(reaction[0].specie, p0);
-            if (reaction[0].specie.m == 0.) {abseps *= f; }
-            // else {abseps *= 1e-15;}
-            // abseps *= 1e-20;
-        }
+//        dbl releps = 1e-2;
+//        dbl abseps = releps / stepsize;
+//        auto integral_kind = CollisionIntegralKind(kind);
+//        if (integral_kind != CollisionIntegralKind::F_f
+//            && integral_kind != CollisionIntegralKind::F_f_vacuum_decay
+//            && integral_kind != CollisionIntegralKind::F_decay)
+//        {
+//            dbl f = distribution_interpolation(reaction[0].specie, p0);
+//            abseps *= std::max(f, 1e-15);
 
-        size_t subdivisions = 100000;
-        gsl_integration_workspace *w1 = gsl_integration_workspace_alloc(subdivisions);
-        gsl_integration_workspace *w2 = gsl_integration_workspace_alloc(subdivisions);
+//        }
+
+        size_t subdivisions = 90;
+        gsl_integration_glfixed_table *w1 = gsl_integration_glfixed_table_alloc(subdivisions);
+        gsl_integration_glfixed_table *w2 = gsl_integration_glfixed_table_alloc(subdivisions);
+        // gsl_integration_workspace *w1 = gsl_integration_workspace_alloc(subdivisions);
+        // gsl_integration_workspace *w2 = gsl_integration_workspace_alloc(subdivisions);
         struct integration_params params = {
             p0, 0., 0.,
             &reaction, &Ms,
             min_1, max_1, min_2, max_2, max_3,
-            kind, releps, abseps,
+            kind, //releps, abseps,
             subdivisions, w2
         };
         F.params = &params;
 
         gsl_set_error_handler_off();
-
-        status = gsl_integration_qag(&F, min_1, max_1, abseps, releps, subdivisions, GSL_INTEG_GAUSS15, w1, &result, &error);
-        if (status) {
-            printf("2nd integration_1 result: %e ± %e. %i intervals. %s\n", result, error, (int) w1->size, gsl_strerror(status));
-            throw std::runtime_error("Integrator failed to reach required accuracy");
-        }
-        gsl_integration_workspace_free(w1);
-        gsl_integration_workspace_free(w2);
+        result = gsl_integration_glfixed(&F, min_1, max_1, w1);
+        // status = gsl_integration_qag(&F, min_1, max_1, abseps, releps, subdivisions, GSL_INTEG_GAUSS31, w1, &result, &error);
+        // if (status) {
+        //     if (std::abs(error / result) < 0.03) {
+        //         printf("WARNING: 1%% < error < 3%%.");
+        //         printf("2nd integration_1 result: %e ± %e. %i intervals. %s\n", result, error, (int) w1->size, gsl_strerror(status));
+        //     }
+        //     else {
+        //         printf("Error is larger than 3%%.");
+        //         throw std::runtime_error("Integrator failed to reach required accuracy");
+        //     }
+        // }
+        gsl_integration_glfixed_table_free(w1);
+        gsl_integration_glfixed_table_free(w2);
+        // gsl_integration_workspace_free(w1);
+        // gsl_integration_workspace_free(w2);
         integral[i] += result;
     }
 
@@ -713,6 +726,7 @@ PYBIND11_MODULE(integral, m) {
         "grid"_a, "distribution"_a,
         "p"_a, "m"_a=0, "eta"_a=1, "T"_a=1., "in_equilibrium"_a=false
     );
+
     m.def("binary_find", &binary_find,
           "grid"_a, "x"_a);
 
