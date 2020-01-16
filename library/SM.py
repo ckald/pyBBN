@@ -71,7 +71,7 @@ class particles(object):
             'name': 'Neutron',
             'symbol': 'n',
             'statistics': STATISTICS.FERMION,
-            'mass': 939.565378 * UNITS.MeV,
+            'mass': 939.5654133 * UNITS.MeV,
             'dof': 4,
             'majorana': False,
             'Q': 0
@@ -80,7 +80,7 @@ class particles(object):
             'name': 'Proton',
             'symbol': 'p',
             'statistics': STATISTICS.FERMION,
-            'mass': 938.272046 * UNITS.MeV,
+            'mass': 938.2720813 * UNITS.MeV,
             'dof': 4,
             'majorana': False,
             'Q': -1

@@ -74,6 +74,8 @@ class CONST(object):
     delta_m13_sq = 2.56e-3 * UNITS.eV**2
 
     rate_normalization = 17.5426 / UNITS.MeV**5 #17.54459
+    n_decay_rate_vac = 7.142415834599618e-25 * UNITS.MeV
+    rad_corr_prefac = 1.04475
 
     MSW_constant = 16. * 1.2021 * numpy.sqrt(2) * G_F / numpy.pi / M_W**2
 

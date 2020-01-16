@@ -48,7 +48,7 @@ def heun_correction(y, t, f, h):
     return (euler_y + heun_y) / 2.
 
 
-def implicit_euler(y, t, A, B, h):
+def implicit_euler(AB, B, h):
     """
     Implicit Euler solver for ODE with a linear function.
 
@@ -65,7 +65,7 @@ def implicit_euler(y, t, A, B, h):
     \end{equation}
     """
 
-    return (y + A * h) / (1 - B * h)
+    return (AB) / (1 - B * h)
 
 
 ADAMS_BASHFORTH_COEFFICIENTS = {
@@ -106,17 +106,46 @@ def adams_moulton_solver(y, fs, A, B, h, order=None):
     bs, divider = ADAMS_MOULTON_COEFFICIENTS[order]
     fs = fs[-(order-1):] + [A]
     assert len(fs) == order, (len(fs), order)
+    return sum(b * f for b, f in zip(bs, fs)) / divider / (1 - h * B * bs[-1] / divider)
+    # return (
+    #     y + h * sum(b * f for b, f in zip(bs, fs)) / divider
+    # ) / (1 - h * B * bs[-1] / divider)
 
-    return (
-        y + h * sum(b * f for b, f in zip(bs, fs)) / divider
-    ) / (1 - h * B * bs[-1] / divider)
+
+BACKWARD_DIFF_COEFFICIENTS = {
+    1: ([0., 1.], 1.),
+    2: ([-1., 1., 2.], 3.),
+    3: ([2., -9., 7., 6.], 11.),
+    4: ([-3., 16., -36., 23., 12.], 25.),
+    5: ([12., -75., 200., -300., 163, 60.], 137.),
+    6: ([-10., 72., -225., 400., -450., 213., 60.], 147.)
+}
+MAX_BACKWARD_DIFF_ORDER = max(BACKWARD_DIFF_COEFFICIENTS.keys())
+
+
+def backward_differentiation(ys, AB, B, h, order=None):
+    if order is None:
+        order = min(MAX_BACKWARD_DIFF_ORDER, len(ys))
+
+    bs, divider = BACKWARD_DIFF_COEFFICIENTS[order]
+    ys = ys[-order:]
+    assert len(ys) == order, (len(ys), order)
+    return (bs[-1] * h * AB + sum(b * y for b, y in zip(bs[:-1], ys))) \
+        / divider / h / (1 - h * B * bs[-1] / divider)
+
+
+def heun_method(Is, AB):
+    if len(Is) == 0:
+        return AB
+    return 0.5 * (Is[-1] + AB)
 
 
 def integrate_1D(integrand, bounds):
     if not environment.get('FIXED_ORDER_1D_QUADRATURE'):
         integral, error = integrate.quad(
             integrand,
-            bounds[0], bounds[1]
+            bounds[0], bounds[1],
+            limit=100
         )
     else:
         integral = gaussian(
