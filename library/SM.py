@@ -906,7 +906,7 @@ class interactions(object):
                 neutral_pion_decay(inters)
 
             inters += cls.three_particle_meson_decay(parts=[charged_rho, charged_pion, neutral_pion],
-                                                    antiparts=[False, False, False],
+                                                    antiparts=[False, True, False],
                                                     ME=matrix_elements['RhoPlusPiPlusPi0'],
                                                     kind=kind)
 
