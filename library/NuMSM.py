@@ -180,9 +180,9 @@ class interactions(object):
                         kind=kind
                     )
                     if lepton.name in ['Muon', 'Tau']:
-                        for interac in inter:
-                            interac.integrals = [integral for integral in interac.integrals if not (integral.reaction[0].specie.name != sterile.name and\
-                                                Counter([item.specie.name for item in integral.reaction if item.side == -1])[lepton.name] == 1)]
+                        # for interac in inter:
+                        #     interac.integrals = [integral for integral in interac.integrals if not (integral.reaction[0].specie.name != sterile.name and\
+                        #                         Counter([item.specie.name for item in integral.reaction if item.side == -1])[lepton.name] == 1)]
                         inter[1].integrals = [integral for integral in inter[1].integrals if integral.reaction[0].specie.name != lepton.name]
                     inters.extend(inter)
 
