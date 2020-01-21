@@ -14,7 +14,7 @@ from interactions import CrossGeneratingInteraction
 from interactions.three_particle import ThreeParticleM, ThreeParticleIntegral
 from interactions.four_particle import FourParticleIntegral
 from interactions.four_particle.cpp.integral import CollisionIntegralKind
-from library.SM import WeakM, particles as SM_particles, particles as SMP, interactions as SMI
+from library.SM import WeakM, particles as SM_particles, interactions as SMI
 
 
 class SterileM(WeakM):
@@ -73,7 +73,7 @@ class interactions(object):
 
     @staticmethod
     def sterile_active_scattering(theta=1., sterile=None, active_a=None,
-                                 active_b=None, kind=None):
+                                  active_b=None, kind=None):
         """ \begin{align}
                 N_S + \nu_{\beta} &\to \nu_{\alpha} + \nu_{\beta}
             \end{align}
@@ -91,9 +91,9 @@ class interactions(object):
             kind=kind
         ) for particles, Ms in zip(
             [((sterile, active_b), (active_a, active_b)),
-            ((active_a, active_b), (sterile, active_b))],
+             ((active_a, active_b), (sterile, active_b))],
             [(SterileM(theta=theta, K1=K1, order=(0, 1, 2, 3)), ),
-            (SterileM(theta=theta, K1=K1, order=(2, 3, 0, 1)), )]
+             (SterileM(theta=theta, K1=K1, order=(2, 3, 0, 1)), )]
         )]
 
     @staticmethod
@@ -117,8 +117,8 @@ class interactions(object):
             kind=kind
         ) for antiparticles in
             [((False, True), (True, False)),
-            ((True, False), (False, True))
-        ]]
+             ((True, False), (False, True))]
+        ]
 
     @staticmethod
     def sterile_active_to_leptons_CC(theta=1., sterile=None,
@@ -138,8 +138,8 @@ class interactions(object):
             integral_type=FourParticleIntegral,
             kind=kind
         ) for particles in [
-        ((sterile, active), (lepton2, lepton1)),
-        ((active, sterile), (lepton1, lepton2))
+            ((sterile, active), (lepton2, lepton1)),
+            ((active, sterile), (lepton1, lepton2))
         ]]
 
     @classmethod
@@ -159,9 +159,12 @@ class interactions(object):
                     active_b=neutrino_b,
                     kind=kind
                 )
-                inter[1].integrals = [integral for integral in inter[1].integrals if \
-                                    integral.reaction[0].specie.name not in [integral2.reaction[0].specie.name for \
-                                    integral2 in inter[0].integrals]]
+                inter[1].integrals = [
+                    integral for integral in inter[1].integrals
+                    if integral.reaction[0].specie.name not in [
+                        integral2.reaction[0].specie.name for integral2 in inter[0].integrals
+                    ]
+                ]
 
                 inters.extend(inter)
 
@@ -180,9 +183,9 @@ class interactions(object):
                         kind=kind
                     )
                     if lepton.name in ['Muon', 'Tau']:
-                        for interac in inter:
-                            interac.integrals = [integral for integral in interac.integrals if not (integral.reaction[0].specie.name != sterile.name and\
-                                                Counter([item.specie.name for item in integral.reaction if item.side == -1])[lepton.name] == 1)]
+                        # for interac in inter:
+                        #     interac.integrals = [integral for integral in interac.integrals if not (integral.reaction[0].specie.name != sterile.name and\
+                        #                         Counter([item.specie.name for item in integral.reaction if item.side == -1])[lepton.name] == 1)]
                         inter[1].integrals = [integral for integral in inter[1].integrals if integral.reaction[0].specie.name != lepton.name]
                     inters.extend(inter)
 
@@ -200,8 +203,8 @@ class interactions(object):
                                 kind=kind
                             )
                             for interac in inter:
-                                interac.integrals = [integral for integral in interac.integrals if\
-                                                    sum([item.side for item in integral.reaction if item.specie.name in [other_lep.name, sterile.name]]) == 0]
+                                interac.integrals = [integral for integral in interac.integrals if
+                                                     sum([item.side for item in integral.reaction if item.specie.name in [other_lep.name, sterile.name]]) == 0]
                             inters.extend(inter)
 
         for inter in inters:
@@ -245,7 +248,6 @@ class interactions(object):
             \end{align}
         """
 
-
         if quark.Q == 2./3.:
             g_R = CONST.g_R
         if quark.Q == -1./3.:
@@ -258,9 +260,9 @@ class interactions(object):
             particles=((sterile, active), (quark, quark)),
             antiparticles=((False, True), (False, True)),
             Ms=(
-                SterileM(theta=theta, K1=16. / 9. * g_R**2, order=(0, 2, 1, 3)),
-                SterileM(theta=theta, K1=1. / 9. * x**2, order=(0, 3, 1, 2)),
-                SterileM(theta=theta, K2=-4. / 9. * g_R * x, order=(2, 3, 0, 1)),
+                SterileM(theta=theta, K1=16./9. * g_R**2, order=(0, 2, 1, 3)),
+                SterileM(theta=theta, K1=1./9. * x**2, order=(0, 3, 1, 2)),
+                SterileM(theta=theta, K2=-4./9. * g_R * x, order=(2, 3, 0, 1)),
             ),
             integral_type=FourParticleIntegral,
             kind=kind
@@ -348,9 +350,10 @@ class interactions(object):
             name="Sterile neutrino decay to neutral scalar meson and neutrino",
             particles=((sterile, ), (active, meson)),
             antiparticles=antiparticles,
-            Ms=(
-                ThreeParticleM(K=(CONST.G_F * theta * meson.decay_constant)**2
-                                  * sterile.mass**4 * np.abs(1 - (meson.mass / sterile.mass)**2)), ),
+            Ms=(ThreeParticleM(K=(
+                (CONST.G_F * theta * meson.decay_constant)**2
+                * sterile.mass**4 * np.abs(1 - (meson.mass / sterile.mass)**2))
+            ), ),
             integral_type=ThreeParticleIntegral,
             kind=kind
         ) for antiparticles in [
@@ -402,16 +405,16 @@ class interactions(object):
             name="Sterile neutrino decay to neutral vector meson and neutrino",
             particles=((sterile, ), (active, meson)),
             antiparticles=antiparticles,
-            Ms=(ThreeParticleM(K=(CONST.G_F * theta * meson.decay_constant * kappa)**2
-                                * sterile.mass**4 * (1 + 2 * (meson.mass / sterile.mass)**2)
-                                * (1 - (meson.mass / sterile.mass)**2)), ),
+            Ms=(ThreeParticleM(K=(
+                (CONST.G_F * theta * meson.decay_constant * kappa)**2
+                * sterile.mass**4 * (1 + 2 * (meson.mass / sterile.mass)**2)
+                * (1 - (meson.mass / sterile.mass)**2))),),
             integral_type=ThreeParticleIntegral,
             kind=kind
         ) for antiparticles in [
             ((False, ), (False, False)),
             ((True, ), (True, False))
         ]]
-
 
     @staticmethod
     def charged_vector_meson(theta=1., sterile=None, lepton=None, meson=None, kind=None):
@@ -439,7 +442,6 @@ class interactions(object):
             ((True, ), (True, False))
         ]]
 
-
     @classmethod
     def interactions_decay_products(cls, interactions_primary=None, interactions_SM=None, muon_dec=False,
                                     neutrinos=None, leptons=None, mesons=None, photon=None, kind=None):
@@ -462,11 +464,11 @@ class interactions(object):
 
         if species['Muon'] and not muon_dec or species['Tau']:
             interactions += SMI.lepton_interactions(
-                                    leptons=leptons,
-                                    neutrinos=neutrinos,
-                                    # SM_inters=already_there(interactions_SM, ['Muon', 'Tau']),
-                                    kind=kind
-                                )
+                leptons=leptons,
+                neutrinos=neutrinos,
+                # SM_inters=already_there(interactions_SM, ['Muon', 'Tau']),
+                kind=kind
+            )
 
         if mesons:
             for meson in mesons:
@@ -478,18 +480,20 @@ class interactions(object):
 
         if primary_mesons:
             interactions += SMI.meson_interactions(
-                                    primary_mesons=primary_mesons,
-                                    mesons=mesons,
-                                    leptons=leptons,
-                                    neutrinos=neutrinos,
-                                    photon=photon,
-                                    muon_tau=[species['Muon'], species['Tau']],
-                                    kind=kind
-                                )
+                primary_mesons=primary_mesons,
+                mesons=mesons,
+                leptons=leptons,
+                neutrinos=neutrinos,
+                photon=photon,
+                muon_tau=[species['Muon'], species['Tau']],
+                kind=kind
+            )
 
         for inter in interactions:
-            inter.integrals = [integral for integral in inter.integrals \
-                            if utils.reaction_type(integral).CREATION or utils.reaction_type(integral).DECAY]
+            inter.integrals = [
+                integral for integral in inter.integrals
+                if utils.reaction_type(integral).CREATION or utils.reaction_type(integral).DECAY
+            ]
             for integral in inter.integrals:
                 if utils.reaction_type(integral).CREATION:
                     integral.kind = kind_creation
@@ -497,3 +501,4 @@ class interactions(object):
                     integral.kind = kind_decay
 
         return interactions
+
