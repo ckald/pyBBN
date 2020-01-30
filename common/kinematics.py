@@ -358,7 +358,7 @@ def interpolation_4p(interaction, ps, slice_1):
     interpolate = False
     grid = interaction.particle.grid
     if grid.MAX_MOMENTUM / (grid.MOMENTUM_SAMPLES - 1) < environment.get('FOUR_PARTICLE_GRID_RESOLUTION') * UNITS.MeV:
-        steps = np.ceil(slice_1[-1] / (environment.get('FOUR_PARTICLE_GRID_RESOLUTION') * UNITS.MeV))
+        steps = int(np.ceil(slice_1[-1] / (environment.get('FOUR_PARTICLE_GRID_RESOLUTION') * UNITS.MeV)))
         interp_pos = np.searchsorted(ps, np.linspace(ps[0], ps[-1], steps))
         ps = ps[interp_pos]
         interpolate = True
