@@ -392,10 +392,10 @@ class Universe(object):
         dof_after_qcd = Params.entropic_dof_eq(self)
 
         self.params.aT = self.data['aT'][-1] * (dof_before_qcd/dof_after_qcd)**(1/3)
-#        self.params.x = self.data['x'][-1] * (dof_before_qcd/dof_after_qcd)**(1/3)
-#        self.params.a = self.data['a'][-1] * (dof_before_qcd/dof_after_qcd)**(1/3)
+        self.params.x = self.data['x'][-1] * (dof_before_qcd/dof_after_qcd)**(1/3)
+        self.params.a = self.data['a'][-1] * (dof_before_qcd/dof_after_qcd)**(1/3)
         self.params.update(self.total_energy_density(), self.total_entropy()) # T will be updated here...
-#        self.params.T = CONST.lambda_QCD # That's why we change it here again
+        self.params.T = CONST.lambda_QCD # That's why we change it here again
         self.update_particles()
 
         if quarkic_interactions and self.interactions:
