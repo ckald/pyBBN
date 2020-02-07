@@ -918,7 +918,7 @@ class interactions(object):
                 neutral_pion_decay(inters)
 
             inters += cls.four_particle_meson_decay(parts=[omega, charged_pion, charged_pion, neutral_pion],
-                                                    antiparts=[False, True, False, False],
+                                                    antiparts=[False, False, True, False],
                                                     ME=matrix_elements['OmegaPiPlusPiMinPi0'],
                                                     kind=kind)
             inters += cls.three_particle_meson_decay(parts=[omega, neutral_pion, photon],
