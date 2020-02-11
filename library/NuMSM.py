@@ -322,7 +322,7 @@ class interactions(object):
                                                                kind=kind)
 
                         if particle.type == "vector":
-                            inters += cls.charged_vector_meson(theta=thetas[neutrino.flavour],
+                            inters += cls.charged_vector_meson(theta=thetas[lepton.flavour],
                                                                sterile=sterile,
                                                                lepton=lepton,
                                                                meson=particle,
